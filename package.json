@@ -59,7 +59,8 @@
     "build:dist:dev:1": "webpack-cli --mode=development --config webpack.dist.config.js",
     "build:dist:2": "cpx -C \"./src.dist/**/!(tynder.js|tynder.js.map|tynder.min.js|tynder.min.js.map)\" ./dist",
     "lint": "tslint ./src/**/*.ts -t verbose",
-    "test": "jasmine"
+    "test": "jasmine",
+    "prepublishOnly": "run-s clean build test lint"
   },
   "repository": {
     "type": "git",

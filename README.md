@@ -1,6 +1,6 @@
 # Tynder
 
-![Tynder](docs/tynder.svg)
+![Tynder](https://raw.githubusercontent.com/shellyln/tynder/master/docs/tynder.svg?sanitize=true)
 
 TypeScript friendly Data validator for JavaScript.
 
@@ -39,7 +39,7 @@ TypeScript friendly Data validator for JavaScript.
 * spec codes
 
 
-## ~~Install~~
+## Install
 
 ```sh
 npm install --save tynder
