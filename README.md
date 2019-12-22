@@ -4,6 +4,14 @@
 
 TypeScript friendly Data validator for JavaScript.
 
+
+[![npm](https://img.shields.io/npm/v/tynder.svg)](https://www.npmjs.com/package/tynder)
+[![GitHub release](https://img.shields.io/github/release/shellyln/tynder.svg)](https://github.com/shellyln/tynder/releases)
+[![Travis](https://img.shields.io/travis/shellyln/tynder/master.svg)](https://travis-ci.org/shellyln/tynder)
+[![GitHub forks](https://img.shields.io/github/forks/shellyln/tynder.svg?style=social&label=Fork)](https://github.com/shellyln/tynder/fork)
+[![GitHub stars](https://img.shields.io/github/stars/shellyln/tynder.svg?style=social&label=Star)](https://github.com/shellyln/tynder)
+
+
 > NOTICE:  
 > API and DSL syntax are unstable until `v0.1.0`.
 
