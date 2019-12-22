@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+  - "8"
+  - "10"
+  - "12"
+  - "13"
+
+#branches:
+#  only:
+#    - master
+
+sudo: false
+
+before_script:
+  - npm run clean
+  - npm run lint
+  - npm run build
+  - npm run build:dist:dev
+  - npm run build:dist:prod
+  - npm test

@@ -1,0 +1,74 @@
+{
+  "name": "tynder",
+  "private": true,
+  "version": "0.0.1",
+  "description": "TypeScript friendly Data validator for JavaScript.",
+  "keywords": [
+    "data validator",
+    "validator",
+    "TypeScript",
+    "JSON Schema",
+    "schema",
+    "type checker"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "fruitsconfits": "^0.1.1",
+    "liyad": "^0.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@types/jasmine": "^3.5.0",
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "babel-loader": "^8.0.6",
+    "cpx": "^1.5.0",
+    "cross-env": "^6.0.3",
+    "jasmine": "^3.5.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "mkdirp": "^0.5.1",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.0",
+    "shx": "^0.3.2",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "clean": "run-s clean:cjs clean:esm clean:spec clean:dist",
+    "clean:cjs": "rimraf ./bin",
+    "clean:esm": "rimraf ./modules",
+    "clean:spec": "rimraf ./bin.test",
+    "clean:dist": "rimraf ./dist",
+    "build": "run-s build:cjs build:esm build:esm:2 build:spec",
+    "build:cjs": "tsc --module commonjs --target es2015 --outDir bin --declaration --declarationDir ./bin",
+    "build:esm": "tsc --outDir modules --declaration --declarationDir ./modules",
+    "build:esm:2": "node -e \"require('./build-scripts/copy-as-mjs').copyAsMjs('modules','modules')\"",
+    "build:spec": "webpack-cli --mode=development --config webpack.config.js",
+    "build:spec2": "tsc -p tsconfig.spec.json --module commonjs --target es2015 --outDir bin.test",
+    "build:dist": "run-s build:dist:prod",
+    "build:dist:prod": "run-s build:dist:prod:1 build:dist:2",
+    "build:dist:dev": "run-s build:dist:dev:1 build:dist:2",
+    "build:dist:prod:1": "cross-env NODE_ENV=production webpack-cli --mode=production --config webpack.dist.config.js",
+    "build:dist:dev:1": "webpack-cli --mode=development --config webpack.dist.config.js",
+    "build:dist:2": "cpx -C \"./src.dist/**/!(tynder.js|tynder.js.map|tynder.min.js|tynder.min.js.map)\" ./dist",
+    "lint": "tslint ./src/**/*.ts -t verbose",
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shellyln/tynder.git"
+  },
+  "author": "shellyln",
+  "homepage": "https://shellyln.github.io/",
+  "bugs": {
+    "url": "https://github.com/shellyln/tynder/issues"
+  },
+  "license": "ISC"
+}
