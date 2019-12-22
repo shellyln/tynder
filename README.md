@@ -248,5 +248,5 @@ type MyType = S | 10 | 20 | 30 | string | 50;
 
 
 ## License
-[ISC](https://github.com/shellyln/fruitsconfits/blob/master/LICENSE.md)  
+[ISC](https://github.com/shellyln/tynder/blob/master/LICENSE.md)  
 Copyright (c) 2019 Shellyl_N and Authors.
