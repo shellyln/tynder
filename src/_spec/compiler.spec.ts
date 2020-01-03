@@ -1,12 +1,12 @@
 
-import { TypeAssertionSetValue } from '../types';
+import { TypeAssertionSetValue }  from '../types';
 import { validate,
-         getType }               from '../validator';
+         getType }                from '../validator';
 import { pick,
-         merge }                 from '../picker';
+         merge }                  from '../picker';
 import { parse,
-         compile }               from '../compiler';
-import { generateTypedefCode }   from '../codegen';
+         compile }                from '../compiler';
+import { generateTypeScriptCode } from '../codegen';
 
 
 
@@ -81,36 +81,74 @@ describe("compiler", function() {
                 type A = @min(3) @range(5, 9) @msgId({a: '12345', b: [1, {c: 3}]}) string;
             `);
             */
-            /*
             const schema2 = compile(`
-                type X = string | number;
+                import * as fs from 'fs';
+                external U, W;
+                /** doc comment X - line 1
+                 * doc comment X - line 2
+                 */
+                export type X = string | number | 'foo';
+                type XX = number;
+                /** doc comment S */
+                enum S {
+                    /** doc comment S.q */
+                    q,
+                    w = 3,
+                    e,
+                    r,
+                    t = 10,
+                    u = 'aaa',
+                }
+                export enum R {}
+                /** doc comment B - line 1 */
                 interface B {
                     @range(2, 5)
                     a: number;
+                    /** doc comment B.b - line 1
+                     * doc comment B.b - line 2
+                     */
                     b?: string;
                 }
-                interface C {
+                export interface C {
                     c?: string[10..20][];
-                    d: string|number|boolean[1][2..3];
+                    d: string|number|boolean[1][2..3]|B|B[]|B|{/** doc comment C.d.p */p: string};
+                    d2?: X;
+                    d3?: U;
+                    d4?: S;
                 }
                 interface A extends B,C{
                     e: (string[])|(@minValue(3) number[])|(boolean[]);
                     f: X | boolean;
                     @match(/^[A-F]+$/)
                     g: string;
+                    h?: C;
+                    i: [string, number?, string?];
+                    j: [...<number, 1..2>, string];
                 }
             `);
+            // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
+            // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));
+            /*
             console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
+            const ctx = {checkAll: true};
             expect(validate({
                 a: 5,
                 c: [['', '', '', '', '', '', '', '', '', '']],
                 d: 10,
+                // d2: true,  // TODO: BUG: error reporter reports no error message (optional > oneOf)
+                           // TODO: BUG: error reporter doesn't get the name 'd2'  <- due to OptionalAssertion
+                d3: 11,
+                // d4: 11,    // TODO: BUG: error reporter doesn't get the name 'd4' (optional > enum)
+                           //                                           <- due to OptionalAssertion
                 e: [true, false],
                 f: true,
                 g: 'DEBCB',
+                i: ['q', 12, 13], // TODO: BUG: spread/optional quantity
+                j: [1, 2, 'aaa'],
                 z: 'aaaaaaaaa',
-            }, getType(schema2, 'A'), {checkAll: true})).toEqual({} as any);
-            console.log(generateTypedefCode(schema2));
+            }, getType(schema2, 'A'), ctx)).toEqual({} as any);
+            console.log(generateTypeScriptCode(schema2));
+            console.log(JSON.stringify(ctx));
             */
         } catch (e) {
             throw e;
@@ -119,14 +157,21 @@ describe("compiler", function() {
     });
     it("compiler-2", function() {
         /*
+        console.log(JSON.stringify(getType(z, 'A'), null, 2));
+        */
         const z = compile(`
             type Foo = string;
             interface A {
                 a: Foo;
+                @range(3, 5)
+                b: number;
+                @maxLength(3)
+                c: Foo;
             }
         `);
-        console.log(JSON.stringify(getType(z, 'A'), null, 2));
-        */
+        const ctx = {checkAll: true};
+        console.log(JSON.stringify(validate({b: 6, c: '1234'}, getType(z, 'A'), ctx)));
+        console.log(JSON.stringify(ctx));
         expect(1).toEqual(1);
     });
 });

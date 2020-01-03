@@ -3,7 +3,8 @@
 // https://github.com/shellyln
 
 
-import { NeverTypeAssertion,
+import { ErrorTypes,
+         NeverTypeAssertion,
          AnyTypeAssertion,
          UnknownTypeAssertion,
          PrimitiveTypeAssertion,
@@ -11,30 +12,36 @@ import { NeverTypeAssertion,
          RepeatedAssertion,
          SequenceAssertion,
          OneOfAssertion,
+         EnumAssertion,
          ObjectAssertion,
          TypeAssertion,
-         TypeAssertionErrorMessage,
-         Context,
+         ValidationContext,
          TypeAssertionMap } from './types';
 import { reportError }      from './reporter';
 
 
 
-function validateNeverTypeAssertion<T>(data: any, ty: NeverTypeAssertion, ctx: Context): null {
-    // reportError
+function validateNeverTypeAssertion<T>(
+    data: any, ty: NeverTypeAssertion, ctx: ValidationContext): null {
+
+    reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
     return null;
 }
 
 
-function validateAnyTypeAssertion<T>(data: any, ty: AnyTypeAssertion, ctx: Context): {value: T} {
+function validateAnyTypeAssertion<T>(
+    data: any, ty: AnyTypeAssertion, ctx: ValidationContext): {value: T} {
+
     // always matched
     return ({value: ctx.mapper ? ctx.mapper(data, ty) : data});
 }
 
 
-function validateUnknownTypeAssertion<T>(data: any, ty: UnknownTypeAssertion, ctx: Context): {value: T} | null {
+function validateUnknownTypeAssertion<T>(
+    data: any, ty: UnknownTypeAssertion, ctx: ValidationContext): {value: T} | null {
+
     if (data === null || data === void 0) {
-        // reportError
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         return null;
     }
     // always matched
@@ -42,57 +49,82 @@ function validateUnknownTypeAssertion<T>(data: any, ty: UnknownTypeAssertion, ct
 }
 
 
-function validatePrimitiveTypeAssertion<T>(data: any, ty: PrimitiveTypeAssertion, ctx: Context): {value: T} | null {
+function validatePrimitiveTypeAssertion<T>(
+    data: any, ty: PrimitiveTypeAssertion, ctx: ValidationContext): {value: T} | null {
+
     let err = false;
     if (typeof data !== ty.primitiveName) {
-        // reportError
+        reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
         err = true;
     }
+
+    let valueRangeErr = false;
     switch (typeof ty.minValue) {
     case 'number': case 'string':
         if (data < ty.minValue) {
-            // reportError
+            if (! valueRangeErr) {
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+            }
+            valueRangeErr = true;
             err = true;
         }
     }
     switch (typeof ty.maxValue) {
     case 'number': case 'string':
         if (data > ty.maxValue) {
-            // reportError
+            if (! valueRangeErr) {
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+            }
+            valueRangeErr = true;
             err = true;
         }
     }
     switch (typeof ty.greaterThanValue) {
     case 'number': case 'string':
         if (data < ty.greaterThanValue) {
-            // reportError
+            if (! valueRangeErr) {
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+            }
+            valueRangeErr = true;
             err = true;
         }
     }
     switch (typeof ty.lessThanValue) {
     case 'number': case 'string':
         if (data > ty.lessThanValue) {
-            // reportError
+            if (! valueRangeErr) {
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+            }
+            valueRangeErr = true;
             err = true;
         }
     }
+
+    let valueLengthErr = false;
     switch (typeof ty.minLength) {
     case 'number':
         if (typeof data !== 'string' || data.length < ty.minLength) {
-            // reportError
+            if (! valueLengthErr) {
+                reportError(ErrorTypes.ValueLengthUnmatched, data, ty, ctx);
+            }
+            valueLengthErr = true;
             err = true;
         }
     }
     switch (typeof ty.maxLength) {
     case 'number':
         if (typeof data !== 'string' || data.length > ty.maxLength) {
-            // reportError
+            if (! valueLengthErr) {
+                reportError(ErrorTypes.ValueLengthUnmatched, data, ty, ctx);
+            }
+            valueLengthErr = true;
             err = true;
         }
     }
+
     if (ty.pattern) {
         if (! ty.pattern.test(data)) {
-            // reportError
+            reportError(ErrorTypes.ValuePatternUnmatched, data, ty, ctx);
             err = true;
         }
     }
@@ -103,36 +135,40 @@ function validatePrimitiveTypeAssertion<T>(data: any, ty: PrimitiveTypeAssertion
 }
 
 
-function validatePrimitiveValueTypeAssertion<T>(data: any, ty: PrimitiveValueTypeAssertion, ctx: Context): {value: T} | null {
+function validatePrimitiveValueTypeAssertion<T>(
+    data: any, ty: PrimitiveValueTypeAssertion, ctx: ValidationContext): {value: T} | null {
+
     const ret = data === ty.value ?
         {value: ctx.mapper ? ctx.mapper(data, ty) : data} :
         null;
     if (! ret) {
-        // reportError
+        reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
     }
     return ret;
 }
 
 
-function validateRepeatedAssertion<T>(data: any, ty: RepeatedAssertion, ctx: Context): {value: T} | null {
+function validateRepeatedAssertion<T>(
+    data: any, ty: RepeatedAssertion, ctx: ValidationContext): {value: T} | null {
+
     if (! Array.isArray(data)) {
-        // reportError
+        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
         return null;
     }
     if (typeof ty.min === 'number' && data.length < ty.min) {
-        // reportError
+        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
         return null;
     }
     if (typeof ty.max === 'number' && data.length > ty.max) {
-        // reportError
+        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
         return null;
     }
 
     const retVals: any[] = [];
     for (const x of data) {
-        const r = validate(x, ty.repeated, ctx);
+        const r = validateRoot<T>(x, ty.repeated, ctx);
         if (! r) {
-            // reportError
+            // TODO: Child is unmatched. reportError?
             return null;
         }
         retVals.push(r.value);
@@ -141,76 +177,143 @@ function validateRepeatedAssertion<T>(data: any, ty: RepeatedAssertion, ctx: Con
 }
 
 
-function validateSequenceAssertion<T>(data: any, ty: SequenceAssertion, ctx: Context): {value: T} | null {
+function validateSequenceAssertion<T>(
+    data: any, ty: SequenceAssertion, ctx: ValidationContext): {value: T} | null {
+
     if (! Array.isArray(data)) {
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: TypeUnmatched is for 'primitive' type.
         return null;
     }
-    let dIdx = 0,
-        sIdx = 0;
+    let dIdx = 0, // index of data
+        sIdx = 0; // index of types
+    let spreadLen = 0;
 
     const retVals: any[] = [];
     while (dIdx < data.length && sIdx < ty.sequence.length) {
         const ts = ty.sequence[sIdx];
+        // TODO: case of ts.kind === 'optional' (equivalent to qty(0, 1))
         if (ts.kind === 'spread') {
-            // TODO: check spread length
-            const r = validate(data[dIdx], ts.spread, ctx);
+            const savedErrLen = ctx.errors.length;
+            const r = validateRoot<T>(data[dIdx], ts.spread, ctx);
             if (r) {
                 retVals.push(r.value);
                 dIdx++;
+                spreadLen++;
             } else {
-                // TODO: rollback reported errors
+                // End of spreading
+                // rollback reported errors
+                ctx.errors.length = savedErrLen;
+                if (typeof ts.min === 'number' && spreadLen < ts.min) {
+                    reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+                    return null;
+                }
+                if (typeof ts.max === 'number' && spreadLen > ts.max) {
+                    reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+                    return null;
+                }
+                spreadLen = 0;
+                sIdx++;
+            }
+        } else if (ts.kind === 'optional') {
+            const savedErrLen = ctx.errors.length;
+            const r = validateRoot<T>(data[dIdx], ts.optional, ctx);
+            if (r) {
+                retVals.push(r.value);
+                dIdx++;
+                spreadLen++;
+            } else {
+                // End of spreading
+                // rollback reported errors
+                ctx.errors.length = savedErrLen;
+                if (spreadLen === 0) {
+                    // TODO: BUG: All subsequent 'optional' assertions should be 'spreadLen === 0'.
+                } else if (spreadLen > 1) {
+                    reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+                    return null;
+                }
+                spreadLen = 0;
                 sIdx++;
             }
         } else {
-            const r = validate(data[dIdx], ts, ctx);
+            const r = validateRoot<T>(data[dIdx], ts, ctx);
             if (r) {
                 retVals.push(r.value);
                 dIdx++;
                 sIdx++;
             } else {
-                // reportError
+                // TODO: Child is unmatched. reportError?
                 return null;
             }
         }
     }
+    // TODO: BUG: check last spread|optional assertion quantity.
     const ret = data.length === dIdx ? {value: retVals as any} : null;
     if (! ret) {
-        // reportError
+        reportError(ErrorTypes.SequenceUnmatched, data, ty, ctx);
     }
     return ret;
 }
 
 
-function validateOneOfAssertion<T>(data: any, ty: OneOfAssertion, ctx: Context): {value: T} | null {
+function validateOneOfAssertion<T>(
+    data: any, ty: OneOfAssertion, ctx: ValidationContext): {value: T} | null {
+
     for (const tyOne of ty.oneOf) {
-        const r = validate<T>(data, tyOne, ctx);
+        const savedErrLen = ctx.errors.length;
+        const r = validateRoot<T>(data, tyOne, ctx);
         if (! r) {
-            // TODO: rollback reported errors
+            // rollback reported errors
+            ctx.errors.length = savedErrLen;
             continue;
         }
         return r;
     }
-    // reportError
+    // TODO: Child is unmatched. reportError? // <- it should be reporting. (children errors are rollbacked)
+    reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
     return null;
 }
 
 
-function validateObjectAssertion<T>(data: any, ty: ObjectAssertion, ctx: Context): {value: T} | null {
-    let retVal = data;
+function validateEnumAssertion<T>(
+    data: any, ty: EnumAssertion, ctx: ValidationContext): {value: T} | null {
+
+    for (const v of ty.values) {
+        if (data === v[1]) {
+            return ({value: ctx.mapper ? ctx.mapper(data, ty) : data});
+        }
+    }
+    reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
+    return null;
+}
+
+
+function validateObjectAssertion<T>(
+    data: any, ty: ObjectAssertion, ctx: ValidationContext): {value: T} | null {
+
+    let retVal = {...data};
     const revMembers = ty.members.slice().reverse();
     for (const x of ty.members) {
         if (ty.members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
-            // reportError (duplicated member)
-            if (ctx && ctx.checkAll) {
-                retVal = null;
-            } else {
-                return null;
-            }
+            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            throw new Error(`Duplicated member is found: ${x[0]} in ${ty.name || '(unnamed)'}`);
         }
     }
-    for (const x of ty.members) {
+    if (data === null || typeof data !== 'object') {
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+        if (ctx && ctx.checkAll) {
+            retVal = null;
+        } else {
+            return null;
+        }
+    } else for (const x of ty.members) {
         if (Object.prototype.hasOwnProperty.call(data, x[0])) {
-            if (! validate(data[x[0]], x[1].kind === 'optional' ? x[1].optional : x[1], ctx)) {
+            const ret = validateRoot<T>(data[x[0]], x[1].kind === 'optional' ? x[1].optional : x[1], ctx);
+            if (ret) {
+                if (retVal) {
+                    retVal[x[0]] = ret.value;
+                }
+            } else {
+                // TODO: report member's custom error message
                 if (ctx && ctx.checkAll) {
                     retVal = null;
                 } else {
@@ -219,7 +322,7 @@ function validateObjectAssertion<T>(data: any, ty: ObjectAssertion, ctx: Context
             }
         } else {
             if (x[1].kind !== 'optional') {
-                // reportError (member is not exist)
+                reportError(ErrorTypes.Required, data, x[1], ctx);
                 if (ctx && ctx.checkAll) {
                     retVal = null;
                 } else {
@@ -229,37 +332,62 @@ function validateObjectAssertion<T>(data: any, ty: ObjectAssertion, ctx: Context
         }
     }
     if (! retVal) {
-        // reportError
+        // TODO: Child is unmatched. reportError?
+        // TODO: report object's custom error message
     }
     return retVal ? {value: (ctx && ctx.mapper) ? ctx.mapper(retVal, ty) : retVal} : null;
 }
 
 
-export function validate<T>(data: any, ty: TypeAssertion, ctx?: Partial<Context>): {value: T} | null {
-    const ctx2: Context = {...{errors: [] as TypeAssertionErrorMessage[]}, ...(ctx || {})};
-    switch (ty.kind) {
-    case 'never':
-        return validateNeverTypeAssertion(data, ty, ctx2);
-    case 'any':
-        return validateAnyTypeAssertion(data, ty, ctx2);
-    case 'unknown':
-        return validateUnknownTypeAssertion(data, ty, ctx2);
-    case 'primitive':
-        return validatePrimitiveTypeAssertion(data, ty, ctx2);
-    case 'primitive-value':
-        return validatePrimitiveValueTypeAssertion(data, ty, ctx2);
-    case 'repeated':
-        return validateRepeatedAssertion(data, ty, ctx2);
-    case 'sequence':
-        return validateSequenceAssertion(data, ty, ctx2);
-    case 'one-of':
-        return validateOneOfAssertion(data, ty, ctx2);
-    case 'object':
-        return validateObjectAssertion(data, ty, ctx2);
-    case 'spread': case 'optional':
-        return null;
-    default:
-        throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
+export function validateRoot<T>(
+    data: any, ty: TypeAssertion, ctx: ValidationContext): {value: T} | null {
+
+    try {
+        ctx.typeStack.push(ty);
+        switch (ty.kind) {
+        case 'never':
+            return validateNeverTypeAssertion(data, ty, ctx);
+        case 'any':
+            return validateAnyTypeAssertion(data, ty, ctx);
+        case 'unknown':
+            return validateUnknownTypeAssertion(data, ty, ctx);
+        case 'primitive':
+            return validatePrimitiveTypeAssertion(data, ty, ctx);
+        case 'primitive-value':
+            return validatePrimitiveValueTypeAssertion(data, ty, ctx);
+        case 'repeated':
+            return validateRepeatedAssertion(data, ty, ctx);
+        case 'sequence':
+            return validateSequenceAssertion(data, ty, ctx);
+        case 'one-of':
+            return validateOneOfAssertion(data, ty, ctx);
+        case 'enum':
+            return validateEnumAssertion(data, ty, ctx);
+        case 'object':
+            return validateObjectAssertion(data, ty, ctx);
+        case 'spread': case 'optional': default:
+            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
+        }
+    } finally {
+        ctx.typeStack.pop();
+    }
+}
+
+
+export function validate<T>(
+    data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): {value: T} | null {
+
+    const ctx2: ValidationContext = {
+        ...{errors: [], typeStack: []},
+        ...(ctx || {}),
+    };
+    try {
+        return validateRoot<T>(data, ty, ctx2);
+    } finally {
+        if (ctx) {
+            ctx.errors = ctx2.errors;
+        }
     }
 }
 

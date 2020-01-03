@@ -19,7 +19,7 @@ function copyAsMjs(srcDir, destDir, options) {
         for (const entry of files) {
             const srcEntryPath = path.join(srcDir, entry);
             if (fs.lstatSync(srcEntryPath).isDirectory()) {
-                copyAsMjs(srcEntryPath, path.join(destDir, entry));
+                copyAsMjs(srcEntryPath, path.join(destDir, entry), opts);
             } else {
                 if (entry.toLowerCase().endsWith(opts.srcExt)) {
                     fs.copyFileSync(srcEntryPath, path.join(destDir, entry.slice(0, -(opts.srcExt.length)) + opts.destExt));

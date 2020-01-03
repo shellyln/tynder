@@ -4,8 +4,7 @@
 
 
 import { TypeAssertion,
-         TypeAssertionErrorMessage,
-         Context }  from './types';
+         ValidationContext } from './types';
 import { validate } from './validator';
 
 
@@ -28,11 +27,14 @@ function pickMapper(value: any, ty: TypeAssertion) {
 }
 
 
-export function pick<T>(data: any, ty: TypeAssertion, ctx?: Partial<Context>): T {
-    const ctx2: Context = {...{errors: [] as TypeAssertionErrorMessage[]}, ...(ctx || {}), mapper: pickMapper};
+export function pickRoot<T>(data: any, ty: TypeAssertion, ctx: ValidationContext): T {
     switch (ty.kind) {
     case 'never':
-        throw new Error('');
+        throw new Error(`Type unmatched: ${(ty as any).kind}`);
+    case 'any':
+        // FALL_THRU
+    case 'unknown':
+        // FALL_THRU
     case 'primitive':
         // FALL_THRU
     case 'primitive-value':
@@ -43,9 +45,11 @@ export function pick<T>(data: any, ty: TypeAssertion, ctx?: Partial<Context>): T
         // FALL_THRU
     case 'one-of':
         // FALL_THRU
+    case 'enum':
+        // FALL_THRU
     case 'object':
         {
-            const r = validate<T>(data, ty, ctx2);
+            const r = validate<T>(data, ty, ctx);
             if (r) {
                 return r.value;
             } else {
@@ -53,9 +57,25 @@ export function pick<T>(data: any, ty: TypeAssertion, ctx?: Partial<Context>): T
             }
         }
     case 'spread': case 'optional':
-        throw new Error('');
+        throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
     default:
         throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
+    }
+}
+
+
+export function pick<T>(data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): T {
+    const ctx2: ValidationContext = {
+        ...{errors: [], typeStack: []},
+        ...(ctx || {}),
+        mapper: pickMapper,
+    };
+    try {
+        return pickRoot<T>(data, ty, ctx2);
+    } finally {
+        if (ctx) {
+            ctx.errors = ctx2.errors;
+        }
     }
 }
 

@@ -16,27 +16,31 @@ TypeScript friendly Data validator for JavaScript.
 > API and DSL syntax are unstable until `v0.1.0`.
 
 
+
 ## Features
 * Define the schema with TypeScript-like DSL.
 * Validate data with defined schema.
+* End user friendly custom validation error message.
 * Create subset of data by cherrypicking fields from data with defined schema.
 * Generate TypeScript type definition code.
-    * API
-
-## Planned features
-* End user friendly custom validation error message.
-* Merge data recursively.
-* Generate TypeScript type definition code.
-    * CLI
-* Generate JSON Schema type definition document.
     * CLI / API
 
+
+
+## Planned features
+* Merge data recursively.
+* Generate JSON Schema type definition document.
+    * CLI / API
+* Generate Protocol Buffers 3 type definition code.
+    * CLI / API
+* Recursive types
+* Back reference of types
+
+
+
 ## Project ToDo
-* Report validation error messages.
-* Well generation of TypeScript type definition code.
-    * extended interfaces
-    * formatting
-* spec codes
+* Spec codes
+
 
 
 ## Install
@@ -46,16 +50,23 @@ npm install --save tynder
 ```
 
 
+
 ## Define schema with TypeScript-like DSL
 
-Schema:
+### Schema:
 ```ts
+/// @tynder-external RegExp, Date, Map, Set
+
+/** doc comment */
 export type Foo = string | number;
 
 type Boo = @range(-1, 1) number;
 
+/** doc comment */
 interface Bar {
+    /** doc comment */
     a?: string;                                                   // Optional field
+    /** doc comment */
     b: Foo[] | null;                                              // Union type
     c: string[3..5];                                              // Repeated type (with quantity)
     d: (number | string)[..10];                                   // Complex repeated type (with quantity)
@@ -71,7 +82,10 @@ interface Baz {
     k: ({x: number, y: number, z: 'zzz'} - {z: 'zzz'}) | number;  // Subtraction type
 }
 
+/** doc comment */
+@msgId('M1111')                                                   // Custom error message id
 export interface FooBar extends Bar, Baz {
+    /** doc comment */
     @range(-10, 10)
     l: number;                                                    // Ranged value (number)
     @minValue(-10) @maxValue(10)
@@ -85,20 +99,38 @@ export interface FooBar extends Bar, Baz {
     q: string;                                                    // Pattern matched value
     r: Foo;                                                       // Refer a defined type
     @msgId('M1234')
-    s: number;
-    @msg({})
-    t: number;
+    s: number;                                                    // Custom error message id
+    @msg({
+        required: '"%{name}" of "%{parentType}" is required.',
+        typeUnmatched: '"%{name}" of "%{parentType}" should be "%{expectedType}".',
+    })
+    t: number;                                                    // Custom error message
+    @msg('"%{name}" of "%{parentType}" is not valid.')
+    u: number;                                                    // Custom error message
 }
-```
 
-~~Compile using CLI commands~~ (Planned features):
+// line comment
+/* block comment */
+```
+Default file extension is `*.tss`.
+
+
+### Compile using CLI commands:
 ```sh
-tynder gen-schema --indir path/to/tynder-dsl --outdir path/to/tynder-schema
-tynder gen-ts     --indir path/to/tynder-dsl --outdir path/to/ts-types
-tynder gen-json   --indir path/to/tynder-dsl --outdir path/to/json-schema
+# Compile schema and output as JSON files.
+tynder compile       --indir path/to/schema/tynder --outdir path/to/schema/_compiled
+# Compile schema and output as JavaScript|TypeScript files.
+tynder compile-as-ts --indir path/to/schema/tynder --outdir path/to/schema/_compiled
+# Compile schema and generate TypeScript type definition files.
+tynder gen-ts        --indir path/to/schema/tynder --outdir path/to/typescript-src
+
+## Planned features
+# tynder gen-json-schema --indir path/to/schema/tynder --outdir path/to/schema/json-schema
+# tynder gen-proto3      --indir path/to/schema/tynder --outdir path/to/schema/proto3
 ```
 
-Compile using API:
+
+### Compile using API:
 ```js
 import { compile } from 'tynder/modules/compiler';
 
@@ -110,7 +142,8 @@ export default const mySchema = compile(`
 `);
 ```
 
-Validating:
+
+### Validating:
 ```js
 import { validate,
          getType }         from 'tynder/modules/validator';
@@ -138,7 +171,8 @@ if (validated3 === null) {
 }
 ```
 
-Cherrypicking:
+
+### Cherrypicking:
 ```js
 import { getType }         from 'tynder/modules/validator';
 import { pick,
@@ -150,7 +184,7 @@ const original = {
     b: 3,
 };
 const picked1 = pick(original, getType(mySchema, 'A')); // {a: 'x'}
-// Edit the picked data...
+// Edit the picked data and...
 const changed = merge(original, picked1); // TODO: not impl. (planned feature)
 
 const ctx2 = {checkAll: true};
@@ -160,24 +194,40 @@ const picked2 = pick({
 }, getType(mySchema, 'A'), ctx2); // Throws an error
 ```
 
+
+
 ## Define schema with functional API
 
 ```js
 import { picked,
+         omit,
          partial,
          intersect,
          oneOf,
          subtract,
          primitive,
+         regexpPatternStringType,
          primitiveValue,
          optional,
          repeated,
          sequenceOf,
          spread,
+         enumType,
          objectType,
          derived,
-         msg   as $$,
-         msgId as $ } from 'tynder/modules/operators';
+         withName,
+         withTypeName,
+         withDocComment,
+         withRange,
+         withMinValue,
+         withMaxValue,
+         withGreaterThan,
+         withLessThan,
+         withMinLength,
+         withMaxLength,
+         withMatch,
+         withMsg   as $$,
+         withMsgId as $ } from 'tynder/modules/operators';
 
 const myType =
     oneOf(
@@ -185,7 +235,7 @@ const myType =
             objectType(
                 ['a', 10],
                 ['b', optional(20)],
-                ['c', $('MyType-c',
+                ['c', $('MyType-c')(
                         optional('aaa'))],
                 ['d', sequenceOf(
                         10, 20,
@@ -210,7 +260,7 @@ const myType =
         primitiveValue(50), );
 
 /*
-Same as following type definition:
+Equivalent to following type definition:
 
 interface P {
     e?: string;
@@ -238,13 +288,444 @@ type MyType = S | 10 | 20 | 30 | string | 50;
 */
 ```
 
+
+
 ## DSL syntax
+
+### Type
+
+```ts
+type Foo = string;
+type Bar = string[] | 10 | {a: boolean} | [number, string];
+```
+
+
+### Interface
+
+#### Named interface
+```ts
+interface Foo {
+    a: string;
+    b?: number;
+}
+
+interface Bar {
+    c: boolean;
+}
+
+interface Baz extends Foo, Bar {
+    d: string[];
+}
+```
+
+#### Unnamed literal interface
+```ts
+type A = {
+    a: string,
+    b?: number,
+};
+```
+
+#### Optional member
+```ts
+interface A {
+    b?: number; // optional member
+};
+```
+
+
+### Type decoration
+
+#### Decorate to interface member
+```ts
+interface A {
+    @range(-10, 10) @msgId('M1234')
+    a: number;
+}
+```
+
+#### Decorate to type component
+```ts
+type A = @range(-10, -1) number | @range(1, 10) number;
+
+interface B {
+    b: @range(-10, -1) number | @range(1, 10) number;
+}
+```
+
+* `@range(minValue: number | string, maxValue: number | string)`
+    * Check value range.
+    * minValue <= data <= maxValue
+* `@minValue(minValue: number | string)`
+    * Check value range.
+    * minValue <= data
+* `@maxValue(maxValue: number | string)`
+    * Check value range.
+    * data <= maxValue
+* `@greaterThan(minValue: number | string)`
+    * Check value range.
+    * minValue < data
+* `@lessThan(maxValue: number | string)`
+    * Check value range.
+    * data < maxValue
+* `@minLength(minLength: number)`
+    * Check value range.
+    * minLength <= data.length
+* `@maxLength(maxLength: number)`
+    * Check value range.
+    * data.length <= maxLength
+* `@match(pattern: RegExp)`
+    * Check value text pattern.
+    * pattern.test(data)
+* `@msg(messages: string | ErrorMessages)`
+    * Set custom error message.
+* `@msgId(messageId: string)`
+    * Set custom error message id.
+
+
+### Enum
+
+```ts
+enum Foo {
+    A,  // 0
+    B,  // 1
+    C,  // 2
+}
+
+enum Bar {
+    A = 1,    //   1
+    B,        //   2
+    C = 100,  // 100
+}
+
+enum Baz {
+    A = 'AAA',
+    B = 'BBB',
+    C = 'CCC',
+}
+```
+
+
+### Primitive types
+
+```ts
+type A = number | bigint | string | boolean;
+```
+
+
+### Value types
+
+See `Literals > Type literals` section.
+
+
+### Array type component (Repeated type component)
+
+#### Simple array type
+```ts
+type A = string[];
+```
+
+#### Complex array type
+```ts
+type A = Array<boolean|number|boolean[]|{a: string}|'a'>;
+```
+
+#### Simple array type with quantity assertion
+```ts
+type A = string[10..20]; // 10 <= data.length <= 20
+type B = string[10..];   // 10 <= data.length
+type C = string[..20];   //       data.length <= 20
+```
+
+#### Complex array type with quantity assertion
+```ts
+type A = Array<boolean, 10..20>; // 10 <= data.length <= 20
+type B = Array<boolean, 10..>;   // 10 <= data.length
+type C = Array<boolean, ..20>;   //       data.length <= 20
+```
+
+
+### Sequence type component
+
+#### Fixed length
+```ts
+type A = [string, number, 10, 20, 'a'];
+```
+
+#### Flex length
+```ts
+type A = [string, number?, boolean?, string?];              // Zero or once
+type B = [string, ...<number>, ...<boolean>, ...<string>];  // Zero or more
+type C = [string, ...<number, 10..20>,
+                  ...<boolean, 10..>,
+                  ...<string, ..20>];                       // With quantity assertion
+```
+
+
+### Type operators
+
+* `P & Q`
+    * Intersection type
+    * Result type has all the members of P and Q.
+* `P | Q`
+    * Union type
+    * Match to P or Q type.
+* `P - Q`
+    * Subtraction type
+    * Result type has the members of P that is NOT exist in Q.
+* `Pick<T,K>`
+    * e.g. `Pick<Foo, 'a' | 'b' | 'c'>`
+    * Picked type
+    * Result type has the members of T that is exist in K.
+* `Omit<T,K>`
+    * e.g. `Omit<Foo, 'a' | 'b' | 'c'>`
+    * Picked type
+    * Result type has the members of T that is NOT exist in K.
+* `Partial<T>`
+    * All the member of result type are optioonal.
+    * `Partial<{a: string}>` is equivalent to `{a?: string}`.
+
+
+### Export
+
+```ts
+export type Foo = string;
+
+export interface Bar {
+    a: string;
+}
+
+export enum Baz {
+    A,
+}
+```
+
+
+### Import
+
+This statement is passed through to the generated codes.
+
+```ts
+import from 'foo';
+import * as foo from 'foo';
+import {a, b as bb} from 'foo';
+```
+
+
+### External
+
+Define the external symbols as `any` type.  
+This statement is removed from the generated code.
+
+```ts
+external P, Q, R;
+```
+or
+```ts
+/// @tynder-external P, Q, R
+```
+
+
+### Comments
+
+```ts
+//  ↓↓↓ directive line comment ↓↓↓
+// @tynder-external P, Q, R
+/// @tynder-external S, T
+
+/** doc comment */
+type Foo = string | number;
+
+/** doc comment */
+interface Bar {
+    /** doc comment */
+    a?: string;
+}
+
+/** doc comment */
+enum Baz {
+    /** doc comment */
+    A,
+}
+
+// line comment
+/* block comment */
+/*
+   block comment
+ */
+```
+Doc comments are preserved.
+
+
+### Literals
+
+#### Type literals
+```ts
+type A = 'a' | "b" | `c` |
+         20 | -10 | -0.12 | -9.3+8e |
+         0xff | 0o77 | 0b11 | +Infinity | -Infinity |
+         true | false | null | undefined |
+         {a: string, b: 'aaa'} | [10, string];
+```
+
+#### Value literals
+```ts
+type A = @match(/^.+$/) string;     // RegExp
+type B = @range(10, 20) number;     // number
+type C = @range('a', 'b') string;   // string
+type D = @msg({
+    required: '...',
+    typeUnmatched: '...' }) number; // object
+```
+
+
+### Directives
+
+```ts
+/// @tynder-external P, Q, R
+```
+
+* `@tynder-external` _type_ [, ...]
+    * Declare external types as `any`.
+
+
+### Generics
+Generics actual parameters are removed.
+
+#### DSL:
+```ts
+/// @tynder-external Map, Set
+
+interface Foo {
+    a: Map<string, number>;
+    b: Set<string>;
+}
+```
+
+#### TypeScript generated type definition:
+
+```ts
+interface Foo {
+    a: any;
+    b: any;
+}
+```
+
+
+
+## Customize error messages
+
+### Customize
+
+```ts
+@msgId('M1111')                                                   // Custom error message id
+export interface Foo {
+    @msgId('M1234')
+    s: number;                                                    // Custom error message id
+
+    @msg({
+        required: '"%{name}" of "%{parentType}" is required.',
+        typeUnmatched: '"%{name}" of "%{parentType}" should be "%{expectedType}".',
+    })
+    t: number;                                                    // Custom error message
+
+    @msg('"%{name}" of "%{parentType}" is not valid.')
+    u: number;                                                    // Custom error message
+}
+```
+
+
+### Error messages
+
+```ts
+export const defaultMessages: ErrorMessages = {
+    invalidDefinition: '"%{name}" of "%{parentType}" type definition is invalid.',
+    required: '"%{name}" of "%{parentType}" is required.',
+    typeUnmatched: '"%{name}" of "%{parentType}" should be "%{expectedType}".',
+    repeatQtyUnmatched: '"%{name}" of "%{parentType}" should repeat %{repeatQty} times.',
+    sequenceUnmatched: '"%{name}" of "%{parentType}" sequence is not matched',
+    valueRangeUnmatched: '"%{name}" of "%{parentType}" value should be in the range %{minValue} to %{maxValue}.',
+    valuePatternUnmatched: '%{name}" of "%{parentType}" value should be matched to pattern "%{pattern}"',
+    valueLengthUnmatched: '"%{name}" of "%{parentType}" length should be in the range %{minLength} to %{maxLength}.',
+    valueUnmatched: '"%{name}" of "%{parentType}" value should be "%{expectedValue}".',
+};
+```
+
+### Keyword substitutions
+
+* `%{expectedType}`
+* `%{type}`
+* `%{expectedValue}`
+* `%{value}`
+* `%{repeatQty}`
+* `%{minValue}`
+* `%{maxValue}`
+* `%{pattern}`
+* `%{minLength}`
+* `%{maxLength}`
+* `%{name}`
+* `%{parentType}`
+
+
+
+## CLI subcommands and options
+
+```
+Usage:
+  tynder subcommand options...
+
+Subcommands:
+  help
+      Show this help.
+  compile
+      Compile schema and output as JSON files.
+          * default input file extension is *.tss
+          * default output file extension is *.json
+  compile-as-ts
+      Compile schema and output as JavaScript|TypeScript files.
+          * default input file extension is *.tss
+          * default output file extension is *.ts
+      Generated code is:
+          const schema = {...};
+          export default schema;
+  gen-ts
+      Compile schema and generate TypeScript type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.d.ts
+
+Options:
+  --indir dirname
+      Input directory
+  --outdir dirname
+      Output directory
+  --inext fileExtensionName
+      Input files' extension
+  --outext fileExtensionName
+      Output files' extension
+```
+
+Example:
+```sh
+tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
+```
 
 
 ## Limitations
-* Generics (except `Array<>`) are not available.
+* Generics actual parameters are removed.
+    * Except
+      `Array<T,quantity?>`,
+      [`Pick<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#picktk),
+      [`Omit<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittk) and
+      [`Partial<T>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialt).
 * Recursive types are not available.
 * Back reference of types are not available.
+
+
+
+## Bugs
+* Quantity assertion of the sequence type's last item is not checked.
+* Error reporter cannot resolve some keyword substitutions in complex type.
+* If validation fails on a nested component type of a complex type, the customized error message is lost.
 
 
 ## License
