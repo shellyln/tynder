@@ -16,8 +16,8 @@ import { picked,
          spread,
          objectType,
          derived,
-         msg as $$,
-         msgId as $ } from '../operators';
+         withMsg as $$,
+         withMsgId as $ } from '../operators';
 
 
 
@@ -27,9 +27,9 @@ describe("operator", function() {
             derived(
                 objectType(
                     ['foo', 10],
-                    ['qoo', $$({invalidValue: ''},
+                    ['qoo', $$({valueUnmatched: ''})(
                             optional(20))],
-                    ['zoo', $('msgid-myType-zoo',
+                    ['zoo', $('msgid-myType-zoo')(
                             optional('aaa'))],
                     ['www', sequenceOf(10, 20, spread(primitive('string'), {min: 3, max: 10}), 50)],
                 ),

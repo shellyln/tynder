@@ -3,6 +3,11 @@
 // https://github.com/shellyln
 
 
+// external RegExp, Map;
+/// @tynder-external RegExp, Map
+
+
+
 export type PrimitiveValueTypes = number | bigint | string | boolean | null | undefined;                               // TODO: function
 export type PrimitiveValueTypeNames = 'number' | 'bigint' | 'string' | 'boolean' | 'null' | 'undefined';               // TODO: function
 export type OptionalPrimitiveValueTypeNames = 'number?' | 'bigint?' | 'string?' | 'boolean?' | 'null?' | 'undefined?'; // TODO: function
@@ -74,7 +79,7 @@ export interface PrimitiveTypeAssertion extends TypeAssertionBase {
     kind: 'primitive';
     primitiveName: PrimitiveValueTypeNames;
     minValue?: number | string | null; // TODO: bigint
-    maxValue?: number | string | null; // TODO: bigint
+    maxValue?: number | string | null;
     greaterThanValue?: number | string | null;
     lessThanValue?: number | string | null;
     minLength?: number | null;
@@ -91,7 +96,7 @@ export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
 
 export interface RepeatedAssertion extends TypeAssertionBase {
     kind: 'repeated';
-    repeated: TypeAssertion;
+    repeated: any/*TypeAssertion*/;
     min: number | null;
     max: number | null;
 }
@@ -99,7 +104,7 @@ export interface RepeatedAssertion extends TypeAssertionBase {
 
 export interface SpreadAssertion extends TypeAssertionBase {
     kind: 'spread';
-    spread: TypeAssertion;
+    spread: any/*TypeAssertion*/;
     min: number | null;
     max: number | null;
 }
@@ -107,19 +112,19 @@ export interface SpreadAssertion extends TypeAssertionBase {
 
 export interface SequenceAssertion extends TypeAssertionBase {
     kind: 'sequence';
-    sequence: TypeAssertion[];
+    sequence: any/*TypeAssertion*/[];
 }
 
 
 export interface OneOfAssertion extends TypeAssertionBase {
     kind: 'one-of';
-    oneOf: TypeAssertion[];
+    oneOf: any/*TypeAssertion*/[];
 }
 
 
 export interface OptionalAssertion extends TypeAssertionBase {
     kind: 'optional';
-    optional: TypeAssertion;
+    optional: any/*TypeAssertion*/;
 }
 
 
@@ -135,18 +140,19 @@ export interface EnumAssertion extends TypeAssertionBase {
 
 export type ObjectAssertionMember = [
     string,         // name
-    TypeAssertion,  // type
+    any/*TypeAssertion*/,  // type
 ] | [
     string,         // name
-    TypeAssertion,  // type
-    boolean,        // If true, defined by ancestor types
+    any/*TypeAssertion*/,  // type
+    boolean,        // defined by ancestor types
 ];
 
 
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    baseTypes?: ObjectAssertion[];
+    baseTypes?: any/*ObjectAssertion*/[];
+    // TODO: extended types (for codegen, recursive typedef)
 }
 
 
@@ -168,16 +174,16 @@ export type TypeAssertion =
     ObjectAssertion;
 
 
-export interface ValidationContext {
+export interface Context {
     checkAll?: boolean;
     // maxDepth: number;
     // depth: number;
-    mapper?: (value: any, ty: TypeAssertion) => any;
+    /*mapper?: (value: any, ty: TypeAssertion) => any;*/
 
-    // === returned values ===
+    // returned values
     errors: TypeAssertionErrorMessage[];
 
-    // === internal use ===
+    // internal use
     typeStack: TypeAssertion[];
 }
 
@@ -189,8 +195,3 @@ export interface TypeAssertionSetValue {
 
 
 export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
-
-
-export interface CodegenContext {
-    nestLevel: number;
-}

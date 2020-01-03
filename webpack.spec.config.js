@@ -8,15 +8,15 @@ module.exports = function (env) {
         target: "node",
         entry: {
             spec: [
-                path.resolve(__dirname, 'src/cli.ts')
+                path.resolve(__dirname, 'src/_spec/index.ts')
             ]
         },
         output: {
-            library: 'tynder',
+            library: 'JasmineSpecsRunnerApp',
 
             libraryTarget: 'commonjs2',
-            filename: 'tynder.js',
-            path: path.resolve(__dirname, 'bin.cli'),
+            filename: 'index.spec.js',
+            path: path.resolve(__dirname, 'bin.test'),
             devtoolModuleFilenameTemplate: '../[resource-path]',
             // devtoolModuleFilenameTemplate: void 0
         },

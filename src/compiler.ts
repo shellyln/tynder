@@ -4,19 +4,18 @@
 
 
 import { parserInput,
-         ParserFnWithCtx }   from 'fruitsconfits/modules/lib/types';
-import { getStringParsers }  from 'fruitsconfits/modules/lib/string-parser';
-import { getObjectParsers }  from 'fruitsconfits/modules/lib/object-parser';
+         ParserFnWithCtx }       from 'fruitsconfits/modules/lib/types';
+import { getStringParsers }      from 'fruitsconfits/modules/lib/string-parser';
+import { getObjectParsers }      from 'fruitsconfits/modules/lib/object-parser';
 import { SxTokenChild,
          SxToken,
-         SxSymbol }          from 'liyad/modules/s-exp/types';
-import { lisp }              from 'liyad/modules/s-exp/interpreters/presets/lisp';
+         SxSymbol }              from 'liyad/modules/s-exp/types';
+import { lisp }                  from 'liyad/modules/s-exp/interpreters/presets/lisp';
 import { TypeAssertion,
          PrimitiveTypeAssertion,
          ErrorMessages,
-         TypeAssertionSetValue,
-         TypeAssertionMap }  from './types';
-import * as operators        from './operators';
+         TypeAssertionSetValue } from './types';
+import * as operators            from './operators';
 
 
 
@@ -26,7 +25,9 @@ interface SxOp {
 
 type AstChild = SxTokenChild | SxOp | undefined;
 
-type Ctx = undefined;
+interface Ctx {
+    docComment?: string;
+}
 type Ast = SxToken | AstChild | SxOp | undefined;
 
 const $s = getStringParsers<Ctx, Ast>({
@@ -47,9 +48,20 @@ const {seq, cls, notCls, clsFn, classes, numbers, cat,
        first, or, combine, erase, trans, ahead, rules} = $s;
 
 
+const directiveLineComment =
+    trans(tokens => [[{symbol: 'directive'}, ...tokens]])(
+        erase(qty(2)(cls('/'))),
+        erase(repeat(classes.space)),
+        cat(seq('@tynder-'), repeat(classes.alnum)), // [0]
+        erase(repeat(classes.space)),
+        cat(repeat(notCls('\r\n', '\n', '\r'))),     // [1]
+        erase(classes.newline), );
+
 const lineComment =
     combine(
-        seq('//'),
+        erase(qty(2)(cls('/'))),
+        ahead(repeat(classes.space),
+              notCls('@tynder-'), ),
         repeat(notCls('\r\n', '\n', '\r')),
         classes.newline, );
 
@@ -59,6 +71,22 @@ const hashLineComment =
         repeat(notCls('\r\n', '\n', '\r')),
         classes.newline, );
 
+const docComment =
+    combine(
+        seq('/**'),
+        repeat(classes.space),
+        input => {
+            const ret = cat(repeat(notCls('*/')))(input);
+            if (ret.succeeded) {
+                // define a reducer
+                const ctx2 = {...ret.next.context}; // NOTE: context is immutable
+                ctx2.docComment = (ret.tokens[0] as string).trim();
+                ret.next.context = ctx2;
+            }
+            return ret;
+        },
+        seq('*/'), );
+
 const blockComment =
     combine(
         seq('/*'),
@@ -66,7 +94,7 @@ const blockComment =
         seq('*/'), );
 
 const commentOrSpace =
-    first(classes.space, lineComment, hashLineComment, blockComment);
+    first(classes.space, lineComment, hashLineComment, docComment, blockComment);
 
 
 const trueValue =
@@ -202,7 +230,7 @@ const regexpStringValue =
 
 
 const symbolName =
-    trans(tokens => [{symbol: (tokens as string[])[0]}])
+    trans(tokens => tokens)
     (cat(combine(classes.alpha, repeat(classes.alnum))));
 
 const decoratorSymbolName =
@@ -230,13 +258,13 @@ const listValue = first(
         return [ast];
     })(
         erase(seq('[')),
-            once(combine(
+            combine(
                 erase(repeat(commentOrSpace)),
                 first(input => listValue(input),   // NOTE: recursive definitions
                       input => objectValue(input), //       should place as lambda.
                       simpleConstExpr,
                       ),
-                erase(repeat(commentOrSpace)), )),
+                erase(repeat(commentOrSpace)), ),
             repeat(combine(
                 erase(repeat(commentOrSpace),
                       seq(','),
@@ -281,10 +309,10 @@ const objectValue = first(
         return [ast];
     })(
         erase(seq('{')),
-            once(combine(
+            combine(
                 erase(repeat(commentOrSpace)),
                 objectKeyValuePair,
-                erase(repeat(commentOrSpace)), )),
+                erase(repeat(commentOrSpace)), ),
             repeat(combine(
                 erase(seq(','),
                       repeat(commentOrSpace)),
@@ -315,7 +343,8 @@ const primitiveValueNoNullUndefined =
 
 const primitiveTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
-        first(seq('number'), seq('bigint'), seq('string'), seq('boolean')), );
+        first(seq('number?'), seq('bigint?'), seq('string?'), seq('boolean?'), // TODO: '?' is allowed in the sequence assertion
+              seq('number'), seq('bigint'), seq('string'), seq('boolean'), )); // TODO: function
 
 const nullUndefinedTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
@@ -325,17 +354,19 @@ const simpleTypeName =
     first(primitiveTypeName,
           nullUndefinedTypeName,
           trans(tokens =>
-                [[{symbol: 'ref'}, (tokens[0] as SxSymbol).symbol]])(symbolName), );
+                [[{symbol: 'ref'}, tokens[0]]])(
+            ahead(notCls('Array', 'Partial', 'Pick', 'Omit')),
+            symbolName, ));
 
 
 const sequenceType =
     trans(tokens => [[{symbol: 'sequenceOf'}, ...tokens]])(
-        trans(tokens => tokens)(
+        combine(
             erase(seq('[')),
-                once(combine(
+                combine(
                     erase(repeat(commentOrSpace)),
                     input => spreadOrComplexType(first(seq(','), seq(']')))(input),
-                    erase(repeat(commentOrSpace)), )),
+                    erase(repeat(commentOrSpace)), ),
                 repeat(combine(
                     erase(seq(','),
                         repeat(commentOrSpace)),
@@ -384,14 +415,77 @@ const complexArrayType =
         erase(repeat(commentOrSpace)),
         erase(seq('<')),
             erase(repeat(commentOrSpace)),
-            input => complexType(first(seq(','), seq('>')))(input),
+            first(input => complexType(first(seq(','), seq('>')))(input),
+                  err('type is expected in Array type.'), ),        // [0]
             erase(repeat(commentOrSpace)),
             qty(0, 1)(combine(
                 erase(seq(',')),
                 erase(repeat(commentOrSpace)),
-                arraySizeFactorInner,
+                arraySizeFactorInner,                               // [1]
                 erase(repeat(commentOrSpace)), )),
+        first(ahead(seq('>')),
+              err('\'>\' is expected in Array type.'), ),
         erase(seq('>')), );
+
+const partialType =
+    trans(tokens => [[{symbol: 'partial'}, tokens[0], tokens[1]]])(
+        erase(seq('Partial')),
+        erase(repeat(commentOrSpace)),
+        erase(seq('<')),
+            erase(repeat(commentOrSpace)),
+            first(input => complexType(first(seq(','), seq('>')))(input),
+                  err('type is expected in Partial type.'), ),      // [0]
+            erase(repeat(commentOrSpace)),
+        first(ahead(seq('>')),
+              err('\'>\' is expected in Partial type.'), ),
+        erase(seq('>')), );
+
+const pickOrOmitType =
+    trans(tokens => [[{symbol: tokens[0] === 'Pick' ? 'picked' : 'omit'}, tokens[1], ...tokens.slice(2)]])(
+        first(seq('Pick'),
+              seq('Omit'), ),                                       // [0]
+        erase(repeat(commentOrSpace)),
+        erase(seq('<')),
+            erase(repeat(commentOrSpace)),
+            first(input => complexType(first(seq(','), seq('>')))(input),
+                  err('type is expected in Partial type.'), ),      // [1]
+            erase(repeat(commentOrSpace)),
+            combine(
+                erase(seq(',')),
+                erase(repeat(commentOrSpace)),
+                    stringValue,                                    // [2]
+                    qty(0)(combine(
+                        erase(repeat(commentOrSpace)),
+                        erase(seq('|')),
+                        erase(repeat(commentOrSpace)),
+                        stringValue, )),                            // [3],...
+                erase(repeat(commentOrSpace)), ),
+        first(ahead(seq('>')),
+              err('\'>\' is expected in Pick|Omit type.'), ),
+        erase(seq('>')), );
+
+const genericOrSimpleType =
+    trans(tokens => [tokens[0]])(                     // remove generics parameters
+        simpleTypeName,                               // [0]
+        erase(repeat(commentOrSpace)),
+        qty(0, 1)(combine(
+            erase(seq('<')),
+                combine(                              // [1]
+                    erase(repeat(commentOrSpace)),
+                    first(input => complexType(first(seq(','), seq('>')))(input),
+                          err('type is expected in generic type.'), ),
+                    erase(repeat(commentOrSpace)), ),
+                repeat(combine(                       // [2]...
+                    erase(seq(','),
+                          repeat(commentOrSpace)),
+                    first(input => complexType(first(seq(','), seq('>')))(input),
+                          err('type is expected in generic type.'), ),
+                    erase(repeat(commentOrSpace)), )),
+                qty(0, 1)(erase(
+                    seq(','),
+                    repeat(commentOrSpace), )),
+                first(ahead(seq('>')), err('genericType: Unexpected token has appeared.')),
+            erase(seq('>')), )));
 
 const spreadType =
     trans(tokens => [[{symbol: 'spread'}, tokens[0], tokens[1]]])(
@@ -419,10 +513,10 @@ const decorator =
                 seq(')'), )),
             combine(
                 erase(seq('(')),
-                    once(combine(
+                    combine(
                         erase(repeat(commentOrSpace)),
                         first(regexpStringValue, constExpr),
-                        erase(repeat(commentOrSpace)), )),
+                        erase(repeat(commentOrSpace)), ),
                     repeat(combine(
                         erase(repeat(commentOrSpace)),
                         erase(seq(',')),
@@ -443,8 +537,10 @@ const decoratorsClause =
 
 
 const complexTypeInnerWOSinpleArrayType = (edge: ParserFnWithCtx<string, Ctx, Ast>) =>
-    first(simpleTypeName,
+    first(genericOrSimpleType,
           primitiveValueNoNullUndefined,
+          partialType,
+          pickOrOmitType,
           complexArrayType,
           sequenceType,
           input => interfaceDefInner(seq(','))(input), );
@@ -463,9 +559,9 @@ const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Pa
                 ...(tokens[3] ? [tokens[3]] : []),
                 ...tokens.slice(4),
             ]]);
-        })(
-        trans(tokens => [tokens])(qty(0, 1)(decoratorsClause)),
-        first(
+        })(                                                              // [0]
+        trans(tokens => [tokens])(qty(0, 1)(decoratorsClause)),          // [1]
+        first(                                                           // [2]
             input => complexTypeInnerWOSinpleArrayType(edge)(input),
             combine(
                 erase(seq('(')),
@@ -474,13 +570,13 @@ const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Pa
                     erase(repeat(commentOrSpace)),
                 erase(seq(')')), )),
             combine(
-            trans(tokens => tokens[0] !== null ? [tokens] : [null])(
-                first(
-                    qty(1)(combine(
-                        erase(repeat(commentOrSpace)),
-                        arraySizeFactor,
-                    )),
-                    zeroWidth(() => null), )),
+                trans(tokens => tokens[0] !== null ? [tokens] : [null])(
+                    first(
+                        qty(1)(combine(
+                            erase(repeat(commentOrSpace)),
+                            arraySizeFactor,
+                        )),
+                        zeroWidth(() => null), )),
             combine(first(
                 trans(tokens => [tokens[0], ...(tokens[1] as Ast[])])(
                     qty(1)(combine(
@@ -548,28 +644,33 @@ const spreadOrComplexType: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Par
 
 
 const typeDef =
-    trans(tokens => [[{symbol: 'def'}, tokens[0], tokens[1]]])(
+    trans(tokens => [[{symbol: 'def'}, tokens[1], [{symbol: 'docComment'}, tokens[2], tokens[0] ] ]])(
         erase(seq('type')),
+            input => {
+                const ret = zeroWidth(() => [])(input);
+                if (ret.succeeded) {
+                    const text = ret.next.context.docComment;
+                    ret.next.context = {...ret.next.context};
+                    delete ret.next.context.docComment;
+                    ret.tokens.length = 0;
+                    ret.tokens.push(text ? text : null);
+                }
+                return ret;
+            },                                                       // [0]
             erase(repeat(commentOrSpace)),
-            symbolName,
+            symbolName,                                              // [1]
             erase(repeat(commentOrSpace)),
         erase(seq('=')),
             erase(repeat(commentOrSpace)),
-            input => complexType(first(seq(','), seq(';')))(input),
+            input => complexType(first(seq(','), seq(';')))(input),  // [2]
             erase(repeat(commentOrSpace)),
         erase(seq(';')), );
-
-const exportedTypeDef =
-    trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
-        erase(seq('export'),
-              repeat(commentOrSpace), ),
-        typeDef, );
 
 
 const interfaceExtendsClause =
     trans(tokens => [
             [{symbol: '$list'},
-                ...tokens.map(x => [{symbol: 'ref'}, (x as SxSymbol).symbol])], ])(
+                ...tokens.map(x => [{symbol: 'ref'}, x])], ])(
         erase(seq('extends')),
         erase(repeat(commentOrSpace)),
         symbolName,
@@ -582,26 +683,38 @@ const interfaceExtendsClause =
 const interfaceKeyTypePair = (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
     trans(tokens => [
             [{symbol: '$list'},
-                tokens[1],
-                [{symbol: '$pipe'},
-                    tokens[2] === '?' ?
-                        [{symbol: 'optional'}, tokens[3]] :
-                        tokens[3], ...(tokens[0] as Ast[]), ]]])(
+                tokens[2],
+                [{symbol: 'docComment'},
+                    [{symbol: '$pipe'},
+                        tokens[3] === '?' ?
+                            [{symbol: 'optional'}, tokens[4]] :
+                            tokens[4], ...(tokens[0] as Ast[]), ],
+                    tokens[1], ]]])(
         trans(tokens => [tokens])(first(
-            once(decoratorsClause),
-            zeroWidth(() => []), )),                // [0]
-        objKey,                                     // [1]
-        first(                                      // [2]
+            decoratorsClause,
+            zeroWidth(() => []), )),                // [0] decorators
+        input => {
+            const ret = zeroWidth(() => [])(input);
+            if (ret.succeeded) {
+                const text = ret.next.context.docComment;
+                ret.next.context = {...ret.next.context};
+                delete ret.next.context.docComment;
+                ret.tokens.length = 0;
+                ret.tokens.push(text ? text : null);
+            }
+            return ret;
+        },                                          // [1]
+        objKey,                                     // [2] key
+        first(                                      // [3] '?' | ''
             combine(
                 erase(repeat(commentOrSpace)),
                 seq('?'),
                 erase(repeat(commentOrSpace)), ),
-            zeroWidth(() => ['']),
-        ),
+            zeroWidth(() => ['']), ),
         erase(repeat(commentOrSpace),
             first(seq(':'), err('":" is needed.')),
             repeat(commentOrSpace), ),
-        first(                                      // [3]
+        first(                                      // [4] type
             input => complexType(first(separator, seq('}')))(input),
             err('interface member type is needed.'), ));
 
@@ -609,17 +722,17 @@ const interfaceDefInner: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Parse
     (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
     trans(tokens => [[{symbol: 'objectType'}, ...tokens]])(
         first(
-            trans(tokens => tokens)(erase(
+            combine(erase(
                 seq('{'),
                     repeat(commentOrSpace),
                 seq('}'),
             )),
-            trans(tokens => tokens)(
+            combine(
                 erase(seq('{')),
-                    once(combine(
+                    combine(
                         erase(repeat(commentOrSpace)),
                         interfaceKeyTypePair(separator),
-                        erase(repeat(commentOrSpace)), )),
+                        erase(repeat(commentOrSpace)), ),
                     repeat(combine(
                         erase(separator,
                               repeat(commentOrSpace)),
@@ -629,39 +742,151 @@ const interfaceDefInner: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Parse
                         separator,
                         repeat(commentOrSpace), )),
                     first(ahead(seq('}')), err('interfaceDefInner: Unexpected token has appeared.')),
-                erase(seq('}')),
-            ), ));
+                erase(seq('}')), )));
 
 const interfaceDef =
     trans(tokens => [
         [{symbol: 'def'},
-            tokens[0],
-            [{symbol: 'derived'}, tokens[2], [{symbol: '$spread'}, tokens[1]]], ]])(
+            tokens[1],
+            [{symbol: 'docComment'},
+                [{symbol: 'derived'}, tokens[3], [{symbol: '$spread'}, tokens[2]]],
+                tokens[0], ]]])(
     erase(seq('interface')),
+        input => {
+            const ret = zeroWidth(() => [])(input);
+            if (ret.succeeded) {
+                const text = ret.next.context.docComment;
+                ret.next.context = {...ret.next.context};
+                delete ret.next.context.docComment;
+                ret.tokens.length = 0;
+                ret.tokens.push(text ? text : null);
+            }
+            return ret;
+        },                                       // [0]
         erase(repeat(commentOrSpace)),
-        symbolName,                              // [0]
+        symbolName,                              // [1]
         erase(repeat(commentOrSpace)),
-        first(interfaceExtendsClause,            // [1]
+        first(interfaceExtendsClause,            // [2]
               zeroWidth(() => []), ),
         erase(repeat(commentOrSpace)),
-    input => interfaceDefInner(seq(';'))(input), // [2]
+    input => interfaceDefInner(seq(';'))(input), // [3]
 );
 
-const exportedInterfaceDef =
+
+const enumKeyValue =
+    trans(tokens => [[{symbol: '$list'}, tokens[1], tokens[2], tokens[0]]])(
+        input => {
+            const ret = zeroWidth(() => [])(input);
+            if (ret.succeeded) {
+                const text = ret.next.context.docComment;
+                ret.next.context = {...ret.next.context};
+                delete ret.next.context.docComment;
+                ret.tokens.length = 0;
+                ret.tokens.push(text ? text : null);
+            }
+            return ret;
+        },                                       // [0]
+        symbolName,
+        erase(repeat(commentOrSpace)),
+        first(
+            combine(
+                erase(seq('=')),
+                erase(repeat(commentOrSpace)),
+                first(decimalIntegerValue,
+                      stringValue, ),
+                erase(repeat(commentOrSpace)), ),
+            zeroWidth(() => null), ));
+
+// TODO: string enum
+const enumDef =
+    trans(tokens => [
+        [{symbol: 'def'}, tokens[1],
+            [{symbol: 'docComment'},
+                [{symbol: 'enumType'}, ...tokens.slice(2)],
+                tokens[0], ]]])(
+    erase(seq('enum')),
+        input => {
+            const ret = zeroWidth(() => [])(input);
+            if (ret.succeeded) {
+                const text = ret.next.context.docComment;
+                ret.next.context = {...ret.next.context};
+                delete ret.next.context.docComment;
+                ret.tokens.length = 0;
+                ret.tokens.push(text ? text : null);
+            }
+            return ret;
+        },                                       // [0]
+        erase(repeat(commentOrSpace)),
+        symbolName,
+        erase(repeat(commentOrSpace)),
+    first(
+        combine(erase(
+            seq('{'),
+                repeat(commentOrSpace),
+            seq('}'),
+        )),
+        combine(
+            erase(seq('{')),
+                combine(
+                    erase(repeat(commentOrSpace)),
+                    enumKeyValue,
+                    erase(repeat(commentOrSpace)), ),
+                repeat(combine(
+                    erase(seq(','),
+                          repeat(commentOrSpace)),
+                    enumKeyValue,
+                    erase(repeat(commentOrSpace)), )),
+                qty(0, 1)(erase(
+                    seq(','),
+                    repeat(commentOrSpace), )),
+                first(ahead(seq('}')), err('enumDef: Unexpected token has appeared.')),
+            erase(seq('}')), )));
+
+
+const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
               repeat(commentOrSpace), ),
-        interfaceDef, );
+        first(typeDef,
+              interfaceDef,
+              enumDef, ));
 
 
+const externalTypeDef =
+    trans(tokens => [[{symbol: 'external'}, ...tokens]])(
+        erase(seq('external')),
+            erase(repeat(commentOrSpace)),
+            symbolName,
+            repeat(combine(
+                erase(repeat(commentOrSpace)),
+                erase(cls(',')),
+                erase(repeat(commentOrSpace)),
+                symbolName,
+                erase(repeat(commentOrSpace)),
+            )),
+            erase(repeat(commentOrSpace)),
+        erase(cls(';')), );
+
+const importStatement =
+    trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
+        cat(seq('import'),
+            repeat(commentOrSpace),
+            cat(repeat(notCls(';'))),
+            cls(';'), ));
+
+
+// TODO: output default externals? (RegExp, Map, Set, ...)
 const definition =
-    first(typeDef,
+    first(directiveLineComment,
+          typeDef,
           interfaceDef,
-          exportedTypeDef,
-          exportedInterfaceDef, );
+          enumDef,
+          exportedDef,
+          externalTypeDef,
+          importStatement, );
 
 const program =
-    trans(tokens => tokens)(
+    combine(
         erase(repeat(commentOrSpace)),
         repeat(combine(
             definition,
@@ -670,7 +895,7 @@ const program =
 
 
 export function parse(s: string) {
-    const z = program(parserInput(s));
+    const z = program(parserInput(s, {/* TODO: set initial state to the context */}));
     if (! z.succeeded) {
         throw new Error(z.message);
     }
@@ -682,9 +907,33 @@ export function parse(s: string) {
 export function compile(s: string) {
     const mapTyToTy = new Map<TypeAssertion, TypeAssertionSetValue>();
     const mapStrToTy = new Map<string, TypeAssertionSetValue>();
+    let gensymCount = 0;
+
+    const def = (name: SxSymbol | string, ty: TypeAssertion) => {
+        // TODO: Back reference and recursive types
+        let ret = ty;
+        const sym = typeof name === 'string' ? name : name.symbol;
+        if (! mapTyToTy.has(ret)) {
+            ret = operators.withName(operators.withTypeName(ret, sym), sym);
+        }
+        const tySet = mapTyToTy.has(ret) ? mapTyToTy.get(ret) as TypeAssertionSetValue : {ty: ret, exported: false};
+        mapStrToTy.set(sym, tySet);
+        if (! mapTyToTy.has(ret)) {
+            // TODO: aliases are not exported correctly
+            mapTyToTy.set(ret, tySet);
+        }
+        return ret;
+    };
+    const external = (...names: string[]) => {
+        for (const name of names) {
+            const ty = def(name, operators.primitive('any'));
+            ty.noOutput = true;
+        }
+    };
 
     lisp.setGlobals({
         picked: operators.picked,
+        omit: operators.omit,
         partial: operators.partial,
         intersect: operators.intersect,
         oneOf: operators.oneOf,
@@ -695,111 +944,77 @@ export function compile(s: string) {
         repeated: operators.repeated,
         sequenceOf: operators.sequenceOf,
         spread: operators.spread,
+        enumType: operators.enumType,
         objectType: operators.objectType,
         derived: operators.derived,
-        def: (name: SxSymbol | string, ty: TypeAssertion) => {
-            const tySet = mapTyToTy.has(ty) ? mapTyToTy.get(ty) as TypeAssertionSetValue : {ty, exported: false};
-            mapStrToTy.set(typeof name === 'string' ? name : name.symbol, {ty, exported: false});
-            if (! mapTyToTy.has(ty)) {
-                mapTyToTy.set(ty, tySet);
-            }
-            return ty;
-        },
+        def,
         ref: (name: SxSymbol | string) => {
+            // TODO: Back reference and recursive types
+            //    If undefined symbol is come, return a reference assertion.
+            //    Dereference them after evaluation.
+            //        Assign to new blank object. assign properties of original and reference.
+            //    If they are recursive, keep them as references.
             const sym = typeof name === 'string' ? name : name.symbol;
             if (! mapStrToTy.has(sym)) {
                 throw new Error(`Undefined symbol '${sym}' is referred.`);
             }
-            return mapStrToTy.get(sym)?.ty;
+            let ty = (mapStrToTy.get(sym) as TypeAssertionSetValue).ty;
+            if (ty.noOutput) {
+                ty = {...ty};
+                delete ty.noOutput;
+            }
+            return ty;
         },
         export: (ty: TypeAssertion) => {
             const tySet = mapTyToTy.has(ty) ? mapTyToTy.get(ty) as TypeAssertionSetValue : {ty, exported: false};
             tySet.exported = true;
+            // NOTE: 'ty' should already be registered to 'mapTyToTy' and 'mapStrToTy'
             return ty;
         },
-        '@range': (minValue: number | string, maxValue: number | string) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof minValue !== 'number' && typeof minValue !== 'string') {
-                throw new Error(`Decorator '@range' parameter 'minValue' should be number or string.`);
-            }
-            if (typeof maxValue !== 'number' && typeof maxValue !== 'string') {
-                throw new Error(`Decorator '@range' parameter 'maxValue' should be number or string.`);
-            }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@range' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, minValue, maxValue});
+        external,
+        passthru: (str: string) => {
+            const ty: TypeAssertion = {
+                kind: 'never',
+                passThruCodeBlock: str,
+            };
+            mapStrToTy.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false});
+            return ty;
         },
-        '@minValue': (minValue: number | string) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof minValue !== 'number' && typeof minValue !== 'string') {
-                throw new Error(`Decorator '@minValue' parameter 'minValue' should be number or string.`);
+        directive: (name: string, body: string) => {
+            switch (name) {
+            case '@tynder-external':
+                external(...body.split(',').map(x => x.trim()));
+                break;
+            default:
+                throw new Error(`Unknown directive is appeared: ${name}`);
             }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@minValue' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, minValue});
+            return [];
         },
-        '@maxValue': (maxValue: number | string) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof maxValue !== 'number' && typeof maxValue !== 'string') {
-                throw new Error(`Decorator '@maxValue' parameter 'maxValue' should be number or string.`);
-            }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@maxValue' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, maxValue});
-        },
-        '@greaterThan': (greaterThan: number | string) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof greaterThan !== 'number' && typeof greaterThan !== 'string') {
-                throw new Error(`Decorator '@greaterThan' parameter 'greaterThan' should be number or string.`);
-            }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@greaterThan' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, greaterThan});
-        },
-        '@lessThan': (lessThan: number | string) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof lessThan !== 'number' && typeof lessThan !== 'string') {
-                throw new Error(`Decorator '@lessThan' parameter 'lessThan' should be number or string.`);
-            }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@lessThan' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, lessThan});
-        },
-        '@minLength': (minLength: number) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof minLength !== 'number') {
-                throw new Error(`Decorator '@minLength' parameter 'minLength' should be number.`);
-            }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@minLength' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, minLength});
-        },
-        '@maxLength': (maxLength: number) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof maxLength !== 'number') {
-                throw new Error(`Decorator '@maxLength' parameter 'maxLength' should be number.`);
-            }
-            if (!ty || ty.kind !== 'primitive') {
-                throw new Error(`Decorator '@maxLength' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, maxLength});
-        },
-        '@match': (pattern: RegExp) => (ty: PrimitiveTypeAssertion) => {
-            if (typeof pattern !== 'object') {
-                throw new Error(`Decorator '@match' parameter 'pattern' should be RegExp.`);
-            }
-            if (!ty || ty.kind !== 'primitive' || ty.primitiveName !== 'string') {
-                throw new Error(`Decorator '@match' cannot be applied to anything other than 'primitive'.`);
-            }
-            return ({...ty, pattern});
-        },
-        // TODO: greaterThan, lessThan, minLength, maxLength, match
+        docComment: operators.withDocComment,
+        '@range': (minValue: number | string, maxValue: number | string) => (ty: PrimitiveTypeAssertion) =>
+            operators.withRange(minValue, maxValue)(ty),
+        '@minValue': (minValue: number | string) => (ty: PrimitiveTypeAssertion) =>
+            operators.withMinValue(minValue)(ty),
+        '@maxValue': (maxValue: number | string) => (ty: PrimitiveTypeAssertion) =>
+            operators.withMaxValue(maxValue)(ty),
+        '@greaterThan': (greaterThan: number | string) => (ty: PrimitiveTypeAssertion) =>
+            operators.withGreaterThan(greaterThan)(ty),
+        '@lessThan': (lessThan: number | string) => (ty: PrimitiveTypeAssertion) =>
+            operators.withLessThan(lessThan)(ty),
+        '@minLength': (minLength: number) => (ty: PrimitiveTypeAssertion) =>
+            operators.withMinLength(minLength)(ty),
+        '@maxLength': (maxLength: number) => (ty: PrimitiveTypeAssertion) =>
+            operators.withMaxLength(maxLength)(ty),
+        '@match': (pattern: RegExp) => (ty: PrimitiveTypeAssertion) =>
+            operators.withMatch(pattern)(ty),
         '@msg': (messages: string | ErrorMessages) => (ty: TypeAssertion) =>
-            operators.msg(messages, ty),
+            operators.withMsg(messages)(ty),
         '@msgId': (messageId: string) => (ty: TypeAssertion) =>
-            operators.msgId(messageId, ty),
+            operators.withMsgId(messageId)(ty),
     });
 
     const z = parse(s);
+    // TODO: Back reference and recursive types
     const ast = lisp.evaluateAST(z as SxToken[]) as TypeAssertion;
 
     return mapStrToTy;

@@ -42,6 +42,7 @@ build/Release
 
 # Bin directory
 # /bin/
+# /bin.cli/
 /bin.test/
 
 # ES2015 modules (for webpack)
