@@ -1,0 +1,29 @@
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: [8, 10, 12, 13]
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
+    
+    - name: npm install, build and test
+      run: |
+        npm install -g npm
+        npm ci
+        npm run clean
+        npm run lint
+        npm run build
+        npm run build:dist:dev
+        npm run build:dist:prod
+        npm test
