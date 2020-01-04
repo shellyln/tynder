@@ -79,31 +79,31 @@ export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
 
 export interface RepeatedAssertion extends TypeAssertionBase {
     kind: 'repeated';
-    repeated: any;
+    repeated: TypeAssertion;
     min: (number | null);
     max: (number | null);
 }
 
 export interface SpreadAssertion extends TypeAssertionBase {
     kind: 'spread';
-    spread: any;
+    spread: TypeAssertion;
     min: (number | null);
     max: (number | null);
 }
 
 export interface SequenceAssertion extends TypeAssertionBase {
     kind: 'sequence';
-    sequence: any[];
+    sequence: TypeAssertion[];
 }
 
 export interface OneOfAssertion extends TypeAssertionBase {
     kind: 'one-of';
-    oneOf: any[];
+    oneOf: TypeAssertion[];
 }
 
 export interface OptionalAssertion extends TypeAssertionBase {
     kind: 'optional';
-    optional: any;
+    optional: TypeAssertion;
 }
 
 export interface EnumAssertion extends TypeAssertionBase {
@@ -111,12 +111,12 @@ export interface EnumAssertion extends TypeAssertionBase {
     values: Array<[string, (number | string), string]>;
 }
 
-export type ObjectAssertionMember = ([string, any] | [string, any, boolean]);
+export type ObjectAssertionMember = ([string, TypeAssertion] | [string, TypeAssertion, boolean]);
 
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    baseTypes?: any[];
+    baseTypes?: ObjectAssertion[];
 }
 
 export type TypeAssertion = (NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion);

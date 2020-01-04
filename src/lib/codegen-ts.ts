@@ -65,6 +65,7 @@ function generateTypeScriptCodeRepeated(ty: RepeatedAssertion, ctx: CodegenConte
             ty.repeated.kind === 'any' ||
             ty.repeated.kind === 'unknown' ||
             ty.repeated.kind === 'object' ||
+            ty.repeated.kind === 'symlink' ||
             (ty.repeated.kind === 'one-of' && ty.repeated.typeName) ?
         `${ty.repeated.typeName ?
             ty.repeated.typeName :
