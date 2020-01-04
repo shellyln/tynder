@@ -54,7 +54,7 @@ function validatePrimitiveTypeAssertion<T>(
 
     let err = false;
     if (typeof data !== ty.primitiveName) {
-        reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         err = true;
     }
 

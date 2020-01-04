@@ -182,7 +182,8 @@ export interface ValidationContext {
     errors: TypeAssertionErrorMessage[];
 
     // === internal use ===
-    typeStack: TypeAssertion[];
+    typeStack: TypeAssertion[]; // For error reporting (keyword substitutions)
+                                // NOTE: DO NOT reassign! Push or pop items instead of reassign.
 }
 
 
@@ -193,6 +194,11 @@ export interface TypeAssertionSetValue {
 
 
 export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
+
+
+export interface SymbolResolverContext {
+    symlinkStack: string[]; // For detecting recursive type
+}
 
 
 export interface CodegenContext {

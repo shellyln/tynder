@@ -124,7 +124,9 @@ describe("compiler", function() {
                     h?: C;
                     i: [string, number?, string?];
                     j: [...<number, 1..2>, string];
+                    k: Y;
                 }
+                type Y = boolean;
             `);
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));
@@ -145,6 +147,7 @@ describe("compiler", function() {
                 g: 'DEBCB',
                 i: ['q', 12, 13], // TODO: BUG: spread/optional quantity
                 j: [1, 2, 'aaa'],
+                k: false,
                 z: 'aaaaaaaaa',
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
