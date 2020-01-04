@@ -53,6 +53,8 @@ function serializeInner(ty: TypeAssertion) {
         // }
         delete ret.baseTypes;
         break;
+    case 'symlink':
+        break;
     }
     delete ret.passThruCodeBlock;
     delete ret.noOutput;
@@ -114,6 +116,8 @@ function deserializeInner(ty: TypeAssertion) {
         if (ret.baseTypes) {
             ret.baseTypes = ret.baseTypes.map(x => deserializeInner(x)) as ObjectAssertion[];
         }
+        break;
+    case 'symlink':
         break;
     }
     return ret;

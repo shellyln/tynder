@@ -156,6 +156,8 @@ function generateTypeScriptCodeInner(ty: TypeAssertion, isInterface: boolean, ct
         return generateTypeScriptCodeEnum(ty, ctx);
     case 'object':
         return generateTypeScriptCodeObject(ty, isInterface, ctx);
+    case 'symlink':
+        return ty.symlinkTargetName;
     }
 }
 

@@ -150,7 +150,10 @@ export interface ObjectAssertion extends TypeAssertionBase {
 }
 
 
-// TODO: ObjectRefAssertion (for recursive typedef)
+export interface AssertionSymlink extends TypeAssertionBase {
+    kind: 'symlink';
+    symlinkTargetName: string;
+}
 
 
 export type TypeAssertion =
@@ -165,7 +168,8 @@ export type TypeAssertion =
     OneOfAssertion |
     OptionalAssertion |
     EnumAssertion |
-    ObjectAssertion;
+    ObjectAssertion |
+    AssertionSymlink;
 
 
 export interface ValidationContext {

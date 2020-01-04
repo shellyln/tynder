@@ -22,6 +22,7 @@ import { NeverTypeAssertion,
          EnumAssertion,
          ObjectAssertionMember,
          ObjectAssertion,
+         AssertionSymlink,
          TypeAssertion } from './types';
 
 
@@ -480,6 +481,14 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
     }
 
     return ret;
+}
+
+
+export function symlinkType(name: string): AssertionSymlink {
+    return ({
+        kind: 'symlink',
+        symlinkTargetName: name,
+    });
 }
 
 
