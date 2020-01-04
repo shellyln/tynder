@@ -7,11 +7,18 @@ import { TypeAssertion,
          ObjectAssertion,
          TypeAssertionSetValue,
          TypeAssertionMap } from './types';
+import { resolveSymbols }        from './lib/resolver';
 
 
 
-function serializeInner(ty: TypeAssertion, nestLevel: number) {
-    // TODO: replace named type with reference (except nestLevel===0)
+function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
+    if (0 < nestLevel && ty.typeName) {
+        return ({
+            kind: 'symlink',
+            symlinkTargetName: ty.typeName,
+        });
+    }
+
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
     case 'never':
@@ -56,6 +63,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number) {
     case 'symlink':
         break;
     }
+
     delete ret.passThruCodeBlock;
     delete ret.noOutput;
     return ret;
@@ -70,6 +78,7 @@ export function serialize(types: TypeAssertionMap, asTs?: boolean): string {
         }
         ret[ty[0]] = serializeInner(ty[1].ty, 0);
     }
+
     if (asTs) {
         return `\nconst schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;\n`;
     } else {
@@ -135,6 +144,11 @@ export function deserialize(text: string) {
             ty: deserializeInner(parsed[k]),
             exported: false,
         });
+    }
+
+    for (const ent of types.entries()) {
+        const ty = resolveSymbols(types, ent[1].ty, {symlinkStack: [ent[0]]});
+        ent[1].ty = ty;
     }
     return types;
 }
