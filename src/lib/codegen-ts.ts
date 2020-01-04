@@ -111,7 +111,7 @@ function generateTypeScriptCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 
 
 function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
-    if (ty.members.length === 0) {
+    if (ty.members.filter(x => !(x[2])).length === 0) {
         return '{}';
     }
     const sep = isInterface ? ';\n' : ',\n';

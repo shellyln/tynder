@@ -47,11 +47,11 @@ export interface TypeAssertionBase {
     messageId?: string;
     message?: string;
     messages?: ErrorMessages;
-    name?: string;              // member name or 'typeName' below
-    typeName?: string;          // named user defined 'type' or 'interface' name
-    docComment?: string;        // doc comment
-    passThruCodeBlock?: string; // store a pass thru code block (e.g. import statement). use it with kind===never
-    noOutput?: boolean;         // skip code generation if true
+    name?: string;              // Member name or 'typeName' below. For error reporting and codegen.
+    typeName?: string;          // Named user defined 'type' or 'interface' name. For error reporting and codegen.
+    docComment?: string;        // Doc comment.
+    passThruCodeBlock?: string; // Store a pass-thru code block (e.g. import statement). use it with kind===never
+    noOutput?: boolean;         // If true, skip code generation.
 }
 
 
@@ -146,7 +146,7 @@ export type ObjectAssertionMember = [
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    baseTypes?: ObjectAssertion[];
+    baseTypes?: Array<ObjectAssertion | AssertionSymlink>;
 }
 
 
@@ -184,6 +184,7 @@ export interface ValidationContext {
     // === internal use ===
     typeStack: TypeAssertion[]; // For error reporting (keyword substitutions)
                                 // NOTE: DO NOT reassign! Push or pop items instead of reassign.
+    // schema: TypeAssertionMap; // TODO:
 }
 
 
@@ -203,4 +204,5 @@ export interface SymbolResolverContext {
 
 export interface CodegenContext {
     nestLevel: number;
+    // schema: TypeAssertionMap; // TODO:
 }

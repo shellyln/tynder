@@ -13,6 +13,7 @@ import { SxTokenChild,
 import { lisp }                  from 'liyad/modules/s-exp/interpreters/presets/lisp';
 import { TypeAssertion,
          PrimitiveTypeAssertion,
+         ObjectAssertion,
          ErrorMessages,
          TypeAssertionSetValue,
          TypeAssertionMap,
@@ -963,10 +964,19 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             optional: resolveSymbols(schema, ty.optional, ctx),
         });
     case 'object':
-        return ({
-            ...ty,
-            members: ty.members.map(x => [x[0], resolveSymbols(schema, x[1], ctx)]),
-        });
+        {
+            const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink');
+            if (baseSymlinks && baseSymlinks.length > 0) {
+                // TODO: backref
+                const exts = baseSymlinks.map(x => resolveSymbols(schema, x[1], ctx));
+                operators.derived(ty, ...exts);
+            } else {
+                return ({
+                    ...ty,
+                    members: ty.members.map(x => [x[0], resolveSymbols(schema, x[1], ctx), ...x.slice(2)] as any),
+                });
+            }
+        }
     default:
         return ty;
     }
@@ -979,6 +989,9 @@ export function compile(s: string) {
     const schema: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
     let gensymCount = 0;
 
+    const derived = (ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAssertion => {
+        return operators.derived(ty, ...exts);
+    };
     const def = (name: SxSymbol | string, ty: TypeAssertion): TypeAssertion => {
         let ret = ty;
         const sym = typeof name === 'string' ? name : name.symbol;
@@ -999,6 +1012,8 @@ export function compile(s: string) {
             return ({
                 kind: 'symlink',
                 symlinkTargetName: sym,
+                name: sym,
+                typeName: sym,
             });
         }
         let ty = (schema.get(sym) as TypeAssertionSetValue).ty;

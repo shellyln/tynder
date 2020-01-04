@@ -116,7 +116,7 @@ describe("compiler", function() {
                     d3?: U;
                     d4?: S;
                 }
-                interface A extends B,C{
+                interface A extends B,C, D {
                     e: (string[])|(@minValue(3) number[])|(boolean[]);
                     f: X | boolean;
                     @match(/^[A-F]+$/)
@@ -126,7 +126,11 @@ describe("compiler", function() {
                     j: [...<number, 1..2>, string];
                     k: Y;
                 }
+                interface AA extends A {}
                 type Y = boolean;
+                interface D {
+                    d90: string;
+                }
             `);
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));

@@ -427,11 +427,11 @@ export function objectType(
 }
 
 
-function checkRecursiveExtends(ty: ObjectAssertion, base: ObjectAssertion): boolean {
+function checkRecursiveExtends(ty: ObjectAssertion, base: ObjectAssertion | AssertionSymlink): boolean {
     if (ty === base) {
         return false;
     }
-    if (base.baseTypes) {
+    if (base.kind === 'object' && base.baseTypes) {
         for (const z of base.baseTypes) {
             if (! checkRecursiveExtends(ty, z)) {
                 return false;
@@ -465,11 +465,15 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
                 }
                 // TODO: Check for different types with the same name.
             }
-            (ret.baseTypes as ObjectAssertion[]).push(ext);
+            (ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).push(ext);
         }
+        // TODO: backref (kind === 'symlink')
     }
     ret.members = ret.members.concat(ty.members.slice());
-    if ((ret.baseTypes as ObjectAssertion[]).length === 0) {
+    if (ty.baseTypes) {
+        ret.baseTypes = ty.baseTypes.concat(ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>);
+    }
+    if ((ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).length === 0) {
         delete ret.baseTypes;
     }
 
