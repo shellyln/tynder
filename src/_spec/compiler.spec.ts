@@ -152,6 +152,7 @@ describe("compiler", function() {
                 i: ['q', 12, 13], // TODO: BUG: spread/optional quantity
                 j: [1, 2, 'aaa'],
                 k: false,
+                // y // TODO: BUG: backref is not checked
                 z: 'aaaaaaaaa',
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));

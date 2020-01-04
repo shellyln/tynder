@@ -16,6 +16,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         return ({
             kind: 'symlink',
             symlinkTargetName: ty.typeName,
+            // TODO: preserve informations
         });
     }
 
