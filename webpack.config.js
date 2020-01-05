@@ -45,7 +45,9 @@ module.exports = function (env) {
                 exclude: /node_modules[\/\\](?!tynder|liyad|fruitsconfits).*$/
             }]
         },
-        plugins: [],
+        plugins: [
+            new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true })
+        ],
         resolve: {
             extensions: ['.tsx', '.ts', '.jsx', '.js']
         },

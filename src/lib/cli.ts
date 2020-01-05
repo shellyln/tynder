@@ -123,7 +123,7 @@ export function run(argv: string[]) {
     let inExt: string | null = null;
     let outExt: string | null = null;
 
-    if (argv.length === 0) {
+    if (argv.length < 3) {
         printHelp();
         process.exit(0);
     }
