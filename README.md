@@ -34,7 +34,7 @@ TypeScript friendly Data validator for JavaScript.
 * Generate Protocol Buffers 3 type definition code.
     * CLI / API
 * Recursive types
-* Back reference of types
+* [X] ~~Back reference of types~~
 
 
 
