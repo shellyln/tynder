@@ -116,7 +116,7 @@ describe("compiler", function() {
                     d3?: U;
                     d4?: S;
                 }
-                interface A extends B,C, D {
+                interface A extends B,C, D,DD { // BUG: if extends D, codegen output 'extends D, D'
                     e: (string[])|(@minValue(3) number[])|(boolean[]);
                     f: X | boolean;
                     @match(/^[A-F]+$/)
@@ -131,10 +131,14 @@ describe("compiler", function() {
                 interface D {
                     d90: string;
                 }
+                interface DD {
+                    d91: string;
+                }
             `);
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));
             /*
+            */
             console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
             const ctx = {checkAll: true};
             expect(validate({
@@ -146,18 +150,18 @@ describe("compiler", function() {
                 d3: 11,
                 // d4: 11,    // TODO: BUG: error reporter doesn't get the name 'd4' (optional > enum)
                            //                                           <- due to OptionalAssertion
+                d90: '',
+                d91: '',
                 e: [true, false],
                 f: true,
                 g: 'DEBCB',
                 i: ['q', 12, 13], // TODO: BUG: spread/optional quantity
                 j: [1, 2, 'aaa'],
                 k: false,
-                // y // TODO: BUG: backref is not checked
                 z: 'aaaaaaaaa',
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(JSON.stringify(ctx));
-            */
         } catch (e) {
             throw e;
         }

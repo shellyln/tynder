@@ -449,8 +449,9 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
         baseTypes: [],
     };
 
-    for (const ext of exts.slice()) {
-        if (ext.kind === 'object') {
+    for (const ext of exts) {
+        switch (ext.kind) {
+        case 'object':
             if (! checkRecursiveExtends(ty, ext)) {
                 throw new Error(`Recursive extend is found: ${ty.name || '(unnamed)'}`);
             }
@@ -465,13 +466,17 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
                 }
                 // TODO: Check for different types with the same name.
             }
+        // FALL_THRU
+        case 'symlink':
             (ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).push(ext);
+            break;
         }
-        // TODO: backref (kind === 'symlink')
     }
-    ret.members = ret.members.concat(ty.members.slice());
+    ret.members = ty.members.concat(ret.members);
     if (ty.baseTypes) {
-        ret.baseTypes = ty.baseTypes.concat(ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>);
+        ret.baseTypes = ty.baseTypes
+            .filter(x => x.kind !== 'symlink')
+            .concat(ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>);
     }
     if ((ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).length === 0) {
         delete ret.baseTypes;

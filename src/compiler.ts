@@ -915,20 +915,27 @@ export function compile(s: string) {
     const derived = (ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAssertion => {
         return operators.derived(ty, ...exts);
     };
+
     const def = (name: SxSymbol | string, ty: TypeAssertion): TypeAssertion => {
         let ret = ty;
         const sym = typeof name === 'string' ? name : name.symbol;
         if (! mapTyToTySet.has(ret)) {
             ret = operators.withName(operators.withTypeName(ret, sym), sym);
         }
-        const tySet = mapTyToTySet.has(ret) ? mapTyToTySet.get(ret) as TypeAssertionSetValue : {ty: ret, exported: false};
+
+        const tySet = mapTyToTySet.has(ret) ?
+            mapTyToTySet.get(ret) as TypeAssertionSetValue :
+            {ty: ret, exported: false};
+
         schema.set(sym, tySet);
+
         if (! mapTyToTySet.has(ret)) {
             // TODO: aliases are not exported correctly
             mapTyToTySet.set(ret, tySet);
         }
         return ret;
     };
+
     const ref = (name: SxSymbol | string): TypeAssertion => {
         const sym = typeof name === 'string' ? name : name.symbol;
         if (! schema.has(sym)) {
@@ -946,6 +953,7 @@ export function compile(s: string) {
         }
         return ty;
     };
+
     const external = (...names: string[]) => {
         for (const name of names) {
             const ty = def(name, operators.primitive('any'));

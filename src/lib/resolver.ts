@@ -4,6 +4,7 @@
 
 
 import { TypeAssertion,
+         ObjectAssertion,
          TypeAssertionMap,
          AssertionSymlink,
          SymbolResolverContext } from '../types';
@@ -72,8 +73,19 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink');
             if (baseSymlinks && baseSymlinks.length > 0) {
                 // TODO: backref
-                const exts = baseSymlinks.map(x => resolveSymbols(schema, x[1], ctx));
-                operators.derived(ty, ...exts);
+                const exts = baseSymlinks
+                    .map(x => resolveSymbols(schema, x, ctx))
+                    .filter(x => x.kind === 'object');
+                // TODO: if x.kind !== 'object' items exist
+                const d2 = resolveSymbols(
+                    schema,
+                    operators.derived(ty, ...exts),
+                    ctx,
+                );
+                return ({
+                    ...ty,
+                    ...d2,
+                });
             } else {
                 return ({
                     ...ty,
