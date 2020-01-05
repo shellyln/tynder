@@ -34,7 +34,7 @@ TypeScript friendly Data validator for JavaScript.
 * Generate Protocol Buffers 3 type definition code.
     * CLI / API
 * Recursive types
-* Back reference of types
+* [X] ~~Back reference of types~~
 
 
 
@@ -215,6 +215,7 @@ import { picked,
          enumType,
          objectType,
          derived,
+         symlinkType,
          withName,
          withTypeName,
          withDocComment,
@@ -718,7 +719,7 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
       [`Omit<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittk) and
       [`Partial<T>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialt).
 * Recursive types are not available.
-* Back reference of types are not available.
+* ~~Back reference of types are not available.~~
 
 
 

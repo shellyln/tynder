@@ -56,7 +56,7 @@ export function pickRoot<T>(data: any, ty: TypeAssertion, ctx: ValidationContext
                 throw new Error('');
             }
         }
-    case 'spread': case 'optional':
+    case 'spread': case 'optional': case 'symlink':
         throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
     default:
         throw new Error(`Unknown type assertion: ${(ty as any).kind}`);

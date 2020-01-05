@@ -13,9 +13,12 @@ import { SxTokenChild,
 import { lisp }                  from 'liyad/modules/s-exp/interpreters/presets/lisp';
 import { TypeAssertion,
          PrimitiveTypeAssertion,
+         ObjectAssertion,
          ErrorMessages,
-         TypeAssertionSetValue } from './types';
+         TypeAssertionSetValue,
+         TypeAssertionMap }      from './types';
 import * as operators            from './operators';
+import { resolveSymbols }        from './lib/resolver';
 
 
 
@@ -875,7 +878,7 @@ const importStatement =
             cls(';'), ));
 
 
-// TODO: output default externals? (RegExp, Map, Set, ...)
+// TODO: ~~output default externals? (RegExp, Map, Set, ...)~~
 const definition =
     first(directiveLineComment,
           typeDef,
@@ -905,25 +908,52 @@ export function parse(s: string) {
 
 // tslint:disable: object-literal-key-quotes
 export function compile(s: string) {
-    const mapTyToTy = new Map<TypeAssertion, TypeAssertionSetValue>();
-    const mapStrToTy = new Map<string, TypeAssertionSetValue>();
+    const mapTyToTySet = new Map<TypeAssertion, TypeAssertionSetValue>();
+    const schema: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
     let gensymCount = 0;
 
-    const def = (name: SxSymbol | string, ty: TypeAssertion) => {
-        // TODO: Back reference and recursive types
+    const derived = (ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAssertion => {
+        return operators.derived(ty, ...exts);
+    };
+
+    const def = (name: SxSymbol | string, ty: TypeAssertion): TypeAssertion => {
         let ret = ty;
         const sym = typeof name === 'string' ? name : name.symbol;
-        if (! mapTyToTy.has(ret)) {
+        if (! mapTyToTySet.has(ret)) {
             ret = operators.withName(operators.withTypeName(ret, sym), sym);
         }
-        const tySet = mapTyToTy.has(ret) ? mapTyToTy.get(ret) as TypeAssertionSetValue : {ty: ret, exported: false};
-        mapStrToTy.set(sym, tySet);
-        if (! mapTyToTy.has(ret)) {
+
+        const tySet = mapTyToTySet.has(ret) ?
+            mapTyToTySet.get(ret) as TypeAssertionSetValue :
+            {ty: ret, exported: false};
+
+        schema.set(sym, tySet);
+
+        if (! mapTyToTySet.has(ret)) {
             // TODO: aliases are not exported correctly
-            mapTyToTy.set(ret, tySet);
+            mapTyToTySet.set(ret, tySet);
         }
         return ret;
     };
+
+    const ref = (name: SxSymbol | string): TypeAssertion => {
+        const sym = typeof name === 'string' ? name : name.symbol;
+        if (! schema.has(sym)) {
+            return ({
+                kind: 'symlink',
+                symlinkTargetName: sym,
+                name: sym,
+                typeName: sym,
+            });
+        }
+        let ty = (schema.get(sym) as TypeAssertionSetValue).ty;
+        if (ty.noOutput) {
+            ty = {...ty};
+            delete ty.noOutput;
+        }
+        return ty;
+    };
+
     const external = (...names: string[]) => {
         for (const name of names) {
             const ty = def(name, operators.primitive('any'));
@@ -948,27 +978,11 @@ export function compile(s: string) {
         objectType: operators.objectType,
         derived: operators.derived,
         def,
-        ref: (name: SxSymbol | string) => {
-            // TODO: Back reference and recursive types
-            //    If undefined symbol is come, return a reference assertion.
-            //    Dereference them after evaluation.
-            //        Assign to new blank object. assign properties of original and reference.
-            //    If they are recursive, keep them as references.
-            const sym = typeof name === 'string' ? name : name.symbol;
-            if (! mapStrToTy.has(sym)) {
-                throw new Error(`Undefined symbol '${sym}' is referred.`);
-            }
-            let ty = (mapStrToTy.get(sym) as TypeAssertionSetValue).ty;
-            if (ty.noOutput) {
-                ty = {...ty};
-                delete ty.noOutput;
-            }
-            return ty;
-        },
+        ref,
         export: (ty: TypeAssertion) => {
-            const tySet = mapTyToTy.has(ty) ? mapTyToTy.get(ty) as TypeAssertionSetValue : {ty, exported: false};
+            const tySet = mapTyToTySet.has(ty) ? mapTyToTySet.get(ty) as TypeAssertionSetValue : {ty, exported: false};
             tySet.exported = true;
-            // NOTE: 'ty' should already be registered to 'mapTyToTy' and 'mapStrToTy'
+            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
             return ty;
         },
         external,
@@ -977,7 +991,7 @@ export function compile(s: string) {
                 kind: 'never',
                 passThruCodeBlock: str,
             };
-            mapStrToTy.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false});
+            schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false});
             return ty;
         },
         directive: (name: string, body: string) => {
@@ -1014,9 +1028,13 @@ export function compile(s: string) {
     });
 
     const z = parse(s);
-    // TODO: Back reference and recursive types
-    const ast = lisp.evaluateAST(z as SxToken[]) as TypeAssertion;
+    lisp.evaluateAST(z as SxToken[]);
 
-    return mapStrToTy;
+    for (const ent of schema.entries()) {
+        const ty = resolveSymbols(schema, ent[1].ty, {symlinkStack: [ent[0]]});
+        ent[1].ty = ty;
+    }
+
+    return schema;
 }
 // tslint:enable: object-literal-key-quotes

@@ -65,6 +65,7 @@ function generateTypeScriptCodeRepeated(ty: RepeatedAssertion, ctx: CodegenConte
             ty.repeated.kind === 'any' ||
             ty.repeated.kind === 'unknown' ||
             ty.repeated.kind === 'object' ||
+            ty.repeated.kind === 'symlink' ||
             (ty.repeated.kind === 'one-of' && ty.repeated.typeName) ?
         `${ty.repeated.typeName ?
             ty.repeated.typeName :
@@ -111,7 +112,7 @@ function generateTypeScriptCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 
 
 function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
-    if (ty.members.length === 0) {
+    if (ty.members.filter(x => !(x[2])).length === 0) {
         return '{}';
     }
     const sep = isInterface ? ';\n' : ',\n';
@@ -156,6 +157,8 @@ function generateTypeScriptCodeInner(ty: TypeAssertion, isInterface: boolean, ct
         return generateTypeScriptCodeEnum(ty, ctx);
     case 'object':
         return generateTypeScriptCodeObject(ty, isInterface, ctx);
+    case 'symlink':
+        return ty.symlinkTargetName;
     }
 }
 

@@ -22,6 +22,7 @@ import { NeverTypeAssertion,
          EnumAssertion,
          ObjectAssertionMember,
          ObjectAssertion,
+         AssertionSymlink,
          TypeAssertion } from './types';
 
 
@@ -426,11 +427,11 @@ export function objectType(
 }
 
 
-function checkRecursiveExtends(ty: ObjectAssertion, base: ObjectAssertion): boolean {
+function checkRecursiveExtends(ty: ObjectAssertion, base: ObjectAssertion | AssertionSymlink): boolean {
     if (ty === base) {
         return false;
     }
-    if (base.baseTypes) {
+    if (base.kind === 'object' && base.baseTypes) {
         for (const z of base.baseTypes) {
             if (! checkRecursiveExtends(ty, z)) {
                 return false;
@@ -448,8 +449,9 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
         baseTypes: [],
     };
 
-    for (const ext of exts.slice()) {
-        if (ext.kind === 'object') {
+    for (const ext of exts) {
+        switch (ext.kind) {
+        case 'object':
             if (! checkRecursiveExtends(ty, ext)) {
                 throw new Error(`Recursive extend is found: ${ty.name || '(unnamed)'}`);
             }
@@ -464,11 +466,19 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
                 }
                 // TODO: Check for different types with the same name.
             }
-            (ret.baseTypes as ObjectAssertion[]).push(ext);
+        // FALL_THRU
+        case 'symlink':
+            (ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).push(ext);
+            break;
         }
     }
-    ret.members = ret.members.concat(ty.members.slice());
-    if ((ret.baseTypes as ObjectAssertion[]).length === 0) {
+    ret.members = ty.members.concat(ret.members);
+    if (ty.baseTypes) {
+        ret.baseTypes = ty.baseTypes
+            .filter(x => x.kind !== 'symlink')
+            .concat(ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>);
+    }
+    if ((ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).length === 0) {
         delete ret.baseTypes;
     }
 
@@ -480,6 +490,14 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
     }
 
     return ret;
+}
+
+
+export function symlinkType(name: string): AssertionSymlink {
+    return ({
+        kind: 'symlink',
+        symlinkTargetName: name,
+    });
 }
 
 

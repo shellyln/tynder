@@ -54,7 +54,7 @@ function validatePrimitiveTypeAssertion<T>(
 
     let err = false;
     if (typeof data !== ty.primitiveName) {
-        reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         err = true;
     }
 
@@ -365,7 +365,7 @@ export function validateRoot<T>(
             return validateEnumAssertion(data, ty, ctx);
         case 'object':
             return validateObjectAssertion(data, ty, ctx);
-        case 'spread': case 'optional': default:
+        case 'spread': case 'optional': case 'symlink': default:
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
         }

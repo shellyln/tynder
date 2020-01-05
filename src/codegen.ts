@@ -21,6 +21,7 @@ function generateJsonSchemaInner(ty: TypeAssertion, isInterface: boolean) {
     // case 'optional':
     // case 'enum':
     // case 'object':
+    // case 'symlink':
     // }
 }
 
@@ -46,6 +47,7 @@ function generateProtobuf3Inner(ty: TypeAssertion, isInterface: boolean) {
     // case 'optional':
     // case 'enum':
     // case 'object':
+    // case 'symlink':
     // }
 }
 

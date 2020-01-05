@@ -96,7 +96,7 @@ export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
 
 export interface RepeatedAssertion extends TypeAssertionBase {
     kind: 'repeated';
-    repeated: any/*TypeAssertion*/;
+    repeated: TypeAssertion;
     min: number | null;
     max: number | null;
 }
@@ -104,7 +104,7 @@ export interface RepeatedAssertion extends TypeAssertionBase {
 
 export interface SpreadAssertion extends TypeAssertionBase {
     kind: 'spread';
-    spread: any/*TypeAssertion*/;
+    spread: TypeAssertion;
     min: number | null;
     max: number | null;
 }
@@ -112,19 +112,19 @@ export interface SpreadAssertion extends TypeAssertionBase {
 
 export interface SequenceAssertion extends TypeAssertionBase {
     kind: 'sequence';
-    sequence: any/*TypeAssertion*/[];
+    sequence: TypeAssertion[];
 }
 
 
 export interface OneOfAssertion extends TypeAssertionBase {
     kind: 'one-of';
-    oneOf: any/*TypeAssertion*/[];
+    oneOf: TypeAssertion[];
 }
 
 
 export interface OptionalAssertion extends TypeAssertionBase {
     kind: 'optional';
-    optional: any/*TypeAssertion*/;
+    optional: TypeAssertion;
 }
 
 
@@ -140,10 +140,10 @@ export interface EnumAssertion extends TypeAssertionBase {
 
 export type ObjectAssertionMember = [
     string,         // name
-    any/*TypeAssertion*/,  // type
+    TypeAssertion,  // type
 ] | [
     string,         // name
-    any/*TypeAssertion*/,  // type
+    TypeAssertion,  // type
     boolean,        // defined by ancestor types
 ];
 
@@ -151,7 +151,7 @@ export type ObjectAssertionMember = [
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    baseTypes?: any/*ObjectAssertion*/[];
+    baseTypes?: ObjectAssertion[];
     // TODO: extended types (for codegen, recursive typedef)
 }
 
