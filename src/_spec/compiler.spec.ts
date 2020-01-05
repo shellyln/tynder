@@ -138,7 +138,6 @@ describe("compiler", function() {
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));
             /*
-            */
             console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
             const ctx = {checkAll: true};
             expect(validate({
@@ -162,6 +161,7 @@ describe("compiler", function() {
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(JSON.stringify(ctx));
+            */
         } catch (e) {
             throw e;
         }

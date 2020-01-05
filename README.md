@@ -719,7 +719,7 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
       [`Omit<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittk) and
       [`Partial<T>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialt).
 * Recursive types are not available.
-* Back reference of types are not available.
+* ~~Back reference of types are not available.~~
 
 
 
