@@ -13,7 +13,6 @@ import { SxTokenChild,
 import { lisp }                  from 'liyad/modules/s-exp/interpreters/presets/lisp';
 import { TypeAssertion,
          PrimitiveTypeAssertion,
-         ObjectAssertion,
          ErrorMessages,
          TypeAssertionSetValue,
          TypeAssertionMap }      from './types';
@@ -728,8 +727,7 @@ const interfaceDefInner: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Parse
             combine(erase(
                 seq('{'),
                     repeat(commentOrSpace),
-                seq('}'),
-            )),
+                seq('}'), )),
             combine(
                 erase(seq('{')),
                     combine(
@@ -800,7 +798,6 @@ const enumKeyValue =
                 erase(repeat(commentOrSpace)), ),
             zeroWidth(() => null), ));
 
-// TODO: string enum
 const enumDef =
     trans(tokens => [
         [{symbol: 'def'}, tokens[1],
@@ -826,8 +823,7 @@ const enumDef =
         combine(erase(
             seq('{'),
                 repeat(commentOrSpace),
-            seq('}'),
-        )),
+            seq('}'), )),
         combine(
             erase(seq('{')),
                 combine(
@@ -911,10 +907,6 @@ export function compile(s: string) {
     const mapTyToTySet = new Map<TypeAssertion, TypeAssertionSetValue>();
     const schema: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
     let gensymCount = 0;
-
-    const derived = (ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAssertion => {
-        return operators.derived(ty, ...exts);
-    };
 
     const def = (name: SxSymbol | string, ty: TypeAssertion): TypeAssertion => {
         let ret = ty;
