@@ -724,7 +724,7 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
 
 
 ## Bugs
-* Quantity assertion of the sequence type's last item is not checked.
+* [X] ~~Quantity assertion of the sequence type's last item is not checked.~~
 * Error reporter cannot resolve some keyword substitutions in complex type.
 * If validation fails on a nested component type of a complex type, the customized error message is lost.
 

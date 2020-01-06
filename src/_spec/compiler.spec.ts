@@ -124,6 +124,7 @@ describe("compiler", function() {
                     h?: C;
                     i: [string, number?, string?];
                     j: [...<number, 1..2>, string];
+                    j2: [string, ...<number, 2..3>];
                     k: Y;
                 }
                 interface AA extends A {}
@@ -154,8 +155,9 @@ describe("compiler", function() {
                 e: [true, false],
                 f: true,
                 g: 'DEBCB',
-                i: ['q', 12, 13], // TODO: BUG: spread/optional quantity
+                i: ['q', 12, 'a'],
                 j: [1, 2, 'aaa'],
+                j2: ['aaa', 1, 2, 3],
                 k: false,
                 z: 'aaaaaaaaa',
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);

@@ -11,6 +11,8 @@ import { ErrorTypes,
          PrimitiveValueTypeAssertion,
          RepeatedAssertion,
          SequenceAssertion,
+         SpreadAssertion,
+         OptionalAssertion,
          OneOfAssertion,
          EnumAssertion,
          ObjectAssertion,
@@ -187,11 +189,37 @@ function validateSequenceAssertion<T>(
     let dIdx = 0, // index of data
         sIdx = 0; // index of types
     let spreadLen = 0;
+    let optionalOmitted = false;
+
+    const checkSpreadQuantity = (ts: SpreadAssertion) => {
+        if (typeof ts.min === 'number' && spreadLen < ts.min) {
+            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            return null;
+        }
+        if (typeof ts.max === 'number' && spreadLen > ts.max) {
+            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            return null;
+        }
+        return ts;
+    };
+
+    const checkOptionalQuantity = (ts: OptionalAssertion) => {
+        if (spreadLen === 0) {
+            // All subsequent 'optional' assertions should be 'spreadLen === 0'.
+            optionalOmitted = true;
+        } else if (optionalOmitted) {
+            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            return null;
+        } else if (spreadLen > 1) {
+            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            return null;
+        }
+        return ts;
+    };
 
     const retVals: any[] = [];
     while (dIdx < data.length && sIdx < ty.sequence.length) {
         const ts = ty.sequence[sIdx];
-        // TODO: case of ts.kind === 'optional' (equivalent to qty(0, 1))
         if (ts.kind === 'spread') {
             const savedErrLen = ctx.errors.length;
             const r = validateRoot<T>(data[dIdx], ts.spread, ctx);
@@ -203,12 +231,7 @@ function validateSequenceAssertion<T>(
                 // End of spreading
                 // rollback reported errors
                 ctx.errors.length = savedErrLen;
-                if (typeof ts.min === 'number' && spreadLen < ts.min) {
-                    reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
-                    return null;
-                }
-                if (typeof ts.max === 'number' && spreadLen > ts.max) {
-                    reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+                if (! checkSpreadQuantity(ts)) {
                     return null;
                 }
                 spreadLen = 0;
@@ -225,10 +248,7 @@ function validateSequenceAssertion<T>(
                 // End of spreading
                 // rollback reported errors
                 ctx.errors.length = savedErrLen;
-                if (spreadLen === 0) {
-                    // TODO: BUG: All subsequent 'optional' assertions should be 'spreadLen === 0'.
-                } else if (spreadLen > 1) {
-                    reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+                if (! checkOptionalQuantity(ts)) {
                     return null;
                 }
                 spreadLen = 0;
@@ -246,7 +266,26 @@ function validateSequenceAssertion<T>(
             }
         }
     }
-    // TODO: BUG: check last spread|optional assertion quantity.
+    while (sIdx < ty.sequence.length) {
+        const ts = ty.sequence[sIdx];
+        if (ts.kind === 'spread') {
+            if (! checkSpreadQuantity(ts)) {
+                return null;
+            }
+            spreadLen = 0;
+            sIdx++;
+        } else if (ts.kind === 'optional') {
+            if (! checkOptionalQuantity(ts)) {
+                return null;
+            }
+            spreadLen = 0;
+            sIdx++;
+        } else {
+            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            return null;
+        }
+    }
+
     const ret = data.length === dIdx ? {value: retVals as any} : null;
     if (! ret) {
         reportError(ErrorTypes.SequenceUnmatched, data, ty, ctx);
