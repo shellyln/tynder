@@ -360,6 +360,7 @@ function checkRecursiveMembers(ty: ObjectAssertion, target: TypeAssertion): bool
     if (ty === target) {
         return false;
     }
+    // TODO: check by typeName?
     switch (target.kind) {
     case 'object':
         return (
@@ -386,6 +387,7 @@ function checkRecursiveMembers(ty: ObjectAssertion, target: TypeAssertion): bool
     case 'optional':
         return checkRecursiveMembers(ty, target.optional);
     default:
+        // NOTE: Recursive types can be defined using 'symlink'.
         return true;
     }
 }
@@ -411,6 +413,7 @@ export function enumType(...values: Array<[string, number | string | null, strin
 export function objectType(
         ...members: Array<[string, PrimitiveValueTypes | TypeAssertion]>): ObjectAssertion {
     // TODO: Check for recursive type.
+    //       Recursive member types are represented by 'symlink'.
     const revMembers = members.slice().reverse();
     for (const x of members) {
         if (members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
@@ -431,6 +434,7 @@ function checkRecursiveExtends(ty: ObjectAssertion, base: ObjectAssertion | Asse
     if (ty === base) {
         return false;
     }
+    // TODO: check by typeName?
     if (base.kind === 'object' && base.baseTypes) {
         for (const z of base.baseTypes) {
             if (! checkRecursiveExtends(ty, z)) {

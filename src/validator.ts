@@ -407,7 +407,7 @@ export function validateRoot<T>(
         case 'symlink':
             // TODO: To resolve 'symlink' assertion, the context need to have a schema instance.
             // if (ctx.schema) {
-            //     return resolveSymbols(ctx.schema, ty, {symlinkStack: []});
+            //     return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {symlinkStack: []}), ctx);
             // }
             // FALL_THRU
         case 'spread': case 'optional': default:
