@@ -41,6 +41,11 @@ export const defaultMessages: ErrorMessages = {
 function getErrorMessage(errType: ErrorTypes, ...messages: ErrorMessages[]) {
     for (const m of messages) {
         switch (errType) {
+        case ErrorTypes.InvalidDefinition:
+            if (m.invalidDefinition) {
+                return m.invalidDefinition;
+            }
+            break;
         case ErrorTypes.Required:
             if (m.required) {
                 return m.required;
@@ -54,6 +59,11 @@ function getErrorMessage(errType: ErrorTypes, ...messages: ErrorMessages[]) {
         case ErrorTypes.RepeatQtyUnmatched:
             if (m.repeatQtyUnmatched) {
                 return m.repeatQtyUnmatched;
+            }
+            break;
+        case ErrorTypes.SequenceUnmatched:
+            if (m.sequenceUnmatched) {
+                return m.sequenceUnmatched;
             }
             break;
         case ErrorTypes.ValueRangeUnmatched:
