@@ -184,7 +184,7 @@ export interface ValidationContext {
     // === internal use ===
     typeStack: TypeAssertion[]; // For error reporting (keyword substitutions)
                                 // NOTE: DO NOT reassign! Push or pop items instead of reassign.
-    // schema: TypeAssertionMap; // TODO:
+    // schema: TypeAssertionMap; // TODO: To resolve 'symlink' assertion, the context need to have a schema instance.
 }
 
 

@@ -404,7 +404,13 @@ export function validateRoot<T>(
             return validateEnumAssertion(data, ty, ctx);
         case 'object':
             return validateObjectAssertion(data, ty, ctx);
-        case 'spread': case 'optional': case 'symlink': default:
+        case 'symlink':
+            // TODO: To resolve 'symlink' assertion, the context need to have a schema instance.
+            // if (ctx.schema) {
+            //     return resolveSymbols(ctx.schema, ty, {symlinkStack: []});
+            // }
+            // FALL_THRU
+        case 'spread': case 'optional': default:
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
         }

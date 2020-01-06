@@ -16,7 +16,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         return ({
             kind: 'symlink',
             symlinkTargetName: ty.typeName,
-            // TODO: preserve informations
+            // TODO: preserve informations (doc comments, name, typeName, ...)
         });
     }
 
@@ -57,7 +57,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         ret.members = ret.members.map(x => [x[0], serializeInner(x[1], nestLevel + 1), ...x.slice(2)]) as any;
         // TODO: keep baseTypes information by reference
         // if (ret.baseTypes) {
-        //     ret.baseTypes = ret.baseTypes.map(x => serializeInner(x)) as ObjectAssertion[];
+        //     ret.baseTypes = ret.baseTypes.map(x => serializeInner(x, nestLevel + 1)) as ObjectAssertion[];
         // }
         delete ret.baseTypes;
         break;
@@ -128,6 +128,7 @@ function deserializeInner(ty: TypeAssertion) {
         }
         break;
     case 'symlink':
+        // NOTE: it will resolved by calling 'resolveSymbols()' in 'deserialize()'.
         break;
     }
     return ret;
