@@ -411,7 +411,10 @@ export function validateRoot<T>(
             }
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new Error(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`);
-        case 'spread': case 'optional': default:
+        case 'spread': case 'optional':
+            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
+        default:
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
         }

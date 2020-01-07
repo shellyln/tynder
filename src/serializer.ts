@@ -22,18 +22,12 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
 
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
-    case 'never':
-        break;
-    case 'any':
-        break;
-    case 'unknown':
+    case 'never': case 'any': case 'unknown': case 'primitive-value': case 'symlink':
         break;
     case 'primitive':
         if (ret.pattern) {
             ret.pattern = (ret.pattern.source as any);
         }
-        break;
-    case 'primitive-value':
         break;
     case 'repeated':
         ret.repeated = serializeInner(ret.repeated, nestLevel + 1);
@@ -61,8 +55,8 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         // }
         delete ret.baseTypes;
         break;
-    case 'symlink':
-        break;
+    default:
+        throw new Error(`Unknown type assertion: ${(ret as any).kind}`);
     }
 
     delete ret.passThruCodeBlock;
@@ -91,18 +85,13 @@ export function serialize(types: TypeAssertionMap, asTs?: boolean): string {
 function deserializeInner(ty: TypeAssertion) {
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
-    case 'never':
-        break;
-    case 'any':
-        break;
-    case 'unknown':
+    case 'never': case 'any': case 'unknown': case 'primitive-value': case 'enum': case 'symlink':
+        // NOTE: 'symlink' will resolved by calling 'resolveSymbols()' in 'deserialize()'.
         break;
     case 'primitive':
         if (ret.pattern) {
             ret.pattern = new RegExp(ret.pattern as any);
         }
-        break;
-    case 'primitive-value':
         break;
     case 'repeated':
         ret.repeated = deserializeInner(ret.repeated);
@@ -119,17 +108,14 @@ function deserializeInner(ty: TypeAssertion) {
     case 'optional':
         ret.optional = deserializeInner(ret.optional);
         break;
-    case 'enum':
-        break;
     case 'object':
         ret.members = ret.members.map(x => [x[0], deserializeInner(x[1]), x.slice(2)]) as any;
         if (ret.baseTypes) {
             ret.baseTypes = ret.baseTypes.map(x => deserializeInner(x)) as ObjectAssertion[];
         }
         break;
-    case 'symlink':
-        // NOTE: it will resolved by calling 'resolveSymbols()' in 'deserialize()'.
-        break;
+    default:
+        throw new Error(`Unknown type assertion: ${(ret as any).kind}`);
     }
     return ret;
 }
