@@ -20,6 +20,7 @@ import { ErrorTypes,
          ValidationContext,
          TypeAssertionMap } from './types';
 import { reportError }      from './reporter';
+import { resolveSymbols }   from './lib/resolver';
 
 
 
@@ -405,11 +406,11 @@ export function validateRoot<T>(
         case 'object':
             return validateObjectAssertion(data, ty, ctx);
         case 'symlink':
-            // TODO: To resolve 'symlink' assertion, the context need to have a schema instance.
-            // if (ctx.schema) {
-            //     return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {symlinkStack: []}), ctx);
-            // }
-            // FALL_THRU
+            if (ctx.schema) {
+                return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {symlinkStack: []}), ctx);
+            }
+            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            throw new Error(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`);
         case 'spread': case 'optional': default:
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new Error(`Unknown type assertion: ${(ty as any).kind}`);

@@ -1,5 +1,6 @@
 
-import { TypeAssertionSetValue }  from '../types';
+import { TypeAssertionSetValue,
+         ValidationContext }      from '../types';
 import { validate,
          getType }                from '../validator';
 import { pick,
@@ -126,6 +127,7 @@ describe("compiler", function() {
                     j: [...<number, 1..2>, string];
                     j2: [string, ...<number, 2..3>];
                     k: Y;
+                    l: B;
                 }
                 interface AA extends A {}
                 type Y = boolean;
@@ -135,12 +137,18 @@ describe("compiler", function() {
                 interface DD {
                     d91: string;
                 }
+                interface H {
+                    a?: HH;
+                    b: H | number;
+                }
+                interface HH extends H {}
             `);
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));
+            // console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
+            // console.log(JSON.stringify(getType(schema2, 'H'), null, 2));
             /*
-            console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
-            const ctx = {checkAll: true};
+            const ctx: Partial<ValidationContext> = {checkAll: true, schema: schema2};
             expect(validate({
                 a: 5,
                 c: [['', '', '', '', '', '', '', '', '', '']],
@@ -159,9 +167,17 @@ describe("compiler", function() {
                 j: [1, 2, 'aaa'],
                 j2: ['aaa', 1, 2, 3],
                 k: false,
+                l: {a: 5},
                 z: 'aaaaaaaaa',
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
+            console.log(JSON.stringify(ctx));
+
+            delete ctx.errors;
+            expect(validate({
+                a: {a: {b: 2}, b: 1},
+                b: {b: {b: 3}},
+            }, getType(schema2, 'H'), ctx)).toEqual({} as any);
             console.log(JSON.stringify(ctx));
             */
         } catch (e) {

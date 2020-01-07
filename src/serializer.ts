@@ -7,7 +7,7 @@ import { TypeAssertion,
          ObjectAssertion,
          TypeAssertionSetValue,
          TypeAssertionMap } from './types';
-import { resolveSymbols }        from './lib/resolver';
+import { resolveSymbols }   from './lib/resolver';
 
 
 
