@@ -53,7 +53,7 @@ export function pickRoot<T>(data: any, ty: TypeAssertion, ctx: ValidationContext
             if (r) {
                 return r.value;
             } else {
-                throw new Error('');
+                throw new Error('Validation failed.');
             }
         }
     case 'spread': case 'optional': case 'symlink':

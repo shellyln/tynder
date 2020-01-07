@@ -19,11 +19,7 @@ function mergeTypeAndSymlink(ty: TypeAssertion, link: AssertionSymlink): TypeAss
     return ({...ty, ...link2} as any as TypeAssertion);
 }
 
-// TODO: Back reference and recursive types
-//    If undefined symbol is come, return a reference assertion.
-//    Dereference them after evaluation.
-//        Assign to new blank object. assign properties of original and reference.
-//    If they are recursive, keep them as references.
+
 export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx: SymbolResolverContext): TypeAssertion {
     switch (ty.kind) {
     case 'symlink':
@@ -72,11 +68,10 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
         {
             const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink');
             if (baseSymlinks && baseSymlinks.length > 0) {
-                // TODO: backref
                 const exts = baseSymlinks
                     .map(x => resolveSymbols(schema, x, ctx))
                     .filter(x => x.kind === 'object');
-                // TODO: if x.kind !== 'object' items exist
+                // TODO: if x.kind !== 'object' items exist -> error?
                 const d2 = resolveSymbols(
                     schema,
                     operators.derived(ty, ...exts),

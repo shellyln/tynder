@@ -49,11 +49,10 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         break;
     case 'object':
         ret.members = ret.members.map(x => [x[0], serializeInner(x[1], nestLevel + 1), ...x.slice(2)]) as any;
-        // TODO: keep baseTypes information by reference
-        // if (ret.baseTypes) {
-        //     ret.baseTypes = ret.baseTypes.map(x => serializeInner(x, nestLevel + 1)) as ObjectAssertion[];
-        // }
-        delete ret.baseTypes;
+        if (ret.baseTypes) {
+            // NOTE: convert 'baseTypes' to 'symlink'.
+            ret.baseTypes = ret.baseTypes.map(x => serializeInner(x, nestLevel + 1)) as ObjectAssertion[];
+        }
         break;
     default:
         throw new Error(`Unknown type assertion: ${(ret as any).kind}`);
@@ -110,9 +109,7 @@ function deserializeInner(ty: TypeAssertion) {
         break;
     case 'object':
         ret.members = ret.members.map(x => [x[0], deserializeInner(x[1]), x.slice(2)]) as any;
-        if (ret.baseTypes) {
-            ret.baseTypes = ret.baseTypes.map(x => deserializeInner(x)) as ObjectAssertion[];
-        }
+        // NOTE: keep 'baseTypes' as 'symlink'.
         break;
     default:
         throw new Error(`Unknown type assertion: ${(ret as any).kind}`);

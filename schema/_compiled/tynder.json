@@ -400,6 +400,14 @@
     "kind": "object",
     "members": [
       [
+        "kind",
+        {
+          "kind": "primitive-value",
+          "value": "never",
+          "name": "kind"
+        }
+      ],
+      [
         "messageId",
         {
           "kind": "optional",
@@ -490,15 +498,13 @@
           "name": "noOutput"
         },
         true
-      ],
-      [
-        "kind",
-        {
-          "kind": "primitive-value",
-          "value": "never",
-          "name": "kind"
-        }
       ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
     ],
     "typeName": "NeverTypeAssertion",
     "name": "NeverTypeAssertion"
@@ -507,6 +513,14 @@
     "kind": "object",
     "members": [
       [
+        "kind",
+        {
+          "kind": "primitive-value",
+          "value": "any",
+          "name": "kind"
+        }
+      ],
+      [
         "messageId",
         {
           "kind": "optional",
@@ -597,15 +611,13 @@
           "name": "noOutput"
         },
         true
-      ],
-      [
-        "kind",
-        {
-          "kind": "primitive-value",
-          "value": "any",
-          "name": "kind"
-        }
       ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
     ],
     "typeName": "AnyTypeAssertion",
     "name": "AnyTypeAssertion"
@@ -614,6 +626,14 @@
     "kind": "object",
     "members": [
       [
+        "kind",
+        {
+          "kind": "primitive-value",
+          "value": "unknown",
+          "name": "kind"
+        }
+      ],
+      [
         "messageId",
         {
           "kind": "optional",
@@ -704,15 +724,13 @@
           "name": "noOutput"
         },
         true
-      ],
-      [
-        "kind",
-        {
-          "kind": "primitive-value",
-          "value": "unknown",
-          "name": "kind"
-        }
       ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
     ],
     "typeName": "UnknownTypeAssertion",
     "name": "UnknownTypeAssertion"
@@ -720,98 +738,6 @@
   "PrimitiveTypeAssertion": {
     "kind": "object",
     "members": [
-      [
-        "messageId",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          "name": "messageId"
-        },
-        true
-      ],
-      [
-        "message",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          "name": "message"
-        },
-        true
-      ],
-      [
-        "messages",
-        {
-          "kind": "symlink",
-          "symlinkTargetName": "ErrorMessages"
-        },
-        true
-      ],
-      [
-        "name",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          "name": "name"
-        },
-        true
-      ],
-      [
-        "typeName",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          "name": "typeName"
-        },
-        true
-      ],
-      [
-        "docComment",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          "name": "docComment"
-        },
-        true
-      ],
-      [
-        "passThruCodeBlock",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          "name": "passThruCodeBlock"
-        },
-        true
-      ],
-      [
-        "noOutput",
-        {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "boolean"
-          },
-          "name": "noOutput"
-        },
-        true
-      ],
       [
         "kind",
         {
@@ -982,14 +908,7 @@
           },
           "name": "pattern"
         }
-      ]
-    ],
-    "typeName": "PrimitiveTypeAssertion",
-    "name": "PrimitiveTypeAssertion"
-  },
-  "PrimitiveValueTypeAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1081,7 +1000,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "PrimitiveTypeAssertion",
+    "name": "PrimitiveTypeAssertion"
+  },
+  "PrimitiveValueTypeAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1096,14 +1028,7 @@
           "kind": "symlink",
           "symlinkTargetName": "PrimitiveValueTypes"
         }
-      ]
-    ],
-    "typeName": "PrimitiveValueTypeAssertion",
-    "name": "PrimitiveValueTypeAssertion"
-  },
-  "RepeatedAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1195,7 +1120,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "PrimitiveValueTypeAssertion",
+    "name": "PrimitiveValueTypeAssertion"
+  },
+  "RepeatedAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1244,14 +1182,7 @@
           ],
           "name": "max"
         }
-      ]
-    ],
-    "typeName": "RepeatedAssertion",
-    "name": "RepeatedAssertion"
-  },
-  "SpreadAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1343,7 +1274,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "RepeatedAssertion",
+    "name": "RepeatedAssertion"
+  },
+  "SpreadAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1392,14 +1336,7 @@
           ],
           "name": "max"
         }
-      ]
-    ],
-    "typeName": "SpreadAssertion",
-    "name": "SpreadAssertion"
-  },
-  "SequenceAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1491,7 +1428,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "SpreadAssertion",
+    "name": "SpreadAssertion"
+  },
+  "SequenceAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1512,14 +1462,7 @@
           },
           "name": "sequence"
         }
-      ]
-    ],
-    "typeName": "SequenceAssertion",
-    "name": "SequenceAssertion"
-  },
-  "OneOfAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1611,7 +1554,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "SequenceAssertion",
+    "name": "SequenceAssertion"
+  },
+  "OneOfAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1632,14 +1588,7 @@
           },
           "name": "oneOf"
         }
-      ]
-    ],
-    "typeName": "OneOfAssertion",
-    "name": "OneOfAssertion"
-  },
-  "OptionalAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1731,7 +1680,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "OneOfAssertion",
+    "name": "OneOfAssertion"
+  },
+  "OptionalAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1746,14 +1708,7 @@
           "kind": "symlink",
           "symlinkTargetName": "TypeAssertion"
         }
-      ]
-    ],
-    "typeName": "OptionalAssertion",
-    "name": "OptionalAssertion"
-  },
-  "EnumAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -1845,7 +1800,20 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "OptionalAssertion",
+    "name": "OptionalAssertion"
+  },
+  "EnumAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -1891,51 +1859,7 @@
           },
           "name": "values"
         }
-      ]
-    ],
-    "typeName": "EnumAssertion",
-    "name": "EnumAssertion"
-  },
-  "ObjectAssertionMember": {
-    "kind": "one-of",
-    "oneOf": [
-      {
-        "kind": "sequence",
-        "sequence": [
-          {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          {
-            "kind": "symlink",
-            "symlinkTargetName": "TypeAssertion"
-          }
-        ]
-      },
-      {
-        "kind": "sequence",
-        "sequence": [
-          {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
-          {
-            "kind": "symlink",
-            "symlinkTargetName": "TypeAssertion"
-          },
-          {
-            "kind": "primitive",
-            "primitiveName": "boolean"
-          }
-        ]
-      }
-    ],
-    "typeName": "ObjectAssertionMember",
-    "name": "ObjectAssertionMember"
-  },
-  "ObjectAssertion": {
-    "kind": "object",
-    "members": [
+      ],
       [
         "messageId",
         {
@@ -2027,7 +1951,57 @@
           "name": "noOutput"
         },
         true
-      ],
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "EnumAssertion",
+    "name": "EnumAssertion"
+  },
+  "ObjectAssertionMember": {
+    "kind": "one-of",
+    "oneOf": [
+      {
+        "kind": "sequence",
+        "sequence": [
+          {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "TypeAssertion"
+          }
+        ]
+      },
+      {
+        "kind": "sequence",
+        "sequence": [
+          {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "TypeAssertion"
+          },
+          {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          }
+        ]
+      }
+    ],
+    "typeName": "ObjectAssertionMember",
+    "name": "ObjectAssertionMember"
+  },
+  "ObjectAssertion": {
+    "kind": "object",
+    "members": [
       [
         "kind",
         {
@@ -2064,7 +2038,105 @@
           },
           "name": "baseTypes"
         }
+      ],
+      [
+        "messageId",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "messageId"
+        },
+        true
+      ],
+      [
+        "message",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "message"
+        },
+        true
+      ],
+      [
+        "messages",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "ErrorMessages"
+        },
+        true
+      ],
+      [
+        "name",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "name"
+        },
+        true
+      ],
+      [
+        "typeName",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "typeName"
+        },
+        true
+      ],
+      [
+        "docComment",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "docComment"
+        },
+        true
+      ],
+      [
+        "passThruCodeBlock",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "passThruCodeBlock"
+        },
+        true
+      ],
+      [
+        "noOutput",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          },
+          "name": "noOutput"
+        },
+        true
       ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
     ],
     "typeName": "ObjectAssertion",
     "name": "ObjectAssertion"
