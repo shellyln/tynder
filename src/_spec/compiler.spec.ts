@@ -138,6 +138,7 @@ describe("compiler", function() {
                     d91: string;
                 }
                 interface H {
+                // interface H extends HH { // <- recursive extend
                     a?: HH;
                     b: H | number;
                 }
