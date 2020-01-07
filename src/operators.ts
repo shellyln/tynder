@@ -356,43 +356,6 @@ export function spread(
 }
 
 
-function checkRecursiveMembers(ty: ObjectAssertion, target: TypeAssertion): boolean {
-    if (ty === target) {
-        return false;
-    }
-    // TODO: check by typeName?
-    switch (target.kind) {
-    case 'object':
-        return (
-            target.members
-                .map(x => checkRecursiveMembers(ty, x[1]))
-                .reduce((a, b) => a && b)
-        );
-    case 'repeated':
-        return checkRecursiveMembers(ty, target.repeated);
-    case 'spread':
-        return checkRecursiveMembers(ty, target.spread);
-    case 'sequence':
-        return (
-            target.sequence
-                .map(x => checkRecursiveMembers(ty, x))
-                .reduce((a, b) => a && b)
-        );
-    case 'one-of':
-        return (
-            target.oneOf
-                .map(x => checkRecursiveMembers(ty, x))
-                .reduce((a, b) => a && b)
-        );
-    case 'optional':
-        return checkRecursiveMembers(ty, target.optional);
-    default:
-        // NOTE: Recursive types can be defined using 'symlink'.
-        return true;
-    }
-}
-
-
 export function enumType(...values: Array<[string, number | string | null, string?]>): EnumAssertion {
     const ar = values.slice();
     let value = 0;
@@ -412,8 +375,6 @@ export function enumType(...values: Array<[string, number | string | null, strin
 
 export function objectType(
         ...members: Array<[string, PrimitiveValueTypes | TypeAssertion]>): ObjectAssertion {
-    // TODO: Check for recursive type.
-    //       Recursive member types are represented by 'symlink'.
     const revMembers = members.slice().reverse();
     for (const x of members) {
         if (members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
@@ -434,7 +395,11 @@ function checkRecursiveExtends(ty: ObjectAssertion, base: ObjectAssertion | Asse
     if (ty === base) {
         return false;
     }
-    // TODO: check by typeName?
+    if (ty.typeName &&
+        (ty.typeName === base.typeName ||
+         (base.kind === 'symlink' && ty.typeName === base.symlinkTargetName))) {
+        return false;
+    }
     if (base.kind === 'object' && base.baseTypes) {
         for (const z of base.baseTypes) {
             if (! checkRecursiveExtends(ty, z)) {
@@ -461,11 +426,6 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
             }
             for (const m of ext.members) {
                 if (! ret.members.find(x => x[0] === m[0])) {
-                    // TODO: Check for recursive type.
-                    if (! checkRecursiveMembers(ty, m[1])) {
-                        throw new Error(`Recursive member type is found: ${
-                            m[1].name || '(unnamed)'} of ${ty.name || '(unnamed)'}`);
-                    }
                     ret.members.push([m[0], m[1], true]);
                 }
                 // TODO: Check for different types with the same name.

@@ -33,7 +33,7 @@ TypeScript friendly Data validator for JavaScript.
     * CLI / API
 * Generate Protocol Buffers 3 type definition code.
     * CLI / API
-* Recursive types
+* [X] ~~Recursive types~~
 * [X] ~~Back reference of types~~
 
 
@@ -159,7 +159,10 @@ const validated2 = validate({
     b: 3,
 }, getType(mySchema, 'A')); // null
 
-const ctx3 = {checkAll: true};
+const ctx3 = {        // To receive the error messages, define the context as a variable.
+    checkAll: true,   // (optional) Set to true to continue validation after the first error.
+    schema: mySchema, // (optional) Pass "schema" to check for recursive types.
+};
 const validated3 = validate({
     aa: 'x',
     b: 3,
@@ -187,7 +190,10 @@ const picked1 = pick(original, getType(mySchema, 'A')); // {a: 'x'}
 // Edit the picked data and...
 const changed = merge(original, picked1); // TODO: not impl. (planned feature)
 
-const ctx2 = {checkAll: true};
+const ctx2 = {        // To receive the error messages, define the context as a variable.
+    checkAll: true,   // (optional) Set to true to continue validation after the first error.
+    schema: mySchema, // (optional) Pass "schema" to check for recursive types.
+};
 const picked2 = pick({
     aa: 'x',
     b: 3,
@@ -718,7 +724,7 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
       [`Pick<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#picktk),
       [`Omit<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittk) and
       [`Partial<T>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialt).
-* Recursive types are not available.
+* ~~Recursive types are not available.~~
 * ~~Back reference of types are not available.~~
 
 
