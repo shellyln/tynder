@@ -340,6 +340,27 @@ interface A {
 };
 ```
 
+#### Additional properties
+```ts
+type X = {a: string, b: number};
+
+interface A {
+    // Additional properties
+    [propName: string | number | /^[a-z][0-9]+$/]: number;
+};
+
+interface B {
+    // Additional properties (check type if propName matches)
+    [propName: string | number | /^[a-z][0-9]+$/]?: number; 
+};
+
+interface C {
+    // `propName` can be any name
+    [p: string]: X; 
+};
+```
+Only `string`, `number`, and `RegExp` are allowed for the `propName` type.
+
 
 ### Type decoration
 
