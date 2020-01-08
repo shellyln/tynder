@@ -159,9 +159,10 @@ const validated2 = validate({
     b: 3,
 }, getType(mySchema, 'A')); // null
 
-const ctx3 = {        // To receive the error messages, define the context as a variable.
-    checkAll: true,   // (optional) Set to true to continue validation after the first error.
-    schema: mySchema, // (optional) Pass "schema" to check for recursive types.
+const ctx3 = {               // To receive the error messages, define the context as a variable.
+    checkAll: true,          // (optional) Set to true to continue validation after the first error.
+    noAdditionalProps: true, // (optional) Do not allow implicit additional properties.
+    schema: mySchema,        // (optional) Pass "schema" to check for recursive types.
 };
 const validated3 = validate({
     aa: 'x',
