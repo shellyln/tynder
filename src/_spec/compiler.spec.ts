@@ -128,6 +128,7 @@ describe("compiler", function() {
                     j2: [string, ...<number, 2..3>];
                     k: Y;
                     l: B;
+                    [propName: /^[a-z][0-9]$/]?: string;
                 }
                 interface AA extends A {}
                 type Y = boolean;
@@ -149,7 +150,11 @@ describe("compiler", function() {
             // console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'H'), null, 2));
             /*
-            const ctx: Partial<ValidationContext> = {checkAll: true, schema: schema2};
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                // noAdditionalProps: true,
+                schema: schema2,
+            };
             expect(validate({
                 a: 5,
                 c: [['', '', '', '', '', '', '', '', '', '']],
@@ -169,7 +174,7 @@ describe("compiler", function() {
                 j2: ['aaa', 1, 2, 3],
                 k: false,
                 l: {a: 5},
-                z: 'aaaaaaaaa',
+                z1: 'a',
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(JSON.stringify(ctx));

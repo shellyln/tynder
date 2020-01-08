@@ -21,6 +21,7 @@ import { NeverTypeAssertion,
          OptionalAssertion,
          EnumAssertion,
          ObjectAssertionMember,
+         AdditionalPropsKey,
          ObjectAssertion,
          AssertionSymlink,
          TypeAssertion } from './types';
@@ -374,19 +375,43 @@ export function enumType(...values: Array<[string, number | string | null, strin
 
 
 export function objectType(
-        ...members: Array<[string, PrimitiveValueTypes | TypeAssertion]>): ObjectAssertion {
+        ...members: Array<[string | AdditionalPropsKey, PrimitiveValueTypes | TypeAssertion]>): ObjectAssertion {
     const revMembers = members.slice().reverse();
     for (const x of members) {
-        if (members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
-            throw new Error(`Duplicated member is found: ${x[0]}`);
+        if (typeof x[0] === 'string') {
+            if (members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
+                throw new Error(`Duplicated member is found: ${x[0]}`);
+            }
         }
     }
+
+    const additionalProps = (members
+        .filter(x => typeof x[0] !== 'string') as Array<[AdditionalPropsKey, PrimitiveValueTypes | TypeAssertion]>)
+        .map(x => [
+            x[0],
+            x[1] && typeof x[1] === 'object' && x[1].kind ?
+                x[1] :
+                primitiveValue(x[1])] as [AdditionalPropsKey, TypeAssertion]);
+    if (1 < additionalProps.length) {
+        throw new Error(`Multiple additional property definitions are found`);
+    }
+
     return ({
-        kind: 'object',
-        members: members.map(
-            x => x[1] && typeof x[1] === 'object' && x[1].kind ?
-                [x[0], withName(x[1], x[0])] :
-                [x[0], withName(primitiveValue(x[1]), x[0])]),
+        ...{
+            kind: 'object',
+            members: (members
+                .filter(x => typeof x[0] === 'string') as Array<[string, PrimitiveValueTypes | TypeAssertion]>)
+                .map(
+                    x => x[1] && typeof x[1] === 'object' && x[1].kind ?
+                        [x[0], withName(x[1], x[0])] :
+                        [x[0], withName(primitiveValue(x[1]), x[0])]),
+        },
+        ...(0 < additionalProps.length ? {
+            additionalProps: {
+                key: additionalProps[0][0],
+                ty: additionalProps[0][1],
+            },
+        } : {}),
     });
 }
 
@@ -451,6 +476,10 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
         if (ret.members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
             throw new Error(`Duplicated member is found: ${x[0]} in ${ty.name || '(unnamed)'}`);
         }
+    }
+
+    if (ty.additionalProps) {
+        ret.additionalProps = ty.additionalProps; // TODO: union base types' additionalProps
     }
 
     return ret;

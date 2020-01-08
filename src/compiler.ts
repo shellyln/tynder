@@ -348,6 +348,9 @@ const primitiveTypeName =
         first(seq('number?'), seq('bigint?'), seq('string?'), seq('boolean?'), // TODO: '?' is allowed in the sequence assertion
               seq('number'), seq('bigint'), seq('string'), seq('boolean'), )); // TODO: function
 
+const additionalPropPrimitiveTypeName =
+    first(seq('number'), seq('string'));
+
 const nullUndefinedTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
         first(seq('null'), seq('undefined'), seq('any'), seq('never')), );
@@ -648,7 +651,7 @@ const spreadOrComplexType: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Par
 const typeDef =
     trans(tokens => [[{symbol: 'def'}, tokens[1], [{symbol: 'docComment'}, tokens[2], tokens[0] ] ]])(
         erase(seq('type')),
-            input => {
+            input => {                                               // TODO: extract function
                 const ret = zeroWidth(() => [])(input);
                 if (ret.succeeded) {
                     const text = ret.next.context.docComment;
@@ -682,6 +685,27 @@ const interfaceExtendsClause =
             erase(repeat(commentOrSpace)),
             symbolName, )));
 
+const interfaceKey =
+    first(
+        trans(tokens => [[{symbol: '$list'}, ...tokens]])(
+            erase(seq('[')),
+                erase(repeat(commentOrSpace),
+                      objKey,
+                      repeat(commentOrSpace),
+                      seq(':'),
+                      repeat(commentOrSpace), ),
+                repeat(combine(
+                    first(regexpStringValue,
+                          additionalPropPrimitiveTypeName, ),
+                    erase(repeat(commentOrSpace),
+                          seq('|'),
+                          repeat(commentOrSpace), ))),
+                first(regexpStringValue,
+                      additionalPropPrimitiveTypeName, ),
+                erase(repeat(commentOrSpace)),
+            erase(seq(']')), ),
+        objKey, );
+
 const interfaceKeyTypePair = (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
     trans(tokens => [
             [{symbol: '$list'},
@@ -706,7 +730,7 @@ const interfaceKeyTypePair = (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
             }
             return ret;
         },                                          // [1]
-        objKey,                                     // [2] key
+        interfaceKey,                               // [2] key
         first(                                      // [3] '?' | ''
             combine(
                 erase(repeat(commentOrSpace)),
@@ -753,7 +777,7 @@ const interfaceDef =
                 [{symbol: 'derived'}, tokens[3], [{symbol: '$spread'}, tokens[2]]],
                 tokens[0], ]]])(
     erase(seq('interface')),
-        input => {
+        input => {                               // TODO: extract function
             const ret = zeroWidth(() => [])(input);
             if (ret.succeeded) {
                 const text = ret.next.context.docComment;
@@ -805,7 +829,7 @@ const enumDef =
                 [{symbol: 'enumType'}, ...tokens.slice(2)],
                 tokens[0], ]]])(
     erase(seq('enum')),
-        input => {
+        input => {                               // TODO: extract function
             const ret = zeroWidth(() => [])(input);
             if (ret.succeeded) {
                 const text = ret.next.context.docComment;
