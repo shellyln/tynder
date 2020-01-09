@@ -66,7 +66,20 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
         });
     case 'object':
         {
-            const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink');
+                /* BUG:
+                 * interface HH extends H {}
+                 * interface H {
+                 *     a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
+                 *                             //            It should be `symlink`?
+                 *                             //              (compiler.ref() should return and
+                 *                             //               resolveSymbols() should not resolve?)
+                 *                             //            Or stop recursive call?
+                 *     // a?: H;               // OK
+                 *     b: H | number;
+                 * }
+                 */
+
+            const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink') as AssertionSymlink[];
             if (baseSymlinks && baseSymlinks.length > 0) {
                 const exts = baseSymlinks
                     .map(x => resolveSymbols(schema, x, ctx))
@@ -74,7 +87,12 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                 // TODO: if x.kind !== 'object' items exist -> error?
                 const d2 = resolveSymbols(
                     schema,
-                    operators.derived(ty, ...exts),
+                    operators.derived({
+                        ...ty,
+                        ...(ty.baseTypes ? {
+                            baseTypes: ty.baseTypes.filter(x => x.kind !== 'symlink'),
+                        } : {}),
+                    }, ...exts),
                     ctx,
                 );
                 return ({
@@ -83,8 +101,15 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                 });
             } else {
                 return ({
-                    ...ty,
-                    members: ty.members.map(x => [x[0], resolveSymbols(schema, x[1], ctx), ...x.slice(2)] as any),
+                    ...{
+                        ...ty,
+                        members: ty.members
+                            .map(x => [x[0], resolveSymbols(schema, x[1], ctx), ...x.slice(2)] as any),
+                    },
+                    ...(ty.additionalProps && 0 < ty.additionalProps.length ? {
+                        additionalProps: ty.additionalProps
+                            .map(x => [x[0], resolveSymbols(schema, x[1], ctx), ...x.slice(2)] as any),
+                    } : {}),
                 });
             }
         }

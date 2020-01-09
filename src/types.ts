@@ -147,16 +147,26 @@ export type ObjectAssertionMember = [
 export type AdditionalPropsKey = Array<'string' | 'number' | RegExp>;
 
 
-export interface AdditionalProps {
-    key: AdditionalPropsKey;
-    ty: TypeAssertion;
-}
+export type AdditionalPropsMember = [
+    AdditionalPropsKey,  // name
+    TypeAssertion,       // type
+] | [
+    AdditionalPropsKey,  // name
+    TypeAssertion,       // type
+    boolean,             // If true, defined by ancestor types
+];
+
+
+// export interface AdditionalProps {
+//     key: AdditionalPropsKey;
+//     ty: TypeAssertion;
+// }
 
 
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    additionalProps?: AdditionalProps;
+    additionalProps?: AdditionalPropsMember[];
     baseTypes?: Array<ObjectAssertion | AssertionSymlink>;
 }
 

@@ -22,6 +22,7 @@ import { NeverTypeAssertion,
          EnumAssertion,
          ObjectAssertionMember,
          AdditionalPropsKey,
+         AdditionalPropsMember,
          ObjectAssertion,
          AssertionSymlink,
          TypeAssertion } from './types';
@@ -407,10 +408,7 @@ export function objectType(
                         [x[0], withName(primitiveValue(x[1]), x[0])]),
         },
         ...(0 < additionalProps.length ? {
-            additionalProps: {
-                key: additionalProps[0][0],
-                ty: additionalProps[0][1],
-            },
+            additionalProps,
         } : {}),
     });
 }
@@ -460,6 +458,8 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
             (ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).push(ext);
             break;
         }
+        // NOTE: 'symlink' base types will resolved by calling `resolveSymbols()`.
+        //       `resolveSymbols()` will call `derived()` after resolve symlink exts.
     }
     ret.members = ty.members.concat(ret.members);
     if (ty.baseTypes) {
@@ -478,8 +478,23 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
         }
     }
 
-    if (ty.additionalProps) {
-        ret.additionalProps = ty.additionalProps; // TODO: union base types' additionalProps
+    let additionalProps: AdditionalPropsMember[] = [];
+    if (ret.baseTypes) {
+        for (const base of ret.baseTypes) {
+            if (base.kind === 'object') {
+                if (base.additionalProps && 0 < base.additionalProps.length) {
+                    additionalProps = additionalProps.concat(base.additionalProps.map(x => [x[0], x[1], true]));
+                }
+            }
+            // NOTE: 'symlink' base types will resolved by calling `resolveSymbols()`.
+            //       `resolveSymbols()` will call `derived()` after resolve symlink exts.
+        }
+    }
+    if (ty.additionalProps && 0 < ty.additionalProps.length) {
+        additionalProps = additionalProps.concat(ty.additionalProps);
+    }
+    if (0 < additionalProps.length) {
+        ret.additionalProps = additionalProps;
     }
 
     return ret;

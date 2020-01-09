@@ -127,7 +127,7 @@ describe("compiler", function() {
                     j: [...<number, 1..2>, string];
                     j2: [string, ...<number, 2..3>];
                     k: Y;
-                    l: B;
+                    l: B;                                 // TODO: BUG: interface B's doc comment is out
                     [propName: /^[a-z][0-9]$/]?: string;
                 }
                 interface AA extends A {}
@@ -138,12 +138,22 @@ describe("compiler", function() {
                 interface DD {
                     d91: string;
                 }
+
                 interface H {
                 // interface H extends HH { // <- recursive extend
                     a?: HH;
                     b: H | number;
                 }
                 interface HH extends H {}
+
+                /*
+                interface HH extends H {}
+                interface H {
+                    a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
+                    // a?: H;               // OK
+                    b: H | number;
+                }
+                */
             `);
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));

@@ -348,7 +348,7 @@ function validateObjectAssertion<T>(
         }
     } else {
         const dataMembers = new Set<string>();
-        if (ctx.noAdditionalProps || ty.additionalProps) {
+        if (ctx.noAdditionalProps || ty.additionalProps && 0 < ty.additionalProps.length) {
             if (! Array.isArray(data)) {
                 for (const m in data) {
                     if (Object.prototype.hasOwnProperty.call(data, m)) {
@@ -386,29 +386,36 @@ function validateObjectAssertion<T>(
             }
         }
 
-        if (ty.additionalProps) {
-            const at = ty.additionalProps.ty;
-
+        if (ty.additionalProps && 0 < ty.additionalProps.length) {
             for (const m of dataMembers.values()) {
                 let matched = false;
-                for (const pt of ty.additionalProps.key) {
-                    if (pt === 'number') {
-                        if (/^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/.test(m)) {
+                let allowImplicit = false;
+                let at: TypeAssertion = null as any;
+
+                ENTRY: for (const ap of ty.additionalProps) {
+                    for (const pt of ap[0]) {
+                        at = ap[1];
+                        if (pt === 'number') {
+                            if (/^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/.test(m)) {
+                                matched = true;
+                                break ENTRY;
+                            }
+                        } else if (pt === 'string') {
                             matched = true;
-                            break;
+                            break ENTRY;
+                        } else {
+                            if (pt.test(m)) {
+                                matched = true;
+                                break ENTRY;
+                            }
                         }
-                    } else if (pt === 'string') {
-                        matched = true;
-                        break;
-                    } else {
-                        if (pt.test(m)) {
-                            matched = true;
-                            break;
+                        if (at.kind === 'optional') {
+                            allowImplicit = true;
                         }
                     }
                 }
                 if (! matched) {
-                    if (at.kind === 'optional') {
+                    if (allowImplicit) {
                         continue;
                     }
                     reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched

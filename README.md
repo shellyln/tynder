@@ -346,18 +346,35 @@ interface A {
 type X = {a: string, b: number};
 
 interface A {
-    // Additional properties
+    // Additional properties (Error if `propName` is unmatched)
     [propName: string | number | /^[a-z][0-9]+$/]: number;
 };
 
 interface B {
-    // Additional properties (check type if propName matches)
+    // Optional additional properties (Check type if propName matches)
+    //   -> Implicit additional properties are allowed
+    //      even if `ctx.noAdditionalProps` is true.
     [propName: string | number | /^[a-z][0-9]+$/]?: number; 
 };
 
 interface C {
     // `propName` can be any name
     [p: string]: X; 
+};
+
+interface D {
+    // Error if app `propName`s are unmatched
+    [propName1: /^[a-z][0-9]+$/]: number;
+    [propName2: number]: number;
+};
+
+interface F {
+    // If optional additional properties definition(s) exist,
+    // implicit additional properties are allowed
+    // even if `ctx.noAdditionalProps` is true.
+    [propName1: /^[a-z][0-9]+$/]: number;
+    [propName2: number]: number;
+    [propName3: /^[A-F]+$/]?: number;
 };
 ```
 Only `string`, `number`, and `RegExp` are allowed for the `propName` type.
