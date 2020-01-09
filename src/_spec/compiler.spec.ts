@@ -116,8 +116,9 @@ describe("compiler", function() {
                     d2?: X;
                     d3?: U;
                     d4?: S;
+                    [propName: /^[B][0-9]$/]: U;
                 }
-                interface A extends B,C, D,DD { // BUG: if extends D, codegen output 'extends D, D'
+                interface A extends B,C, D,DD {
                     e: (string[])|(@minValue(3) number[])|(boolean[]);
                     f: X | boolean;
                     @match(/^[A-F]+$/)
@@ -127,7 +128,9 @@ describe("compiler", function() {
                     j: [...<number, 1..2>, string];
                     j2: [string, ...<number, 2..3>];
                     k: Y;
-                    l: B;
+                    l: B;                                 // TODO: BUG: interface B's doc comment is out
+                    [propName: /^[a-z][0-9]$/ | number]?: string;
+                    [propName: /^[A][0-9]$/]: C;
                 }
                 interface AA extends A {}
                 type Y = boolean;
@@ -137,19 +140,33 @@ describe("compiler", function() {
                 interface DD {
                     d91: string;
                 }
+
                 interface H {
                 // interface H extends HH { // <- recursive extend
                     a?: HH;
                     b: H | number;
                 }
                 interface HH extends H {}
+
+                /*
+                interface HH extends H {}
+                interface H {
+                    a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
+                    // a?: H;               // OK
+                    b: H | number;
+                }
+                */
             `);
             // console.log(JSON.stringify(getType(schema2, 'X'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'C'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'H'), null, 2));
             /*
-            const ctx: Partial<ValidationContext> = {checkAll: true, schema: schema2};
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                // noAdditionalProps: true,
+                schema: schema2,
+            };
             expect(validate({
                 a: 5,
                 c: [['', '', '', '', '', '', '', '', '', '']],
@@ -169,7 +186,9 @@ describe("compiler", function() {
                 j2: ['aaa', 1, 2, 3],
                 k: false,
                 l: {a: 5},
-                z: 'aaaaaaaaa',
+                z1: 'a',
+                // A0: 1,
+                // B0: 2,
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(JSON.stringify(ctx));

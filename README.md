@@ -159,9 +159,10 @@ const validated2 = validate({
     b: 3,
 }, getType(mySchema, 'A')); // null
 
-const ctx3 = {        // To receive the error messages, define the context as a variable.
-    checkAll: true,   // (optional) Set to true to continue validation after the first error.
-    schema: mySchema, // (optional) Pass "schema" to check for recursive types.
+const ctx3 = {               // To receive the error messages, define the context as a variable.
+    checkAll: true,          // (optional) Set to true to continue validation after the first error.
+    noAdditionalProps: true, // (optional) Do not allow implicit additional properties.
+    schema: mySchema,        // (optional) Pass "schema" to check for recursive types.
 };
 const validated3 = validate({
     aa: 'x',
@@ -251,7 +252,8 @@ const myType =
             objectType(
                 ['e', optional(primitive('string'))],
                 ['f', primitive('string?')],
-                ['g', repeated('string', {min: 3, max: 10})], ),
+                ['g', repeated('string', {min: 3, max: 10})],
+                [[/^[a-z][0-9]$/], optional(primitive('string'))], ),
             intersect(
                 objectType(
                     ['x', 10], ['y', 10], ['p', 10], ),
@@ -273,6 +275,7 @@ interface P {
     e?: string;
     f?: string;
     g: string[3..10];
+    [propName: /^[a-z][0-9]$/]?: string;
 }
 type Q = {
         x: 10, y: 10, p: 10,
@@ -339,6 +342,44 @@ interface A {
     b?: number; // optional member
 };
 ```
+
+#### Additional properties
+```ts
+type X = {a: string, b: number};
+
+interface A {
+    // Additional properties (Error if `propName` is unmatched)
+    [propName: string | number | /^[a-z][0-9]+$/]: number;
+};
+
+interface B {
+    // Optional additional properties (Check type if propName matches)
+    //   -> Implicit additional properties are allowed
+    //      even if `ctx.noAdditionalProps` is true.
+    [propName: string | number | /^[a-z][0-9]+$/]?: number; 
+};
+
+interface C {
+    // `propName` can be any name
+    [p: string]: X; 
+};
+
+interface D {
+    // Error if app `propName`s are unmatched
+    [propName1: /^[a-z][0-9]+$/]: number;
+    [propName2: number]: number;
+};
+
+interface E {
+    // If optional additional properties definition(s) exist,
+    // implicit additional properties are allowed
+    // even if `ctx.noAdditionalProps` is true.
+    [propName1: /^[a-z][0-9]+$/]: number;
+    [propName2: number]: number;
+    [propName3: /^[A-F]+$/]?: number;
+};
+```
+Only `string`, `number`, and `RegExp` are allowed for the `propName` type.
 
 
 ### Type decoration

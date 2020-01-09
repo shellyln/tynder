@@ -37,6 +37,7 @@ describe("operator", function() {
                     ['bar', optional(primitive('string'))],
                     ['bar2', primitive('string?')],
                     ['bar3', repeated('string', {min: 3, max: 10})],
+                    [[/^[a-z][0-9]$/], optional(primitive('string'))],
                 ),
                 intersect(
                     objectType(

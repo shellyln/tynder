@@ -12,6 +12,7 @@ import { TypeAssertion,
          OneOfAssertion,
          OptionalAssertion,
          EnumAssertion,
+         AdditionalPropsKey,
          ObjectAssertion,
          TypeAssertionMap,
          CodegenContext } from '../types';
@@ -111,22 +112,39 @@ function generateTypeScriptCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 }
 
 
+function formatAdditionalPropsName(ak: AdditionalPropsKey, i: number) {
+    return (`[propName${i}: ${ak.map(x => typeof x === 'string' ? x : 'string').join(' | ')}]`);
+}
+
+
 function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
     if (ty.members.filter(x => !(x[2])).length === 0) {
         return '{}';
     }
     const sep = isInterface ? ';\n' : ',\n';
+
+    const memberLines =
+        ty.members.filter(x => !(x[2]))
+        .map(x =>
+            `${formatTypeScriptCodeDocComment(x[1], ctx.nestLevel + 1)}${
+                '    '.repeat(ctx.nestLevel + 1)}${
+                x[0]}${x[1].kind === 'optional' ? '?' : ''}: ${
+                x[1].typeName ?
+                    x[1].typeName :
+                    generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`);
+
+    const additionalPropsLines =
+        ty.additionalProps?.filter(x => !(x[2]))
+        .map((x, i) =>
+            `${formatTypeScriptCodeDocComment(x[1], ctx.nestLevel + 1)}${
+                '    '.repeat(ctx.nestLevel + 1)}${
+                formatAdditionalPropsName(x[0], i)}${x[1].kind === 'optional' ? '?' : ''}: ${
+                x[1].typeName ?
+                    x[1].typeName :
+                    generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`) || [];
+
     return (
-        `{\n${ty.members
-            .filter(x => !(x[2]))
-            .map(x =>
-                `${formatTypeScriptCodeDocComment(x[1], ctx.nestLevel + 1)}${
-                    '    '.repeat(ctx.nestLevel + 1)}${
-                    x[0]}${x[1].kind === 'optional' ? '?' : ''}: ${
-                    x[1].typeName ?
-                        x[1].typeName :
-                        generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`)
-            .join(sep)}${sep}${'    '.repeat(ctx.nestLevel)}}`
+        `{\n${memberLines.concat(additionalPropsLines).join(sep)}${sep}${'    '.repeat(ctx.nestLevel)}}`
     );
 }
 

@@ -338,6 +338,7 @@ function validateObjectAssertion<T>(
             throw new Error(`Duplicated member is found: ${x[0]} in ${ty.name || '(unnamed)'}`);
         }
     }
+
     if (data === null || typeof data !== 'object') {
         reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         if (ctx && ctx.checkAll) {
@@ -345,29 +346,110 @@ function validateObjectAssertion<T>(
         } else {
             return null;
         }
-    } else for (const x of ty.members) {
-        if (Object.prototype.hasOwnProperty.call(data, x[0])) {
-            const ret = validateRoot<T>(data[x[0]], x[1].kind === 'optional' ? x[1].optional : x[1], ctx);
-            if (ret) {
-                if (retVal) {
-                    retVal[x[0]] = ret.value;
-                }
-            } else {
-                // TODO: report member's custom error message
-                if (ctx && ctx.checkAll) {
-                    retVal = null;
-                } else {
-                    return null;
+    } else {
+        const dataMembers = new Set<string>();
+        if (ctx.noAdditionalProps || ty.additionalProps && 0 < ty.additionalProps.length) {
+            if (! Array.isArray(data)) {
+                for (const m in data) {
+                    if (Object.prototype.hasOwnProperty.call(data, m)) {
+                        dataMembers.add(m);
+                    }
                 }
             }
-        } else {
-            if (x[1].kind !== 'optional') {
-                reportError(ErrorTypes.Required, data, x[1], ctx);
-                if (ctx && ctx.checkAll) {
-                    retVal = null;
+        }
+
+        for (const x of ty.members) {
+            dataMembers.delete(x[0]);
+            if (Object.prototype.hasOwnProperty.call(data, x[0])) {
+                const ret = validateRoot<T>(data[x[0]], x[1].kind === 'optional' ? x[1].optional : x[1], ctx);
+                if (ret) {
+                    if (retVal) {
+                        retVal[x[0]] = ret.value;
+                    }
                 } else {
-                    return null;
+                    // TODO: report member's custom error message
+                    if (ctx && ctx.checkAll) {
+                        retVal = null;
+                    } else {
+                        return null;
+                    }
                 }
+            } else {
+                if (x[1].kind !== 'optional') {
+                    reportError(ErrorTypes.Required, data, x[1], ctx);
+                    if (ctx && ctx.checkAll) {
+                        retVal = null;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+
+        if (ty.additionalProps && 0 < ty.additionalProps.length) {
+            for (const m of dataMembers.values()) {
+                let matched = false;
+                let allowImplicit = false;
+                let at: TypeAssertion = null as any;
+
+                ENTRY: for (const ap of ty.additionalProps) {
+                    for (const pt of ap[0]) {
+                        at = ap[1];
+                        if (pt === 'number') {
+                            if (/^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/.test(m)) {
+                                matched = true;
+                                break ENTRY;
+                            }
+                        } else if (pt === 'string') {
+                            matched = true;
+                            break ENTRY;
+                        } else {
+                            if (pt.test(m)) {
+                                matched = true;
+                                break ENTRY;
+                            }
+                        }
+                        if (at.kind === 'optional') {
+                            allowImplicit = true;
+                        }
+                    }
+                }
+                if (! matched) {
+                    if (allowImplicit) {
+                        continue;
+                    }
+                    reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched
+                    if (ctx && ctx.checkAll) {
+                        retVal = null;
+                        continue;
+                    } else {
+                        return null;
+                    }
+                }
+
+                dataMembers.delete(m);
+                const ret = validateRoot<T>(data[m], at.kind === 'optional' ? at.optional : at, ctx);
+                if (ret) {
+                    if (retVal) {
+                        retVal[m] = ret.value;
+                    }
+                } else {
+                    // TODO: report member's custom error message
+                    if (ctx && ctx.checkAll) {
+                        retVal = null;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+
+        if (ctx.noAdditionalProps && 0 < dataMembers.size) {
+            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched
+            if (ctx && ctx.checkAll) {
+                retVal = null;
+            } else {
+                return null;
             }
         }
     }
