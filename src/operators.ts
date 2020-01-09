@@ -393,9 +393,6 @@ export function objectType(
             x[1] && typeof x[1] === 'object' && x[1].kind ?
                 x[1] :
                 primitiveValue(x[1])] as [AdditionalPropsKey, TypeAssertion]);
-    if (1 < additionalProps.length) {
-        throw new Error(`Multiple additional property definitions are found`);
-    }
 
     return ({
         ...{

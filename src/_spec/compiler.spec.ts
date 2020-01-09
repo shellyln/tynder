@@ -116,8 +116,9 @@ describe("compiler", function() {
                     d2?: X;
                     d3?: U;
                     d4?: S;
+                    [propName: /^[B][0-9]$/]: U;
                 }
-                interface A extends B,C, D,DD { // BUG: if extends D, codegen output 'extends D, D'
+                interface A extends B,C, D,DD {
                     e: (string[])|(@minValue(3) number[])|(boolean[]);
                     f: X | boolean;
                     @match(/^[A-F]+$/)
@@ -128,7 +129,8 @@ describe("compiler", function() {
                     j2: [string, ...<number, 2..3>];
                     k: Y;
                     l: B;                                 // TODO: BUG: interface B's doc comment is out
-                    [propName: /^[a-z][0-9]$/]?: string;
+                    [propName: /^[a-z][0-9]$/ | number]?: string;
+                    [propName: /^[A][0-9]$/]: C;
                 }
                 interface AA extends A {}
                 type Y = boolean;
@@ -185,6 +187,8 @@ describe("compiler", function() {
                 k: false,
                 l: {a: 5},
                 z1: 'a',
+                // A0: 1,
+                // B0: 2,
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(JSON.stringify(ctx));
