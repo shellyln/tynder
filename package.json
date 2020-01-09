@@ -7,9 +7,14 @@
     "data validator",
     "validator",
     "TypeScript",
+    "validation",
+    "schema validator",
+    "validation library",
     "JSON Schema",
     "schema",
-    "type checker"
+    "type checker",
+    "ajv",
+    "joi"
   ],
   "main": "index.js",
   "module": "./modules/index.js",
@@ -76,7 +81,8 @@
     "test": "jasmine",
     "example:0": "node ./bin.cli/tynder.js",
     "example:1": "node ./bin.cli/tynder.js compile --indir ./schema/tynder --outdir ./schema/_compiled",
-    "example:2": "node ./bin.cli/tynder.js gen-ts --indir ./schema/tynder --outdir ./schema/ts",
+    "example:2": "node ./bin.cli/tynder.js compile-as-ts --indir ./schema/tynder --outdir ./schema/_compiled",
+    "example:3": "node ./bin.cli/tynder.js gen-ts --indir ./schema/tynder --outdir ./schema/ts",
     "prepublishOnly": "run-s clean build test lint"
   },
   "repository": {
