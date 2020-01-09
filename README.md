@@ -252,7 +252,8 @@ const myType =
             objectType(
                 ['e', optional(primitive('string'))],
                 ['f', primitive('string?')],
-                ['g', repeated('string', {min: 3, max: 10})], ),
+                ['g', repeated('string', {min: 3, max: 10})],
+                [[/^[a-z][0-9]$/], optional(primitive('string'))], ),
             intersect(
                 objectType(
                     ['x', 10], ['y', 10], ['p', 10], ),
@@ -274,6 +275,7 @@ interface P {
     e?: string;
     f?: string;
     g: string[3..10];
+    [propName: /^[a-z][0-9]$/]?: string;
 }
 type Q = {
         x: 10, y: 10, p: 10,
@@ -368,7 +370,7 @@ interface D {
     [propName2: number]: number;
 };
 
-interface F {
+interface E {
     // If optional additional properties definition(s) exist,
     // implicit additional properties are allowed
     // even if `ctx.noAdditionalProps` is true.
