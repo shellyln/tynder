@@ -941,7 +941,7 @@ export function compile(s: string) {
 
         const tySet = mapTyToTySet.has(ret) ?
             mapTyToTySet.get(ret) as TypeAssertionSetValue :
-            {ty: ret, exported: false};
+            {ty: ret, exported: false, resolved: false};
 
         schema.set(sym, tySet);
 
@@ -1007,7 +1007,7 @@ export function compile(s: string) {
                 kind: 'never',
                 passThruCodeBlock: str,
             };
-            schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false});
+            schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
             return ty;
         },
         directive: (name: string, body: string) => {
@@ -1047,7 +1047,7 @@ export function compile(s: string) {
     lisp.evaluateAST(z as SxToken[]);
 
     for (const ent of schema.entries()) {
-        const ty = resolveSymbols(schema, ent[1].ty, {symlinkStack: [ent[0]]});
+        const ty = resolveSymbols(schema, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]]});
         ent[1].ty = ty;
     }
 

@@ -4,8 +4,8 @@
 
 
 import { TypeAssertion,
-         ObjectAssertion,
          TypeAssertionMap,
+         TypeAssertionSetValue,
          AssertionSymlink,
          SymbolResolverContext } from '../types';
 import * as operators            from '../operators';
@@ -20,7 +20,19 @@ function mergeTypeAndSymlink(ty: TypeAssertion, link: AssertionSymlink): TypeAss
 }
 
 
+function updateSchema(original: TypeAssertion, schema: TypeAssertionMap, ty: TypeAssertion, typeName: string | undefined) {
+    if (typeName && schema.has(typeName)) {
+        const z: TypeAssertionSetValue = schema.get(typeName) as TypeAssertionSetValue;
+        if (z.ty === original) {
+            schema.set(typeName, {...z, ty, resolved: true});
+        }
+    }
+    return ty;
+}
+
+
 export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx: SymbolResolverContext): TypeAssertion {
+    const ctx2 = {...ctx, nestLevel: ctx.nestLevel + 1};
     switch (ty.kind) {
     case 'symlink':
         {
@@ -35,54 +47,50 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                 resolveSymbols(
                     schema,
                     mergeTypeAndSymlink(x.ty, ty),
-                    {...ctx, symlinkStack: [...ctx.symlinkStack, ty.symlinkTargetName]},
+                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.symlinkTargetName]},
                 )
             );
         }
     case 'repeated':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
-            repeated: resolveSymbols(schema, ty.repeated, ctx),
-        });
+            repeated: resolveSymbols(schema, ty.repeated, ctx2),
+        }, ty.typeName);
     case 'spread':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
-            spread: resolveSymbols(schema, ty.spread, ctx),
-        });
+            spread: resolveSymbols(schema, ty.spread, ctx2),
+        }, ty.typeName);
     case 'sequence':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
-            sequence: ty.sequence.map(x => resolveSymbols(schema, x, ctx)),
-        });
+            sequence: ty.sequence.map(x => resolveSymbols(schema, x, ctx2)),
+        }, ty.typeName);
     case 'one-of':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
-            oneOf: ty.oneOf.map(x => resolveSymbols(schema, x, ctx)),
-        });
+            oneOf: ty.oneOf.map(x => resolveSymbols(schema, x, ctx2)),
+        }, ty.typeName);
     case 'optional':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
-            optional: resolveSymbols(schema, ty.optional, ctx),
-        });
+            optional: resolveSymbols(schema, ty.optional, ctx2),
+        }, ty.typeName);
     case 'object':
         {
-                /* BUG:
-                 * interface HH extends H {}
-                 * interface H {
-                 *     a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
-                 *                             //            It should be `symlink`?
-                 *                             //              (compiler.ref() should return and
-                 *                             //               resolveSymbols() should not resolve?)
-                 *                             //            Or stop recursive call?
-                 *     // a?: H;               // OK
-                 *     b: H | number;
-                 * }
-                 */
+            if (0 < ctx.nestLevel && ty.typeName && 0 <= ctx.symlinkStack.findIndex(s => s === ty.typeName)) {
+                if (schema.has(ty.typeName)) {
+                    const z = schema.get(ty.typeName) as TypeAssertionSetValue;
+                    if (z.resolved) {
+                        return z.ty;
+                    }
+                }
+            }
 
             const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink') as AssertionSymlink[];
             if (baseSymlinks && baseSymlinks.length > 0) {
                 const exts = baseSymlinks
-                    .map(x => resolveSymbols(schema, x, ctx))
+                    .map(x => resolveSymbols(schema, x, ctx2))
                     .filter(x => x.kind === 'object');
                 // TODO: if x.kind !== 'object' items exist -> error?
                 const d2 = resolveSymbols(
@@ -93,24 +101,35 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                             baseTypes: ty.baseTypes.filter(x => x.kind !== 'symlink'),
                         } : {}),
                     }, ...exts),
-                    ctx,
+                    ty.typeName ?
+                        {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.typeName]} : ctx2,
                 );
-                return ({
+                return updateSchema(ty, schema, {
                     ...ty,
                     ...d2,
-                });
+                }, ty.typeName);
             } else {
-                return ({
+                return updateSchema(ty, schema, {
                     ...{
                         ...ty,
                         members: ty.members
-                            .map(x => [x[0], resolveSymbols(schema, x[1], ctx), ...x.slice(2)] as any),
+                            .map(x => [
+                                x[0],
+                                resolveSymbols(schema, x[1], ty.typeName ?
+                                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.typeName]} : ctx2),
+                                ...x.slice(2),
+                            ] as any),
                     },
                     ...(ty.additionalProps && 0 < ty.additionalProps.length ? {
                         additionalProps: ty.additionalProps
-                            .map(x => [x[0], resolveSymbols(schema, x[1], ctx), ...x.slice(2)] as any),
+                            .map(x => [
+                                x[0],
+                                resolveSymbols(schema, x[1], ty.typeName ?
+                                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.typeName]} : ctx2),
+                                ...x.slice(2),
+                            ] as any),
                     } : {}),
-                });
+                }, ty.typeName);
             }
         }
     default:

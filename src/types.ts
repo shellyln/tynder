@@ -157,12 +157,6 @@ export type AdditionalPropsMember = [
 ];
 
 
-// export interface AdditionalProps {
-//     key: AdditionalPropsKey;
-//     ty: TypeAssertion;
-// }
-
-
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
@@ -214,6 +208,7 @@ export interface ValidationContext {
 export interface TypeAssertionSetValue {
     ty: TypeAssertion;
     exported: boolean;
+    resolved: boolean;
 }
 
 
@@ -221,6 +216,7 @@ export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
 
 
 export interface SymbolResolverContext {
+    nestLevel: number;
     symlinkStack: string[]; // For detecting recursive type
 }
 

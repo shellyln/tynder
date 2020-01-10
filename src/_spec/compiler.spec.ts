@@ -146,10 +146,10 @@ describe("compiler", function() {
                     a?: HH;
                     b: H | number;
                 }
-                interface HH extends H {}
+                interface HH extends H {c?:number;}
 
                 /*
-                interface HH extends H {}
+                interface HH extends H {c?:number;}
                 interface H {
                     a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
                     // a?: H;               // OK
@@ -197,7 +197,7 @@ describe("compiler", function() {
             expect(validate({
                 a: {a: {b: 2}, b: 1},
                 b: {b: {b: 3}},
-            }, getType(schema2, 'H'), ctx)).toEqual({} as any);
+            }, getType(schema2, 'HH'), ctx)).toEqual({} as any);
             console.log(JSON.stringify(ctx));
             */
         } catch (e) {

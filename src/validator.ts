@@ -489,7 +489,7 @@ export function validateRoot<T>(
             return validateObjectAssertion(data, ty, ctx);
         case 'symlink':
             if (ctx.schema) {
-                return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {symlinkStack: []}), ctx);
+                return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {nestLevel: 0, symlinkStack: []}), ctx);
             }
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new Error(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`);
