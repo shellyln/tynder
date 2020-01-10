@@ -52,30 +52,30 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             );
         }
     case 'repeated':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
             repeated: resolveSymbols(schema, ty.repeated, ctx2),
-        });
+        }, ty.typeName);
     case 'spread':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
             spread: resolveSymbols(schema, ty.spread, ctx2),
-        });
+        }, ty.typeName);
     case 'sequence':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
             sequence: ty.sequence.map(x => resolveSymbols(schema, x, ctx2)),
-        });
+        }, ty.typeName);
     case 'one-of':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
             oneOf: ty.oneOf.map(x => resolveSymbols(schema, x, ctx2)),
-        });
+        }, ty.typeName);
     case 'optional':
-        return ({
+        return updateSchema(ty, schema, {
             ...ty,
             optional: resolveSymbols(schema, ty.optional, ctx2),
-        });
+        }, ty.typeName);
     case 'object':
         {
             if (0 < ctx.nestLevel && ty.typeName && 0 <= ctx.symlinkStack.findIndex(s => s === ty.typeName)) {

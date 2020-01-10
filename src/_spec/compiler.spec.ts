@@ -146,10 +146,10 @@ describe("compiler", function() {
                     a?: HH;
                     b: H | number;
                 }
-                interface HH extends H {}
+                interface HH extends H {c?:number;}
 
                 /*
-                interface HH extends H {}
+                interface HH extends H {c?:number;}
                 interface H {
                     a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
                     // a?: H;               // OK
