@@ -128,11 +128,12 @@ export function deserialize(text: string) {
         types.set(k, {
             ty: deserializeInner(parsed[k]),
             exported: false,
+            resolved: false,
         });
     }
 
     for (const ent of types.entries()) {
-        const ty = resolveSymbols(types, ent[1].ty, {symlinkStack: [ent[0]]});
+        const ty = resolveSymbols(types, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]]});
         ent[1].ty = ty;
     }
     return types;

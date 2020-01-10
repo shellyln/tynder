@@ -197,7 +197,7 @@ describe("compiler", function() {
             expect(validate({
                 a: {a: {b: 2}, b: 1},
                 b: {b: {b: 3}},
-            }, getType(schema2, 'H'), ctx)).toEqual({} as any);
+            }, getType(schema2, 'HH'), ctx)).toEqual({} as any);
             console.log(JSON.stringify(ctx));
             */
         } catch (e) {
