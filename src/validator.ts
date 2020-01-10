@@ -84,7 +84,7 @@ function validatePrimitiveTypeAssertion<T>(
     }
     switch (typeof ty.greaterThanValue) {
     case 'number': case 'string':
-        if (data < ty.greaterThanValue) {
+        if (data <= ty.greaterThanValue) {
             if (! valueRangeErr) {
                 reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
             }
@@ -94,7 +94,7 @@ function validatePrimitiveTypeAssertion<T>(
     }
     switch (typeof ty.lessThanValue) {
     case 'number': case 'string':
-        if (data > ty.lessThanValue) {
+        if (data >= ty.lessThanValue) {
             if (! valueRangeErr) {
                 reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
             }
