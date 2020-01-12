@@ -1,4 +1,7 @@
 
+// tslint:disable-next-line: no-implicit-dependencies no-var-requires
+const Ajv = require('ajv');
+
 import { TypeAssertionSetValue,
          ValidationContext }      from '../types';
 import { validate,
@@ -7,7 +10,8 @@ import { pick,
          merge }                  from '../picker';
 import { parse,
          compile }                from '../compiler';
-import { generateTypeScriptCode } from '../codegen';
+import { generateTypeScriptCode,
+         generateJsonSchemaObject } from '../codegen';
 
 
 
@@ -219,9 +223,34 @@ describe("compiler", function() {
                 c: Foo;
             }
         `);
-        const ctx = {checkAll: true};
+        const ctx: Partial<ValidationContext> = {checkAll: true};
         console.log(JSON.stringify(validate({b: 6, c: '1234'}, getType(z, 'A'), ctx)));
-        console.log(JSON.stringify(ctx));
+        console.log(ctx.errors);
+        expect(1).toEqual(1);
+    });
+    it("compiler-3", function() {
+        const z = compile(`
+            type Foo = string;
+            interface A {
+                a: Foo;
+                @range(3, 5)
+                b: number;
+                @maxLength(3)  // TODO: BUG: $ref: keywords ignored in schema at path "#/properties/c"
+                c: Foo;
+            }
+        `);
+        const schema = generateJsonSchemaObject(z);
+        // console.log(JSON.stringify(schema, null, 2));
+
+        const ajv = new Ajv({allErrors: true});
+        // tslint:disable-next-line: no-implicit-dependencies
+        ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+
+        const ajvValidate = ajv.addSchema(schema).getSchema('#/definitions/A');
+        const valid = ajvValidate({b: 6, c: '1234'});
+        if (! valid) {
+            console.log(ajvValidate.errors);
+        }
         expect(1).toEqual(1);
     });
 });
