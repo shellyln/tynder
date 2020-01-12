@@ -14,7 +14,8 @@
     "schema",
     "type checker",
     "ajv",
-    "joi"
+    "joi",
+    "protobuf"
   ],
   "main": "index.js",
   "module": "./modules/index.js",

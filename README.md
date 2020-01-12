@@ -24,11 +24,11 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 * Validate data with defined schema.
 * End user friendly custom validation error message.
 * Create subset of data by cherrypicking fields from original data with defined schema.
-* Generate TypeScript type definition code.
+* Generate **TypeScript** type definition code.
     * CLI / API
-* Generate JSON Schema type definition document.
+* Generate **JSON Schema** type definition document.
     * CLI / API
-* Generate Protocol Buffers 3 type definition code. (experimental)
+* Generate **Protocol Buffers 3** type definition code. (experimental)
     * CLI / API
 
 
@@ -771,6 +771,10 @@ Subcommands:
       Generated code is:
           const schema = {...};
           export default schema;
+  gen-proto3
+      Compile schema and generate 'Protocol Buffers 3' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.proto
 
 Options:
   --indir dirname

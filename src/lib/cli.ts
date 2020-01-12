@@ -145,6 +145,10 @@ Subcommands:
       Generated code is:
           const schema = {...};
           export default schema;
+  gen-proto3
+      Compile schema and generate 'Protocol Buffers 3' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.proto
 
 Options:
   --indir dirname
