@@ -28,13 +28,13 @@ Validate data in browsers, node.js back-end servers, and various language platfo
     * CLI / API
 * Generate JSON Schema type definition document.
     * CLI / API
+* Generate Protocol Buffers 3 type definition code.
+    * CLI / API
 
 
 
 ## Planned features
 * Merge data recursively.
-* Generate Protocol Buffers 3 type definition code.
-    * CLI / API
 * Generate GraphQL schema.
     * CLI / API
 * [X] ~~Recursive types~~

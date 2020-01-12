@@ -1,0 +1,253 @@
+
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+
+message PrimitiveValueTypes {
+    google.protobuf.Any value = 1;
+}
+
+message PrimitiveValueTypeNames {
+    google.protobuf.Any value = 1;
+}
+
+message OptionalPrimitiveValueTypeNames {
+    google.protobuf.Any value = 1;
+}
+
+message PlaceholderTypeNames {
+    google.protobuf.Any value = 1;
+}
+
+message OptionalPlaceholderTypeNames {
+    google.protobuf.Any value = 1;
+}
+
+enum ErrorTypes {
+    InvalidDefinition = 1;
+    Required = 2;
+    TypeUnmatched = 3;
+    RepeatQtyUnmatched = 4;
+    SequenceUnmatched = 5;
+    ValueRangeUnmatched = 6;
+    ValuePatternUnmatched = 7;
+    ValueLengthUnmatched = 8;
+    ValueUnmatched = 9;
+}
+
+message ErrorMessages {
+    google.protobuf.StringValue invalidDefinition = 1;
+    google.protobuf.StringValue required = 2;
+    google.protobuf.StringValue typeUnmatched = 3;
+    google.protobuf.StringValue repeatQtyUnmatched = 4;
+    google.protobuf.StringValue sequenceUnmatched = 5;
+    google.protobuf.StringValue valueRangeUnmatched = 6;
+    google.protobuf.StringValue valuePatternUnmatched = 7;
+    google.protobuf.StringValue valueLengthUnmatched = 8;
+    google.protobuf.StringValue valueUnmatched = 9;
+}
+
+message TypeAssertionErrorMessage {
+    google.protobuf.StringValue code = 1;
+    string message = 2;
+}
+
+message TypeAssertionBase {
+    google.protobuf.StringValue messageId = 1;
+    google.protobuf.StringValue message = 2;
+    ErrorMessages messages = 3;
+    google.protobuf.StringValue name = 4;
+    google.protobuf.StringValue typeName = 5;
+    google.protobuf.StringValue docComment = 6;
+    google.protobuf.StringValue passThruCodeBlock = 7;
+    google.protobuf.BoolValue noOutput = 8;
+}
+
+message NeverTypeAssertion {
+    string kind = 1;
+    google.protobuf.StringValue messageId = 2;
+    google.protobuf.StringValue message = 3;
+    ErrorMessages messages = 4;
+    google.protobuf.StringValue name = 5;
+    google.protobuf.StringValue typeName = 6;
+    google.protobuf.StringValue docComment = 7;
+    google.protobuf.StringValue passThruCodeBlock = 8;
+    google.protobuf.BoolValue noOutput = 9;
+}
+
+message AnyTypeAssertion {
+    string kind = 1;
+    google.protobuf.StringValue messageId = 2;
+    google.protobuf.StringValue message = 3;
+    ErrorMessages messages = 4;
+    google.protobuf.StringValue name = 5;
+    google.protobuf.StringValue typeName = 6;
+    google.protobuf.StringValue docComment = 7;
+    google.protobuf.StringValue passThruCodeBlock = 8;
+    google.protobuf.BoolValue noOutput = 9;
+}
+
+message UnknownTypeAssertion {
+    string kind = 1;
+    google.protobuf.StringValue messageId = 2;
+    google.protobuf.StringValue message = 3;
+    ErrorMessages messages = 4;
+    google.protobuf.StringValue name = 5;
+    google.protobuf.StringValue typeName = 6;
+    google.protobuf.StringValue docComment = 7;
+    google.protobuf.StringValue passThruCodeBlock = 8;
+    google.protobuf.BoolValue noOutput = 9;
+}
+
+message PrimitiveTypeAssertion {
+    string kind = 1;
+    PrimitiveValueTypeNames primitiveName = 2;
+    google.protobuf.Any minValue = 3;
+    google.protobuf.Any maxValue = 4;
+    google.protobuf.Any greaterThanValue = 5;
+    google.protobuf.Any lessThanValue = 6;
+    google.protobuf.Any minLength = 7;
+    google.protobuf.Any maxLength = 8;
+    google.protobuf.Any pattern = 9;
+    google.protobuf.StringValue messageId = 10;
+    google.protobuf.StringValue message = 11;
+    ErrorMessages messages = 12;
+    google.protobuf.StringValue name = 13;
+    google.protobuf.StringValue typeName = 14;
+    google.protobuf.StringValue docComment = 15;
+    google.protobuf.StringValue passThruCodeBlock = 16;
+    google.protobuf.BoolValue noOutput = 17;
+}
+
+message PrimitiveValueTypeAssertion {
+    string kind = 1;
+    PrimitiveValueTypes value = 2;
+    google.protobuf.StringValue messageId = 3;
+    google.protobuf.StringValue message = 4;
+    ErrorMessages messages = 5;
+    google.protobuf.StringValue name = 6;
+    google.protobuf.StringValue typeName = 7;
+    google.protobuf.StringValue docComment = 8;
+    google.protobuf.StringValue passThruCodeBlock = 9;
+    google.protobuf.BoolValue noOutput = 10;
+}
+
+message RepeatedAssertion {
+    string kind = 1;
+    TypeAssertion repeated = 2;
+    google.protobuf.Any min = 3;
+    google.protobuf.Any max = 4;
+    google.protobuf.StringValue messageId = 5;
+    google.protobuf.StringValue message = 6;
+    ErrorMessages messages = 7;
+    google.protobuf.StringValue name = 8;
+    google.protobuf.StringValue typeName = 9;
+    google.protobuf.StringValue docComment = 10;
+    google.protobuf.StringValue passThruCodeBlock = 11;
+    google.protobuf.BoolValue noOutput = 12;
+}
+
+message SpreadAssertion {
+    string kind = 1;
+    TypeAssertion spread = 2;
+    google.protobuf.Any min = 3;
+    google.protobuf.Any max = 4;
+    google.protobuf.StringValue messageId = 5;
+    google.protobuf.StringValue message = 6;
+    ErrorMessages messages = 7;
+    google.protobuf.StringValue name = 8;
+    google.protobuf.StringValue typeName = 9;
+    google.protobuf.StringValue docComment = 10;
+    google.protobuf.StringValue passThruCodeBlock = 11;
+    google.protobuf.BoolValue noOutput = 12;
+}
+
+message SequenceAssertion {
+    string kind = 1;
+    repeated TypeAssertion sequence = 2;
+    google.protobuf.StringValue messageId = 3;
+    google.protobuf.StringValue message = 4;
+    ErrorMessages messages = 5;
+    google.protobuf.StringValue name = 6;
+    google.protobuf.StringValue typeName = 7;
+    google.protobuf.StringValue docComment = 8;
+    google.protobuf.StringValue passThruCodeBlock = 9;
+    google.protobuf.BoolValue noOutput = 10;
+}
+
+message OneOfAssertion {
+    string kind = 1;
+    repeated TypeAssertion oneOf = 2;
+    google.protobuf.StringValue messageId = 3;
+    google.protobuf.StringValue message = 4;
+    ErrorMessages messages = 5;
+    google.protobuf.StringValue name = 6;
+    google.protobuf.StringValue typeName = 7;
+    google.protobuf.StringValue docComment = 8;
+    google.protobuf.StringValue passThruCodeBlock = 9;
+    google.protobuf.BoolValue noOutput = 10;
+}
+
+message OptionalAssertion {
+    string kind = 1;
+    TypeAssertion optional = 2;
+    google.protobuf.StringValue messageId = 3;
+    google.protobuf.StringValue message = 4;
+    ErrorMessages messages = 5;
+    google.protobuf.StringValue name = 6;
+    google.protobuf.StringValue typeName = 7;
+    google.protobuf.StringValue docComment = 8;
+    google.protobuf.StringValue passThruCodeBlock = 9;
+    google.protobuf.BoolValue noOutput = 10;
+}
+
+message EnumAssertion {
+    string kind = 1;
+    repeated google.protobuf.Any values = 2;
+    google.protobuf.StringValue messageId = 3;
+    google.protobuf.StringValue message = 4;
+    ErrorMessages messages = 5;
+    google.protobuf.StringValue name = 6;
+    google.protobuf.StringValue typeName = 7;
+    google.protobuf.StringValue docComment = 8;
+    google.protobuf.StringValue passThruCodeBlock = 9;
+    google.protobuf.BoolValue noOutput = 10;
+}
+
+message ObjectAssertionMember {
+    google.protobuf.Any value = 1;
+}
+
+message ObjectAssertion {
+    string kind = 1;
+    repeated ObjectAssertionMember members = 2;
+    google.protobuf.Any baseTypes = 3;
+    google.protobuf.StringValue messageId = 4;
+    google.protobuf.StringValue message = 5;
+    ErrorMessages messages = 6;
+    google.protobuf.StringValue name = 7;
+    google.protobuf.StringValue typeName = 8;
+    google.protobuf.StringValue docComment = 9;
+    google.protobuf.StringValue passThruCodeBlock = 10;
+    google.protobuf.BoolValue noOutput = 11;
+}
+
+message TypeAssertion {
+    google.protobuf.Any value = 1;
+}
+
+message Context {
+    google.protobuf.BoolValue checkAll = 1;
+    repeated TypeAssertionErrorMessage errors = 2;
+    repeated TypeAssertion typeStack = 3;
+}
+
+message TypeAssertionSetValue {
+    TypeAssertion ty = 1;
+    bool exported = 2;
+}
+
+message TypeAssertionMap {
+    google.protobuf.Any value = 1;
+}
+
