@@ -24,13 +24,13 @@ TypeScript friendly Data validator for JavaScript.
 * Create subset of data by cherrypicking fields from data with defined schema.
 * Generate TypeScript type definition code.
     * CLI / API
+* Generate JSON Schema type definition document.
+    * CLI / API
 
 
 
 ## Planned features
 * Merge data recursively.
-* Generate JSON Schema type definition document.
-    * CLI / API
 * Generate Protocol Buffers 3 type definition code.
     * CLI / API
 * [X] ~~Recursive types~~
