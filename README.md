@@ -139,7 +139,7 @@ tynder gen-json-schema-as-ts --indir path/to/schema/tynder --outdir path/to/sche
 
 
 ### Compile using API:
-```js
+```ts
 import { compile } from 'tynder/modules/compiler';
 
 export default const mySchema = compile(`
@@ -152,7 +152,7 @@ export default const mySchema = compile(`
 
 
 ### Validating:
-```js
+```ts
 import { validate,
          getType }           from 'tynder/modules/validator';
 import { ValidationContext } from 'tynder/modules/types';
@@ -190,7 +190,7 @@ if (validated3 === null) {
 
 
 ### Cherrypicking:
-```js
+```ts
 import { getType }           from 'tynder/modules/validator';
 import { pick,
          merge }             from 'tynder/modules/picker';
@@ -219,10 +219,33 @@ const picked2 = pick({
 ```
 
 
+## Load pre-compiled schema
+
+### From object (import)
+```ts
+import { deserializeFromObject } from 'tynder/modules/lib/serializer';
+import mySchema_                 from './path/to/compiled/my-schema.ts';
+
+const mySchema = deserializeFromObject(mySchema_);
+```
+
+### From object (require JSON file)
+```ts
+import { deserializeFromObject } from 'tynder/modules/lib/serializer';
+const mySchema = deserializeFromObject(require('./path/to/compiled/my-schema.json'));
+```
+
+### From text
+```ts
+import { deserialize } from 'tynder/modules/lib/serializer';
+import * as fs         from 'fs';
+const mySchema = deserialize(fs.readFileSync('./path/to/compiled/my-schema.json', 'utf8'));
+```
+
 
 ## Define schema with functional API
 
-```js
+```ts
 import { picked,
          omit,
          partial,

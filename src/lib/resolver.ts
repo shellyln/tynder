@@ -136,3 +136,13 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
         return ty;
     }
 }
+
+
+export function resolveSchema(schema: TypeAssertionMap): TypeAssertionMap {
+    for (const ent of schema.entries()) {
+        const ty = resolveSymbols(schema, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]]});
+        ent[1].ty = ty;
+    }
+
+    return schema;
+}
