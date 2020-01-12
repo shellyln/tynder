@@ -4,6 +4,8 @@
 
 TypeScript friendly Data validator for JavaScript.
 
+Validate data in browsers, node.js back-end servers, and various language platforms by simply writing the schema once in TypeScript with extended syntax.
+
 
 [![npm](https://img.shields.io/npm/v/tynder.svg)](https://www.npmjs.com/package/tynder)
 [![GitHub release](https://img.shields.io/github/release/shellyln/tynder.svg)](https://github.com/shellyln/tynder/releases)
@@ -21,7 +23,7 @@ TypeScript friendly Data validator for JavaScript.
 * Define the schema with TypeScript-like DSL.
 * Validate data with defined schema.
 * End user friendly custom validation error message.
-* Create subset of data by cherrypicking fields from data with defined schema.
+* Create subset of data by cherrypicking fields from original data with defined schema.
 * Generate TypeScript type definition code.
     * CLI / API
 * Generate JSON Schema type definition document.
@@ -32,6 +34,8 @@ TypeScript friendly Data validator for JavaScript.
 ## Planned features
 * Merge data recursively.
 * Generate Protocol Buffers 3 type definition code.
+    * CLI / API
+* Generate GraphQL schema.
     * CLI / API
 * [X] ~~Recursive types~~
 * [X] ~~Back reference of types~~
@@ -118,15 +122,19 @@ Default file extension is `*.tss`.
 ### Compile using CLI commands:
 ```sh
 # Compile schema and output as JSON files.
-tynder compile       --indir path/to/schema/tynder --outdir path/to/schema/_compiled
+tynder compile               --indir path/to/schema/tynder --outdir path/to/schema/_compiled
 # Compile schema and output as JavaScript|TypeScript files.
-tynder compile-as-ts --indir path/to/schema/tynder --outdir path/to/schema/_compiled
+tynder compile-as-ts         --indir path/to/schema/tynder --outdir path/to/schema/_compiled
 # Compile schema and generate TypeScript type definition files.
-tynder gen-ts        --indir path/to/schema/tynder --outdir path/to/typescript-src
+tynder gen-ts                --indir path/to/schema/tynder --outdir path/to/typescript-src
+# Compile schema and generate JSON Schema files.
+tynder gen-json-schema       --indir path/to/schema/tynder --outdir path/to/schema/json-schema
+# Compile schema and generate JSON Schema as JavaScript|TypeScript files.
+tynder gen-json-schema-as-ts --indir path/to/schema/tynder --outdir path/to/schema/json-schema
 
 ## Planned features
-# tynder gen-json-schema --indir path/to/schema/tynder --outdir path/to/schema/json-schema
-# tynder gen-proto3      --indir path/to/schema/tynder --outdir path/to/schema/proto3
+# tynder gen-proto3  --indir path/to/schema/tynder --outdir path/to/schema/proto3
+# tynder gen-graphql --indir path/to/schema/tynder --outdir path/to/schema/graphql
 ```
 
 
@@ -150,15 +158,18 @@ import { validate,
 import { ValidationContext } from 'tynder/modules/types';
 import default as mySchema   from './myschema';
 
+
 const validated1 = validate({
     a: 'x',
     b: 3,
 }, getType(mySchema, 'A')); // {a: 'x', b: 3}
 
+
 const validated2 = validate({
     aa: 'x',
     b: 3,
 }, getType(mySchema, 'A')); // null
+
 
 const ctx3: Partial<ValidationContext> =
 {                            // To receive the error messages, define the context as a variable.
@@ -186,6 +197,7 @@ import { pick,
 import { ValidationContext } from 'tynder/modules/types';
 import default as mySchema   from './myschema';
 
+
 const original = {
     a: 'x',
     b: 3,
@@ -193,6 +205,7 @@ const original = {
 const picked1 = pick(original, getType(mySchema, 'A')); // {a: 'x'}
 // Edit the picked data and...
 const changed = merge(original, picked1); // TODO: not impl. (planned feature)
+
 
 const ctx2: Partial<ValidationContext> =
 {                     // To receive the error messages, define the context as a variable.
@@ -300,6 +313,8 @@ interface S extends P, Q, R {
 }
 type MyType = S | 10 | 20 | 30 | string | 50;
 */
+
+const validated1 = validate({...}, myType);
 ```
 
 
