@@ -714,8 +714,7 @@ const interfaceKeyTypePair = (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
                     tokens[3] === '?' ?
                         [{symbol: 'optional'}, tokens[4]] :
                         tokens[4], ...(tokens[0] as Ast[]), ],
-                tokens[1],
-            ]])(
+                tokens[1], ]])(
         trans(tokens => [tokens])(first(
             decoratorsClause,
             zeroWidth(() => []), )),                // [0] decorators
