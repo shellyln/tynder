@@ -28,7 +28,7 @@ Validate data in browsers, node.js back-end servers, and various language platfo
     * CLI / API
 * Generate JSON Schema type definition document.
     * CLI / API
-* Generate Protocol Buffers 3 type definition code.
+* Generate Protocol Buffers 3 type definition code. (experimental)
     * CLI / API
 
 
