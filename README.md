@@ -740,6 +740,18 @@ Subcommands:
       Compile schema and generate TypeScript type definition files.
           * default input file extension is *.tss
           * default output file extension is *.d.ts
+  gen-json-schema
+      Compile schema and generate 'JSON Schema' files.
+          * default input file extension is *.tss
+          * default output file extension is *.json
+  gen-json-schema-as-ts
+      Compile schema and generate 'JSON Schema'
+      as JavaScript|TypeScript files.
+          * default input file extension is *.tss
+          * default output file extension is *.ts
+      Generated code is:
+          const schema = {...};
+          export default schema;
 
 Options:
   --indir dirname

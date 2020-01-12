@@ -12,6 +12,18 @@ export interface JsonSchemaAssertionBase {
     description?: string;
 }
 
+export interface JsonSchemaNullAssertion extends JsonSchemaAssertionBase {
+    type: 'null';
+}
+
+export interface JsonSchemaAnyAssertion extends JsonSchemaAssertionBase {
+    type: Array<'null' | 'number' | 'string' | 'boolean' | 'array' | 'object'>;
+}
+
+export interface JsonSchemaUnknownAssertion extends JsonSchemaAssertionBase {
+    type: Array<'number' | 'string' | 'boolean' | 'array' | 'object'>;
+}
+
 export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase {
     type: 'number' | Array<'number' | 'null'>;
     multipleOf?: number;
@@ -21,6 +33,16 @@ export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase {
     exclusiveMinimum?: number;
 }
 
+export interface JsonSchemaNumberValueAssertion extends JsonSchemaAssertionBase {
+    type: 'number';
+    enum: number[];
+}
+
+export interface JsonSchemaBigintNumberValueAssertion extends JsonSchemaAssertionBase {
+    type: 'number';
+    enum: string[];
+}
+
 export interface JsonSchemaStringAssertion extends JsonSchemaAssertionBase {
     type: 'string' | Array<'string' | 'null'>;
     maxLength?: number;
@@ -28,8 +50,18 @@ export interface JsonSchemaStringAssertion extends JsonSchemaAssertionBase {
     pattern?: string;
 }
 
+export interface JsonSchemaStringValueAssertion extends JsonSchemaAssertionBase {
+    type: 'string';
+    enum: string[];
+}
+
 export interface JsonSchemaBooleanAssertion extends JsonSchemaAssertionBase {
     type: 'boolean' | Array<'boolean' | 'null'>;
+}
+
+export interface JsonSchemaBooleanValueAssertion extends JsonSchemaAssertionBase {
+    type: 'boolean';
+    enum: boolean[];
 }
 
 export interface JsonSchemaArrayAssertion extends JsonSchemaAssertionBase {
@@ -56,24 +88,24 @@ export interface JsonSchemaObjectAssertion extends JsonSchemaAssertionBase {
     allOf?: JsonSchemaAssertion[];
 }
 
-export interface JsonSchemaEnumAssertion extends JsonSchemaAssertionBase {
+export interface JsonSchemaTsEnumAssertion extends JsonSchemaAssertionBase {
     type: Array<'string' | 'number'>;
     enum: Array<string | number>;
 }
 
-export interface JsonSchemaAnyOfAssertion {
+export interface JsonSchemaAnyOfAssertion extends JsonSchemaAssertionBase {
     anyOf: JsonSchemaAssertion[];
 }
 
-export interface JsonSchemaOneOfAssertion {
+export interface JsonSchemaOneOfAssertion extends JsonSchemaAssertionBase {
     oneOf: JsonSchemaAssertion[];
 }
 
-export interface JsonSchemaAllOfAssertion {
+export interface JsonSchemaAllOfAssertion extends JsonSchemaAssertionBase {
     allOf: JsonSchemaAssertion[];
 }
 
-export interface JsonSchemaNotAssertion {
+export interface JsonSchemaNotAssertion extends JsonSchemaAssertionBase {
     not: JsonSchemaAssertion;
 }
 
@@ -82,14 +114,25 @@ export interface JsonSchemaRefAssertion extends JsonSchemaAssertionBase {
 }
 
 export type JsonSchemaAssertion =
+    JsonSchemaNullAssertion |
+    JsonSchemaAnyAssertion |
+    JsonSchemaUnknownAssertion |
     JsonSchemaNumberAssertion |
+    JsonSchemaNumberValueAssertion |
+    JsonSchemaBigintNumberValueAssertion |
     JsonSchemaStringAssertion |
+    JsonSchemaStringValueAssertion |
     JsonSchemaBooleanAssertion |
+    JsonSchemaBooleanValueAssertion |
     JsonSchemaArrayAssertion |
     JsonSchemaObjectAssertion |
+    JsonSchemaTsEnumAssertion |
+    JsonSchemaAnyOfAssertion |
+    JsonSchemaOneOfAssertion |
+    JsonSchemaAllOfAssertion |
     JsonSchemaRefAssertion;
 
-export interface JsonSchemaRootAssertion extends JsonSchemaObjectAssertion {
+export interface JsonSchemaRootAssertion extends Partial<JsonSchemaObjectAssertion> {
     $schema?: string;
     $id?: string;
     title?: string;

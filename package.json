@@ -39,6 +39,7 @@
     "@types/node": "^12.12.21",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
+    "ajv": "^6.10.2",
     "babel-loader": "^8.0.6",
     "cpx": "^1.5.0",
     "cross-env": "^6.0.3",
@@ -83,6 +84,8 @@
     "example:1": "node ./bin.cli/tynder.js compile --indir ./schema/tynder --outdir ./schema/_compiled",
     "example:2": "node ./bin.cli/tynder.js compile-as-ts --indir ./schema/tynder --outdir ./schema/_compiled",
     "example:3": "node ./bin.cli/tynder.js gen-ts --indir ./schema/tynder --outdir ./schema/ts",
+    "example:4": "node ./bin.cli/tynder.js gen-json-schema --indir ./schema/tynder --outdir ./schema/json-schema",
+    "example:5": "node ./bin.cli/tynder.js gen-json-schema-as-ts --indir ./schema/tynder --outdir ./schema/json-schema",
     "prepublishOnly": "run-s clean build test lint"
   },
   "repository": {
