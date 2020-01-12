@@ -121,7 +121,13 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
         {
             const properties: JsonSchema.JsonSchemaObjectPropertyAssertion = {};
             for (const m of ty.members) {
-                properties[m[0]] = generateJsonSchemaInner(m[1], nestLevel + 1);
+                const z = generateJsonSchemaInner(m[1], nestLevel + 1);
+                if (m[3]) {
+                    z.description = m[3];
+                } else {
+                    delete z.description;
+                }
+                properties[m[0]] = z;
             }
             const ret: JsonSchema.JsonSchemaObjectAssertion = {
                 type: 'object',

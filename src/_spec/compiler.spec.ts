@@ -11,6 +11,7 @@ import { pick,
 import { parse,
          compile }                from '../compiler';
 import { generateTypeScriptCode,
+         generateProto3Code,
          generateJsonSchemaObject } from '../codegen';
 
 
@@ -105,6 +106,7 @@ describe("compiler", function() {
                     u = 'aaa',
                 }
                 export enum R {}
+                interface B1111 {}
                 /** doc comment B - line 1 */
                 interface B {
                     @range(2, 5)
@@ -132,8 +134,9 @@ describe("compiler", function() {
                     j: [...<number, 1..2>, string];
                     j2: [string, ...<number, 2..3>];
                     k: Y;
-                    l: B;                                 // TODO: BUG: interface B's doc comment is out
+                    l: B;
                     [propName: /^[a-z][0-9]$/ | number]?: string;
+                    /** doc comment A.propName (C) */
                     [propName: /^[A][0-9]$/]: C;
                 }
                 interface AA extends A {}
@@ -155,8 +158,8 @@ describe("compiler", function() {
                 /*
                 interface HH extends H {c?:number;}
                 interface H {
-                    a?: HH;                 // TODO: BUG: Maximum call stack size exceeded (resolveSymbols())
-                    // a?: H;               // OK
+                    a?: HH;
+                    // a?: H;
                     b: H | number;
                 }
                 */
@@ -195,6 +198,7 @@ describe("compiler", function() {
                 // B0: 2,
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
+            console.log(generateProto3Code(schema2));
             console.log(JSON.stringify(ctx));
 
             delete ctx.errors;
