@@ -9,7 +9,8 @@ import { TypeAssertionMap }       from '../types';
 import { compile }                from '../compiler';
 import { serialize }              from '../serializer';
 import { generateTypeScriptCode,
-         generateJsonSchema }     from '../codegen';
+         generateJsonSchema,
+         generateProto3Code }     from '../codegen';
 
 
 
@@ -94,6 +95,16 @@ function compileToJsonSchemaAsTs(srcDir: string, destDir: string, options: Parti
     }, options || {});
 
     return compileTo((types: TypeAssertionMap) => generateJsonSchema(types, true), srcDir, destDir, opts);
+}
+
+
+function compileToProto3(srcDir: string, destDir: string, options: Partial<CliOptions>) {
+    const opts: CliOptions = Object.assign({}, {
+        srcExt: '.tss',
+        destExt: '.proto',
+    }, options || {});
+
+    return compileTo(generateProto3Code, srcDir, destDir, opts);
 }
 
 
@@ -228,8 +239,9 @@ export function run(argv: string[]) {
         case 'gen-json-schema-as-ts':
             compileToJsonSchemaAsTs(inDir, outDir, options);
             break;
-        // case 'gen-proto3':
-        //     break;
+        case 'gen-proto3':
+            compileToProto3(inDir, outDir, options);
+            break;
         case 'help':
             printHelp();
             process.exit(0);

@@ -86,6 +86,7 @@
     "example:3": "node ./bin.cli/tynder.js gen-ts --indir ./schema/tynder --outdir ./schema/ts",
     "example:4": "node ./bin.cli/tynder.js gen-json-schema --indir ./schema/tynder --outdir ./schema/json-schema",
     "example:5": "node ./bin.cli/tynder.js gen-json-schema-as-ts --indir ./schema/tynder --outdir ./schema/json-schema",
+    "example:6": "node ./bin.cli/tynder.js gen-proto3 --indir ./schema/tynder --outdir ./schema/proto3",
     "prepublishOnly": "run-s clean build test lint"
   },
   "repository": {
