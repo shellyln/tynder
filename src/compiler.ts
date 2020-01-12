@@ -710,12 +710,12 @@ const interfaceKeyTypePair = (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
     trans(tokens => [
             [{symbol: '$list'},
                 tokens[2],
-                [{symbol: 'docComment'},
-                    [{symbol: '$pipe'},
-                        tokens[3] === '?' ?
-                            [{symbol: 'optional'}, tokens[4]] :
-                            tokens[4], ...(tokens[0] as Ast[]), ],
-                    tokens[1], ]]])(
+                [{symbol: '$pipe'},
+                    tokens[3] === '?' ?
+                        [{symbol: 'optional'}, tokens[4]] :
+                        tokens[4], ...(tokens[0] as Ast[]), ],
+                tokens[1],
+            ]])(
         trans(tokens => [tokens])(first(
             decoratorsClause,
             zeroWidth(() => []), )),                // [0] decorators

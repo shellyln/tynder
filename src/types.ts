@@ -133,13 +133,6 @@ export interface EnumAssertion extends TypeAssertionBase {
 }
 
 
-// TODO:
-// export interface ObjectMemberInfo {
-//     definedByAncestors?: boolean;
-//     docComment?: string;
-// }
-
-
 export type ObjectAssertionMember = [
     string,         // name
     TypeAssertion,  // type
@@ -147,6 +140,11 @@ export type ObjectAssertionMember = [
     string,         // name
     TypeAssertion,  // type
     boolean,        // If true, defined by ancestor types
+] | [
+    string,         // name
+    TypeAssertion,  // type
+    boolean,        // If true, defined by ancestor types
+    string,         // doc comment
 ];
 
 
@@ -161,6 +159,11 @@ export type AdditionalPropsMember = [
     AdditionalPropsKey,  // name
     TypeAssertion,       // type
     boolean,             // If true, defined by ancestor types
+] | [
+    AdditionalPropsKey,  // name
+    TypeAssertion,       // type
+    boolean,             // If true, defined by ancestor types
+    string,         // doc comment
 ];
 
 

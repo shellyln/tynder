@@ -130,7 +130,7 @@ function generateProto3CodeObject(ty: ObjectAssertion, isInterface: boolean, ctx
     const memberLines =
         ty.members
         .map(x =>
-            `${formatProto3CodeDocComment(x[1], ctx.nestLevel + 1)}${
+            `${formatProto3CodeDocComment(x[3] || '', ctx.nestLevel + 1)}${
                 '    '.repeat(ctx.nestLevel + 1)}${
                 x[1].typeName ?
                     x[1].typeName :

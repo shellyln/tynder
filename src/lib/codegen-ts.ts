@@ -126,7 +126,7 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
     const memberLines =
         ty.members.filter(x => !(x[2]))
         .map(x =>
-            `${formatTypeScriptCodeDocComment(x[1], ctx.nestLevel + 1)}${
+            `${formatTypeScriptCodeDocComment(x[3] || '', ctx.nestLevel + 1)}${
                 '    '.repeat(ctx.nestLevel + 1)}${
                 x[0]}${x[1].kind === 'optional' ? '?' : ''}: ${
                 x[1].typeName ?
@@ -136,7 +136,7 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
     const additionalPropsLines =
         ty.additionalProps?.filter(x => !(x[2]))
         .map((x, i) =>
-            `${formatTypeScriptCodeDocComment(x[1], ctx.nestLevel + 1)}${
+            `${formatTypeScriptCodeDocComment(x[3] || '', ctx.nestLevel + 1)}${
                 '    '.repeat(ctx.nestLevel + 1)}${
                 formatAdditionalPropsName(x[0], i)}${x[1].kind === 'optional' ? '?' : ''}: ${
                 x[1].typeName ?
