@@ -173,6 +173,9 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
     if (ty.messages) {
         messages.push(ty.messages);
     }
+    if (ctx.errorMessages) {
+        messages.push(ctx.errorMessages);
+    }
     messages.push(defaultMessages);
 
     if (ty.messageId) {

@@ -682,7 +682,7 @@ interface Foo {
 
 ## Customize error messages
 
-### Customize
+### Customize message of items
 
 ```ts
 @msgId('M1111')                                                   // Custom error message id
@@ -702,7 +702,7 @@ export interface Foo {
 ```
 
 
-### Error messages
+### Default error messages
 
 ```ts
 export const defaultMessages: ErrorMessages = {
@@ -717,6 +717,46 @@ export const defaultMessages: ErrorMessages = {
     valueUnmatched: '"%{name}" of "%{parentType}" value should be "%{expectedValue}".',
 };
 ```
+
+### Change default messages
+```ts
+import { compile }           from 'tynder/modules/compiler';
+import { getType }           from 'tynder/modules/validator';
+import { pick,
+         merge }             from 'tynder/modules/picker';
+import { ValidationContext } from 'tynder/modules/types';
+
+export default const mySchema = compile(`
+    interface A {
+        @msg({
+            required: 'Don\'t forget "%{name}"!.',
+        })
+        a: string;
+    }
+`);
+
+const ctx: Partial<ValidationContext> = {
+    checkAll: true,
+    noAdditionalProps: true,
+    schema: mySchema,
+    errorMessages: {
+        required: '%{name}" is requred!',
+    },
+};
+
+const validated = validate({
+    aa: 'x',
+}, getType(mySchema, 'A'), ctx3);
+
+if (validated3 === null) {
+    console.log(JSON.stringify(
+        ctx3.errors, // error messages (string[])
+        null, 2));
+}
+```
+
+Precedence is "`Default messages` < `ctx.errorMessages` < `@msg()`".
+
 
 ### Keyword substitutions
 

@@ -200,6 +200,7 @@ export type TypeAssertion =
 export interface ValidationContext {
     checkAll?: boolean;
     noAdditionalProps?: boolean;
+    errorMessages?: ErrorMessages;
 
     // maxDepth: number;
     // depth: number;
