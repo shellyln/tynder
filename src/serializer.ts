@@ -7,7 +7,7 @@ import { TypeAssertion,
          ObjectAssertion,
          TypeAssertionSetValue,
          TypeAssertionMap } from './types';
-import { resolveSymbols }   from './lib/resolver';
+import { resolveSchema }    from './lib/resolver';
 
 
 
@@ -118,23 +118,25 @@ function deserializeInner(ty: TypeAssertion) {
 }
 
 
-export function deserialize(text: string) {
-    const types: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
-    const parsed = JSON.parse(text);
-    for (const k in parsed) {
-        if (! Object.prototype.hasOwnProperty.call(parsed, k)) {
+export function deserializeFromObject(obj: any) {
+    const schema: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
+
+    for (const k in obj) {
+        if (! Object.prototype.hasOwnProperty.call(obj, k)) {
             continue;
         }
-        types.set(k, {
-            ty: deserializeInner(parsed[k]),
+        schema.set(k, {
+            ty: deserializeInner(obj[k]),
             exported: false,
             resolved: false,
         });
     }
 
-    for (const ent of types.entries()) {
-        const ty = resolveSymbols(types, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]]});
-        ent[1].ty = ty;
-    }
-    return types;
+    return resolveSchema(schema);
+}
+
+
+export function deserialize(text: string) {
+    const parsed = JSON.parse(text);
+    return deserializeFromObject(parsed);
 }

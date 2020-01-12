@@ -17,7 +17,7 @@ import { TypeAssertion,
          TypeAssertionSetValue,
          TypeAssertionMap }      from './types';
 import * as operators            from './operators';
-import { resolveSymbols }        from './lib/resolver';
+import { resolveSchema }         from './lib/resolver';
 
 
 
@@ -1045,11 +1045,6 @@ export function compile(s: string) {
     const z = parse(s);
     lisp.evaluateAST(z as SxToken[]);
 
-    for (const ent of schema.entries()) {
-        const ty = resolveSymbols(schema, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]]});
-        ent[1].ty = ty;
-    }
-
-    return schema;
+    return resolveSchema(schema);
 }
 // tslint:enable: object-literal-key-quotes
