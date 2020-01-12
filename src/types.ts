@@ -133,6 +133,13 @@ export interface EnumAssertion extends TypeAssertionBase {
 }
 
 
+// TODO:
+// export interface ObjectMemberInfo {
+//     definedByAncestors?: boolean;
+//     docComment?: string;
+// }
+
+
 export type ObjectAssertionMember = [
     string,         // name
     TypeAssertion,  // type

@@ -24,13 +24,13 @@ TypeScript friendly Data validator for JavaScript.
 * Create subset of data by cherrypicking fields from data with defined schema.
 * Generate TypeScript type definition code.
     * CLI / API
+* Generate JSON Schema type definition document.
+    * CLI / API
 
 
 
 ## Planned features
 * Merge data recursively.
-* Generate JSON Schema type definition document.
-    * CLI / API
 * Generate Protocol Buffers 3 type definition code.
     * CLI / API
 * [X] ~~Recursive types~~
@@ -146,8 +146,9 @@ export default const mySchema = compile(`
 ### Validating:
 ```js
 import { validate,
-         getType }         from 'tynder/modules/validator';
-import default as mySchema from './myschema';
+         getType }           from 'tynder/modules/validator';
+import { ValidationContext } from 'tynder/modules/types';
+import default as mySchema   from './myschema';
 
 const validated1 = validate({
     a: 'x',
@@ -159,7 +160,8 @@ const validated2 = validate({
     b: 3,
 }, getType(mySchema, 'A')); // null
 
-const ctx3 = {               // To receive the error messages, define the context as a variable.
+const ctx3: Partial<ValidationContext> =
+{                            // To receive the error messages, define the context as a variable.
     checkAll: true,          // (optional) Set to true to continue validation after the first error.
     noAdditionalProps: true, // (optional) Do not allow implicit additional properties.
     schema: mySchema,        // (optional) Pass "schema" to check for recursive types.
@@ -178,10 +180,11 @@ if (validated3 === null) {
 
 ### Cherrypicking:
 ```js
-import { getType }         from 'tynder/modules/validator';
+import { getType }           from 'tynder/modules/validator';
 import { pick,
-         merge }           from 'tynder/modules/picker';
-import default as mySchema from './myschema';
+         merge }             from 'tynder/modules/picker';
+import { ValidationContext } from 'tynder/modules/types';
+import default as mySchema   from './myschema';
 
 const original = {
     a: 'x',
@@ -191,7 +194,8 @@ const picked1 = pick(original, getType(mySchema, 'A')); // {a: 'x'}
 // Edit the picked data and...
 const changed = merge(original, picked1); // TODO: not impl. (planned feature)
 
-const ctx2 = {        // To receive the error messages, define the context as a variable.
+const ctx2: Partial<ValidationContext> =
+{                     // To receive the error messages, define the context as a variable.
     checkAll: true,   // (optional) Set to true to continue validation after the first error.
     schema: mySchema, // (optional) Pass "schema" to check for recursive types.
 };
@@ -740,6 +744,18 @@ Subcommands:
       Compile schema and generate TypeScript type definition files.
           * default input file extension is *.tss
           * default output file extension is *.d.ts
+  gen-json-schema
+      Compile schema and generate 'JSON Schema' files.
+          * default input file extension is *.tss
+          * default output file extension is *.json
+  gen-json-schema-as-ts
+      Compile schema and generate 'JSON Schema'
+      as JavaScript|TypeScript files.
+          * default input file extension is *.tss
+          * default output file extension is *.ts
+      Generated code is:
+          const schema = {...};
+          export default schema;
 
 Options:
   --indir dirname
