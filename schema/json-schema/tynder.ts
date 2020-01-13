@@ -260,21 +260,41 @@ const schema = {
         }
       }
     },
+    "TypeAssertionErrorMessageConstraints": {
+      "type": "object",
+      "properties": {}
+    },
     "TypeAssertionErrorMessage": {
       "type": "object",
       "properties": {
         "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "dataPath": {
+          "type": "string"
+        },
+        "constraints": {
+          "$ref": "#/definitions/TypeAssertionErrorMessageConstraints"
+        },
+        "value": {
           "oneOf": [
             {
-              "type": "string"
+              "type": [
+                "null",
+                "number",
+                "string",
+                "boolean",
+                "array",
+                "object"
+              ]
             },
             {
               "type": "null"
             }
           ]
-        },
-        "message": {
-          "type": "string"
         }
       }
     },
@@ -608,6 +628,142 @@ const schema = {
         }
       }
     },
+    "PrimitiveTypeAssertionConstraints": {
+      "type": "object",
+      "properties": {
+        "minValue": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxValue": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "greaterThanValue": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lessThanValue": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "minLength": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxLength": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pattern": {
+          "oneOf": [
+            {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/RegExp"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
     "PrimitiveTypeAssertion": {
       "type": "object",
       "properties": {
@@ -619,6 +775,79 @@ const schema = {
         },
         "primitiveName": {
           "$ref": "#/definitions/PrimitiveValueTypeNames"
+        },
+        "messageId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "messages": {
+          "$ref": "#/definitions/ErrorMessages"
+        },
+        "name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "typeName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "docComment": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "passThruCodeBlock": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "noOutput": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "minValue": {
           "oneOf": [
@@ -750,79 +979,6 @@ const schema = {
               "type": "null"
             }
           ]
-        },
-        "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "messages": {
-          "$ref": "#/definitions/ErrorMessages"
-        },
-        "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
         }
       }
     },
@@ -913,18 +1069,9 @@ const schema = {
         }
       }
     },
-    "RepeatedAssertion": {
+    "RepeatedAssertionConstraints": {
       "type": "object",
       "properties": {
-        "kind": {
-          "type": "string",
-          "enum": [
-            "repeated"
-          ]
-        },
-        "repeated": {
-          "$ref": "#/definitions/TypeAssertion"
-        },
         "min": {
           "anyOf": [
             {
@@ -944,6 +1091,20 @@ const schema = {
               "type": "null"
             }
           ]
+        }
+      }
+    },
+    "RepeatedAssertion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "repeated"
+          ]
+        },
+        "repeated": {
+          "$ref": "#/definitions/TypeAssertion"
         },
         "messageId": {
           "oneOf": [
@@ -1012,6 +1173,26 @@ const schema = {
           "oneOf": [
             {
               "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
             },
             {
               "type": "null"
@@ -1032,26 +1213,6 @@ const schema = {
         "spread": {
           "$ref": "#/definitions/TypeAssertion"
         },
-        "min": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "max": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
         "messageId": {
           "oneOf": [
             {
@@ -1119,6 +1280,26 @@ const schema = {
           "oneOf": [
             {
               "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
             },
             {
               "type": "null"
@@ -1541,6 +1722,99 @@ const schema = {
               }
             ]
           }
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/definitions/TypeAssertion"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "AdditionalPropsKey": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "enum": [
+              "string"
+            ]
+          },
+          {
+            "type": "string",
+            "enum": [
+              "number"
+            ]
+          },
+          {
+            "$ref": "#/definitions/RegExp"
+          }
+        ]
+      }
+    },
+    "AdditionalPropsMember": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AdditionalPropsKey"
+              },
+              {
+                "$ref": "#/definitions/TypeAssertion"
+              }
+            ]
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AdditionalPropsKey"
+              },
+              {
+                "$ref": "#/definitions/TypeAssertion"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AdditionalPropsKey"
+              },
+              {
+                "$ref": "#/definitions/TypeAssertion"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1559,18 +1833,125 @@ const schema = {
             "$ref": "#/definitions/ObjectAssertionMember"
           }
         },
-        "baseTypes": {
+        "additionalProps": {
           "oneOf": [
             {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/ObjectAssertion"
+                "$ref": "#/definitions/AdditionalPropsMember"
               }
             },
             {
               "type": "null"
             }
           ]
+        },
+        "baseTypes": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/ObjectAssertion"
+                  },
+                  {
+                    "$ref": "#/definitions/AssertionSymlink"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "messageId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "messages": {
+          "$ref": "#/definitions/ErrorMessages"
+        },
+        "name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "typeName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "docComment": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "passThruCodeBlock": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "noOutput": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "AssertionSymlink": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "symlink"
+          ]
+        },
+        "symlinkTargetName": {
+          "type": "string"
         },
         "messageId": {
           "oneOf": [
@@ -1684,10 +2065,13 @@ const schema = {
         },
         {
           "$ref": "#/definitions/ObjectAssertion"
+        },
+        {
+          "$ref": "#/definitions/AssertionSymlink"
         }
       ]
     },
-    "Context": {
+    "ValidationContext": {
       "type": "object",
       "properties": {
         "checkAll": {
@@ -1700,6 +2084,19 @@ const schema = {
             }
           ]
         },
+        "noAdditionalProps": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "errorMessages": {
+          "$ref": "#/definitions/ErrorMessages"
+        },
         "errors": {
           "type": "array",
           "items": {
@@ -1709,8 +2106,74 @@ const schema = {
         "typeStack": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/TypeAssertion"
+            "anyOf": [
+              {
+                "$ref": "#/definitions/NeverTypeAssertion"
+              },
+              {
+                "$ref": "#/definitions/AnyTypeAssertion"
+              },
+              {
+                "$ref": "#/definitions/UnknownTypeAssertion"
+              },
+              {
+                "$ref": "#/definitions/PrimitiveTypeAssertion"
+              },
+              {
+                "$ref": "#/definitions/PrimitiveValueTypeAssertion"
+              },
+              {
+                "$ref": "#/definitions/RepeatedAssertion"
+              },
+              {
+                "$ref": "#/definitions/SpreadAssertion"
+              },
+              {
+                "$ref": "#/definitions/SequenceAssertion"
+              },
+              {
+                "$ref": "#/definitions/OneOfAssertion"
+              },
+              {
+                "$ref": "#/definitions/OptionalAssertion"
+              },
+              {
+                "$ref": "#/definitions/EnumAssertion"
+              },
+              {
+                "$ref": "#/definitions/ObjectAssertion"
+              },
+              {
+                "$ref": "#/definitions/AssertionSymlink"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/TypeAssertion"
+                    },
+                    {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
           }
+        },
+        "schema": {
+          "$ref": "#/definitions/TypeAssertionMap"
         }
       }
     },
@@ -1721,6 +2184,9 @@ const schema = {
           "$ref": "#/definitions/TypeAssertion"
         },
         "exported": {
+          "type": "boolean"
+        },
+        "resolved": {
           "type": "boolean"
         }
       }
@@ -1734,6 +2200,31 @@ const schema = {
         "array",
         "object"
       ]
+    },
+    "SymbolResolverContext": {
+      "type": "object",
+      "properties": {
+        "nestLevel": {
+          "type": "number"
+        },
+        "symlinkStack": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CodegenContext": {
+      "type": "object",
+      "properties": {
+        "nestLevel": {
+          "type": "number"
+        },
+        "schema": {
+          "$ref": "#/definitions/TypeAssertionMap"
+        }
+      }
     }
   }
 };

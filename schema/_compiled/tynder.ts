@@ -280,17 +280,20 @@ const schema = {
     "typeName": "ErrorMessages",
     "name": "ErrorMessages"
   },
+  "TypeAssertionErrorMessageConstraints": {
+    "kind": "object",
+    "members": [],
+    "typeName": "TypeAssertionErrorMessageConstraints",
+    "name": "TypeAssertionErrorMessageConstraints"
+  },
   "TypeAssertionErrorMessage": {
     "kind": "object",
     "members": [
       [
         "code",
         {
-          "kind": "optional",
-          "optional": {
-            "kind": "primitive",
-            "primitiveName": "string"
-          },
+          "kind": "primitive",
+          "primitiveName": "string",
           "name": "code"
         }
       ],
@@ -300,6 +303,31 @@ const schema = {
           "kind": "primitive",
           "primitiveName": "string",
           "name": "message"
+        }
+      ],
+      [
+        "dataPath",
+        {
+          "kind": "primitive",
+          "primitiveName": "string",
+          "name": "dataPath"
+        }
+      ],
+      [
+        "constraints",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "TypeAssertionErrorMessageConstraints"
+        }
+      ],
+      [
+        "value",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "any"
+          },
+          "name": "value"
         }
       ]
     ],
@@ -736,24 +764,9 @@ const schema = {
     "typeName": "UnknownTypeAssertion",
     "name": "UnknownTypeAssertion"
   },
-  "PrimitiveTypeAssertion": {
+  "PrimitiveTypeAssertionConstraints": {
     "kind": "object",
     "members": [
-      [
-        "kind",
-        {
-          "kind": "primitive-value",
-          "value": "primitive",
-          "name": "kind"
-        }
-      ],
-      [
-        "primitiveName",
-        {
-          "kind": "symlink",
-          "symlinkTargetName": "PrimitiveValueTypeNames"
-        }
-      ],
       [
         "minValue",
         {
@@ -909,6 +922,28 @@ const schema = {
           },
           "name": "pattern"
         }
+      ]
+    ],
+    "typeName": "PrimitiveTypeAssertionConstraints",
+    "name": "PrimitiveTypeAssertionConstraints"
+  },
+  "PrimitiveTypeAssertion": {
+    "kind": "object",
+    "members": [
+      [
+        "kind",
+        {
+          "kind": "primitive-value",
+          "value": "primitive",
+          "name": "kind"
+        }
+      ],
+      [
+        "primitiveName",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "PrimitiveValueTypeNames"
+        }
       ],
       [
         "messageId",
@@ -1001,12 +1036,179 @@ const schema = {
           "name": "noOutput"
         },
         true
+      ],
+      [
+        "minValue",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "minValue"
+        },
+        true
+      ],
+      [
+        "maxValue",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "maxValue"
+        },
+        true
+      ],
+      [
+        "greaterThanValue",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "greaterThanValue"
+        },
+        true
+      ],
+      [
+        "lessThanValue",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "lessThanValue"
+        },
+        true
+      ],
+      [
+        "minLength",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "minLength"
+        },
+        true
+      ],
+      [
+        "maxLength",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "maxLength"
+        },
+        true
+      ],
+      [
+        "pattern",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "RegExp"
+              },
+              {
+                "kind": "primitive",
+                "primitiveName": "null"
+              }
+            ]
+          },
+          "name": "pattern"
+        },
+        true
       ]
     ],
     "baseTypes": [
       {
         "kind": "symlink",
         "symlinkTargetName": "TypeAssertionBase"
+      },
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "PrimitiveTypeAssertionConstraints"
       }
     ],
     "typeName": "PrimitiveTypeAssertion",
@@ -1132,24 +1334,9 @@ const schema = {
     "typeName": "PrimitiveValueTypeAssertion",
     "name": "PrimitiveValueTypeAssertion"
   },
-  "RepeatedAssertion": {
+  "RepeatedAssertionConstraints": {
     "kind": "object",
     "members": [
-      [
-        "kind",
-        {
-          "kind": "primitive-value",
-          "value": "repeated",
-          "name": "kind"
-        }
-      ],
-      [
-        "repeated",
-        {
-          "kind": "symlink",
-          "symlinkTargetName": "TypeAssertion"
-        }
-      ],
       [
         "min",
         {
@@ -1182,6 +1369,28 @@ const schema = {
             }
           ],
           "name": "max"
+        }
+      ]
+    ],
+    "typeName": "RepeatedAssertionConstraints",
+    "name": "RepeatedAssertionConstraints"
+  },
+  "RepeatedAssertion": {
+    "kind": "object",
+    "members": [
+      [
+        "kind",
+        {
+          "kind": "primitive-value",
+          "value": "repeated",
+          "name": "kind"
+        }
+      ],
+      [
+        "repeated",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "TypeAssertion"
         }
       ],
       [
@@ -1275,12 +1484,52 @@ const schema = {
           "name": "noOutput"
         },
         true
+      ],
+      [
+        "min",
+        {
+          "kind": "one-of",
+          "oneOf": [
+            {
+              "kind": "primitive",
+              "primitiveName": "number"
+            },
+            {
+              "kind": "primitive",
+              "primitiveName": "null"
+            }
+          ],
+          "name": "min"
+        },
+        true
+      ],
+      [
+        "max",
+        {
+          "kind": "one-of",
+          "oneOf": [
+            {
+              "kind": "primitive",
+              "primitiveName": "number"
+            },
+            {
+              "kind": "primitive",
+              "primitiveName": "null"
+            }
+          ],
+          "name": "max"
+        },
+        true
       ]
     ],
     "baseTypes": [
       {
         "kind": "symlink",
         "symlinkTargetName": "TypeAssertionBase"
+      },
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "RepeatedAssertionConstraints"
       }
     ],
     "typeName": "RepeatedAssertion",
@@ -1305,40 +1554,6 @@ const schema = {
         }
       ],
       [
-        "min",
-        {
-          "kind": "one-of",
-          "oneOf": [
-            {
-              "kind": "primitive",
-              "primitiveName": "number"
-            },
-            {
-              "kind": "primitive",
-              "primitiveName": "null"
-            }
-          ],
-          "name": "min"
-        }
-      ],
-      [
-        "max",
-        {
-          "kind": "one-of",
-          "oneOf": [
-            {
-              "kind": "primitive",
-              "primitiveName": "number"
-            },
-            {
-              "kind": "primitive",
-              "primitiveName": "null"
-            }
-          ],
-          "name": "max"
-        }
-      ],
-      [
         "messageId",
         {
           "kind": "optional",
@@ -1429,12 +1644,52 @@ const schema = {
           "name": "noOutput"
         },
         true
+      ],
+      [
+        "min",
+        {
+          "kind": "one-of",
+          "oneOf": [
+            {
+              "kind": "primitive",
+              "primitiveName": "number"
+            },
+            {
+              "kind": "primitive",
+              "primitiveName": "null"
+            }
+          ],
+          "name": "min"
+        },
+        true
+      ],
+      [
+        "max",
+        {
+          "kind": "one-of",
+          "oneOf": [
+            {
+              "kind": "primitive",
+              "primitiveName": "number"
+            },
+            {
+              "kind": "primitive",
+              "primitiveName": "null"
+            }
+          ],
+          "name": "max"
+        },
+        true
       ]
     ],
     "baseTypes": [
       {
         "kind": "symlink",
         "symlinkTargetName": "TypeAssertionBase"
+      },
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "RepeatedAssertionConstraints"
       }
     ],
     "typeName": "SpreadAssertion",
@@ -1995,10 +2250,113 @@ const schema = {
             "primitiveName": "boolean"
           }
         ]
+      },
+      {
+        "kind": "sequence",
+        "sequence": [
+          {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "TypeAssertion"
+          },
+          {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          },
+          {
+            "kind": "primitive",
+            "primitiveName": "string"
+          }
+        ]
       }
     ],
     "typeName": "ObjectAssertionMember",
     "name": "ObjectAssertionMember"
+  },
+  "AdditionalPropsKey": {
+    "kind": "repeated",
+    "min": null,
+    "max": null,
+    "repeated": {
+      "kind": "one-of",
+      "oneOf": [
+        {
+          "kind": "primitive-value",
+          "value": "string"
+        },
+        {
+          "kind": "primitive-value",
+          "value": "number"
+        },
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "RegExp"
+        }
+      ]
+    },
+    "typeName": "AdditionalPropsKey",
+    "name": "AdditionalPropsKey"
+  },
+  "AdditionalPropsMember": {
+    "kind": "one-of",
+    "oneOf": [
+      {
+        "kind": "sequence",
+        "sequence": [
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "AdditionalPropsKey"
+          },
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "TypeAssertion"
+          }
+        ]
+      },
+      {
+        "kind": "sequence",
+        "sequence": [
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "AdditionalPropsKey"
+          },
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "TypeAssertion"
+          },
+          {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          }
+        ]
+      },
+      {
+        "kind": "sequence",
+        "sequence": [
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "AdditionalPropsKey"
+          },
+          {
+            "kind": "symlink",
+            "symlinkTargetName": "TypeAssertion"
+          },
+          {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          },
+          {
+            "kind": "primitive",
+            "primitiveName": "string"
+          }
+        ]
+      }
+    ],
+    "typeName": "AdditionalPropsMember",
+    "name": "AdditionalPropsMember"
   },
   "ObjectAssertion": {
     "kind": "object",
@@ -2025,7 +2383,7 @@ const schema = {
         }
       ],
       [
-        "baseTypes",
+        "additionalProps",
         {
           "kind": "optional",
           "optional": {
@@ -2034,7 +2392,32 @@ const schema = {
             "max": null,
             "repeated": {
               "kind": "symlink",
-              "symlinkTargetName": "ObjectAssertion"
+              "symlinkTargetName": "AdditionalPropsMember"
+            }
+          },
+          "name": "additionalProps"
+        }
+      ],
+      [
+        "baseTypes",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "repeated",
+            "min": null,
+            "max": null,
+            "repeated": {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "symlink",
+                  "symlinkTargetName": "ObjectAssertion"
+                },
+                {
+                  "kind": "symlink",
+                  "symlinkTargetName": "AssertionSymlink"
+                }
+              ]
             }
           },
           "name": "baseTypes"
@@ -2142,6 +2525,127 @@ const schema = {
     "typeName": "ObjectAssertion",
     "name": "ObjectAssertion"
   },
+  "AssertionSymlink": {
+    "kind": "object",
+    "members": [
+      [
+        "kind",
+        {
+          "kind": "primitive-value",
+          "value": "symlink",
+          "name": "kind"
+        }
+      ],
+      [
+        "symlinkTargetName",
+        {
+          "kind": "primitive",
+          "primitiveName": "string",
+          "name": "symlinkTargetName"
+        }
+      ],
+      [
+        "messageId",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "messageId"
+        },
+        true
+      ],
+      [
+        "message",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "message"
+        },
+        true
+      ],
+      [
+        "messages",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "ErrorMessages"
+        },
+        true
+      ],
+      [
+        "name",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "name"
+        },
+        true
+      ],
+      [
+        "typeName",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "typeName"
+        },
+        true
+      ],
+      [
+        "docComment",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "docComment"
+        },
+        true
+      ],
+      [
+        "passThruCodeBlock",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "passThruCodeBlock"
+        },
+        true
+      ],
+      [
+        "noOutput",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          },
+          "name": "noOutput"
+        },
+        true
+      ]
+    ],
+    "baseTypes": [
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "TypeAssertionBase"
+      }
+    ],
+    "typeName": "AssertionSymlink",
+    "name": "AssertionSymlink"
+  },
   "TypeAssertion": {
     "kind": "one-of",
     "oneOf": [
@@ -2192,12 +2696,16 @@ const schema = {
       {
         "kind": "symlink",
         "symlinkTargetName": "ObjectAssertion"
+      },
+      {
+        "kind": "symlink",
+        "symlinkTargetName": "AssertionSymlink"
       }
     ],
     "typeName": "TypeAssertion",
     "name": "TypeAssertion"
   },
-  "Context": {
+  "ValidationContext": {
     "kind": "object",
     "members": [
       [
@@ -2209,6 +2717,24 @@ const schema = {
             "primitiveName": "boolean"
           },
           "name": "checkAll"
+        }
+      ],
+      [
+        "noAdditionalProps",
+        {
+          "kind": "optional",
+          "optional": {
+            "kind": "primitive",
+            "primitiveName": "boolean"
+          },
+          "name": "noAdditionalProps"
+        }
+      ],
+      [
+        "errorMessages",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "ErrorMessages"
         }
       ],
       [
@@ -2231,15 +2757,101 @@ const schema = {
           "min": null,
           "max": null,
           "repeated": {
-            "kind": "symlink",
-            "symlinkTargetName": "TypeAssertion"
+            "kind": "one-of",
+            "oneOf": [
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "NeverTypeAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "AnyTypeAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "UnknownTypeAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "PrimitiveTypeAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "PrimitiveValueTypeAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "RepeatedAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "SpreadAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "SequenceAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "OneOfAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "OptionalAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "EnumAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "ObjectAssertion"
+              },
+              {
+                "kind": "symlink",
+                "symlinkTargetName": "AssertionSymlink"
+              },
+              {
+                "kind": "sequence",
+                "sequence": [
+                  {
+                    "kind": "symlink",
+                    "symlinkTargetName": "TypeAssertion"
+                  },
+                  {
+                    "kind": "one-of",
+                    "oneOf": [
+                      {
+                        "kind": "primitive",
+                        "primitiveName": "number"
+                      },
+                      {
+                        "kind": "primitive",
+                        "primitiveName": "string"
+                      },
+                      {
+                        "kind": "primitive",
+                        "primitiveName": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           },
           "name": "typeStack"
         }
+      ],
+      [
+        "schema",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "TypeAssertionMap"
+        }
       ]
     ],
-    "typeName": "Context",
-    "name": "Context"
+    "typeName": "ValidationContext",
+    "name": "ValidationContext"
   },
   "TypeAssertionSetValue": {
     "kind": "object",
@@ -2258,6 +2870,14 @@ const schema = {
           "primitiveName": "boolean",
           "name": "exported"
         }
+      ],
+      [
+        "resolved",
+        {
+          "kind": "primitive",
+          "primitiveName": "boolean",
+          "name": "resolved"
+        }
       ]
     ],
     "typeName": "TypeAssertionSetValue",
@@ -2267,6 +2887,56 @@ const schema = {
     "kind": "any",
     "typeName": "TypeAssertionMap",
     "name": "TypeAssertionMap"
+  },
+  "SymbolResolverContext": {
+    "kind": "object",
+    "members": [
+      [
+        "nestLevel",
+        {
+          "kind": "primitive",
+          "primitiveName": "number",
+          "name": "nestLevel"
+        }
+      ],
+      [
+        "symlinkStack",
+        {
+          "kind": "repeated",
+          "min": null,
+          "max": null,
+          "repeated": {
+            "kind": "primitive",
+            "primitiveName": "string"
+          },
+          "name": "symlinkStack"
+        }
+      ]
+    ],
+    "typeName": "SymbolResolverContext",
+    "name": "SymbolResolverContext"
+  },
+  "CodegenContext": {
+    "kind": "object",
+    "members": [
+      [
+        "nestLevel",
+        {
+          "kind": "primitive",
+          "primitiveName": "number",
+          "name": "nestLevel"
+        }
+      ],
+      [
+        "schema",
+        {
+          "kind": "symlink",
+          "symlinkTargetName": "TypeAssertionMap"
+        }
+      ]
+    ],
+    "typeName": "CodegenContext",
+    "name": "CodegenContext"
   }
 };
 export default schema;

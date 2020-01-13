@@ -42,9 +42,20 @@ export type ErrorMessages = Partial<{
 }>;
 
 
+// TODO: BUG: parsed result is wrong!
+//            evaluate ops before resolving backref?
+export type TypeAssertionErrorMessageConstraints =
+    Partial<Omit<PrimitiveTypeAssertionConstraints &
+        RepeatedAssertionConstraints, 'pattern'> &
+        {pattern: string}>;
+
+
 export interface TypeAssertionErrorMessage {
-    code?: string;
+    code: string;
     message: string;
+    dataPath: string;
+    constraints: TypeAssertionErrorMessageConstraints;
+    value?: any;
 }
 
 
@@ -52,11 +63,11 @@ export interface TypeAssertionBase {
     messageId?: string;
     message?: string;
     messages?: ErrorMessages;
-    name?: string;              // member name or 'typeName' below
-    typeName?: string;          // named user defined 'type' or 'interface' name
-    docComment?: string;        // doc comment
-    passThruCodeBlock?: string; // store a pass thru code block (e.g. import statement). use it with kind===never
-    noOutput?: boolean;         // skip code generation if true
+    name?: string;              // Member name or 'typeName' below. For error reporting and codegen.
+    typeName?: string;          // Named user defined 'type' or 'interface' name. For error reporting and codegen.
+    docComment?: string;        // Doc comment.
+    passThruCodeBlock?: string; // Store a pass-thru code block (e.g. import statement). use it with kind===never
+    noOutput?: boolean;         // If true, skip code generation.
 }
 
 
@@ -75,16 +86,20 @@ export interface UnknownTypeAssertion extends TypeAssertionBase {
 }
 
 
-export interface PrimitiveTypeAssertion extends TypeAssertionBase {
-    kind: 'primitive';
-    primitiveName: PrimitiveValueTypeNames;
+export interface PrimitiveTypeAssertionConstraints {
     minValue?: number | string | null; // TODO: bigint
-    maxValue?: number | string | null;
+    maxValue?: number | string | null; // TODO: bigint
     greaterThanValue?: number | string | null;
     lessThanValue?: number | string | null;
     minLength?: number | null;
     maxLength?: number | null;
     pattern?: RegExp | null;
+}
+
+
+export interface PrimitiveTypeAssertion extends TypeAssertionBase, PrimitiveTypeAssertionConstraints {
+    kind: 'primitive';
+    primitiveName: PrimitiveValueTypeNames;
 }
 
 
@@ -94,19 +109,21 @@ export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
 }
 
 
-export interface RepeatedAssertion extends TypeAssertionBase {
-    kind: 'repeated';
-    repeated: TypeAssertion;
+export interface RepeatedAssertionConstraints {
     min: number | null;
     max: number | null;
 }
 
 
-export interface SpreadAssertion extends TypeAssertionBase {
+export interface RepeatedAssertion extends TypeAssertionBase, RepeatedAssertionConstraints {
+    kind: 'repeated';
+    repeated: TypeAssertion;
+}
+
+
+export interface SpreadAssertion extends TypeAssertionBase, RepeatedAssertionConstraints {
     kind: 'spread';
     spread: TypeAssertion;
-    min: number | null;
-    max: number | null;
 }
 
 
@@ -144,19 +161,46 @@ export type ObjectAssertionMember = [
 ] | [
     string,         // name
     TypeAssertion,  // type
-    boolean,        // defined by ancestor types
+    boolean,        // If true, defined by ancestor types
+] | [
+    string,         // name
+    TypeAssertion,  // type
+    boolean,        // If true, defined by ancestor types
+    string,         // doc comment
+];
+
+
+
+export type AdditionalPropsKey = Array<'string' | 'number' | RegExp>;
+
+
+export type AdditionalPropsMember = [
+    AdditionalPropsKey,  // name
+    TypeAssertion,       // type
+] | [
+    AdditionalPropsKey,  // name
+    TypeAssertion,       // type
+    boolean,             // If true, defined by ancestor types
+] | [
+    AdditionalPropsKey,  // name
+    TypeAssertion,       // type
+    boolean,             // If true, defined by ancestor types
+    string,         // doc comment
 ];
 
 
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    baseTypes?: ObjectAssertion[];
-    // TODO: extended types (for codegen, recursive typedef)
+    additionalProps?: AdditionalPropsMember[];
+    baseTypes?: Array<ObjectAssertion | AssertionSymlink>;
 }
 
 
-// TODO: ObjectRefAssertion (for recursive typedef)
+export interface AssertionSymlink extends TypeAssertionBase {
+    kind: 'symlink';
+    symlinkTargetName: string;
+}
 
 
 export type TypeAssertion =
@@ -171,27 +215,48 @@ export type TypeAssertion =
     OneOfAssertion |
     OptionalAssertion |
     EnumAssertion |
-    ObjectAssertion;
+    ObjectAssertion |
+    AssertionSymlink;
 
 
-export interface Context {
+export interface ValidationContext {
     checkAll?: boolean;
+    noAdditionalProps?: boolean;
+    errorMessages?: ErrorMessages;
+
     // maxDepth: number;
     // depth: number;
-    /*mapper?: (value: any, ty: TypeAssertion) => any;*/
+    // mapper?: (value: any, ty: TypeAssertion) => any;
 
-    // returned values
+    // === returned values ===
     errors: TypeAssertionErrorMessage[];
 
-    // internal use
-    typeStack: TypeAssertion[];
+    // === internal use ===
+    typeStack: Array<             // For error reporting (keyword substitutions)
+        TypeAssertion |
+        [TypeAssertion, number | string | undefined]>; // [1]: data index
+                                  // NOTE: DO NOT reassign! Push or pop items instead of reassign.
+    schema?: TypeAssertionMap;    // To resolve 'symlink' assertion, the context need to have a schema instance.
 }
 
 
 export interface TypeAssertionSetValue {
     ty: TypeAssertion;
     exported: boolean;
+    resolved: boolean;
 }
 
 
 export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
+
+
+export interface SymbolResolverContext {
+    nestLevel: number;
+    symlinkStack: string[]; // For detecting recursive type
+}
+
+
+export interface CodegenContext {
+    nestLevel: number;
+    schema?: TypeAssertionMap; // To resolve 'symlink' assertion, the context need to have a schema instance.
+}

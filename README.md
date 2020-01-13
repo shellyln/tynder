@@ -701,6 +701,14 @@ interface Foo {
 }
 ```
 
+> NOTE: Generic interfaces and generic types cannot be defined.
+
+```ts
+interface Foo<T> { // It is not possible.
+    a: T;
+}
+```
+
 
 
 ## Customize error messages
@@ -773,7 +781,7 @@ const validated = validate({
 
 if (validated3 === null) {
     console.log(JSON.stringify(
-        ctx3.errors, // error messages (string[])
+        ctx3.errors, // error messages
         null, 2));
 }
 ```

@@ -32,9 +32,14 @@ export interface ErrorMessages {
     valueUnmatched?: string;
 }
 
+export interface TypeAssertionErrorMessageConstraints {}
+
 export interface TypeAssertionErrorMessage {
-    code?: string;
+    code: string;
     message: string;
+    dataPath: string;
+    constraints: TypeAssertionErrorMessageConstraints;
+    value?: any;
 }
 
 export interface TypeAssertionBase {
@@ -60,9 +65,7 @@ export interface UnknownTypeAssertion extends TypeAssertionBase {
     kind: 'unknown';
 }
 
-export interface PrimitiveTypeAssertion extends TypeAssertionBase {
-    kind: 'primitive';
-    primitiveName: PrimitiveValueTypeNames;
+export interface PrimitiveTypeAssertionConstraints {
     minValue?: (number | string | null);
     maxValue?: (number | string | null);
     greaterThanValue?: (number | string | null);
@@ -72,23 +75,29 @@ export interface PrimitiveTypeAssertion extends TypeAssertionBase {
     pattern?: (RegExp | null);
 }
 
+export interface PrimitiveTypeAssertion extends TypeAssertionBase, PrimitiveTypeAssertionConstraints {
+    kind: 'primitive';
+    primitiveName: PrimitiveValueTypeNames;
+}
+
 export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
     kind: 'primitive-value';
     value: PrimitiveValueTypes;
 }
 
-export interface RepeatedAssertion extends TypeAssertionBase {
-    kind: 'repeated';
-    repeated: TypeAssertion;
+export interface RepeatedAssertionConstraints {
     min: (number | null);
     max: (number | null);
 }
 
-export interface SpreadAssertion extends TypeAssertionBase {
+export interface RepeatedAssertion extends TypeAssertionBase, RepeatedAssertionConstraints {
+    kind: 'repeated';
+    repeated: TypeAssertion;
+}
+
+export interface SpreadAssertion extends TypeAssertionBase, RepeatedAssertionConstraints {
     kind: 'spread';
     spread: TypeAssertion;
-    min: (number | null);
-    max: (number | null);
 }
 
 export interface SequenceAssertion extends TypeAssertionBase {
@@ -111,26 +120,50 @@ export interface EnumAssertion extends TypeAssertionBase {
     values: Array<[string, (number | string), string]>;
 }
 
-export type ObjectAssertionMember = ([string, TypeAssertion] | [string, TypeAssertion, boolean]);
+export type ObjectAssertionMember = ([string, TypeAssertion] | [string, TypeAssertion, boolean] | [string, TypeAssertion, boolean, string]);
+
+export type AdditionalPropsKey = Array<('string' | 'number' | RegExp)>;
+
+export type AdditionalPropsMember = ([AdditionalPropsKey, TypeAssertion] | [AdditionalPropsKey, TypeAssertion, boolean] | [AdditionalPropsKey, TypeAssertion, boolean, string]);
 
 export interface ObjectAssertion extends TypeAssertionBase {
     kind: 'object';
     members: ObjectAssertionMember[];
-    baseTypes?: ObjectAssertion[];
+    additionalProps?: AdditionalPropsMember[];
+    baseTypes?: Array<(ObjectAssertion | AssertionSymlink)>;
 }
 
-export type TypeAssertion = (NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion);
+export interface AssertionSymlink extends TypeAssertionBase {
+    kind: 'symlink';
+    symlinkTargetName: string;
+}
 
-export interface Context {
+export type TypeAssertion = (NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion | AssertionSymlink);
+
+export interface ValidationContext {
     checkAll?: boolean;
+    noAdditionalProps?: boolean;
+    errorMessages?: ErrorMessages;
     errors: TypeAssertionErrorMessage[];
-    typeStack: TypeAssertion[];
+    typeStack: Array<(NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion | AssertionSymlink | [TypeAssertion, (number | string | undefined)])>;
+    schema?: TypeAssertionMap;
 }
 
 export interface TypeAssertionSetValue {
     ty: TypeAssertion;
     exported: boolean;
+    resolved: boolean;
 }
 
 export type TypeAssertionMap = any;
+
+export interface SymbolResolverContext {
+    nestLevel: number;
+    symlinkStack: string[];
+}
+
+export interface CodegenContext {
+    nestLevel: number;
+    schema?: TypeAssertionMap;
+}
 
