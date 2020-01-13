@@ -259,7 +259,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 if (pt.name) {
                     dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}repeated)`);
                 } else {
-                        dataPathArray.push(`(repeated)`);
+                    dataPathArray.push(`(repeated)`);
                 }
             }
         } else if (pt.kind === 'sequence') {
@@ -267,7 +267,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 if (pt.name) {
                     dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}sequence)`);
                 } else {
-                        dataPathArray.push(`(sequence)`);
+                    dataPathArray.push(`(sequence)`);
                 }
             }
         } else {
@@ -318,6 +318,17 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
         }
     }
 
+    const val: {value?: any} = {};
+    switch (typeof data) {
+    case 'number': case 'bigint': case 'string': case 'boolean': case 'undefined':
+        val.value = data;
+        break;
+    case 'object':
+        if (data === null) {
+            val.value = data;
+        }
+    }
+
     if (ty.messageId) {
         ctx.errors.push({
             code: `${ty.messageId}-${errorTypeNames[errType]}`,
@@ -326,6 +337,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 getErrorMessage(errType, ...messages), data, ty, ctx, values),
             dataPath,
             constraints,
+            ...val,
         });
     } else if (ty.message) {
         ctx.errors.push({
@@ -333,6 +345,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
             message: formatErrorMessage(ty.message, data, ty, ctx, values),
             dataPath,
             constraints,
+            ...val,
         });
     } else {
         ctx.errors.push({
@@ -340,6 +353,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
             message: formatErrorMessage(getErrorMessage(errType, ...messages), data, ty, ctx, values),
             dataPath,
             constraints,
+            ...val,
         });
     }
 }

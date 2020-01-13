@@ -48,6 +48,7 @@ export interface TypeAssertionErrorMessage {
     message: string;
     dataPath: string;
     constraints: TypeAssertionErrorMessageConstraints;
+    value?: any;
 }
 
 
