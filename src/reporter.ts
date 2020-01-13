@@ -5,6 +5,7 @@
 
 import { ErrorTypes,
          ErrorMessages,
+         TypeAssertionErrorMessageConstraints,
          TypeAssertion,
          RepeatedAssertion,
          SpreadAssertion,
@@ -119,8 +120,9 @@ function findTopObjectAssertion(ctx: ValidationContext): ObjectAssertion | null 
     return ret;
 }
 
-function findTopRepeatableAssertion(ctx: ValidationContext):
-        RepeatedAssertion | SpreadAssertion | OptionalAssertion | null {
+type TopRepeatable = RepeatedAssertion | SpreadAssertion | OptionalAssertion | null;
+
+function findTopRepeatableAssertion(ctx: ValidationContext): TopRepeatable {
 
     const ret = ctx.typeStack
         .slice()
@@ -160,10 +162,16 @@ function getExpectedType(ty: TypeAssertion): string {
 }
 
 
-export function formatErrorMessage(msg: string, data: any, ty: TypeAssertion, ctx: ValidationContext, dataPath: string) {
+export function formatErrorMessage(
+        msg: string, data: any, ty: TypeAssertion,
+        ctx: ValidationContext,
+        values: {dataPath: string, topRepeatable: TopRepeatable}) {
+
     let ret = msg;
     // TODO: complex type object members' custom error messages are not displayed?
     // TODO: escapeString() is needed?
+
+    const tr = values.topRepeatable;
 
     ret = ret.replace(/%{expectedType}/g, escapeString(getExpectedType(ty)));
 
@@ -182,14 +190,13 @@ export function formatErrorMessage(msg: string, data: any, ty: TypeAssertion, ct
     ret = ret.replace(/%{value}/g, escapeString(
         String(data)));
 
-    const topRep = findTopRepeatableAssertion(ctx);
     ret = ret.replace(/%{repeatQty}/g, escapeString(
-        topRep ?
-        topRep.kind !== 'optional' ? `${
-            nvl(topRep.min, '')}${
-                (topRep.min !== null && topRep.min !== void 0) ||
-                (topRep.max !== null && topRep.max !== void 0) ? '..' : ''}${
-                nvl(topRep.max, '')}` :
+        tr ?
+        tr.kind !== 'optional' ? `${
+            nvl(tr.min, '')}${
+                (tr.min !== null && tr.min !== void 0) ||
+                (tr.max !== null && tr.max !== void 0) ? '..' : ''}${
+                nvl(tr.max, '')}` :
             '0..1' :
         '?'));
 
@@ -214,9 +221,9 @@ export function formatErrorMessage(msg: string, data: any, ty: TypeAssertion, ct
             `${nvl(ty.maxLength, '(biggest)')}` : '?'));
 
     ret = ret.replace(/%{name}/g, escapeString(
-        `${ty.kind !== 'repeated' && dataPath.endsWith('repeated)') ?
+        `${ty.kind !== 'repeated' && values.dataPath.endsWith('repeated)') ?
             'repeated item of ' :
-            ty.kind !== 'sequence' && dataPath.endsWith('sequence)') ?
+            ty.kind !== 'sequence' && values.dataPath.endsWith('sequence)') ?
                 'sequence item of ' : ''}${
         (ty.name && ty.name !== ty.typeName ? ty.name : null) ||
             findTopNamedAssertion(ctx)?.name || '?'}`));
@@ -224,7 +231,7 @@ export function formatErrorMessage(msg: string, data: any, ty: TypeAssertion, ct
     ret = ret.replace(/%{parentType}/g, escapeString(
         findTopObjectAssertion(ctx)?.typeName || '?'));
 
-    ret = ret.replace(/%{dataPath}/g, dataPath);
+    ret = ret.replace(/%{dataPath}/g, values.dataPath);
 
     return ret;
 }
@@ -252,7 +259,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 if (pt.name) {
                     dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}repeated)`);
                 } else {
-                        dataPathArray.push(`(repeated)`);
+                    dataPathArray.push(`(repeated)`);
                 }
             }
         } else if (pt.kind === 'sequence') {
@@ -260,7 +267,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 if (pt.name) {
                     dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}sequence)`);
                 } else {
-                        dataPathArray.push(`(sequence)`);
+                    dataPathArray.push(`(sequence)`);
                 }
             }
         } else {
@@ -273,31 +280,89 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
     }
     const dataPath = dataPathArray.join('.');
 
+    const topRepeatable: TopRepeatable = findTopRepeatableAssertion(ctx);
+    const values = {dataPath, topRepeatable};
+
+    const constraints: TypeAssertionErrorMessageConstraints = {};
+    const cSrces: TypeAssertionErrorMessageConstraints[] = [ty as any];
+    if (errType === ErrorTypes.RepeatQtyUnmatched && topRepeatable) {
+        cSrces.unshift(topRepeatable as any);
+    }
+    for (const cSrc of cSrces) {
+        if (nvl(cSrc.minValue, false)) {
+            constraints.minValue = cSrc.minValue;
+        }
+        if (nvl(cSrc.maxValue, false)) {
+            constraints.maxValue = cSrc.maxValue;
+        }
+        if (nvl(cSrc.greaterThanValue, false)) {
+            constraints.greaterThanValue = cSrc.greaterThanValue;
+        }
+        if (nvl(cSrc.lessThanValue, false)) {
+            constraints.lessThanValue = cSrc.lessThanValue;
+        }
+        if (nvl(cSrc.minLength, false)) {
+            constraints.minLength = cSrc.minLength;
+        }
+        if (nvl(cSrc.maxLength, false)) {
+            constraints.maxLength = cSrc.maxLength;
+        }
+        if (nvl(cSrc.pattern, false)) {
+            constraints.pattern = (cSrc.pattern as any as RegExp).source;
+        }
+        if (nvl(cSrc.min, false)) {
+            constraints.min = cSrc.min;
+        }
+        if (nvl(cSrc.max, false)) {
+            constraints.max = cSrc.max;
+        }
+    }
+
+    const val: {value?: any} = {};
+    switch (typeof data) {
+    case 'number': case 'bigint': case 'string': case 'boolean': case 'undefined':
+        val.value = data;
+        break;
+    case 'object':
+        if (data === null) {
+            val.value = data;
+        }
+    }
+
     if (ty.messageId) {
         ctx.errors.push({
             code: `${ty.messageId}-${errorTypeNames[errType]}`,
             message: formatErrorMessage(ty.message ?
                 ty.message :
-                getErrorMessage(errType, ...messages), data, ty, ctx, dataPath),
+                getErrorMessage(errType, ...messages), data, ty, ctx, values),
             dataPath,
+            constraints,
+            ...val,
         });
     } else if (ty.message) {
         ctx.errors.push({
             code: `${errorTypeNames[errType]}`,
-            message: formatErrorMessage(ty.message, data, ty, ctx, dataPath),
+            message: formatErrorMessage(ty.message, data, ty, ctx, values),
             dataPath,
+            constraints,
+            ...val,
         });
     } else {
         ctx.errors.push({
             code: `${errorTypeNames[errType]}`,
-            message: formatErrorMessage(getErrorMessage(errType, ...messages), data, ty, ctx, dataPath),
+            message: formatErrorMessage(getErrorMessage(errType, ...messages), data, ty, ctx, values),
             dataPath,
+            constraints,
+            ...val,
         });
     }
 }
 
 
-export function reportErrorWithPush(errType: ErrorTypes, data: any, tyidx: [TypeAssertion, number | string], ctx: ValidationContext) {
+export function reportErrorWithPush(
+        errType: ErrorTypes, data: any,
+        tyidx: [TypeAssertion, number | string | undefined], ctx: ValidationContext) {
+
     try {
         ctx.typeStack.push(tyidx);
         reportError(errType, data, tyidx[0], ctx);
