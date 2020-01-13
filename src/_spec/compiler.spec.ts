@@ -129,10 +129,12 @@ describe("compiler", function() {
                     f: X | boolean;
                     @match(/^[A-F]+$/)
                     g: string;
+                    @msg('custom msg of A.h')
                     h?: C;
                     i: [string, number?, string?];
                     j: [...<number, 1..2>, string];
                     j2: [string, ...<number, 2..3>];
+                    j3: string[..2];
                     k: Y;
                     l: B;
                     [propName: /^[a-z][0-9]$/ | number]?: string;
@@ -178,19 +180,25 @@ describe("compiler", function() {
                 a: 5,
                 c: [['', '', '', '', '', '', '', '', '', '']],
                 d: 10,
-                // d2: true,  // TODO: BUG: error reporter reports no error message (optional > oneOf)
-                           // TODO: BUG: error reporter doesn't get the name 'd2'  <- due to OptionalAssertion
+                // d2: true,
                 d3: 11,
-                // d4: 11,    // TODO: BUG: error reporter doesn't get the name 'd4' (optional > enum)
-                           //                                           <- due to OptionalAssertion
+                // d4: 11,
                 d90: '',
                 d91: '',
                 e: [true, false],
+                // e: [0, 1, 2],
                 f: true,
                 g: 'DEBCB',
+                // h: 1,
                 i: ['q', 12, 'a'],
                 j: [1, 2, 'aaa'],
+                // j: ['', 1, 2, 'aaa'],
+                // j: '',
                 j2: ['aaa', 1, 2, 3],
+                // j2: ['aaa', '', 1, 2, 3],
+                j3: ['', ''],
+                // j3: ['', 0],
+                // j3: '',
                 k: false,
                 l: {a: 5},
                 z1: 'a',
@@ -199,14 +207,16 @@ describe("compiler", function() {
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(generateProto3Code(schema2));
-            console.log(JSON.stringify(ctx));
+            // console.log(JSON.stringify(ctx));
+            console.log(ctx.errors);
 
             delete ctx.errors;
             expect(validate({
                 a: {a: {b: 2}, b: 1},
                 b: {b: {b: 3}},
             }, getType(schema2, 'HH'), ctx)).toEqual({} as any);
-            console.log(JSON.stringify(ctx));
+            // console.log(JSON.stringify(ctx));
+            console.log(ctx.errors);
             */
         } catch (e) {
             throw e;
