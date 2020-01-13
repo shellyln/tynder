@@ -703,11 +703,13 @@ interface Foo {
 
 > NOTE: Generic interfaces and generic types cannot be defined.
 
-```ts
-interface Foo<T> { // It is not possible.
-    a: T;
-}
-```
+* e.g.
+
+    ```ts
+    interface Foo<T> { // It is not possible.
+        a: T;
+    }
+    ```
 
 
 
@@ -879,8 +881,8 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
 
 ## Bugs
 * [X] ~~Quantity assertion of the sequence type's last item is not checked.~~
-* Error reporter cannot resolve some keyword substitutions in complex type.
-* If validation fails on a nested component type of a complex type, the customized error message is lost.
+* [X] ~~Error reporter cannot resolve some keyword substitutions in complex type.~~
+* [X] ~~If validation fails on a nested component type of a complex type, the customized error message is lost.~~
 
 
 ## License
