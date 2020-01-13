@@ -129,6 +129,7 @@ describe("compiler", function() {
                     f: X | boolean;
                     @match(/^[A-F]+$/)
                     g: string;
+                    @msg('custom msg of A.h')
                     h?: C;
                     i: [string, number?, string?];
                     j: [...<number, 1..2>, string];
@@ -170,7 +171,6 @@ describe("compiler", function() {
             // console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'H'), null, 2));
             /*
-            */
             const ctx: Partial<ValidationContext> = {
                 checkAll: true,
                 // noAdditionalProps: true,
@@ -180,17 +180,16 @@ describe("compiler", function() {
                 a: 5,
                 c: [['', '', '', '', '', '', '', '', '', '']],
                 d: 10,
-                // d2: true,  // TODO: BUG: error reporter reports no error message (optional > oneOf)
-                           // TODO: BUG: error reporter doesn't get the name 'd2'  <- due to OptionalAssertion
+                // d2: true,
                 d3: 11,
-                // d4: 11,    // TODO: BUG: error reporter doesn't get the name 'd4' (optional > enum)
-                           //                                           <- due to OptionalAssertion
+                // d4: 11,
                 d90: '',
                 d91: '',
                 e: [true, false],
                 // e: [0, 1, 2],
                 f: true,
                 g: 'DEBCB',
+                // h: 1,
                 i: ['q', 12, 'a'],
                 j: [1, 2, 'aaa'],
                 // j: ['', 1, 2, 'aaa'],
@@ -218,6 +217,7 @@ describe("compiler", function() {
             }, getType(schema2, 'HH'), ctx)).toEqual({} as any);
             // console.log(JSON.stringify(ctx));
             console.log(ctx.errors);
+            */
         } catch (e) {
             throw e;
         }

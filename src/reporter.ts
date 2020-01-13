@@ -224,6 +224,8 @@ export function formatErrorMessage(msg: string, data: any, ty: TypeAssertion, ct
     ret = ret.replace(/%{parentType}/g, escapeString(
         findTopObjectAssertion(ctx)?.typeName || '?'));
 
+    ret = ret.replace(/%{dataPath}/g, dataPath);
+
     return ret;
 }
 

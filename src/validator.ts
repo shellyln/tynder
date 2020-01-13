@@ -365,7 +365,14 @@ function validateObjectAssertion<T>(
             if (Object.prototype.hasOwnProperty.call(data, x[0])) {
                 const ret = validateRoot<T>(
                     data[x[0]],
-                    x[1].kind === 'optional' ? {...x[1].optional, name: x[0]} : x[1], // TODO: set name at compile time
+                    x[1].kind === 'optional' ?  // TODO: set name at compile time
+                        {
+                            ...x[1].optional,
+                            name: x[0],
+                            message: x[1].message,
+                            messages: x[1].messages,
+                            messageId: x[1].messageId,
+                        } : x[1],
                     ctx);
 
                 if (ret) {
@@ -373,7 +380,6 @@ function validateObjectAssertion<T>(
                         retVal[x[0]] = ret.value;
                     }
                 } else {
-                    // TODO: report member's custom error message
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {
@@ -439,13 +445,18 @@ function validateObjectAssertion<T>(
                 }
 
                 dataMembers.delete(m);
-                const ret = validateRoot<T>(data[m], at.kind === 'optional' ? at.optional : at, ctx);
+                const ret = validateRoot<T>(data[m], at.kind === 'optional' ?
+                    {
+                        ...at.optional,
+                        message: at.message,
+                        messages: at.messages,
+                        messageId: at.messageId,
+                    } : at, ctx);
                 if (ret) {
                     if (retVal) {
                         retVal[m] = ret.value;
                     }
                 } else {
-                    // TODO: report member's custom error message
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {

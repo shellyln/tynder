@@ -795,6 +795,7 @@ Precedence is "`Default messages` < `ctx.errorMessages` < `@msg()`".
 * `%{maxLength}`
 * `%{name}`
 * `%{parentType}`
+* `%{dataPath}`
 
 
 
