@@ -168,8 +168,9 @@ function validateRepeatedAssertion<T>(
     }
 
     const retVals: any[] = [];
-    for (const x of data) {
-        const r = validateRoot<T>(x, ty.repeated, ctx);
+    for (let i = 0; i < data.length; i++) {
+        const x = data[i];
+        const r = validateRoot<T>(x, ty.repeated, ctx, i);
         if (! r) {
             // TODO: Child is unmatched. reportError?
             return null;
@@ -184,7 +185,7 @@ function validateSequenceAssertion<T>(
     data: any, ty: SequenceAssertion, ctx: ValidationContext): {value: T} | null {
 
     if (! Array.isArray(data)) {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: TypeUnmatched is for 'primitive' type.
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         return null;
     }
     let dIdx = 0, // index of data
@@ -192,27 +193,50 @@ function validateSequenceAssertion<T>(
     let spreadLen = 0;
     let optionalOmitted = false;
 
-    const checkSpreadQuantity = (ts: SpreadAssertion) => {
+    const checkSpreadQuantity = (ts: SpreadAssertion, index: number) => {
         if (typeof ts.min === 'number' && spreadLen < ts.min) {
-            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            try {
+                ctx.typeStack.push([ts, index]);
+                reportError(
+                    spreadLen === 0 ?
+                        ErrorTypes.TypeUnmatched :
+                        ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
+            } finally {
+                ctx.typeStack.pop();
+            }
             return null;
         }
         if (typeof ts.max === 'number' && spreadLen > ts.max) {
-            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            try {
+                ctx.typeStack.push([ts, index]);
+                reportError(ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
+            } finally {
+                ctx.typeStack.pop();
+            }
             return null;
         }
         return ts;
     };
 
-    const checkOptionalQuantity = (ts: OptionalAssertion) => {
+    const checkOptionalQuantity = (ts: OptionalAssertion, index: number) => {
         if (spreadLen === 0) {
             // All subsequent 'optional' assertions should be 'spreadLen === 0'.
             optionalOmitted = true;
         } else if (optionalOmitted) {
-            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            try {
+                ctx.typeStack.push([ts, index]);
+                reportError(ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
+            } finally {
+                ctx.typeStack.pop();
+            }
             return null;
         } else if (spreadLen > 1) {
-            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            try {
+                ctx.typeStack.push([ts, index]);
+                reportError(ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
+            } finally {
+                ctx.typeStack.pop();
+            }
             return null;
         }
         return ts;
@@ -223,7 +247,7 @@ function validateSequenceAssertion<T>(
         const ts = ty.sequence[sIdx];
         if (ts.kind === 'spread') {
             const savedErrLen = ctx.errors.length;
-            const r = validateRoot<T>(data[dIdx], ts.spread, ctx);
+            const r = validateRoot<T>(data[dIdx], ts.spread, ctx, dIdx);
             if (r) {
                 retVals.push(r.value);
                 dIdx++;
@@ -232,7 +256,7 @@ function validateSequenceAssertion<T>(
                 // End of spreading
                 // rollback reported errors
                 ctx.errors.length = savedErrLen;
-                if (! checkSpreadQuantity(ts)) {
+                if (! checkSpreadQuantity(ts, dIdx)) {
                     return null;
                 }
                 spreadLen = 0;
@@ -240,7 +264,7 @@ function validateSequenceAssertion<T>(
             }
         } else if (ts.kind === 'optional') {
             const savedErrLen = ctx.errors.length;
-            const r = validateRoot<T>(data[dIdx], ts.optional, ctx);
+            const r = validateRoot<T>(data[dIdx], ts.optional, ctx, dIdx);
             if (r) {
                 retVals.push(r.value);
                 dIdx++;
@@ -249,14 +273,14 @@ function validateSequenceAssertion<T>(
                 // End of spreading
                 // rollback reported errors
                 ctx.errors.length = savedErrLen;
-                if (! checkOptionalQuantity(ts)) {
+                if (! checkOptionalQuantity(ts, dIdx)) {
                     return null;
                 }
                 spreadLen = 0;
                 sIdx++;
             }
         } else {
-            const r = validateRoot<T>(data[dIdx], ts, ctx);
+            const r = validateRoot<T>(data[dIdx], ts, ctx, dIdx);
             if (r) {
                 retVals.push(r.value);
                 dIdx++;
@@ -270,19 +294,24 @@ function validateSequenceAssertion<T>(
     while (sIdx < ty.sequence.length) {
         const ts = ty.sequence[sIdx];
         if (ts.kind === 'spread') {
-            if (! checkSpreadQuantity(ts)) {
+            if (! checkSpreadQuantity(ts, dIdx)) {
                 return null;
             }
             spreadLen = 0;
             sIdx++;
         } else if (ts.kind === 'optional') {
-            if (! checkOptionalQuantity(ts)) {
+            if (! checkOptionalQuantity(ts, dIdx)) {
                 return null;
             }
             spreadLen = 0;
             sIdx++;
         } else {
-            reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx); // TODO: RepeatQtyUnmatched is for 'repeated' type.
+            try {
+                ctx.typeStack.push([ts, dIdx]);
+                reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
+            } finally {
+                ctx.typeStack.pop();
+            }
             return null;
         }
     }
@@ -361,7 +390,11 @@ function validateObjectAssertion<T>(
         for (const x of ty.members) {
             dataMembers.delete(x[0]);
             if (Object.prototype.hasOwnProperty.call(data, x[0])) {
-                const ret = validateRoot<T>(data[x[0]], x[1].kind === 'optional' ? x[1].optional : x[1], ctx);
+                const ret = validateRoot<T>(
+                    data[x[0]],
+                    x[1].kind === 'optional' ? {...x[1].optional, name: x[0]} : x[1], // TODO: set name at compile time
+                    ctx);
+
                 if (ret) {
                     if (retVal) {
                         retVal[x[0]] = ret.value;
@@ -376,7 +409,12 @@ function validateObjectAssertion<T>(
                 }
             } else {
                 if (x[1].kind !== 'optional') {
-                    reportError(ErrorTypes.Required, data, x[1], ctx);
+                    try {
+                        ctx.typeStack.push(x[1]);
+                        reportError(ErrorTypes.Required, data, x[1], ctx);
+                    } finally {
+                        ctx.typeStack.pop();
+                    }
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {
@@ -462,10 +500,13 @@ function validateObjectAssertion<T>(
 
 
 export function validateRoot<T>(
-    data: any, ty: TypeAssertion, ctx: ValidationContext): {value: T} | null {
+    data: any, ty: TypeAssertion, ctx: ValidationContext, dataIndex?: number | string): {value: T} | null {
 
     try {
-        ctx.typeStack.push(ty);
+        ctx.typeStack.push(
+            typeof dataIndex === 'number' || typeof dataIndex === 'string' ?
+            [ty, dataIndex] : ty);
+
         switch (ty.kind) {
         case 'never':
             return validateNeverTypeAssertion(data, ty, ctx);
@@ -523,9 +564,9 @@ export function validate<T>(
 }
 
 
-export function getType(types: TypeAssertionMap, name: string): TypeAssertion {
-    if (types.has(name)) {
-        return types.get(name)?.ty as TypeAssertion;
+export function getType(schema: TypeAssertionMap, name: string): TypeAssertion {
+    if (schema.has(name)) {
+        return schema.get(name)?.ty as TypeAssertion;
     }
     throw new Error(`Undefined type name is referred: ${name}`);
 }

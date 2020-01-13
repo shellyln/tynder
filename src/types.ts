@@ -38,8 +38,9 @@ export type ErrorMessages = Partial<{
 
 
 export interface TypeAssertionErrorMessage {
-    code?: string;
+    code: string;
     message: string;
+    dataPath: string;
 }
 
 
@@ -210,9 +211,11 @@ export interface ValidationContext {
     errors: TypeAssertionErrorMessage[];
 
     // === internal use ===
-    typeStack: TypeAssertion[]; // For error reporting (keyword substitutions)
-                                // NOTE: DO NOT reassign! Push or pop items instead of reassign.
-    schema?: TypeAssertionMap;  // To resolve 'symlink' assertion, the context need to have a schema instance.
+    typeStack: Array<             // For error reporting (keyword substitutions)
+        TypeAssertion |
+        [TypeAssertion, number | string]>; // [1]: data index
+                                  // NOTE: DO NOT reassign! Push or pop items instead of reassign.
+    schema?: TypeAssertionMap;    // To resolve 'symlink' assertion, the context need to have a schema instance.
 }
 
 

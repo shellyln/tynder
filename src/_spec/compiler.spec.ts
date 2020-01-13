@@ -133,6 +133,7 @@ describe("compiler", function() {
                     i: [string, number?, string?];
                     j: [...<number, 1..2>, string];
                     j2: [string, ...<number, 2..3>];
+                    j3: string[..2];
                     k: Y;
                     l: B;
                     [propName: /^[a-z][0-9]$/ | number]?: string;
@@ -190,7 +191,11 @@ describe("compiler", function() {
                 g: 'DEBCB',
                 i: ['q', 12, 'a'],
                 j: [1, 2, 'aaa'],
+                // j: ['', 1, 2, 'aaa'],
                 j2: ['aaa', 1, 2, 3],
+                // j2: ['aaa', '', 1, 2, 3],
+                j3: ['', ''],
+                // j3: ['', 0],
                 k: false,
                 l: {a: 5},
                 z1: 'a',
@@ -199,14 +204,16 @@ describe("compiler", function() {
             }, getType(schema2, 'A'), ctx)).toEqual({} as any);
             console.log(generateTypeScriptCode(schema2));
             console.log(generateProto3Code(schema2));
-            console.log(JSON.stringify(ctx));
+            // console.log(JSON.stringify(ctx));
+            console.log(ctx.errors);
 
             delete ctx.errors;
             expect(validate({
                 a: {a: {b: 2}, b: 1},
                 b: {b: {b: 3}},
             }, getType(schema2, 'HH'), ctx)).toEqual({} as any);
-            console.log(JSON.stringify(ctx));
+            // console.log(JSON.stringify(ctx));
+            console.log(ctx.errors);
             */
         } catch (e) {
             throw e;
