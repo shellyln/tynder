@@ -18,9 +18,10 @@ import { ErrorTypes,
          ObjectAssertion,
          TypeAssertion,
          ValidationContext,
-         TypeAssertionMap } from './types';
-import { reportError }      from './reporter';
-import { resolveSymbols }   from './lib/resolver';
+         TypeAssertionMap }    from './types';
+import { reportError,
+         reportErrorWithPush } from './reporter';
+import { resolveSymbols }      from './lib/resolver';
 
 
 
@@ -195,24 +196,14 @@ function validateSequenceAssertion<T>(
 
     const checkSpreadQuantity = (ts: SpreadAssertion, index: number) => {
         if (typeof ts.min === 'number' && spreadLen < ts.min) {
-            try {
-                ctx.typeStack.push([ts, index]);
-                reportError(
-                    spreadLen === 0 ?
-                        ErrorTypes.TypeUnmatched :
-                        ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
-            } finally {
-                ctx.typeStack.pop();
-            }
+            reportErrorWithPush(
+                spreadLen === 0 ?
+                    ErrorTypes.TypeUnmatched :
+                    ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
             return null;
         }
         if (typeof ts.max === 'number' && spreadLen > ts.max) {
-            try {
-                ctx.typeStack.push([ts, index]);
-                reportError(ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
-            } finally {
-                ctx.typeStack.pop();
-            }
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
             return null;
         }
         return ts;
@@ -223,20 +214,10 @@ function validateSequenceAssertion<T>(
             // All subsequent 'optional' assertions should be 'spreadLen === 0'.
             optionalOmitted = true;
         } else if (optionalOmitted) {
-            try {
-                ctx.typeStack.push([ts, index]);
-                reportError(ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
-            } finally {
-                ctx.typeStack.pop();
-            }
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
             return null;
         } else if (spreadLen > 1) {
-            try {
-                ctx.typeStack.push([ts, index]);
-                reportError(ErrorTypes.RepeatQtyUnmatched, data, ts, ctx);
-            } finally {
-                ctx.typeStack.pop();
-            }
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
             return null;
         }
         return ts;
@@ -306,12 +287,7 @@ function validateSequenceAssertion<T>(
             spreadLen = 0;
             sIdx++;
         } else {
-            try {
-                ctx.typeStack.push([ts, dIdx]);
-                reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
-            } finally {
-                ctx.typeStack.pop();
-            }
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, dIdx], ctx);
             return null;
         }
     }

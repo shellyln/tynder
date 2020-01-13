@@ -276,3 +276,13 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
         });
     }
 }
+
+
+export function reportErrorWithPush(errType: ErrorTypes, data: any, tyidx: [TypeAssertion, number | string], ctx: ValidationContext) {
+    try {
+        ctx.typeStack.push(tyidx);
+        reportError(errType, data, tyidx[0], ctx);
+    } finally {
+        ctx.typeStack.pop();
+    }
+}
