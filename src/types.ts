@@ -37,10 +37,17 @@ export type ErrorMessages = Partial<{
 }>;
 
 
+export type TypeAssertionErrorMessageConstraints =
+    Partial<Omit<PrimitiveTypeAssertionConstraints &
+        RepeatedAssertionConstraints, 'pattern'> &
+        {pattern: string}>;
+
+
 export interface TypeAssertionErrorMessage {
     code: string;
     message: string;
     dataPath: string;
+    constraints: TypeAssertionErrorMessageConstraints;
 }
 
 
@@ -71,9 +78,7 @@ export interface UnknownTypeAssertion extends TypeAssertionBase {
 }
 
 
-export interface PrimitiveTypeAssertion extends TypeAssertionBase {
-    kind: 'primitive';
-    primitiveName: PrimitiveValueTypeNames;
+export interface PrimitiveTypeAssertionConstraints {
     minValue?: number | string | null; // TODO: bigint
     maxValue?: number | string | null; // TODO: bigint
     greaterThanValue?: number | string | null;
@@ -84,25 +89,33 @@ export interface PrimitiveTypeAssertion extends TypeAssertionBase {
 }
 
 
+export interface PrimitiveTypeAssertion extends TypeAssertionBase, PrimitiveTypeAssertionConstraints {
+    kind: 'primitive';
+    primitiveName: PrimitiveValueTypeNames;
+}
+
+
 export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
     kind: 'primitive-value';
     value: PrimitiveValueTypes;
 }
 
 
-export interface RepeatedAssertion extends TypeAssertionBase {
-    kind: 'repeated';
-    repeated: TypeAssertion;
+export interface RepeatedAssertionConstraints {
     min: number | null;
     max: number | null;
 }
 
 
-export interface SpreadAssertion extends TypeAssertionBase {
+export interface RepeatedAssertion extends TypeAssertionBase, RepeatedAssertionConstraints {
+    kind: 'repeated';
+    repeated: TypeAssertion;
+}
+
+
+export interface SpreadAssertion extends TypeAssertionBase, RepeatedAssertionConstraints {
     kind: 'spread';
     spread: TypeAssertion;
-    min: number | null;
-    max: number | null;
 }
 
 
@@ -213,7 +226,7 @@ export interface ValidationContext {
     // === internal use ===
     typeStack: Array<             // For error reporting (keyword substitutions)
         TypeAssertion |
-        [TypeAssertion, number | string]>; // [1]: data index
+        [TypeAssertion, number | string | undefined]>; // [1]: data index
                                   // NOTE: DO NOT reassign! Push or pop items instead of reassign.
     schema?: TypeAssertionMap;    // To resolve 'symlink' assertion, the context need to have a schema instance.
 }

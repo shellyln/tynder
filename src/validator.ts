@@ -388,12 +388,7 @@ function validateObjectAssertion<T>(
                 }
             } else {
                 if (x[1].kind !== 'optional') {
-                    try {
-                        ctx.typeStack.push(x[1]);
-                        reportError(ErrorTypes.Required, data, x[1], ctx);
-                    } finally {
-                        ctx.typeStack.pop();
-                    }
+                    reportErrorWithPush(ErrorTypes.Required, data, [x[1], void 0], ctx);
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {
