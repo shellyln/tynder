@@ -977,12 +977,12 @@ export function compile(s: string) {
     };
 
     lisp.setGlobals({
-        picked: operators.picked,
-        omit: operators.omit,
-        partial: operators.partial,
-        intersect: operators.intersect,
+        picked: operators.picked,        // TODO: BUG: Members are lost if operator is called before resolution
+        omit: operators.omit,            // TODO: BUG: Members are lost if operator is called before resolution
+        partial: operators.partial,      // TODO: BUG: Members are lost if operator is called before resolution
+        intersect: operators.intersect,  // TODO: BUG: Members are lost if operator is called before resolution
         oneOf: operators.oneOf,
-        subtract: operators.subtract,
+        subtract: operators.subtract,    // TODO: BUG: Members are lost if operator is called before resolution
         primitive: operators.primitive,
         primitiveValue: operators.primitiveValue,
         optional: operators.optional,
