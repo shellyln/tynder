@@ -156,7 +156,7 @@ function validateRepeatedAssertion<T>(
     data: any, ty: RepeatedAssertion, ctx: ValidationContext): {value: T} | null {
 
     if (! Array.isArray(data)) {
-        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         return null;
     }
     if (typeof ty.min === 'number' && data.length < ty.min) {
@@ -173,7 +173,6 @@ function validateRepeatedAssertion<T>(
         const x = data[i];
         const r = validateRoot<T>(x, ty.repeated, ctx, i);
         if (! r) {
-            // TODO: Child is unmatched. reportError?
             return null;
         }
         retVals.push(r.value);
@@ -267,7 +266,6 @@ function validateSequenceAssertion<T>(
                 dIdx++;
                 sIdx++;
             } else {
-                // TODO: Child is unmatched. reportError?
                 return null;
             }
         }
@@ -313,7 +311,6 @@ function validateOneOfAssertion<T>(
         }
         return r;
     }
-    // TODO: Child is unmatched. reportError? // <- it should be reporting. (children errors are rollbacked)
     reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
     return null;
 }

@@ -134,13 +134,26 @@ function findTopRepeatableAssertion(ctx: ValidationContext):
 function getExpectedType(ty: TypeAssertion): string {
     switch (ty.kind) {
     case 'repeated':
-        return getExpectedType(ty.repeated);
+        return `(repeated ${getExpectedType(ty.repeated)})`;
     case 'spread':
         return getExpectedType(ty.spread);
     case 'sequence':
         return '(sequence)';
     case 'primitive':
         return ty.primitiveName;
+    case 'primitive-value':
+        return `(value ${
+            typeof ty.value === 'string' ?
+                `'${String(ty.value)}'` :
+                String(ty.value)})`;
+    case 'optional':
+        return getExpectedType(ty.optional);
+    case 'one-of':
+        return `(one of ${ty.oneOf.map(x => getExpectedType(x)).join(', ')}`;
+    case 'never': case 'any': case 'unknown':
+        return ty.kind;
+    case 'symlink':
+        return ty.symlinkTargetName;
     default:
         return ty.typeName ? ty.typeName : '?';
     }
@@ -201,9 +214,9 @@ export function formatErrorMessage(msg: string, data: any, ty: TypeAssertion, ct
             `${nvl(ty.maxLength, '(biggest)')}` : '?'));
 
     ret = ret.replace(/%{name}/g, escapeString(
-        `${dataPath.endsWith('repeated)') ?
+        `${ty.kind !== 'repeated' && dataPath.endsWith('repeated)') ?
             'repeated item of ' :
-            dataPath.endsWith('sequence)') ?
+            ty.kind !== 'sequence' && dataPath.endsWith('sequence)') ?
                 'sequence item of ' : ''}${
         (ty.name && ty.name !== ty.typeName ? ty.name : null) ||
             findTopNamedAssertion(ctx)?.name || '?'}`));
@@ -233,16 +246,20 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
         const pi = Array.isArray(next) ? next[1] : void 0;
 
         if (pt.kind === 'repeated') {
-            if (pt.name) {
-                dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}repeated)`);
-            } else {
-                dataPathArray.push(`(repeated)`);
+            if (i !== ctx.typeStack.length - 1) {
+                if (pt.name) {
+                    dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}repeated)`);
+                } else {
+                        dataPathArray.push(`(repeated)`);
+                }
             }
         } else if (pt.kind === 'sequence') {
-            if (pt.name) {
-                dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}sequence)`);
-            } else {
-                dataPathArray.push(`(sequence)`);
+            if (i !== ctx.typeStack.length - 1) {
+                if (pt.name) {
+                    dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}sequence)`);
+                } else {
+                        dataPathArray.push(`(sequence)`);
+                }
             }
         } else {
             if (pt.name) {

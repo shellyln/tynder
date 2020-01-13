@@ -170,6 +170,7 @@ describe("compiler", function() {
             // console.log(JSON.stringify(getType(schema2, 'A'), null, 2));
             // console.log(JSON.stringify(getType(schema2, 'H'), null, 2));
             /*
+            */
             const ctx: Partial<ValidationContext> = {
                 checkAll: true,
                 // noAdditionalProps: true,
@@ -187,15 +188,18 @@ describe("compiler", function() {
                 d90: '',
                 d91: '',
                 e: [true, false],
+                // e: [0, 1, 2],
                 f: true,
                 g: 'DEBCB',
                 i: ['q', 12, 'a'],
                 j: [1, 2, 'aaa'],
                 // j: ['', 1, 2, 'aaa'],
+                // j: '',
                 j2: ['aaa', 1, 2, 3],
                 // j2: ['aaa', '', 1, 2, 3],
                 j3: ['', ''],
                 // j3: ['', 0],
+                // j3: '',
                 k: false,
                 l: {a: 5},
                 z1: 'a',
@@ -214,7 +218,6 @@ describe("compiler", function() {
             }, getType(schema2, 'HH'), ctx)).toEqual({} as any);
             // console.log(JSON.stringify(ctx));
             console.log(ctx.errors);
-            */
         } catch (e) {
             throw e;
         }
