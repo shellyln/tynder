@@ -247,6 +247,7 @@ export interface TypeAssertionSetValue {
 }
 
 
+// TODO: preserve right hand side type name on output ts file
 export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
 
 

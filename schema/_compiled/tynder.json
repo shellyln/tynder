@@ -1,4 +1,16 @@
 {
+  "RegExp": {
+    "kind": "any",
+    "typeName": "RegExp",
+    "name": "RegExp",
+    "noOutput": true
+  },
+  "Map": {
+    "kind": "any",
+    "typeName": "Map",
+    "name": "Map",
+    "noOutput": true
+  },
   "PrimitiveValueTypes": {
     "kind": "one-of",
     "oneOf": [

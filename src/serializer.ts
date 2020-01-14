@@ -59,7 +59,6 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
     }
 
     delete ret.passThruCodeBlock;
-    delete ret.noOutput;
     return ret;
 }
 
@@ -67,9 +66,6 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
 export function serialize(types: TypeAssertionMap, asTs?: boolean): string {
     const ret = {};
     for (const ty of types.entries()) {
-        if (ty[1].ty.noOutput) {
-            continue;
-        }
         ret[ty[0]] = serializeInner(ty[1].ty, 0);
     }
 
