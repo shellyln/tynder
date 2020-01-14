@@ -1,0 +1,291 @@
+
+scalar Any
+
+scalar RegExp
+
+scalar Map
+
+union PrimitiveValueTypes = Float | String | String | Boolean | Any | Any
+
+union PrimitiveValueTypeNames = String | String | String | String | String | String
+
+union OptionalPrimitiveValueTypeNames = String | String | String | String | String | String
+
+union PlaceholderTypeNames = String | String | String
+
+union OptionalPlaceholderTypeNames = String | String | String
+
+enum ErrorTypes {
+    InvalidDefinition
+    Required
+    TypeUnmatched
+    RepeatQtyUnmatched
+    SequenceUnmatched
+    ValueRangeUnmatched
+    ValuePatternUnmatched
+    ValueLengthUnmatched
+    ValueUnmatched
+}
+
+type ErrorMessages {
+    invalidDefinition: String
+    required: String
+    typeUnmatched: String
+    repeatQtyUnmatched: String
+    sequenceUnmatched: String
+    valueRangeUnmatched: String
+    valuePatternUnmatched: String
+    valueLengthUnmatched: String
+    valueUnmatched: String
+}
+
+type TypeAssertionErrorMessageConstraints {}
+
+type TypeAssertionErrorMessage {
+    code: String!
+    message: String!
+    dataPath: String!
+    constraints: TypeAssertionErrorMessageConstraints!
+    value: Any
+}
+
+type TypeAssertionBase {
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type NeverTypeAssertion {
+    kind: String!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type AnyTypeAssertion {
+    kind: String!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type UnknownTypeAssertion {
+    kind: String!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type PrimitiveTypeAssertionConstraints {
+    minValue: Float | String | Any
+    maxValue: Float | String | Any
+    greaterThanValue: Float | String | Any
+    lessThanValue: Float | String | Any
+    minLength: Float | Any
+    maxLength: Float | Any
+    pattern: RegExp | Any
+}
+
+type PrimitiveTypeAssertion {
+    kind: String!
+    primitiveName: PrimitiveValueTypeNames!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+    minValue: Float | String | Any
+    maxValue: Float | String | Any
+    greaterThanValue: Float | String | Any
+    lessThanValue: Float | String | Any
+    minLength: Float | Any
+    maxLength: Float | Any
+    pattern: RegExp | Any
+}
+
+type PrimitiveValueTypeAssertion {
+    kind: String!
+    value: PrimitiveValueTypes!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type RepeatedAssertionConstraints {
+    min: Float | Any!
+    max: Float | Any!
+}
+
+type RepeatedAssertion {
+    kind: String!
+    repeated: TypeAssertion!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+    min: Float | Any!
+    max: Float | Any!
+}
+
+type SpreadAssertion {
+    kind: String!
+    spread: TypeAssertion!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+    min: Float | Any!
+    max: Float | Any!
+}
+
+type SequenceAssertion {
+    kind: String!
+    sequence: [TypeAssertion!]!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type OneOfAssertion {
+    kind: String!
+    oneOf: [TypeAssertion!]!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type OptionalAssertion {
+    kind: String!
+    optional: TypeAssertion!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type EnumAssertion {
+    kind: String!
+    values: [Any!]!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+union ObjectAssertionMember = Any | Any | Any
+
+union AdditionalPropsKey = [String | String | RegExp!]
+
+union AdditionalPropsMember = Any | Any | Any
+
+type ObjectAssertion {
+    kind: String!
+    members: [ObjectAssertionMember!]!
+    additionalProps: [AdditionalPropsMember!]
+    baseTypes: [ObjectAssertion | AssertionSymlink!]
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+type AssertionSymlink {
+    kind: String!
+    symlinkTargetName: String!
+    messageId: String
+    message: String
+    messages: ErrorMessages
+    name: String
+    typeName: String
+    docComment: String
+    passThruCodeBlock: String
+    noOutput: Boolean
+}
+
+union TypeAssertion = NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion | AssertionSymlink
+
+type ValidationContext {
+    checkAll: Boolean
+    noAdditionalProps: Boolean
+    errorMessages: ErrorMessages
+    errors: [TypeAssertionErrorMessage!]!
+    typeStack: [NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion | AssertionSymlink | Any!]!
+    schema: TypeAssertionMap
+}
+
+type TypeAssertionSetValue {
+    ty: TypeAssertion!
+    exported: Boolean!
+    resolved: Boolean!
+}
+
+union TypeAssertionMap = Any
+
+type SymbolResolverContext {
+    nestLevel: Float!
+    symlinkStack: [String!]!
+}
+
+type CodegenContext {
+    nestLevel: Float!
+    schema: TypeAssertionMap
+}
+

@@ -10,7 +10,8 @@ import { compile }                from '../compiler';
 import { serialize }              from '../serializer';
 import { generateTypeScriptCode,
          generateJsonSchema,
-         generateProto3Code }     from '../codegen';
+         generateProto3Code,
+         generateGraphQlCode }    from '../codegen';
 
 
 
@@ -108,6 +109,16 @@ function compileToProto3(srcDir: string, destDir: string, options: Partial<CliOp
 }
 
 
+function compileToGraphQl(srcDir: string, destDir: string, options: Partial<CliOptions>) {
+    const opts: CliOptions = Object.assign({}, {
+        srcExt: '.tss',
+        destExt: '.graphql',
+    }, options || {});
+
+    return compileTo(generateGraphQlCode, srcDir, destDir, opts);
+}
+
+
 export function printHelp() {
     console.log(
 `tynder - TypeScript friendly Data validator for JavaScript.
@@ -149,6 +160,10 @@ Subcommands:
       Compile schema and generate 'Protocol Buffers 3' type definition files.
           * default input file extension is *.tss
           * default output file extension is *.proto
+  gen-graphql
+      Compile schema and generate 'GraphQL' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.graphql
 
 Options:
   --indir dirname
@@ -245,6 +260,9 @@ export function run(argv: string[]) {
             break;
         case 'gen-proto3':
             compileToProto3(inDir, outDir, options);
+            break;
+        case 'gen-graphql':
+            compileToGraphQl(inDir, outDir, options);
             break;
         case 'help':
             printHelp();

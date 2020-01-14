@@ -15,7 +15,8 @@
     "type checker",
     "ajv",
     "joi",
-    "protobuf"
+    "protobuf",
+    "GraphQL"
   ],
   "main": "index.js",
   "module": "./modules/index.js",
@@ -88,6 +89,7 @@
     "example:4": "node ./bin.cli/tynder.js gen-json-schema --indir ./schema/tynder --outdir ./schema/json-schema",
     "example:5": "node ./bin.cli/tynder.js gen-json-schema-as-ts --indir ./schema/tynder --outdir ./schema/json-schema",
     "example:6": "node ./bin.cli/tynder.js gen-proto3 --indir ./schema/tynder --outdir ./schema/proto3",
+    "example:7": "node ./bin.cli/tynder.js gen-graphql --indir ./schema/tynder --outdir ./schema/graphql",
     "prepublishOnly": "run-s clean build test lint"
   },
   "repository": {
