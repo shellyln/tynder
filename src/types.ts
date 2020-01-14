@@ -196,6 +196,14 @@ export interface AssertionSymlink extends TypeAssertionBase {
 }
 
 
+// TODO: Add it to resolve backref in type operator's operands
+// export interface AssertionOperator extends TypeAssertionBase {
+//     kind: 'operator';
+//     operator: string;
+//     operands: TypeAssertion[];
+// }
+
+
 export type TypeAssertion =
     NeverTypeAssertion |
     AnyTypeAssertion |
@@ -209,7 +217,7 @@ export type TypeAssertion =
     OptionalAssertion |
     EnumAssertion |
     ObjectAssertion |
-    AssertionSymlink;
+    AssertionSymlink;  // TODO: | AssertionOperator
 
 
 export interface ValidationContext {
@@ -225,11 +233,15 @@ export interface ValidationContext {
     errors: TypeAssertionErrorMessage[];
 
     // === internal use ===
-    typeStack: Array<             // For error reporting (keyword substitutions)
+    typeStack: Array<                 // For error reporting (keyword substitutions)
         TypeAssertion |
-        [TypeAssertion, number | string | undefined]>; // [1]: data index
-                                  // NOTE: DO NOT reassign! Push or pop items instead of reassign.
-    schema?: TypeAssertionMap;    // To resolve 'symlink' assertion, the context need to have a schema instance.
+        [TypeAssertion,
+         number | string | undefined] // [1]: data index
+        >;
+                                      // NOTE: DO NOT reassign!
+                                      //   Push or pop items instead of reassign.
+    schema?: TypeAssertionMap;        //   To resolve 'symlink' assertion,
+                                      //   the context need to have a schema instance.
 }
 
 
@@ -246,6 +258,7 @@ export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
 export interface SymbolResolverContext {
     nestLevel: number;
     symlinkStack: string[]; // For detecting recursive type
+    // operators?: {[propName]: function}; // TODO: Add it to resolve backref in type operator's operands
 }
 
 
