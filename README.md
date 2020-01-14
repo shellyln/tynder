@@ -30,13 +30,13 @@ Validate data in browsers, node.js back-end servers, and various language platfo
     * CLI / API
 * Generate **Protocol Buffers 3** type definition code. (experimental)
     * CLI / API
+* Generate **GraphQL** type definition code. (experimental)
+    * CLI / API
 
 
 
 ## Planned features
 * Merge data recursively.
-* Generate GraphQL schema.
-    * CLI / API
 * [X] ~~Recursive types~~
 * [X] ~~Back reference of types~~
 
@@ -849,6 +849,10 @@ Subcommands:
       Compile schema and generate 'Protocol Buffers 3' type definition files.
           * default input file extension is *.tss
           * default output file extension is *.proto
+  gen-graphql
+      Compile schema and generate 'GraphQL' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.graphql
 
 Options:
   --indir dirname
