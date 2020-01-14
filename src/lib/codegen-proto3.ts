@@ -185,6 +185,9 @@ import "google/protobuf/any.proto";
     const ctx = {nestLevel: 0};
     for (const ty of types.entries()) {
         if (ty[1].ty.noOutput) {
+            const indent0 = '    '.repeat(ctx.nestLevel);
+            const indent1 = '    '.repeat(ctx.nestLevel + 1);
+            code += `message ${ty[0]} {\n${indent1}google.protobuf.Any value = 1;\n${indent0}}\n\n`;
             continue;
         }
         code += formatProto3CodeDocComment(ty[1].ty, ctx.nestLevel);

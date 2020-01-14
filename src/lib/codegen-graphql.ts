@@ -177,12 +177,12 @@ function generateGraphQlCodeInner(ty: TypeAssertion, isInterface: boolean, ctx: 
 
 
 export function generateGraphQlCode(types: TypeAssertionMap): string {
-    let code =
-`
-scalar Any\n\n`;
+    let code = `\nscalar Any\n\n`;
+
     const ctx = {nestLevel: 0};
     for (const ty of types.entries()) {
         if (ty[1].ty.noOutput) {
+            code += `scalar ${ty[0]}\n\n`;
             continue;
         }
         code += formatGraphQlCodeDocComment(ty[1].ty, ctx.nestLevel);

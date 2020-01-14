@@ -3,6 +3,14 @@ syntax = "proto3";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
 
+message RegExp {
+    google.protobuf.Any value = 1;
+}
+
+message Map {
+    google.protobuf.Any value = 1;
+}
+
 message PrimitiveValueTypes {
     google.protobuf.Any value = 1;
 }
