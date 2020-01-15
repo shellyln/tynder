@@ -21,18 +21,15 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 
 ## Features
 * Define the **schema with TypeScript-like DSL**.
-* **Validate** data with defined schema.
+* **Validate** data against the defined schema.
 * End user friendly **custom validation error message**.
-* Create subset by **cherrypicking** fields from original data with defined schema.
+* Create subset by **cherrypicking** fields from original data with the defined schema.
 * Apply the **patch** data to the original data.
-* Generate _TypeScript_ type definition code.
-    * CLI / API
-* Generate _JSON Schema_ type definition document.
-    * CLI / API
-* Generate _Protocol Buffers 3_ type definition code. (experimental)
-    * CLI / API
-* Generate _GraphQL_ type definition code. (experimental)
-    * CLI / API
+* Generate type definition or schema files using CLI / API.
+    * TypeScript
+    * JSON Schema
+    * Protocol Buffers 3 (experimental)
+    * GraphQL (experimental)
 
 
 
