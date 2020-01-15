@@ -6,13 +6,14 @@ import { TypeAssertionSetValue,
          ValidationContext }      from '../types';
 import { validate,
          getType }                from '../validator';
-import { pick,
-         merge }                  from '../picker';
+import { pick }                   from '../picker';
+import { patch }                  from '../patch';
 import { parse,
          compile }                from '../compiler';
 import { generateTypeScriptCode,
          generateProto3Code,
          generateJsonSchemaObject } from '../codegen';
+import { picked } from '../operators';
 
 
 
@@ -242,6 +243,36 @@ describe("compiler", function() {
         console.log(JSON.stringify(validate({b: 6, c: '1234'}, getType(z, 'A'), ctx)));
         console.log(ctx.errors);
         expect(1).toEqual(1);
+    });
+    it("compiler-2b", function() {
+        /*
+        console.log(JSON.stringify(getType(z, 'A'), null, 2));
+        */
+        const z = compile(`
+            type Foo = string;
+            interface A {
+                a: Foo;
+                @range(3, 5)
+                b: number;
+                @maxLength(3)
+                c: Foo;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {checkAll: true};
+        const subtype = picked(getType(z, 'A'), 'a', 'c');
+        const original = {a: '', b: 3, c: '123', d: 0};
+        const needle = pick(original, subtype, ctx);
+        needle.a = '1';
+        needle.b = 6;
+        (needle as any).e = 5;
+        try {
+            console.log(patch(original, needle, subtype, ctx));
+            expect(1).toEqual(1);
+        } catch (e) {
+            console.log(e.message);
+            console.log(e.ctx?.errors);
+            expect(1).toEqual(0);
+        }
     });
     it("compiler-3", function() {
         const z = compile(`

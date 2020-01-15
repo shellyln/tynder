@@ -1,8 +1,7 @@
 
 import {}           from '../types';
 import { validate } from '../validator';
-import { pick,
-         merge }    from '../picker';
+import { pick }     from '../picker';
 import { picked,
          partial,
          intersect,
