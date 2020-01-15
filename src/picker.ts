@@ -5,7 +5,8 @@
 
 import { TypeAssertion,
          ValidationContext } from './types';
-import { validate } from './validator';
+import { ValidationError }   from './errors';
+import { validate }          from './validator';
 
 
 
@@ -27,10 +28,10 @@ function pickMapper(value: any, ty: TypeAssertion) {
 }
 
 
-export function pickRoot<T>(data: any, ty: TypeAssertion, ctx: ValidationContext): T {
+export function pickRoot<T>(data: T, ty: TypeAssertion, ctx: ValidationContext): T {
     switch (ty.kind) {
     case 'never':
-        throw new Error(`Type unmatched: ${(ty as any).kind}`);
+        throw new ValidationError(`Type unmatched: ${(ty as any).kind}`, ty, ctx);
     case 'any':
         // FALL_THRU
     case 'unknown':
@@ -53,18 +54,18 @@ export function pickRoot<T>(data: any, ty: TypeAssertion, ctx: ValidationContext
             if (r) {
                 return r.value;
             } else {
-                throw new Error('Validation failed.');
+                throw new ValidationError('Validation failed.', ty, ctx);
             }
         }
     case 'spread': case 'optional': case 'symlink':
-        throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
+        throw new ValidationError(`Unexpected type assertion: ${(ty as any).kind}`, ty, ctx);
     default:
-        throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
+        throw new ValidationError(`Unknown type assertion: ${(ty as any).kind}`, ty, ctx);
     }
 }
 
 
-export function pick<T>(data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): T {
+export function pick<T>(data: T, ty: TypeAssertion, ctx?: Partial<ValidationContext>): T {
     const ctx2: ValidationContext = {
         ...{errors: [], typeStack: []},
         ...(ctx || {}),
@@ -80,8 +81,35 @@ export function pick<T>(data: any, ty: TypeAssertion, ctx?: Partial<ValidationCo
 }
 
 
-export function merge<T>(src: T, ...dataList: Array<Partial<T>>): T {
-    // TODO: not impl
-    throw new Error(`function 'merge()' is not implemented.`);
-    // return src;
+function merge(data: any, needle: any) {
+    if (data === null || data === void 0) {
+        return needle;
+    }
+    switch (typeof data) {
+    case 'object':
+        if (Array.isArray(data)) {
+            return [...needle];
+        } else {
+            const r: any = {};
+            for (const k in needle) {
+                if (Object.prototype.hasOwnProperty.call(needle, k)) {
+                    // TODO: check prototype pollution
+                    r[k] = merge(r[k], needle[k]);
+                }
+            }
+            return ({...data, ...r});
+        }
+    default:
+        return needle;
+    }
+}
+
+
+export function patch<T>(data: T, needle: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): T {
+    const ctx2: ValidationContext = {
+        ...{errors: [], typeStack: []},
+        ...(ctx || {}),
+    };
+    const validated = pick<T>(needle, ty, ctx2);
+    return merge(data, validated);
 }

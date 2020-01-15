@@ -19,6 +19,7 @@ import { ErrorTypes,
          TypeAssertion,
          ValidationContext,
          TypeAssertionMap }    from './types';
+import { ValidationError }     from './errors';
 import { reportError,
          reportErrorWithPush } from './reporter';
 import { resolveSymbols }      from './lib/resolver';
@@ -337,7 +338,8 @@ function validateObjectAssertion<T>(
     for (const x of ty.members) {
         if (ty.members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
-            throw new Error(`Duplicated member is found: ${x[0]} in ${ty.name || '(unnamed)'}`);
+            throw new ValidationError(
+                `Duplicated member is found: ${x[0]} in ${ty.name || '(unnamed)'}`, ty, ctx);
         }
     }
 
@@ -512,13 +514,13 @@ export function validateRoot<T>(
                 return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {nestLevel: 0, symlinkStack: []}), ctx);
             }
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
-            throw new Error(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`);
+            throw new ValidationError(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`, ty, ctx);
         case 'spread': case 'optional':
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
-            throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
+            throw new ValidationError(`Unexpected type assertion: ${(ty as any).kind}`, ty, ctx);
         default:
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
-            throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
+            throw new ValidationError(`Unknown type assertion: ${(ty as any).kind}`, ty, ctx);
         }
     } finally {
         ctx.typeStack.pop();
