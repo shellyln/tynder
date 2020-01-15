@@ -36,7 +36,7 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 
 
 ## Planned features
-* Merge data recursively.
+* [X] ~~Merge data recursively.~~
 * [X] ~~Recursive types~~
 * [X] ~~Back reference of types~~
 
@@ -131,10 +131,10 @@ tynder gen-ts                --indir path/to/schema/tynder --outdir path/to/type
 tynder gen-json-schema       --indir path/to/schema/tynder --outdir path/to/schema/json-schema
 # Compile schema and generate JSON Schema as JavaScript|TypeScript files.
 tynder gen-json-schema-as-ts --indir path/to/schema/tynder --outdir path/to/schema/json-schema
-
-## Planned features
-# tynder gen-proto3  --indir path/to/schema/tynder --outdir path/to/schema/proto3
-# tynder gen-graphql --indir path/to/schema/tynder --outdir path/to/schema/graphql
+# Compile schema and generate Protocol Buffers 3 type definition files.
+tynder gen-proto3            --indir path/to/schema/tynder --outdir path/to/schema/proto3
+# Compile schema and generate GraphQL type definition files.
+tynder gen-graphql           --indir path/to/schema/tynder --outdir path/to/schema/graphql
 ```
 
 
@@ -145,7 +145,9 @@ import { compile } from 'tynder/modules/compiler';
 export default const mySchema = compile(`
     type Foo = string;
     interface A {
+        @maxLength(4)
         a: Foo;
+        z?: boolean;
     }
 `);
 ```
@@ -177,24 +179,27 @@ const ctx3: Partial<ValidationContext> =
     noAdditionalProps: true, // (optional) Do not allow implicit additional properties.
     schema: mySchema,        // (optional) Pass "schema" to check for recursive types.
 };
+
 const validated3 = validate({
     aa: 'x',
     b: 3,
 }, getType(mySchema, 'A'), ctx3);
+
 if (validated3 === null) {
     console.log(JSON.stringify(
-        ctx3.errors, // error messages (string[])
+        ctx3.errors, // error messages
         null, 2));
 }
 ```
 
 
-### Cherrypicking:
+### Cherrypicking and patching:
 ```ts
 import { getType }           from 'tynder/modules/validator';
 import { pick,
-         merge }             from 'tynder/modules/picker';
+         patch }             from 'tynder/modules/picker';
 import { ValidationContext } from 'tynder/modules/types';
+import * as op               from 'tynder/modules//operators';
 import default as mySchema   from './myschema';
 
 
@@ -202,20 +207,46 @@ const original = {
     a: 'x',
     b: 3,
 };
-const picked1 = pick(original, getType(mySchema, 'A')); // {a: 'x'}
-// Edit the picked data and...
-const changed = merge(original, picked1); // TODO: not impl. (planned feature)
+const needleType = op.picked(getType(mySchema, 'A'), 'a');
 
 
-const ctx2: Partial<ValidationContext> =
-{                     // To receive the error messages, define the context as a variable.
-    checkAll: true,   // (optional) Set to true to continue validation after the first error.
-    schema: mySchema, // (optional) Pass "schema" to check for recursive types.
-};
-const picked2 = pick({
-    aa: 'x',
-    b: 3,
-}, getType(mySchema, 'A'), ctx2); // Throws an error
+try {
+    const needle1 = pick(original, needleType); // {a: 'x'}
+    needle1.a = 'y';   // Edit the needle data
+    needle1.q = 1234;
+    const changed1 = patch(original, needle1, needleType); // {a: 'y'}
+} catch (e) {
+    console.log(e.message);
+    console.log(e.ctx?.errors);
+}
+
+
+try {
+    const needle2 = pick(original, needleType); // {a: 'x'}
+    needle2.a = 'yyyyy';   // Edit the needle data
+    needle2.q = 1234;
+    const changed1 = patch(original, needle1, needleType); // Throws an error
+} catch (e) {
+    console.log(e.message);
+    console.log(e.ctx?.errors);
+}
+
+
+try {
+    const ctx3: Partial<ValidationContext> =
+    {                     // To receive the error messages, define the context as a variable.
+        checkAll: true,   // (optional) Set to true to continue validation after the first error.
+        schema: mySchema, // (optional) Pass "schema" to check for recursive types.
+    };
+
+    const needle3 = pick({
+        aa: 'x',
+        b: 3,
+    }, needleType, ctx3); // Throws an error
+} catch (e) {
+    console.log(e.message);
+    console.log(e.ctx?.errors);
+}
 ```
 
 

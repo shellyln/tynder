@@ -2,18 +2,14 @@
 // tslint:disable-next-line: no-implicit-dependencies no-var-requires
 const Ajv = require('ajv');
 
-import { TypeAssertionSetValue,
-         ValidationContext }      from '../types';
+import { ValidationContext }        from '../types';
 import { validate,
-         getType }                from '../validator';
-import { pick }                   from '../picker';
-import { patch }                  from '../patch';
-import { parse,
-         compile }                from '../compiler';
-import { generateTypeScriptCode,
-         generateProto3Code,
-         generateJsonSchemaObject } from '../codegen';
-import { picked } from '../operators';
+         getType }                  from '../validator';
+import { pick,
+         patch }                    from '../picker';
+import { compile }                  from '../compiler';
+import { generateJsonSchemaObject } from '../codegen';
+import * as op                      from '../operators';
 
 
 
@@ -259,7 +255,7 @@ describe("compiler", function() {
             }
         `);
         const ctx: Partial<ValidationContext> = {checkAll: true};
-        const subtype = picked(getType(z, 'A'), 'a', 'c');
+        const subtype = op.picked(getType(z, 'A'), 'a', 'c');
         const original = {a: '', b: 3, c: '123', d: 0};
         const needle = pick(original, subtype, ctx);
         needle.a = '1';
