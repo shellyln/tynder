@@ -1,4 +1,5 @@
 
+// tslint:disable: object-literal-key-quotes
 const schema = {
   "$schema": "http://json-schema.org/draft-06/schema#",
   "definitions": {
@@ -2229,3 +2230,4 @@ const schema = {
   }
 };
 export default schema;
+// tslint:enable: object-literal-key-quotes
