@@ -182,11 +182,11 @@ export interface AssertionSymlink extends TypeAssertionBase {
 
 
 // TODO: Add it to resolve backref in type operator's operands
-// export interface AssertionOperator extends TypeAssertionBase {
-//     kind: 'operator';
-//     operator: string;
-//     operands: TypeAssertion[];
-// }
+export interface AssertionOperator extends TypeAssertionBase {
+    kind: 'operator';
+    operator: string;
+    operands: Array<TypeAssertion | string>;
+}
 
 
 export type TypeAssertion =
@@ -202,7 +202,8 @@ export type TypeAssertion =
     OptionalAssertion |
     EnumAssertion |
     ObjectAssertion |
-    AssertionSymlink;  // TODO: | AssertionOperator
+    AssertionSymlink |
+    AssertionOperator;
 
 
 export interface SerializedSchemaInfo {

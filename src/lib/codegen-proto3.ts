@@ -12,7 +12,6 @@ import { TypeAssertion,
          OneOfAssertion,
          OptionalAssertion,
          EnumAssertion,
-         AdditionalPropsKey,
          ObjectAssertion,
          TypeAssertionMap,
          CodegenContext } from '../types';
@@ -167,6 +166,8 @@ function generateProto3CodeInner(ty: TypeAssertion, isInterface: boolean, ctx: C
         return generateProto3CodeObject(ty, isInterface, ctx);
     case 'symlink':
         return ty.symlinkTargetName;
+    case 'operator':
+        throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
     default:
         throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
     }

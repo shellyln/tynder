@@ -228,6 +228,8 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
             };
             return addMetaInfo(ret, ty);
         }
+    case 'operator':
+        throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
     default:
         throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
     }

@@ -62,10 +62,14 @@ export interface TypeAssertionSetValue {
 export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
 
 
+export interface SymbolResolverOperators {
+    [propName: string]: (...args: Array<TypeAssertion | string>) => TypeAssertion;
+}
+
 export interface SymbolResolverContext {
     nestLevel: number;
     symlinkStack: string[]; // For detecting recursive type
-    // operators?: {[propName]: function}; // TODO: Add it to resolve backref in type operator's operands
+    operators?: SymbolResolverOperators; // TODO: Add it to resolve backref in type operator's operands
 }
 
 

@@ -7,6 +7,7 @@ import { TypeAssertion,
          TypeAssertionMap,
          TypeAssertionSetValue,
          AssertionSymlink,
+         SymbolResolverOperators,
          SymbolResolverContext } from '../types';
 import * as operators            from '../operators';
 
@@ -132,15 +133,55 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                 }, ty.typeName);
             }
         }
+    case 'operator':
+        if (ctx2.operators) {
+            const ctx3 = ty.typeName ?
+                {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.typeName]} : ctx2;
+            const operands = ty.operands.map(x => {
+                if (typeof x === 'object' && x.kind) {
+                    return resolveSymbols(schema, x, ctx3);
+                }
+                return x;
+            });
+            if (0 < operands.filter(x => x && typeof x === 'object' &&
+                    (x.kind === 'symlink' || x.kind === 'operator')).length) {
+                throw new Error(`Unresolved type operator is found: ${ty.operator}`);
+            }
+            if (! ctx2.operators[ty.operator]) {
+                throw new Error(`Undefined type operator is found: ${ty.operator}`);
+            }
+            const ty2 = {...ty};
+            delete ty2.operator;
+            delete ty2.operands;
+            return updateSchema(
+                ty, schema,
+                {
+                    ...ty2,
+                    ...resolveSymbols(schema, ctx2.operators[ty.operator](...operands), ctx3),
+                },
+                ty.typeName,
+            );
+        } else {
+            return ty;
+        }
     default:
         return ty;
     }
 }
 
 
+const resolverOps: SymbolResolverOperators = {
+    picked: operators.picked,
+    omit: operators.omit,
+    partial: operators.partial,
+    intersect: operators.intersect,
+    subtract: operators.subtract,
+};
+
+
 export function resolveSchema(schema: TypeAssertionMap): TypeAssertionMap {
     for (const ent of schema.entries()) {
-        const ty = resolveSymbols(schema, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]]});
+        const ty = resolveSymbols(schema, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]], operators: resolverOps});
         ent[1].ty = ty;
     }
 

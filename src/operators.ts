@@ -25,12 +25,13 @@ import { NeverTypeAssertion,
          AdditionalPropsMember,
          ObjectAssertion,
          AssertionSymlink,
+         AssertionOperator,
          TypeAssertion } from './types';
 
 
 
 // emulate Pick<T> // ex. Pick<Foo, 'a' | 'b'>
-export function picked(ty: TypeAssertion, ...names: string[]): ObjectAssertion {
+export function picked(ty: TypeAssertion, ...names: string[]): ObjectAssertion | AssertionOperator {
     switch (ty.kind) {
     case 'object':
         {
@@ -46,6 +47,14 @@ export function picked(ty: TypeAssertion, ...names: string[]): ObjectAssertion {
                 members,
             });
         }
+    case 'symlink': case 'operator':
+        {
+            return ({
+                kind: 'operator',
+                operator: 'picked',
+                operands: [ty, ...names],
+            });
+        }
     default:
         return ({
             kind: 'object',
@@ -56,7 +65,7 @@ export function picked(ty: TypeAssertion, ...names: string[]): ObjectAssertion {
 
 
 // emulate Omit<T> // ex. Omit<Foo, 'a' | 'b'>
-export function omit(ty: TypeAssertion, ...names: string[]): ObjectAssertion {
+export function omit(ty: TypeAssertion, ...names: string[]): ObjectAssertion | AssertionOperator {
     switch (ty.kind) {
     case 'object':
         {
@@ -69,6 +78,14 @@ export function omit(ty: TypeAssertion, ...names: string[]): ObjectAssertion {
             return ({
                 kind: 'object',
                 members,
+            });
+        }
+    case 'symlink': case 'operator':
+        {
+            return ({
+                kind: 'operator',
+                operator: 'omit',
+                operands: [ty, ...names],
             });
         }
     default:
@@ -94,6 +111,14 @@ export function partial(ty: TypeAssertion): TypeAssertion {
                     ) as ObjectAssertionMember),
             });
         }
+    case 'symlink': case 'operator':
+        {
+            return ({
+                kind: 'operator',
+                operator: 'partial',
+                operands: [ty],
+            });
+        }
     default:
         return ty;
     }
@@ -105,12 +130,16 @@ export function intersect(...types: TypeAssertion[]): TypeAssertion {
     if (types.length === 0) {
         throw new Error(`Empty intersection type is not allowed.`);
     }
-    const ret: ObjectAssertion = {
-        kind: 'object',
-        members: [],
-    };
+    if (0 < types.filter(x => x && typeof x === 'object' &&
+            (x.kind === 'symlink' || x.kind === 'operator')).length) {
+        return ({
+            kind: 'operator',
+            operator: 'intersect',
+            operands: types.slice(),
+        });
+    }
     let lastTy: TypeAssertion | null = null;
-    const members = new Map<string, TypeAssertion>();
+    const members = new Map<string, ObjectAssertionMember>();
 
     for (const ty of types) {
         if (ty && typeof ty === 'object') {
@@ -122,7 +151,7 @@ export function intersect(...types: TypeAssertion[]): TypeAssertion {
             lastTy = ty;
             if (ty.kind === 'object') {
                 for (const m of ty.members) {
-                    members.set(m[0], m[1]); // Overwrite if exists
+                    members.set(m[0], m); // Overwrite if exists
                 }
             }
         } else {
@@ -134,7 +163,10 @@ export function intersect(...types: TypeAssertion[]): TypeAssertion {
     if (lastTy && lastTy.kind !== 'object') {
         return lastTy;
     } else {
-        return ret;
+        return ({
+            kind: 'object',
+            members: Array.from(members.values()),
+        });
     }
 }
 
@@ -173,9 +205,17 @@ export function oneOf(...types: Array<PrimitiveValueTypes | TypeAssertion>): Typ
 
 
 // subtraction (a - b)
-export function subtract(...types: TypeAssertion[]): ObjectAssertion {
+export function subtract(...types: TypeAssertion[]): ObjectAssertion | AssertionOperator {
     if (types.length === 0) {
         throw new Error(`Empty subtraction type is not allowed.`);
+    }
+    if (0 < types.filter(x => x && typeof x === 'object' &&
+            (x.kind === 'symlink' || x.kind === 'operator')).length) {
+        return ({
+            kind: 'operator',
+            operator: 'subtract',
+            operands: types.slice(),
+        });
     }
     let ret = types[0];
     if (!ret || typeof ret !== 'object' || ret.kind !== 'object') {
@@ -473,6 +513,10 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
         case 'symlink':
             (ret.baseTypes as Array<ObjectAssertion | AssertionSymlink>).push(ext);
             break;
+        case 'operator':
+            {
+                throw new Error(`Unresolved type operator is found: ${ext.operator}`);
+            }
         }
         // NOTE: 'symlink' base types will resolved by calling `resolveSymbols()`.
         //       `resolveSymbols()` will call `derived()` after resolve symlink exts.

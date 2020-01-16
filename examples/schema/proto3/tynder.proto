@@ -55,7 +55,17 @@ message ErrorMessages {
     google.protobuf.StringValue valueUnmatched = 9;
 }
 
-message TypeAssertionErrorMessageConstraints {}
+message TypeAssertionErrorMessageConstraints {
+    google.protobuf.Any minValue = 1;
+    google.protobuf.Any maxValue = 2;
+    google.protobuf.Any greaterThanValue = 3;
+    google.protobuf.Any lessThanValue = 4;
+    google.protobuf.Any minLength = 5;
+    google.protobuf.Any maxLength = 6;
+    google.protobuf.Any min = 7;
+    google.protobuf.Any max = 8;
+    google.protobuf.StringValue pattern = 9;
+}
 
 message TypeAssertionErrorMessage {
     string code = 1;
