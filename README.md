@@ -212,7 +212,7 @@ try {
     const needle1 = pick(original, needleType); // {a: 'x'}
     needle1.a = 'y';   // Edit the needle data
     needle1.q = 1234;
-    const changed1 = patch(original, needle1, needleType); // {a: 'y'}
+    const changed1 = patch(original, needle1, needleType); // {a: 'y', b: 3}
 } catch (e) {
     console.log(e.message);
     console.log(e.ctx?.errors);
