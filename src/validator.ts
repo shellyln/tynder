@@ -19,9 +19,9 @@ import { ErrorTypes,
          TypeAssertion,
          ValidationContext,
          TypeAssertionMap }    from './types';
-import { ValidationError }     from './errors';
+import { ValidationError }     from './lib/errors';
 import { reportError,
-         reportErrorWithPush } from './reporter';
+         reportErrorWithPush } from './lib/reporter';
 import { resolveSymbols }      from './lib/resolver';
 
 

@@ -5,10 +5,14 @@
 
 import { TypeAssertion,
          ObjectAssertion,
+         SerializedSchemaInfo,
          TypeAssertionSetValue,
          TypeAssertionMap } from './types';
 import { resolveSchema }    from './lib/resolver';
 
+
+
+const TynderSchemaVersion = 'tynder/1.0';
 
 
 function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
@@ -63,14 +67,25 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
 }
 
 
-export function serialize(types: TypeAssertionMap, asTs?: boolean): string {
-    const ret = {};
-    for (const ty of types.entries()) {
-        ret[ty[0]] = serializeInner(ty[1].ty, 0);
+export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
+    const ret: SerializedSchemaInfo = {
+        version: TynderSchemaVersion,
+        ns: {},
+    };
+    const current = {};
+
+    for (const ty of schema.entries()) {
+        current[ty[0]] = serializeInner(ty[1].ty, 0);
     }
 
+    ret.ns['.'] = current;
+
     if (asTs) {
-        return `\nconst schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;\n`;
+        return (
+            `\n// tslint:disable: object-literal-key-quotes\n` +
+            `const schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;` +
+            `\n// tslint:enable: object-literal-key-quotes\n`
+        );
     } else {
         return JSON.stringify(ret, null, 2);
     }
@@ -115,14 +130,19 @@ function deserializeInner(ty: TypeAssertion) {
 
 
 export function deserializeFromObject(obj: any) {
-    const schema: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
+    if (obj.version !== TynderSchemaVersion) {
+        throw new Error(`Unknown schema version: ${obj.version}`);
+    }
 
-    for (const k in obj) {
-        if (! Object.prototype.hasOwnProperty.call(obj, k)) {
+    const schema: TypeAssertionMap = new Map<string, TypeAssertionSetValue>();
+    const current = obj.ns['.'];
+
+    for (const k in current) {
+        if (! Object.prototype.hasOwnProperty.call(current, k)) {
             continue;
         }
         schema.set(k, {
-            ty: deserializeInner(obj[k]),
+            ty: deserializeInner(current[k]),
             exported: false,
             resolved: false,
         });

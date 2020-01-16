@@ -9,6 +9,7 @@ import { pick,
          patch }                    from '../picker';
 import { compile }                  from '../compiler';
 import { generateJsonSchemaObject } from '../codegen';
+import { serialize, deserialize }   from '../serializer';
 import * as op                      from '../operators';
 
 
@@ -293,6 +294,21 @@ describe("compiler", function() {
         if (! valid) {
             console.log(ajvValidate.errors);
         }
+        expect(1).toEqual(1);
+    });
+    it("compiler-4", function() {
+        const z = compile(`
+            type Foo = string;
+            interface A {
+                a: Foo;
+                @range(3, 5)
+                b: number;
+                @maxLength(3)  // TODO: BUG: $ref: keywords ignored in schema at path "#/properties/c"
+                c: Foo;
+            }
+        `);
+        const zz = deserialize(serialize(z));
+        console.log(zz.keys());
         expect(1).toEqual(1);
     });
 });

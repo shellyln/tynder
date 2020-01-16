@@ -253,7 +253,11 @@ export function generateJsonSchema(types: TypeAssertionMap, asTs?: boolean): str
     const ret = generateJsonSchemaObject(types);
 
     if (asTs) {
-        return `\nconst schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;\n`;
+        return (
+            `\n// tslint:disable: object-literal-key-quotes\n` +
+            `const schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;` +
+            `\n// tslint:enable: object-literal-key-quotes\n`
+        );
     } else {
         return JSON.stringify(ret, null, 2);
     }
