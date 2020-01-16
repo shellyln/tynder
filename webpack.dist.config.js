@@ -24,6 +24,9 @@ module.exports = function (env) {
         entry: {
             tynder: [
                 path.resolve(__dirname, 'src/index.ts')
+            ],
+            "tynder-rt": [
+                path.resolve(__dirname, 'src/index-rt.ts')
             ]
         },
         node: {
