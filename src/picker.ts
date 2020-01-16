@@ -5,7 +5,7 @@
 
 import { TypeAssertion,
          ValidationContext } from './types';
-import { ValidationError }   from './errors';
+import { ValidationError }   from './lib/errors';
 import { validate }          from './validator';
 
 

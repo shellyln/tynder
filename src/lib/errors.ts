@@ -4,7 +4,7 @@
 
 
 import { TypeAssertion,
-         ValidationContext } from './types';
+         ValidationContext } from '../types';
 
 
 

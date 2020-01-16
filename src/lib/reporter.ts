@@ -11,8 +11,8 @@ import { ErrorTypes,
          SpreadAssertion,
          OptionalAssertion,
          ObjectAssertion,
-         ValidationContext } from './types';
-import { escapeString }      from './lib/escape';
+         ValidationContext } from '../types';
+import { escapeString }      from './escape';
 
 
 export const errorTypeNames = [

@@ -9,8 +9,11 @@ import { getStringParsers }      from 'fruitsconfits/modules/lib/string-parser';
 import { getObjectParsers }      from 'fruitsconfits/modules/lib/object-parser';
 import { SxTokenChild,
          SxToken,
-         SxSymbol }              from 'liyad/modules/s-exp/types';
-import { lisp }                  from 'liyad/modules/s-exp/interpreters/presets/lisp';
+         SxSymbol,
+         SxParserConfig }        from 'liyad/modules/s-exp/types';
+import installCore               from 'liyad/modules/s-exp/operators/core';
+import { SExpression }           from 'liyad/modules/s-exp/interpreters';
+import { defaultConfig }         from 'liyad/modules/s-exp/defaults';
 import { TypeAssertion,
          PrimitiveTypeAssertion,
          ErrorMessages,
@@ -923,6 +926,17 @@ export function parse(s: string) {
     }
     return z.tokens;
 }
+
+
+const lisp = (() => {
+    let config: SxParserConfig = Object.assign({}, defaultConfig);
+    config.reservedNames = Object.assign({}, config.reservedNames, {
+        Template: '$concat',
+    });
+    config = installCore(config);
+    config.stripComments = true;
+    return SExpression(config);
+})();
 
 
 // tslint:disable: object-literal-key-quotes
