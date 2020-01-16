@@ -32,7 +32,17 @@ export interface ErrorMessages {
     valueUnmatched?: string;
 }
 
-export interface TypeAssertionErrorMessageConstraints {}
+export interface TypeAssertionErrorMessageConstraints {
+    minValue?: (number | string | null);
+    maxValue?: (number | string | null);
+    greaterThanValue?: (number | string | null);
+    lessThanValue?: (number | string | null);
+    minLength?: (number | null);
+    maxLength?: (number | null);
+    min?: (number | null);
+    max?: (number | null);
+    pattern?: string;
+}
 
 export interface TypeAssertionErrorMessage {
     code: string;

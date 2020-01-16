@@ -39,7 +39,17 @@ type ErrorMessages {
     valueUnmatched: String
 }
 
-type TypeAssertionErrorMessageConstraints {}
+type TypeAssertionErrorMessageConstraints {
+    minValue: Float | String | Any
+    maxValue: Float | String | Any
+    greaterThanValue: Float | String | Any
+    lessThanValue: Float | String | Any
+    minLength: Float | Any
+    maxLength: Float | Any
+    min: Float | Any
+    max: Float | Any
+    pattern: String
+}
 
 type TypeAssertionErrorMessage {
     code: String!

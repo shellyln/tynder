@@ -26,7 +26,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
 
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
-    case 'never': case 'any': case 'unknown': case 'primitive-value': case 'symlink':
+    case 'never': case 'any': case 'unknown': case 'primitive-value': case 'symlink': case 'operator':
         break;
     case 'primitive':
         if (ret.pattern) {
@@ -95,8 +95,9 @@ export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
 function deserializeInner(ty: TypeAssertion) {
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
-    case 'never': case 'any': case 'unknown': case 'primitive-value': case 'enum': case 'symlink':
-        // NOTE: 'symlink' will resolved by calling 'resolveSymbols()' in 'deserialize()'.
+    case 'never': case 'any': case 'unknown': case 'primitive-value':
+    case 'enum': case 'symlink': case 'operator':
+        // NOTE: 'symlink' and 'operator' will resolved by calling 'resolveSymbols()' in 'deserialize()'.
         break;
     case 'primitive':
         if (ret.pattern) {

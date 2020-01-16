@@ -296,9 +296,197 @@
       },
       "TypeAssertionErrorMessageConstraints": {
         "kind": "object",
-        "members": [],
         "typeName": "TypeAssertionErrorMessageConstraints",
-        "name": "TypeAssertionErrorMessageConstraints"
+        "name": "TypeAssertionErrorMessageConstraints",
+        "members": [
+          [
+            "minValue",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "string"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "minValue"
+            }
+          ],
+          [
+            "maxValue",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "string"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "maxValue"
+            }
+          ],
+          [
+            "greaterThanValue",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "string"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "greaterThanValue"
+            }
+          ],
+          [
+            "lessThanValue",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "string"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "lessThanValue"
+            }
+          ],
+          [
+            "minLength",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "minLength"
+            }
+          ],
+          [
+            "maxLength",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "maxLength"
+            }
+          ],
+          [
+            "min",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ],
+                "name": "min"
+              }
+            }
+          ],
+          [
+            "max",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ],
+                "name": "max"
+              }
+            }
+          ],
+          [
+            "pattern",
+            {
+              "kind": "optional",
+              "optional": {
+                "kind": "primitive",
+                "primitiveName": "string",
+                "name": "pattern"
+              }
+            }
+          ]
+        ]
       },
       "TypeAssertionErrorMessage": {
         "kind": "object",

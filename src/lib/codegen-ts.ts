@@ -177,6 +177,8 @@ function generateTypeScriptCodeInner(ty: TypeAssertion, isInterface: boolean, ct
         return generateTypeScriptCodeObject(ty, isInterface, ctx);
     case 'symlink':
         return ty.symlinkTargetName;
+    case 'operator':
+        throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
     default:
         throw new Error(`Unknown type assertion: ${(ty as any).kind}`);
     }

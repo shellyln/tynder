@@ -515,6 +515,12 @@ export function validateRoot<T>(
             }
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new ValidationError(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`, ty, ctx);
+        case 'operator':
+            if (ctx.schema) {
+                return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {nestLevel: 0, symlinkStack: []}), ctx);
+            }
+            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            throw new ValidationError(`Unresolved type operator is found: ${ty.operator}`, ty, ctx);
         case 'spread': case 'optional':
             reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
             throw new ValidationError(`Unexpected type assertion: ${(ty as any).kind}`, ty, ctx);
