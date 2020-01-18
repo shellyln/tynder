@@ -1190,4 +1190,118 @@ describe("compiler", function() {
             }
         }
     });
+    it("compiler-interface-4 (recursive members (repeated))", function() {
+        const schema = compile(`
+            interface EntryBase {
+                name: string;
+            }
+            interface File extends EntryBase {
+                type: 'file';
+            }
+            interface Folder extends EntryBase {
+                type: 'folder';
+                entries: Entry[];
+            }
+            type Entry = File | Folder;
+        `);
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'EntryBase', 'File', 'Folder', 'Entry',
+            ]);
+        }
+        {
+            const tyBase: TypeAssertion = {
+                name: 'EntryBase',
+                typeName: 'EntryBase',
+                kind: 'object',
+                members: [
+                    ['name', {
+                        name: 'name',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    }],
+                ],
+            };
+            const tyEntry: TypeAssertion = {
+                name: 'Entry',
+                typeName: 'Entry',
+                kind: 'one-of',
+                oneOf: [{
+                    name: 'File',
+                    typeName: 'File',
+                    kind: 'object',
+                    baseTypes: [tyBase],
+                    members: [
+                        ['type', {
+                            name: 'type',
+                            kind: 'primitive-value',
+                            value: 'file',
+                        }],
+                        ['name', {
+                            name: 'name',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }, true],
+                    ],
+                }, { // replace it by 'rhs' later
+                    name: 'Folder',
+                    typeName: 'Folder',
+                    kind: 'symlink',
+                    symlinkTargetName: 'Folder',
+                }],
+            };
+            const rhs: TypeAssertion = {
+                name: 'Folder',
+                typeName: 'Folder',
+                kind: 'object',
+                baseTypes: [tyBase],
+                members: [
+                    ['type', {
+                        name: 'type',
+                        kind: 'primitive-value',
+                        value: 'folder',
+                    }],
+                    ['entries', {
+                        name: 'entries',
+                        kind: 'repeated',
+                        min: null,
+                        max: null,
+                        repeated: {
+                            name: 'Entry',
+                            typeName: 'Entry',
+                            kind: 'symlink',
+                            symlinkTargetName: 'Entry',
+                        }
+                    }],
+                    ['name', {
+                        name: 'name',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    }, true],
+                ],
+            };
+            tyEntry.oneOf[1] = rhs;
+            const ty = getType(schema, 'Folder');
+            expect(ty).toEqual(rhs);
+            expect(getType(schema, 'Entry')).toEqual(tyEntry);
+            {
+                const v = {
+                    type: 'folder',
+                    name: '/',
+                    entries: [{
+                        type: 'file',
+                        name: 'a',
+                    }, {
+                        type: 'folder',
+                        name: 'b',
+                        entries: [{
+                            type: 'file',
+                            name: 'c',
+                        }],
+                    }],
+                };
+                expect(validate<any>(v, ty, {schema})).toEqual({value: v});
+            }
+        }
+    });
 });
