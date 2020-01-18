@@ -1053,7 +1053,7 @@ describe("compiler", function() {
         }
     });
     it("compiler-interface-3 (extends)", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             type X = string;
             interface P {
                 a1: number;
@@ -1066,80 +1066,127 @@ describe("compiler", function() {
             interface R extends Q {
                 a5: null;
                 a6: undefined;
+            }
+            interface Foo extends P, R {
                 a7: X;
             }
-            interface Foo {
-                a1: number;
-                a2: bigint;
-                a3: string;
-                a4: boolean;
+        `), compile(`
+            interface Foo extends P, R {
+                a7: X;
+            }
+            interface R extends Q {
                 a5: null;
                 a6: undefined;
-                a7: X;
             }
-        `);
+            interface Q {
+                a3: string;
+                a4: boolean;
+            }
+            interface P {
+                a1: number;
+                a2: bigint;
+            }
+            type X = string;
+        `)];
         {
-            expect(Array.from(schema.keys())).toEqual([
+            expect(Array.from(schemas[0].keys())).toEqual([
                 'X', 'P', 'Q', 'R', 'Foo',
             ]);
         }
         {
-            const rhs: TypeAssertion = {
-                name: 'Foo',
-                typeName: 'Foo',
-                kind: 'object',
-                members: [
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'number',
-                    }],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'primitive',
-                        primitiveName: 'bigint',
-                    }],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                    }],
-                    ['a4', {
-                        name: 'a4',
-                        kind: 'primitive',
-                        primitiveName: 'boolean',
-                    }],
-                    ['a5', {
-                        name: 'a5',
-                        kind: 'primitive',
-                        primitiveName: 'null',
-                    }],
-                    ['a6', {
-                        name: 'a6',
-                        kind: 'primitive',
-                        primitiveName: 'undefined',
-                    }],
-                    ['a7', {
-                        name: 'a7',
-                        typeName: 'X',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                    }],
-                ],
-            };
-            const ty = getType(schema, 'Foo');
-            expect(ty).toEqual(rhs);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'Foo', 'R', 'Q', 'P', 'X',
+            ]);
+        }
+        for (const schema of schemas) {
             {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
+                const tyP: TypeAssertion = {
+                    name: 'P',
+                    typeName: 'P',
+                    kind: 'object',
+                    members: [
+                        ['a1', {
+                            name: 'a1',
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        }],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'primitive',
+                            primitiveName: 'bigint',
+                        }],
+                    ],
                 };
-                expect(validate<any>(v, ty)).toEqual({value: v});
+                const tyQ: TypeAssertion = {
+                    name: 'Q',
+                    typeName: 'Q',
+                    kind: 'object',
+                    members: [
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }],
+                        ['a4', {
+                            name: 'a4',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                        }],
+                    ],
+                };
+                const tyR: TypeAssertion = {
+                    name: 'R',
+                    typeName: 'R',
+                    kind: 'object',
+                    baseTypes: [tyQ],
+                    members: [
+                        ...([
+                            ['a5', {
+                                name: 'a5',
+                                kind: 'primitive',
+                                primitiveName: 'null',
+                            }],
+                            ['a6', {
+                                name: 'a6',
+                                kind: 'primitive',
+                                primitiveName: 'undefined',
+                            }],
+                        ] as any[]),
+                        ...tyQ.members.map(x => [x[0], x[1], true]),
+                    ],
+                };
+                const rhs: TypeAssertion = {
+                    name: 'Foo',
+                    typeName: 'Foo',
+                    kind: 'object',
+                    baseTypes: [tyP, tyR],
+                    members: [
+                        ...([
+                            ['a7', {
+                                name: 'a7',
+                                typeName: 'X',
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            }],
+                        ] as any[]),
+                        ...tyP.members.map(x => [x[0], x[1], true]),
+                        ...tyR.members.map(x => [x[0], x[1], true]),
+                    ],
+                };
+                const ty = getType(schema, 'Foo');
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                    };
+                    expect(validate<any>(v, ty)).toEqual({value: v});
+                }
             }
         }
     });
