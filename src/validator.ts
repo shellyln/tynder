@@ -57,12 +57,17 @@ function validateUnknownTypeAssertion<T>(
 function validatePrimitiveTypeAssertion<T>(
     data: any, ty: PrimitiveTypeAssertion, ctx: ValidationContext): {value: T} | null {
 
-    let err = false;
-    if (typeof data !== ty.primitiveName) {
+    if (ty.primitiveName === 'null') {
+        if (data !== null) {
+            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+            return null;
+        }
+    } else if (typeof data !== ty.primitiveName) {
         reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
-        err = true;
+        return null;
     }
 
+    let err = false;
     let valueRangeErr = false;
     switch (typeof ty.minValue) {
     case 'number': case 'string':

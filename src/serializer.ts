@@ -12,7 +12,7 @@ import { resolveSchema }    from './lib/resolver';
 
 
 
-const TynderSchemaVersion = 'tynder/1.0';
+export const TynderSchemaVersion = 'tynder/1.0';
 
 
 function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
@@ -67,7 +67,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
 }
 
 
-export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
+export function serializeToObject(schema: TypeAssertionMap): SerializedSchemaInfo {
     const ret: SerializedSchemaInfo = {
         version: TynderSchemaVersion,
         ns: {},
@@ -79,6 +79,13 @@ export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
     }
 
     ret.ns['.'] = current;
+
+    return ret;
+}
+
+
+export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
+    const ret = serializeToObject(schema);
 
     if (asTs) {
         return (
