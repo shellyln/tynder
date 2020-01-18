@@ -54,6 +54,8 @@ function generateTypeScriptCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, c
     switch (typeof ty.value) {
     case 'string':
         return `'${escapeString(ty.value)}'`;
+    case 'bigint':
+        return `${ty.value.toString()}n`;
     default:
         return ty.value.toString();
     }
