@@ -701,16 +701,250 @@ describe("compiler", function() {
             }
         }
     });
-    it("compiler-interface", function() {
+    it("compiler-interface-1", function() {
         const schema = compile(`
-            type FooA = string;
-            interface FooB {
+            type X = string;
+            interface Foo {
                 a1: number;
                 a2: bigint;
                 a3: string;
+                a4: boolean;
+                a5: null;
+                a6: undefined;
+                a7: X;
             }
         `);
-
-        expect(1).toEqual(1);
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'X', 'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'object',
+                members: [
+                    ['a1', {
+                        name: 'a1',
+                        kind: 'primitive',
+                        primitiveName: 'number',
+                    }],
+                    ['a2', {
+                        name: 'a2',
+                        kind: 'primitive',
+                        primitiveName: 'bigint',
+                    }],
+                    ['a3', {
+                        name: 'a3',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    }],
+                    ['a4', {
+                        name: 'a4',
+                        kind: 'primitive',
+                        primitiveName: 'boolean',
+                    }],
+                    ['a5', {
+                        name: 'a5',
+                        kind: 'primitive',
+                        primitiveName: 'null',
+                    }],
+                    ['a6', {
+                        name: 'a6',
+                        kind: 'primitive',
+                        primitiveName: 'undefined',
+                    }],
+                    ['a7', {
+                        name: 'a7',
+                        typeName: 'X',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    }],
+                ],
+            };
+            const ty = getType(schema, 'Foo');
+            expect(ty).toEqual(rhs);
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual({value: v});
+            }
+            {
+                const v = {
+                    // a1
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    // a2
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    // a3
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    // a4
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    // a5
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    // a6
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    // a7
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: BigInt(99), // wrong
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: 99, // wrong
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 7, // wrong
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: '', // wrong
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: void 0, // wrong
+                    a6: void 0,
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: null, // wrong
+                    a7: '',
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: 99, // wrong
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+        }
     });
 });
