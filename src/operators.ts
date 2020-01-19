@@ -39,7 +39,17 @@ export function picked(ty: TypeAssertion, ...names: string[]): ObjectAssertion |
             for (const name of names) {
                 const member = ty.members.find(x => x[0] === name);
                 if (member) {
-                    members.push(member);
+                    if (member[2]) {
+                        const m2: ObjectAssertionMember = [...member] as any;
+                        if (3 < m2.length) {
+                            m2[2] = false;
+                        } else {
+                            m2.length = 2;
+                        }
+                        members.push(m2);
+                    } else {
+                        members.push(member);
+                    }
                 }
             }
             return ({

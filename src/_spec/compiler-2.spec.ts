@@ -907,4 +907,74 @@ describe("compiler-2", function() {
             }
         }
     });
+    it("compiler-op-pick-1", function() {
+        const schemas = [compile(`
+            interface A {
+                a: string;
+                b: number;
+            }
+            interface B extends A {
+                c: boolean;
+                d: bigint;
+            }
+            type C = Pick<B, 'a' | 'c'>;
+        `), compile(`
+            type C = Pick<B, 'a' | 'c'>;
+            interface B extends A {
+                c: boolean;
+                d: bigint;
+            }
+            interface A {
+                a: string;
+                b: number;
+            }
+        `)];
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'A', 'B', 'C',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'C', 'B', 'A',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }],
+                        ['c', {
+                            name: 'c',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                        }],
+                    ],
+                };
+                const ty = getType(schema, 'C');
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
+                        a: '',
+                        c: false,
+                    };
+                    expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual({value: v});
+                }
+                {
+                    const v = {
+                        a: '',
+                        b: 0,
+                        c: false,
+                        d: BigInt(5),
+                    };
+                    expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual(null);
+                }
+            }
+        }
+    });
 });
