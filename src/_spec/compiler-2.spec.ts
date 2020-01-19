@@ -625,4 +625,135 @@ describe("compiler-2", function() {
             }
         }
     });
+    it("compiler-interface-5 (recursive members (spread))", function() {
+        const schema = compile(`
+            interface EntryBase {
+                name: string;
+            }
+            interface File extends EntryBase {
+                type: 'file';
+            }
+            interface Folder extends EntryBase {
+                type: 'folder';
+                entries: [...<Entry>];
+            }
+            type Entry = File | Folder;
+        `);
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'EntryBase', 'File', 'Folder', 'Entry',
+            ]);
+        }
+        {
+            const tyBase: TypeAssertion = {
+                name: 'EntryBase',
+                typeName: 'EntryBase',
+                kind: 'object',
+                members: [
+                    ['name', {
+                        name: 'name',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    }],
+                ],
+            };
+            const tyEntry: TypeAssertion = {
+                name: 'Entry',
+                typeName: 'Entry',
+                kind: 'one-of',
+                oneOf: [{
+                    name: 'File',
+                    typeName: 'File',
+                    kind: 'object',
+                    baseTypes: [tyBase],
+                    members: [
+                        ['type', {
+                            name: 'type',
+                            kind: 'primitive-value',
+                            value: 'file',
+                        }],
+                        ['name', {
+                            name: 'name',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }, true],
+                    ],
+                }, { // replace it by 'rhs' later
+                    name: 'Folder',
+                    typeName: 'Folder',
+                    kind: 'symlink',
+                    symlinkTargetName: 'Folder',
+                }],
+            };
+            const rhs: TypeAssertion = {
+                name: 'Folder',
+                typeName: 'Folder',
+                kind: 'object',
+                baseTypes: [tyBase],
+                members: [
+                    ['type', {
+                        name: 'type',
+                        kind: 'primitive-value',
+                        value: 'folder',
+                    }],
+                    ['entries', {
+                        name: 'entries',
+                        kind: 'sequence',
+                        sequence: [{
+                            kind: 'spread',
+                            min: null,
+                            max: null,
+                            spread: {
+                                name: 'Entry',
+                                typeName: 'Entry',
+                                kind: 'symlink',
+                                symlinkTargetName: 'Entry',
+                            },
+                        }]
+                    }],
+                    ['name', {
+                        name: 'name',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    }, true],
+                ],
+            };
+            tyEntry.oneOf[1] = rhs;
+            const ty = getType(schema, 'Folder');
+            expect(ty).toEqual(rhs);
+            expect(getType(schema, 'Entry')).toEqual(tyEntry);
+            {
+                const v = {
+                    type: 'folder',
+                    name: '/',
+                    entries: [{
+                        type: 'file',
+                        name: 'a',
+                    }, {
+                        type: 'folder',
+                        name: 'b',
+                        entries: [{
+                            type: 'file',
+                            name: 'c',
+                        }],
+                    }],
+                };
+                try {
+                    validate<any>(v, ty);
+                    expect(0).toEqual(1);
+                } catch (e) {
+                    expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                }
+                const ctx1: Partial<ValidationContext> = {};
+                expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
+                expect(ctx1.errors).toEqual([{
+                    code: 'InvalidDefinition',
+                    message: '"entries" of "Folder" type definition is invalid.',
+                    dataPath: 'Folder.entries.(0:sequence).Entry',
+                    constraints: {}
+                }]);
+                expect(validate<any>(v, ty, {schema})).toEqual({value: v});
+            }
+        }
+    });
 });
