@@ -147,6 +147,10 @@ const decimalIntegerValue =
     trans(tokens => [Number.parseInt((tokens as string[])[0].replace(/_/g, ''), 10)])
     (numbers.int);
 
+const bigDecimalIntegerValue =
+    trans(tokens => [BigInt((tokens as string[])[0].replace(/_/g, '')) as any])
+    (numbers.bigint);
+
 const floatingPointNumberValue =
     trans(tokens => [Number.parseFloat((tokens as string[])[0].replace(/_/g, ''))])
     (numbers.float);
@@ -155,6 +159,7 @@ const numberValue =
     first(octalIntegerValue,
           hexIntegerValue,
           binaryIntegerValue,
+          bigDecimalIntegerValue,
           floatingPointNumberValue,
           decimalIntegerValue,
           positiveInfinityValue,
@@ -545,8 +550,8 @@ const decoratorsClause =
 
 
 const complexTypeInnerWOSinpleArrayType = (edge: ParserFnWithCtx<string, Ctx, Ast>) =>
-    first(genericOrSimpleType,
-          primitiveValueNoNullUndefined,
+    first(primitiveValueNoNullUndefined,
+          genericOrSimpleType,
           partialType,
           pickOrOmitType,
           complexArrayType,

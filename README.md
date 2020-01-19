@@ -683,6 +683,7 @@ Doc comments are preserved.
 type A = 'a' | "b" | `c` |
          20 | -10 | -0.12 | -9.3+8e |
          0xff | 0o77 | 0b11 | +Infinity | -Infinity |
+         -10n | 0n | 123n |
          true | false | null | undefined |
          {a: string, b: 'aaa'} | [10, string];
 ```

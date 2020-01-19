@@ -39,7 +39,17 @@ export function picked(ty: TypeAssertion, ...names: string[]): ObjectAssertion |
             for (const name of names) {
                 const member = ty.members.find(x => x[0] === name);
                 if (member) {
-                    members.push(member);
+                    if (member[2]) {
+                        const m2: ObjectAssertionMember = [...member] as any;
+                        if (3 < m2.length) {
+                            m2[2] = false;
+                        } else {
+                            m2.length = 2;
+                        }
+                        members.push(m2);
+                    } else {
+                        members.push(member);
+                    }
                 }
             }
             return ({
@@ -72,7 +82,17 @@ export function omit(ty: TypeAssertion, ...names: string[]): ObjectAssertion | A
             const members: ObjectAssertionMember[] = [];
             for (const member of ty.members) {
                 if (! names.find(name => member[0] === name)) {
-                    members.push(member);
+                    if (member[2]) {
+                        const m2: ObjectAssertionMember = [...member] as any;
+                        if (3 < m2.length) {
+                            m2[2] = false;
+                        } else {
+                            m2.length = 2;
+                        }
+                        members.push(m2);
+                    } else {
+                        members.push(member);
+                    }
                 }
             }
             return ({
@@ -102,13 +122,33 @@ export function partial(ty: TypeAssertion): TypeAssertion {
     switch (ty.kind) {
     case 'object':
         {
+            const members: ObjectAssertionMember[] = [];
+            for (const member of ty.members) {
+                let m: ObjectAssertionMember = member[1].kind === 'optional' ?
+                    member :
+                    [member[0], optional(member[1]), ...member.slice(2)] as ObjectAssertionMember;
+                if (m[2]) {
+                    m = [...m] as any;
+                    if (3 < m.length) {
+                        m[2] = false;
+                    } else {
+                        m.length = 2;
+                    }
+                }
+                m[1].name = m[0];
+                const optTy = {...(m[1] as OptionalAssertion).optional};
+                (m[1] as OptionalAssertion).optional = optTy;
+                if (optTy.name && optTy.name !== optTy.typeName) {
+                    delete optTy.name;
+                }
+                if (!optTy.name && optTy.typeName) {
+                    optTy.name = optTy.typeName;
+                }
+                members.push(m);
+            }
             return ({
                 kind: 'object',
-                members: ty.members.map(
-                    x => (x[1].kind === 'optional' ?
-                        x :
-                        [x[0], optional(x[1]), ...x.slice(2)]
-                    ) as ObjectAssertionMember),
+                members,
             });
         }
     case 'symlink': case 'operator':
@@ -151,7 +191,17 @@ export function intersect(...types: TypeAssertion[]): TypeAssertion {
             lastTy = ty;
             if (ty.kind === 'object') {
                 for (const m of ty.members) {
-                    members.set(m[0], m); // Overwrite if exists
+                    if (m[2]) {
+                        const m2: ObjectAssertionMember = [...m] as any;
+                        if (3 < m2.length) {
+                            m2[2] = false;
+                        } else {
+                            m2.length = 2;
+                        }
+                        members.set(m[0], m2); // Overwrite if exists
+                    } else {
+                        members.set(m[0], m);  // Overwrite if exists
+                    }
                 }
             }
         } else {

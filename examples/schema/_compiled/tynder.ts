@@ -199,9 +199,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "invalidDefinition"
-              }
+                "primitiveName": "string"
+              },
+              "name": "invalidDefinition"
             }
           ],
           [
@@ -210,9 +210,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "required"
-              }
+                "primitiveName": "string"
+              },
+              "name": "required"
             }
           ],
           [
@@ -221,9 +221,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "typeUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "typeUnmatched"
             }
           ],
           [
@@ -232,9 +232,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "repeatQtyUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "repeatQtyUnmatched"
             }
           ],
           [
@@ -243,9 +243,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "sequenceUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "sequenceUnmatched"
             }
           ],
           [
@@ -254,9 +254,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "valueRangeUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "valueRangeUnmatched"
             }
           ],
           [
@@ -265,9 +265,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "valuePatternUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "valuePatternUnmatched"
             }
           ],
           [
@@ -276,9 +276,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "valueLengthUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "valueLengthUnmatched"
             }
           ],
           [
@@ -287,9 +287,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "valueUnmatched"
-              }
+                "primitiveName": "string"
+              },
+              "name": "valueUnmatched"
             }
           ]
         ],
@@ -452,9 +452,9 @@ const schema = {
                     "kind": "primitive",
                     "primitiveName": "null"
                   }
-                ],
-                "name": "min"
-              }
+                ]
+              },
+              "name": "min"
             }
           ],
           [
@@ -472,9 +472,9 @@ const schema = {
                     "kind": "primitive",
                     "primitiveName": "null"
                   }
-                ],
-                "name": "max"
-              }
+                ]
+              },
+              "name": "max"
             }
           ],
           [
@@ -483,9 +483,9 @@ const schema = {
               "kind": "optional",
               "optional": {
                 "kind": "primitive",
-                "primitiveName": "string",
-                "name": "pattern"
-              }
+                "primitiveName": "string"
+              },
+              "name": "pattern"
             }
           ]
         ]

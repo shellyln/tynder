@@ -14,8 +14,8 @@ import * as op                      from '../operators';
 
 
 
-describe("compiler", function() {
-    it("compiler-1", function() {
+describe("foo", function() {
+    it("foo-1", function() {
         try {
             /*
             const ast1 = parse(`
@@ -222,7 +222,7 @@ describe("compiler", function() {
         }
         expect(1).toEqual(1);
     });
-    it("compiler-2", function() {
+    it("foo-2", function() {
         /*
         console.log(JSON.stringify(getType(z, 'A'), null, 2));
         */
@@ -237,11 +237,12 @@ describe("compiler", function() {
             }
         `);
         const ctx: Partial<ValidationContext> = {checkAll: true};
-        console.log(JSON.stringify(validate({b: 6, c: '1234'}, getType(z, 'A'), ctx)));
-        console.log(ctx.errors);
+        const r = validate({b: 6, c: '1234'}, getType(z, 'A'), ctx);
+        // console.log(JSON.stringify(r));
+        // console.log(ctx.errors);
         expect(1).toEqual(1);
     });
-    it("compiler-2b", function() {
+    it("foo-2b", function() {
         /*
         console.log(JSON.stringify(getType(z, 'A'), null, 2));
         */
@@ -263,15 +264,16 @@ describe("compiler", function() {
         needle.b = 6;
         (needle as any).e = 5;
         try {
-            console.log(patch(original, needle, subtype, ctx));
+            const r = patch(original, needle, subtype, ctx);
+            // console.log(r);
             expect(1).toEqual(1);
         } catch (e) {
-            console.log(e.message);
-            console.log(e.ctx?.errors);
+            // console.log(e.message);
+            // console.log(e.ctx?.errors);
             expect(1).toEqual(0);
         }
     });
-    it("compiler-3", function() {
+    it("foo-3", function() {
         const z = compile(`
             type Foo = string;
             interface A {
@@ -291,12 +293,12 @@ describe("compiler", function() {
 
         const ajvValidate = ajv.addSchema(schema).getSchema('#/definitions/A');
         const valid = ajvValidate({b: 6, c: '1234'});
-        if (! valid) {
-            console.log(ajvValidate.errors);
-        }
+        // if (! valid) {
+        //     console.log(ajvValidate.errors);
+        // }
         expect(1).toEqual(1);
     });
-    it("compiler-4", function() {
+    it("foo-4", function() {
         const z = compile(`
             type Foo = string;
             interface A {
@@ -308,7 +310,7 @@ describe("compiler", function() {
             }
         `);
         const zz = deserialize(serialize(z));
-        console.log(zz.keys());
+        // console.log(zz.keys());
         expect(1).toEqual(1);
     });
 });
