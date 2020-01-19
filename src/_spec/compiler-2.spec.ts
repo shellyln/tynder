@@ -1,8 +1,9 @@
 
-import { TypeAssertion } from '../types';
+import { TypeAssertion,
+         ValidationContext } from '../types';
 import { validate,
-         getType }       from '../validator';
-import { compile }       from '../compiler';
+         getType }           from '../validator';
+import { compile }           from '../compiler';
 
 
 
@@ -606,6 +607,20 @@ describe("compiler-2", function() {
                         }],
                     }],
                 };
+                try {
+                    validate<any>(v, ty);
+                    expect(0).toEqual(1);
+                } catch (e) {
+                    expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                }
+                const ctx1: Partial<ValidationContext> = {};
+                expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
+                expect(ctx1.errors).toEqual([{
+                    code: 'InvalidDefinition',
+                    message: '"entries" of "Folder" type definition is invalid.',
+                    dataPath: 'Folder.entries.(0:repeated).Entry',
+                    constraints: {}
+                }]);
                 expect(validate<any>(v, ty, {schema})).toEqual({value: v});
             }
         }
