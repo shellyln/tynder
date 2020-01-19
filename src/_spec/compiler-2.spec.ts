@@ -1,23 +1,12 @@
 
-import { TypeAssertion,
-         ValidationContext,
-         SerializedSchemaInfo }     from '../types';
+import { TypeAssertion } from '../types';
 import { validate,
-         getType }                  from '../validator';
-import { pick,
-         patch }                    from '../picker';
-import { compile }                  from '../compiler';
-import { generateJsonSchemaObject } from '../codegen';
-import { TynderSchemaVersion,
-         serializeToObject,
-         serialize,
-         deserializeFromObject,
-         deserialize }              from '../serializer';
-import * as op                      from '../operators';
+         getType }       from '../validator';
+import { compile }       from '../compiler';
 
 
 
-describe("compiler", function() {
+describe("compiler-2", function() {
     it("compiler-interface-1", function() {
         const schema = compile(`
             type X = string;
