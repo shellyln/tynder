@@ -72,7 +72,17 @@ export function omit(ty: TypeAssertion, ...names: string[]): ObjectAssertion | A
             const members: ObjectAssertionMember[] = [];
             for (const member of ty.members) {
                 if (! names.find(name => member[0] === name)) {
-                    members.push(member);
+                    if (member[2]) {
+                        const m2: ObjectAssertionMember = [...member] as any;
+                        if (3 < m2.length) {
+                            m2[2] = false;
+                        } else {
+                            m2.length = 2;
+                        }
+                        members.push(m2);
+                    } else {
+                        members.push(member);
+                    }
                 }
             }
             return ({
