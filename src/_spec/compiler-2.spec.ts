@@ -756,4 +756,73 @@ describe("compiler-2", function() {
             }
         }
     });
+    it("compiler-op-intersection-1", function() {
+        const schemas = [compile(`
+            interface A {
+                a: string;
+            }
+            interface B extends A {
+                b: number;
+            }
+            interface C {
+                c: boolean;
+            }
+            type D = B & C;
+        `), compile(`
+            type D = B & C;
+            interface C {
+                c: boolean;
+            }
+            interface B extends A {
+                b: number;
+            }
+            interface A {
+                a: string;
+            }
+        `)];
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'A', 'B', 'C', 'D',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'D', 'C', 'B', 'A',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'D',
+                    typeName: 'D',
+                    kind: 'object',
+                    members: [
+                        ['b', {
+                            name: 'b',
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        }],
+                        ['a', {
+                            name: 'a',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }],
+                        ['c', {
+                            name: 'c',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                        }],
+                    ],
+                };
+                const ty = getType(schema, 'D');
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
+                        a: '',
+                        b: 0,
+                        c: false,
+                    };
+                    expect(validate<any>(v, ty, {schema})).toEqual({value: v});
+                }
+            }
+        }
+    });
 });

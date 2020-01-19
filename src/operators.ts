@@ -151,7 +151,17 @@ export function intersect(...types: TypeAssertion[]): TypeAssertion {
             lastTy = ty;
             if (ty.kind === 'object') {
                 for (const m of ty.members) {
-                    members.set(m[0], m); // Overwrite if exists
+                    if (m[2]) {
+                        const m2: ObjectAssertionMember = [...m] as any;
+                        if (3 < m2.length) {
+                            m2[2] = false;
+                        } else {
+                            m2.length = 2;
+                        }
+                        members.set(m[0], m2); // Overwrite if exists
+                    } else {
+                        members.set(m[0], m);  // Overwrite if exists
+                    }
                 }
             }
         } else {
