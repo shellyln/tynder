@@ -122,13 +122,33 @@ export function partial(ty: TypeAssertion): TypeAssertion {
     switch (ty.kind) {
     case 'object':
         {
+            const members: ObjectAssertionMember[] = [];
+            for (const member of ty.members) {
+                let m: ObjectAssertionMember = member[1].kind === 'optional' ?
+                    member :
+                    [member[0], optional(member[1]), ...member.slice(2)] as ObjectAssertionMember;
+                if (m[2]) {
+                    m = [...m] as any;
+                    if (3 < m.length) {
+                        m[2] = false;
+                    } else {
+                        m.length = 2;
+                    }
+                }
+                m[1].name = m[0];
+                const optTy = {...(m[1] as OptionalAssertion).optional};
+                (m[1] as OptionalAssertion).optional = optTy;
+                if (optTy.name && optTy.name !== optTy.typeName) {
+                    delete optTy.name;
+                }
+                if (!optTy.name && optTy.typeName) {
+                    optTy.name = optTy.typeName;
+                }
+                members.push(m);
+            }
             return ({
                 kind: 'object',
-                members: ty.members.map(
-                    x => (x[1].kind === 'optional' ?
-                        x :
-                        [x[0], optional(x[1]), ...x.slice(2)]
-                    ) as ObjectAssertionMember),
+                members,
             });
         }
     case 'symlink': case 'operator':

@@ -255,7 +255,7 @@ describe("compiler-2", function() {
         }
     });
     it("compiler-interface-2 (optional types)", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             type X = string;
             interface Foo {
                 a1?: number;
@@ -266,96 +266,156 @@ describe("compiler-2", function() {
                 a6?: undefined;
                 a7?: X;
             }
-        `);
+        `), compile(`
+            type X = string;
+            type Foo = Partial<{
+                a1: number,
+                a2: bigint,
+                a3: string,
+                a4: boolean,
+                a5: null,
+                a6: undefined,
+                a7: X,
+            }>;
+        `), compile(`
+            type X = string;
+            type Foo = Partial<{
+                a1?: number,
+                a2?: bigint,
+                a3?: string,
+                a4?: boolean,
+                a5?: null,
+                a6?: undefined,
+                a7?: X,
+            }>;
+        `), compile(`
+            type X = string;
+            interface Y {
+                a1: number;
+                a2: bigint;
+                a3: string;
+                a4: boolean;
+                a5: null;
+                a6: undefined;
+                a7: X;
+            }
+            type Foo = Partial<Y>;
+        `), compile(`
+            type X = string;
+            interface Y {
+                a1?: number;
+                a2?: bigint;
+                a3?: string;
+                a4?: boolean;
+                a5?: null;
+                a6?: undefined;
+                a7?: X;
+            }
+            type Foo = Partial<Y>;
+        `)];
         {
-            expect(Array.from(schema.keys())).toEqual([
+            expect(Array.from(schemas[0].keys())).toEqual([
                 'X', 'Foo',
             ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X', 'Foo',
+            ]);
+            expect(Array.from(schemas[2].keys())).toEqual([
+                'X', 'Foo',
+            ]);
+            expect(Array.from(schemas[3].keys())).toEqual([
+                'X', 'Y', 'Foo',
+            ]);
+            expect(Array.from(schemas[4].keys())).toEqual([
+                'X', 'Y', 'Foo',
+            ]);
         }
-        {
-            const rhs: TypeAssertion = {
-                name: 'Foo',
-                typeName: 'Foo',
-                kind: 'object',
-                members: [
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
-                        }
-                    }],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'bigint',
-                        }
-                    }],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'string',
-                        }
-                    }],
-                    ['a4', {
-                        name: 'a4',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'boolean',
-                        }
-                    }],
-                    ['a5', {
-                        name: 'a5',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'null',
-                        }
-                    }],
-                    ['a6', {
-                        name: 'a6',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'undefined',
-                        }
-                    }],
-                    ['a7', {
-                        name: 'a7',
-                        typeName: 'X',
-                        kind: 'optional',
-                        optional: {
-                            name: 'X',
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'Foo',
+                    typeName: 'Foo',
+                    kind: 'object',
+                    members: [
+                        ['a1', {
+                            name: 'a1',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                            }
+                        }],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'bigint',
+                            }
+                        }],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            }
+                        }],
+                        ['a4', {
+                            name: 'a4',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'boolean',
+                            }
+                        }],
+                        ['a5', {
+                            name: 'a5',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'null',
+                            }
+                        }],
+                        ['a6', {
+                            name: 'a6',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'undefined',
+                            }
+                        }],
+                        ['a7', {
+                            name: 'a7',
                             typeName: 'X',
-                            kind: 'primitive',
-                            primitiveName: 'string',
-                        }
-                    }],
-                ],
-            };
-            const ty = getType(schema, 'Foo');
-            expect(ty).toEqual(rhs);
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
+                            kind: 'optional',
+                            optional: {
+                                name: 'X',
+                                typeName: 'X',
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            }
+                        }],
+                    ],
                 };
-                expect(validate<any>(v, ty)).toEqual({value: v});
-            }
-            {
-                const v = {};
-                expect(validate<any>(v, ty)).toEqual({value: v});
+                const ty = getType(schema, 'Foo');
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                    };
+                    expect(validate<any>(v, ty)).toEqual({value: v});
+                }
+                {
+                    const v = {};
+                    expect(validate<any>(v, ty)).toEqual({value: v});
+                }
             }
         }
     });
@@ -973,6 +1033,98 @@ describe("compiler-2", function() {
                         d: BigInt(5),
                     };
                     expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual(null);
+                }
+            }
+        }
+    });
+    it("compiler-op-partial-1", function() {
+        const schemas = [compile(`
+            interface A {
+                a: string;
+                b: number;
+            }
+            interface B extends A {
+                c: boolean;
+                d: bigint;
+            }
+            type C = Partial<B>;
+        `), compile(`
+            type C = Partial<B>;
+            interface B extends A {
+                c: boolean;
+                d: bigint;
+            }
+            interface A {
+                a: string;
+                b: number;
+            }
+        `)];
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'A', 'B', 'C',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'C', 'B', 'A',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [
+                        ['c', {
+                            name: 'c',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'boolean',
+                            },
+                        }],
+                        ['d', {
+                            name: 'd',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'bigint',
+                            },
+                        }],
+                        ['a', {
+                            name: 'a',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                        }],
+                        ['b', {
+                            name: 'b',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                            },
+                        }],
+                    ],
+                };
+                const ty = getType(schema, 'C');
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
+                        a: '',
+                        c: false,
+                    };
+                    expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual({value: v});
+                }
+                {
+                    const v = {
+                        a: '',
+                        b: 0,
+                        c: false,
+                        d: BigInt(5),
+                    };
+                    expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual({value: v});
                 }
             }
         }
