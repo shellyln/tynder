@@ -247,7 +247,8 @@ export interface TypeAssertionSetValue {
 }
 
 
-// TODO: preserve right hand side type name on output ts file
+// TODO: preserve right hand side type name on output ts file.
+//       rhs is: {kind: primitive, primitiveName: 'any', name: 'TypeAssertionMap', typeName: 'TypeAssertionMap'}
 export type TypeAssertionMap = Map<string, TypeAssertionSetValue>;
 
 
