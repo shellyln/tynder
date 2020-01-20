@@ -321,4 +321,14 @@ describe("compiler-3", function() {
             }
         }
     });
+    // TODO: enum
+    // TODO: additional props (+ extends)
+    // TODO: exported types
+    // TODO: import statement
+    // TODO: doc comments (+ extends)
+    // TODO: array length
+    // TODO: spread and '?' length
+    // TODO: decorators
+    // TODO: deep cherrypick and patch
+    // TODO: error reporting
 });
