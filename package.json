@@ -30,18 +30,18 @@
     "tynder": "./bin.cli/tynder.js"
   },
   "dependencies": {
-    "fruitsconfits": "^0.1.1",
-    "liyad": "^0.3.2"
+    "fruitsconfits": "^0.2.0",
+    "liyad": "^0.4.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "@types/jasmine": "^3.5.0",
-    "@types/node": "^12.12.21",
-    "@types/react": "^16.9.17",
-    "@types/react-dom": "^16.9.4",
-    "ajv": "^6.10.2",
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@types/jasmine": "^3.5.1",
+    "@types/node": "^13.1.8",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
+    "ajv": "^6.11.0",
     "babel-loader": "^8.0.6",
     "cpx": "^1.5.0",
     "cross-env": "^6.0.3",
@@ -53,9 +53,9 @@
     "shx": "^0.3.2",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.2.1",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4",
-    "webpack": "^4.41.4",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   },
   "scripts": {
