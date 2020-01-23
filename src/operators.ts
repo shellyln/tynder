@@ -458,6 +458,9 @@ export function enumType(...values: Array<[string, number | string | null, strin
         } else if (typeof ar[i][1] === 'number') {
             value = (ar[i][1] as number) + 1;
         }
+        if (! ar[i][2]) {
+            ar[i].length = 2;
+        }
     }
     return ({
         kind: 'enum',

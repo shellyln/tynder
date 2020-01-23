@@ -209,13 +209,13 @@ export function generateTypeScriptCode(types: TypeAssertionMap): string {
         } else if (ty[1].ty.kind === 'enum') {
             const indent0 = '    '.repeat(ctx.nestLevel);
             const indent1 = '    '.repeat(ctx.nestLevel + 1);
-            let value = 0;
+            let value: number | null = 0;
             code += `enum ${ty[0]} {\n${
                 ty[1].ty.values
                     .map(x => `${
                         formatTypeScriptCodeDocComment(x[2] || '', ctx.nestLevel + 1)}${
                         indent1}${(() => {
-                            if (x[1] === value) {
+                            if (value !== null && x[1] === value) {
                                 value++;
                                 return `${x[0]}`;
                             } else {

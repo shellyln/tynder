@@ -321,7 +321,135 @@ describe("compiler-3", function() {
             }
         }
     });
-    // TODO: enum
+    it("compiler-enum-1", function() {
+        const schema = compile(`
+            enum Foo {
+                AAA,
+                BBB,
+                CCC,
+                DDD,
+                EEE,
+            }
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'enum',
+                values: [
+                    ['AAA', 0],
+                    ['BBB', 1],
+                    ['CCC', 2],
+                    ['DDD', 3],
+                    ['EEE', 4],
+                ],
+            };
+            const ty = getType(schema, 'Foo');
+            expect(ty).toEqual(rhs);
+            expect(validate<number>(-1, ty)).toEqual(null);
+            expect(validate<number>(0, ty)).toEqual({value: 0});
+            expect(validate<number>(1, ty)).toEqual({value: 1});
+            expect(validate<number>(2, ty)).toEqual({value: 2});
+            expect(validate<number>(3, ty)).toEqual({value: 3});
+            expect(validate<number>(4, ty)).toEqual({value: 4});
+            expect(validate<number>(5, ty)).toEqual(null);
+        }
+    });
+    it("compiler-enum-2", function() {
+        const schema = compile(`
+            enum Foo {
+                AAA = 2,
+                BBB,
+                CCC = 10,
+                DDD,
+                EEE,
+            }
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'enum',
+                values: [
+                    ['AAA', 2],
+                    ['BBB', 3],
+                    ['CCC', 10],
+                    ['DDD', 11],
+                    ['EEE', 12],
+                ],
+            };
+            const ty = getType(schema, 'Foo');
+            expect(ty).toEqual(rhs);
+            expect(validate<number>(-1, ty)).toEqual(null);
+            expect(validate<number>(0, ty)).toEqual(null);
+            expect(validate<number>(1, ty)).toEqual(null);
+            expect(validate<number>(2, ty)).toEqual({value: 2});
+            expect(validate<number>(3, ty)).toEqual({value: 3});
+            expect(validate<number>(4, ty)).toEqual(null);
+            expect(validate<number>(9, ty)).toEqual(null);
+            expect(validate<number>(10, ty)).toEqual({value: 10});
+            expect(validate<number>(11, ty)).toEqual({value: 11});
+            expect(validate<number>(12, ty)).toEqual({value: 12});
+            expect(validate<number>(13, ty)).toEqual(null);
+        }
+    });
+    it("compiler-enum-3", function() {
+        const schema = compile(`
+            enum Foo {
+                AAA = 'XA',
+                BBB = 'XB',
+                CCC = 'XC',
+                DDD = 'XD',
+                EEE = 'XE',
+            }
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'enum',
+                values: [
+                    ['AAA', 'XA'],
+                    ['BBB', 'XB'],
+                    ['CCC', 'XC'],
+                    ['DDD', 'XD'],
+                    ['EEE', 'XE'],
+                ],
+            };
+            const ty = getType(schema, 'Foo');
+            expect(ty).toEqual(rhs);
+            expect(validate<number>(-1, ty)).toEqual(null);
+            expect(validate<number>(0, ty)).toEqual(null);
+            expect(validate<number>(1, ty)).toEqual(null);
+            expect(validate<string>('XA', ty)).toEqual({value: 'XA'});
+            expect(validate<string>('XB', ty)).toEqual({value: 'XB'});
+            expect(validate<string>('XC', ty)).toEqual({value: 'XC'});
+            expect(validate<string>('XD', ty)).toEqual({value: 'XD'});
+            expect(validate<string>('XE', ty)).toEqual({value: 'XE'});
+            expect(validate<number>('AAA', ty)).toEqual(null);
+            expect(validate<number>('AA', ty)).toEqual(null);
+            expect(validate<number>('', ty)).toEqual(null);
+        }
+    });
+    // TODO: mixed enum
     // TODO: additional props (+ extends)
     // TODO: exported types
     // TODO: import statement
