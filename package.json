@@ -16,7 +16,8 @@
     "ajv",
     "joi",
     "protobuf",
-    "GraphQL"
+    "GraphQL",
+    "tynder"
   ],
   "main": "./bin/index.js",
   "module": "./modules/index.js",
