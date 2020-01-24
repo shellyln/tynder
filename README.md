@@ -45,6 +45,12 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 
 
 
+## Get started
+
+* [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart)
+    * A boilerplate for React client + Express server project using Tynder data validation library.
+
+
 ## Install
 
 ```sh
