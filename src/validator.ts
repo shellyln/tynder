@@ -407,25 +407,21 @@ function validateObjectAssertion<T>(
 
         if (ty.additionalProps && 0 < ty.additionalProps.length) {
             for (const m of dataMembers.values()) {
-                let matched = false;
                 let allowImplicit = false;
-                let at: TypeAssertion = null as any;
+                const matchedAssertions: TypeAssertion[] = [];
 
-                ENTRY: for (const ap of ty.additionalProps) {
+                for (const ap of ty.additionalProps) {
                     for (const pt of ap[0]) {
-                        at = ap[1];
+                        const at = ap[1];
                         if (pt === 'number') {
                             if (/^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/.test(m)) {
-                                matched = true;
-                                break ENTRY;
+                                matchedAssertions.push(at);
                             }
                         } else if (pt === 'string') {
-                            matched = true;
-                            break ENTRY;
+                            matchedAssertions.push(at);
                         } else {
                             if (pt.test(m)) {
-                                matched = true;
-                                break ENTRY;
+                                matchedAssertions.push(at);
                             }
                         }
                         if (at.kind === 'optional') {
@@ -433,7 +429,7 @@ function validateObjectAssertion<T>(
                         }
                     }
                 }
-                if (! matched) {
+                if (matchedAssertions.length === 0) {
                     if (allowImplicit) {
                         continue;
                     }
@@ -447,18 +443,29 @@ function validateObjectAssertion<T>(
                 }
 
                 dataMembers.delete(m);
-                const ret = validateRoot<T>(data[m], at.kind === 'optional' ?
-                    {
-                        ...at.optional,
-                        message: at.message,
-                        messages: at.messages,
-                        messageId: at.messageId,
-                    } : at, ctx);
-                if (ret) {
-                    if (retVal) {
-                        retVal[m] = ret.value;
+                let hasError = false;
+                const savedErrLen = ctx.errors.length;
+
+                for (const at of matchedAssertions) {
+                    const ret = validateRoot<T>(data[m], at.kind === 'optional' ?
+                        {
+                            ...at.optional,
+                            message: at.message,
+                            messages: at.messages,
+                            messageId: at.messageId,
+                        } : at, ctx);
+                    if (ret) {
+                        if (retVal) {
+                            retVal[m] = ret.value;
+                            hasError = false;
+                            ctx.errors.length = savedErrLen;
+                        }
+                        break;
+                    } else {
+                        hasError = true;
                     }
-                } else {
+                }
+                if (hasError) {
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {
