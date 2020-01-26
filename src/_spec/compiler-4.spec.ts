@@ -326,7 +326,7 @@ describe("compiler-4", function() {
                 ],
                 additionalProps: [
                     [['string'], {kind: 'primitive', primitiveName: 'string'}, true, 'comment Foo.propNames'],
-                    [['number'], {kind: 'primitive', primitiveName: 'number'}, false, 'comment Bar.propNames'],
+                    [['number'], {kind: 'primitive', primitiveName: 'number'}, false, 'comment Bar.propNames'], // TODO: concat order
                 ],
                 baseTypes: [getType(schema, 'Foo') as any],
                 docComment: 'comment Bar',
@@ -366,6 +366,166 @@ describe("compiler-4", function() {
             const ty = getType(schema, 'Foo');
             expect(ty).toEqual(rhs);
             expect(schema.get('Foo')?.exported).toEqual(true);
+        }
+    });
+    it("compiler-array-length-1", function() {
+        const schemas = [compile(`
+            type X = string[3..5];
+        `), compile(`
+            type X = Array<string, 3..5>;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'repeated',
+                    min: 3,
+                    max: 5,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    },
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>(['1'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2', '3'], ty)).toEqual({value: ['1', '2', '3']});
+                expect(validate<any>(['1', '2', '3', '4'], ty)).toEqual({value: ['1', '2', '3', '4']});
+                expect(validate<any>(['1', '2', '3', '4', '5'], ty)).toEqual({value: ['1', '2', '3', '4', '5']});
+                expect(validate<any>(['1', '2', '3', '4', '5', '6'], ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-array-length-2", function() {
+        const schemas = [compile(`
+            type X = string[..5];
+        `), compile(`
+            type X = Array<string, ..5>;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'repeated',
+                    min: null,
+                    max: 5,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    },
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>(['1'], ty)).toEqual({value: ['1']});
+                expect(validate<any>(['1', '2'], ty)).toEqual({value: ['1', '2']});
+                expect(validate<any>(['1', '2', '3'], ty)).toEqual({value: ['1', '2', '3']});
+                expect(validate<any>(['1', '2', '3', '4'], ty)).toEqual({value: ['1', '2', '3', '4']});
+                expect(validate<any>(['1', '2', '3', '4', '5'], ty)).toEqual({value: ['1', '2', '3', '4', '5']});
+                expect(validate<any>(['1', '2', '3', '4', '5', '6'], ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-array-length-3", function() {
+        const schemas = [compile(`
+            type X = string[3..];
+        `), compile(`
+            type X = Array<string, 3..>;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'repeated',
+                    min: 3,
+                    max: null,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    },
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>(['1'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2', '3'], ty)).toEqual({value: ['1', '2', '3']});
+                expect(validate<any>(['1', '2', '3', '4'], ty)).toEqual({value: ['1', '2', '3', '4']});
+                expect(validate<any>(['1', '2', '3', '4', '5'], ty)).toEqual({value: ['1', '2', '3', '4', '5']});
+                expect(validate<any>(['1', '2', '3', '4', '5', '6'], ty)).toEqual({value: ['1', '2', '3', '4', '5', '6']});
+            }
+        }
+    });
+    it("compiler-array-length-4", function() {
+        const schemas = [compile(`
+            type X = string[];
+        `), compile(`
+            type X = Array<string>;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'repeated',
+                    min: null,
+                    max: null,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    },
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>(['1'], ty)).toEqual({value: ['1']});
+                expect(validate<any>(['1', '2'], ty)).toEqual({value: ['1', '2']});
+                expect(validate<any>(['1', '2', '3'], ty)).toEqual({value: ['1', '2', '3']});
+                expect(validate<any>(['1', '2', '3', '4'], ty)).toEqual({value: ['1', '2', '3', '4']});
+                expect(validate<any>(['1', '2', '3', '4', '5'], ty)).toEqual({value: ['1', '2', '3', '4', '5']});
+                expect(validate<any>(['1', '2', '3', '4', '5', '6'], ty)).toEqual({value: ['1', '2', '3', '4', '5', '6']});
+            }
         }
     });
     // TODO: array length
