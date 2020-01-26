@@ -879,10 +879,4 @@ describe("compiler-4", function() {
             }
         }
     });
-    // TODO: spread and '?' length
-    // TODO: decorators
-    // TODO: deep cherrypick and patch
-    // TODO: error reporting
-    // TODO: directives
-    // TODO: import statement
 });
