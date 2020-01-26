@@ -336,6 +336,38 @@ describe("compiler-4", function() {
             expect(schema.get('Bar')?.exported).toEqual(false);
         }
     });
+    it("compiler-doc-comments-4", function() {
+        const schema = compile(`
+            /** comment Foo */
+            export enum Foo {
+                /** comment Foo.A */
+                A,
+                /** comment Foo.B */
+                B = 'bbb',
+            }
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'enum',
+                values: [
+                    ['A', 0, 'comment Foo.A'],
+                    ['B', 'bbb', 'comment Foo.B'],
+                ],
+                docComment: 'comment Foo',
+            };
+            const ty = getType(schema, 'Foo');
+            expect(ty).toEqual(rhs);
+            expect(schema.get('Foo')?.exported).toEqual(true);
+        }
+    });
     // TODO: array length
     // TODO: spread and '?' length
     // TODO: decorators
