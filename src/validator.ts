@@ -335,6 +335,9 @@ function validateEnumAssertion<T>(
 }
 
 
+const NumberPattern = /^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/;
+
+
 function validateObjectAssertion<T>(
     data: any, ty: ObjectAssertion, ctx: ValidationContext): {value: T} | null {
 
@@ -424,7 +427,7 @@ function validateObjectAssertion<T>(
                     for (const pt of ap[0]) {
                         const at = ap[1];
                         if (pt === 'number') {
-                            if (/^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/.test(m)) {
+                            if (NumberPattern.test(m)) {
                                 matchedAssertions.push(at);
                             }
                         } else if (pt === 'string') {
