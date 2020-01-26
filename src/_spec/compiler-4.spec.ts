@@ -708,6 +708,177 @@ describe("compiler-4", function() {
             }
         }
     });
+
+
+
+    it("compiler-spread-length-5", function() {
+        const schemas = [compile(`
+            type X = [number, ...<string, 3..5>];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'sequence',
+                    sequence: [{
+                        kind: 'primitive',
+                        primitiveName: 'number',
+                    }, {
+                        kind: 'spread',
+                        min: 3,
+                        max: 5,
+                        spread: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                    }],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([0, '1'], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2'], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2', '3'], ty)).toEqual({value: [0, '1', '2', '3']});
+                expect(validate<any>([0, '1', '2', '3', '4'], ty)).toEqual({value: [0, '1', '2', '3', '4']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5'], ty)).toEqual({value: [0, '1', '2', '3', '4', '5']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5', '6'], ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-spread-length-6", function() {
+        const schemas = [compile(`
+            type X = [number, ...<string, ..5>];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'sequence',
+                    sequence: [{
+                        kind: 'primitive',
+                        primitiveName: 'number',
+                    }, {
+                        kind: 'spread',
+                        min: null,
+                        max: 5,
+                        spread: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                    }],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>([0], ty)).toEqual({value: [0]});
+                expect(validate<any>([0, '1'], ty)).toEqual({value: [0, '1']});
+                expect(validate<any>([0, '1', '2'], ty)).toEqual({value: [0, '1', '2']});
+                expect(validate<any>([0, '1', '2', '3'], ty)).toEqual({value: [0, '1', '2', '3']});
+                expect(validate<any>([0, '1', '2', '3', '4'], ty)).toEqual({value: [0, '1', '2', '3', '4']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5'], ty)).toEqual({value: [0, '1', '2', '3', '4', '5']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5', '6'], ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-spread-length-7", function() {
+        const schemas = [compile(`
+            type X = [number, ...<string, 3..>];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'sequence',
+                    sequence: [{
+                        kind: 'primitive',
+                        primitiveName: 'number',
+                    }, {
+                        kind: 'spread',
+                        min: 3,
+                        max: null,
+                        spread: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                    }],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([0, '1'], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2'], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2', '3'], ty)).toEqual({value: [0, '1', '2', '3']});
+                expect(validate<any>([0, '1', '2', '3', '4'], ty)).toEqual({value: [0, '1', '2', '3', '4']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5'], ty)).toEqual({value: [0, '1', '2', '3', '4', '5']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5', '6'], ty)).toEqual({value: [0, '1', '2', '3', '4', '5', '6']});
+            }
+        }
+    });
+    it("compiler-spread-length-8", function() {
+        const schemas = [compile(`
+            type X = [number, ...<string>];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'sequence',
+                    sequence: [{
+                        kind: 'primitive',
+                        primitiveName: 'number',
+                    }, {
+                        kind: 'spread',
+                        min: null,
+                        max: null,
+                        spread: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                    }],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>([0], ty)).toEqual({value: [0]});
+                expect(validate<any>([0, '1'], ty)).toEqual({value: [0, '1']});
+                expect(validate<any>([0, '1', '2'], ty)).toEqual({value: [0, '1', '2']});
+                expect(validate<any>([0, '1', '2', '3'], ty)).toEqual({value: [0, '1', '2', '3']});
+                expect(validate<any>([0, '1', '2', '3', '4'], ty)).toEqual({value: [0, '1', '2', '3', '4']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5'], ty)).toEqual({value: [0, '1', '2', '3', '4', '5']});
+                expect(validate<any>([0, '1', '2', '3', '4', '5', '6'], ty)).toEqual({value: [0, '1', '2', '3', '4', '5', '6']});
+            }
+        }
+    });
     // TODO: spread and '?' length
     // TODO: decorators
     // TODO: deep cherrypick and patch
