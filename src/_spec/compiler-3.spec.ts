@@ -625,6 +625,77 @@ describe("compiler-3", function() {
         const schemas = [compile(`
             interface A {
                 [propNames1: /^A+$/]: string;
+                [propNames2: /^B+$/]: string;
+            }
+            interface C extends A {
+                [propNames3: /^C+$/]: number;
+                [propNames4: /^C+$/]: string;
+            }
+        `), compile(`
+            interface C extends A {
+                [propNames3: /^C+$/]: number;
+                [propNames4: /^C+$/]: string;
+            }
+            interface A {
+                [propNames1: /^A+$/]: string;
+                [propNames2: /^B+$/]: string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'A', 'C',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'C', 'A',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [],
+                    additionalProps: [
+                        [[/^A+$/], {kind: 'primitive', primitiveName: 'string'}, true],
+                        [[/^B+$/], {kind: 'primitive', primitiveName: 'string'}, true],
+                        [[/^C+$/], {kind: 'primitive', primitiveName: 'number'}],
+                        [[/^C+$/], {kind: 'primitive', primitiveName: 'string'}],
+                    ],
+                    baseTypes: [{
+                        name: 'A',
+                        typeName: 'A',
+                        kind: 'object',
+                        members: [],
+                        additionalProps: [
+                            [[/^A+$/], {kind: 'primitive', primitiveName: 'string'}],
+                            [[/^B+$/], {kind: 'primitive', primitiveName: 'string'}],
+                        ],
+                    }],
+                };
+                const ty = getType(schema, 'C');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({}, ty)).toEqual({value: {}});
+                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
+                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                expect(validate<any>({'D': ''}, ty)).toEqual(null);
+                expect(validate<any>({'D': 0}, ty)).toEqual(null);
+                expect(validate<any>({'E': ''}, ty)).toEqual(null);
+                expect(validate<any>({'E': 0}, ty)).toEqual(null);
+                expect(validate<any>({0: ''}, ty)).toEqual(null);
+                expect(validate<any>({0: 0}, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-additional-props-3", function() {
+        const schemas = [compile(`
+            interface A {
+                [propNames1: /^A+$/]: string;
                 [propNames2: number | /^B+$/]: string;
             }
             interface C extends A {
@@ -687,6 +758,77 @@ describe("compiler-3", function() {
                 expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
                 expect(validate<any>({'E': ''}, ty)).toEqual(null);
                 expect(validate<any>({'E': 0}, ty)).toEqual(null);
+                expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
+                expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
+            }
+        }
+    });
+    it("compiler-additional-props-4", function() {
+        const schemas = [compile(`
+            interface A {
+                [propNames1: /^A+$/]: string;
+                [propNames2: /^B+$/]?: string;
+            }
+            interface C extends A {
+                [propNames3: /^C+$/]: number;
+                [propNames4: /^D+$/]: number;
+            }
+        `), compile(`
+            interface C extends A {
+                [propNames3: /^C+$/]: number;
+                [propNames4: /^D+$/]: number;
+            }
+            interface A {
+                [propNames1: /^A+$/]: string;
+                [propNames2: /^B+$/]?: string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'A', 'C',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'C', 'A',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [],
+                    additionalProps: [
+                        [[/^A+$/], {kind: 'primitive', primitiveName: 'string'}, true],
+                        [[/^B+$/], {kind: 'optional', optional: {kind: 'primitive', primitiveName: 'string'}}, true],
+                        [[/^C+$/], {kind: 'primitive', primitiveName: 'number'}],
+                        [[/^D+$/], {kind: 'primitive', primitiveName: 'number'}],
+                    ],
+                    baseTypes: [{
+                        name: 'A',
+                        typeName: 'A',
+                        kind: 'object',
+                        members: [],
+                        additionalProps: [
+                            [[/^A+$/], {kind: 'primitive', primitiveName: 'string'}],
+                            [[/^B+$/], {kind: 'optional', optional: {kind: 'primitive', primitiveName: 'string'}}],
+                        ],
+                    }],
+                };
+                const ty = getType(schema, 'C');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({}, ty)).toEqual({value: {}});
+                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                expect(validate<any>({'C': ''}, ty)).toEqual(null);
+                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                expect(validate<any>({'D': ''}, ty)).toEqual(null);
+                expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
+                expect(validate<any>({'E': ''}, ty)).toEqual({value: {'E': ''}});
+                expect(validate<any>({'E': 0}, ty)).toEqual({value: {'E': 0}});
                 expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
                 expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
             }
