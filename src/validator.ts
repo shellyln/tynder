@@ -338,7 +338,7 @@ function validateEnumAssertion<T>(
 function validateObjectAssertion<T>(
     data: any, ty: ObjectAssertion, ctx: ValidationContext): {value: T} | null {
 
-    let retVal = {...data};
+    let retVal = Array.isArray(data) ? [...data] : {...data};
     const revMembers = ty.members.slice().reverse();
     for (const x of ty.members) {
         if (ty.members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
@@ -406,7 +406,17 @@ function validateObjectAssertion<T>(
         }
 
         if (ty.additionalProps && 0 < ty.additionalProps.length) {
-            for (const m of dataMembers.values()) {
+            function* getAdditionalMembers() {
+                for (const m of dataMembers.values()) {
+                    yield m;
+                }
+                if (Array.isArray(data)) {
+                    for (let i = 0; i < data.length; i++) {
+                        yield String(i);
+                    }
+                }
+            }
+            for (const m of getAdditionalMembers()) {
                 let allowImplicit = false;
                 const matchedAssertions: TypeAssertion[] = [];
 

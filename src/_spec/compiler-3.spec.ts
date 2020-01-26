@@ -618,6 +618,9 @@ describe("compiler-3", function() {
                 expect(validate<any>({'E': 0}, ty)).toEqual(null);
                 expect(validate<any>({0: ''}, ty)).toEqual(null);
                 expect(validate<any>({0: 0}, ty)).toEqual(null);
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>([''], ty)).toEqual(null);
+                expect(validate<any>([0], ty)).toEqual(null);
             }
         }
     });
@@ -689,6 +692,9 @@ describe("compiler-3", function() {
                 expect(validate<any>({'E': 0}, ty)).toEqual(null);
                 expect(validate<any>({0: ''}, ty)).toEqual(null);
                 expect(validate<any>({0: 0}, ty)).toEqual(null);
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>([''], ty)).toEqual(null);
+                expect(validate<any>([0], ty)).toEqual(null);
             }
         }
     });
@@ -760,6 +766,9 @@ describe("compiler-3", function() {
                 expect(validate<any>({'E': 0}, ty)).toEqual(null);
                 expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
                 expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>([''], ty)).toEqual({value: ['']});
+                expect(validate<any>([0], ty)).toEqual({value: [0]});
             }
         }
     });
@@ -831,6 +840,9 @@ describe("compiler-3", function() {
                 expect(validate<any>({'E': 0}, ty)).toEqual({value: {'E': 0}});
                 expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
                 expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>([''], ty)).toEqual({value: ['']});
+                expect(validate<any>([0], ty)).toEqual({value: [0]});
             }
         }
     });
