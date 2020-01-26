@@ -14,10 +14,36 @@ function pickMapper(value: any, ty: TypeAssertion) {
     switch (ty.kind) {
     case 'object':
         {
-            const ret = {};
+            const ret = Array.isArray(value) ? [] : {};
+
+            const dataMembers = new Set<string>();
+            if (! Array.isArray(value)) {
+                for (const m in value) {
+                    if (Object.prototype.hasOwnProperty.call(value, m)) {
+                        dataMembers.add(m);
+                    }
+                }
+            }
+
             for (const x of ty.members) {
                 if (Object.hasOwnProperty.call(value, x[0])) {
+                    dataMembers.delete(x[0]);
                     ret[x[0]] = value[x[0]];
+                }
+            }
+            if (ty.additionalProps && 0 < ty.additionalProps.length) {
+                function* getAdditionalMembers() {
+                    for (const m of dataMembers.values()) {
+                        yield m;
+                    }
+                    if (Array.isArray(value)) {
+                        for (let i = 0; i < value.length; i++) {
+                            yield String(i);
+                        }
+                    }
+                }
+                for (const m of getAdditionalMembers()) {
+                    ret[m] = value[m];
                 }
             }
             return ret;

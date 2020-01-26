@@ -335,10 +335,13 @@ function validateEnumAssertion<T>(
 }
 
 
+const NumberPattern = /^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/;
+
+
 function validateObjectAssertion<T>(
     data: any, ty: ObjectAssertion, ctx: ValidationContext): {value: T} | null {
 
-    let retVal = {...data};
+    let retVal = Array.isArray(data) ? [...data] : {...data};
     const revMembers = ty.members.slice().reverse();
     for (const x of ty.members) {
         if (ty.members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
@@ -406,26 +409,32 @@ function validateObjectAssertion<T>(
         }
 
         if (ty.additionalProps && 0 < ty.additionalProps.length) {
-            for (const m of dataMembers.values()) {
-                let matched = false;
+            function* getAdditionalMembers() {
+                for (const m of dataMembers.values()) {
+                    yield m;
+                }
+                if (Array.isArray(data)) {
+                    for (let i = 0; i < data.length; i++) {
+                        yield String(i);
+                    }
+                }
+            }
+            for (const m of getAdditionalMembers()) {
                 let allowImplicit = false;
-                let at: TypeAssertion = null as any;
+                const matchedAssertions: TypeAssertion[] = [];
 
-                ENTRY: for (const ap of ty.additionalProps) {
+                for (const ap of ty.additionalProps) {
                     for (const pt of ap[0]) {
-                        at = ap[1];
+                        const at = ap[1];
                         if (pt === 'number') {
-                            if (/^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/.test(m)) {
-                                matched = true;
-                                break ENTRY;
+                            if (NumberPattern.test(m)) {
+                                matchedAssertions.push(at);
                             }
                         } else if (pt === 'string') {
-                            matched = true;
-                            break ENTRY;
+                            matchedAssertions.push(at);
                         } else {
                             if (pt.test(m)) {
-                                matched = true;
-                                break ENTRY;
+                                matchedAssertions.push(at);
                             }
                         }
                         if (at.kind === 'optional') {
@@ -433,7 +442,7 @@ function validateObjectAssertion<T>(
                         }
                     }
                 }
-                if (! matched) {
+                if (matchedAssertions.length === 0) {
                     if (allowImplicit) {
                         continue;
                     }
@@ -447,18 +456,29 @@ function validateObjectAssertion<T>(
                 }
 
                 dataMembers.delete(m);
-                const ret = validateRoot<T>(data[m], at.kind === 'optional' ?
-                    {
-                        ...at.optional,
-                        message: at.message,
-                        messages: at.messages,
-                        messageId: at.messageId,
-                    } : at, ctx);
-                if (ret) {
-                    if (retVal) {
-                        retVal[m] = ret.value;
+                let hasError = false;
+                const savedErrLen = ctx.errors.length;
+
+                for (const at of matchedAssertions) {
+                    const ret = validateRoot<T>(data[m], at.kind === 'optional' ?
+                        {
+                            ...at.optional,
+                            message: at.message,
+                            messages: at.messages,
+                            messageId: at.messageId,
+                        } : at, ctx);
+                    if (ret) {
+                        if (retVal) {
+                            retVal[m] = ret.value;
+                            hasError = false;
+                            ctx.errors.length = savedErrLen;
+                        }
+                        break;
+                    } else {
+                        hasError = true;
                     }
-                } else {
+                }
+                if (hasError) {
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {

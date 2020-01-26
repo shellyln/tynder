@@ -606,7 +606,7 @@ export function derived(ty: ObjectAssertion, ...exts: TypeAssertion[]): ObjectAs
         }
     }
     if (ty.additionalProps && 0 < ty.additionalProps.length) {
-        additionalProps = additionalProps.concat(ty.additionalProps);
+        additionalProps = additionalProps.concat(ty.additionalProps); // TODO: concat order
     }
     if (0 < additionalProps.length) {
         ret.additionalProps = additionalProps;
