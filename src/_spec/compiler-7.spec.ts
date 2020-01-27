@@ -61,17 +61,23 @@ describe("compiler-6", function() {
         const schemas = [compile(`
             /// @tynder-external P, Q, R
             // @tynder-external S
+
+            type X = Q;
+            interface Y { a: R; }
         `), compile(`
             external P, Q, R;
             external S;
+
+            type X = Q;
+            interface Y { a: R; }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
-                'P', 'Q', 'R', 'S',
+                'P', 'Q', 'R', 'S', 'X', 'Y',
             ]);
             expect(Array.from(schemas[1].keys())).toEqual([
-                'P', 'Q', 'R', 'S',
+                'P', 'Q', 'R', 'S', 'X', 'Y',
             ]);
         }
         for (const schema of schemas) {
@@ -84,8 +90,36 @@ describe("compiler-6", function() {
                 };
                 const ty = getType(schema, 'P');
                 expect(ty).toEqual(rhs);
+                expect(validate<any>(3, ty)).toEqual({value: 3});
+            }
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'any',
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(3, ty)).toEqual({value: 3});
+            }
+            {
+                const rhs: TypeAssertion = {
+                    name: 'Y',
+                    typeName: 'Y',
+                    kind: 'object',
+                    members: [['a', {
+                        name: 'a',
+                        typeName: 'R',
+                        kind: 'any',
+                    }]],
+                };
+                const ty = getType(schema, 'Y');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 3}, ty)).toEqual({value: {a: 3}});
+                expect(validate<any>({b: 3}, ty)).toEqual(null);
             }
         }
     });
+    // TODO: primitives (any, unknown, never)
     // TODO: deep cherrypick and patch
 });
