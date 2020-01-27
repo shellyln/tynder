@@ -41,6 +41,70 @@ describe("compiler-5", function() {
             }
         }
     });
+    it("compiler-decorators-1b", function() {
+        const schemas = [compile(`
+            type X = @maxLength(5) string;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    maxLength: 5,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>('', ty)).toEqual({value: ''});
+                expect(validate<any>('1', ty)).toEqual({value: '1'});
+                expect(validate<any>('12', ty)).toEqual({value: '12'});
+                expect(validate<any>('123', ty)).toEqual({value: '123'});
+                expect(validate<any>('1234', ty)).toEqual({value: '1234'});
+                expect(validate<any>('12345', ty)).toEqual({value: '12345'});
+                expect(validate<any>('123456', ty)).toEqual(null);
+                expect(validate<any>(4, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-1c", function() {
+        const schemas = [compile(`
+            type X = @minLength(3) string;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    minLength: 3,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>('', ty)).toEqual(null);
+                expect(validate<any>('1', ty)).toEqual(null);
+                expect(validate<any>('12', ty)).toEqual(null);
+                expect(validate<any>('123', ty)).toEqual({value: '123'});
+                expect(validate<any>('1234', ty)).toEqual({value: '1234'});
+                expect(validate<any>('12345', ty)).toEqual({value: '12345'});
+                expect(validate<any>('123456', ty)).toEqual({value: '123456'});
+                expect(validate<any>(4, ty)).toEqual(null);
+            }
+        }
+    });
     it("compiler-decorators-2", function() {
         const schemas = [compile(`
             interface X {
@@ -160,6 +224,70 @@ describe("compiler-5", function() {
                 expect(validate<any>(4, ty)).toEqual({value: 4});
                 expect(validate<any>(5, ty)).toEqual({value: 5});
                 expect(validate<any>(6, ty)).toEqual(null);
+                expect(validate<any>('4', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-4b", function() {
+        const schemas = [compile(`
+            type X = @maxValue(5) number;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'number',
+                    maxValue: 5,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual({value: 0});
+                expect(validate<any>(1, ty)).toEqual({value: 1});
+                expect(validate<any>(2, ty)).toEqual({value: 2});
+                expect(validate<any>(3, ty)).toEqual({value: 3});
+                expect(validate<any>(4, ty)).toEqual({value: 4});
+                expect(validate<any>(5, ty)).toEqual({value: 5});
+                expect(validate<any>(6, ty)).toEqual(null);
+                expect(validate<any>('4', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-4c", function() {
+        const schemas = [compile(`
+            type X = @minValue(3) number;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'number',
+                    minValue: 3,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual(null);
+                expect(validate<any>(1, ty)).toEqual(null);
+                expect(validate<any>(2, ty)).toEqual(null);
+                expect(validate<any>(3, ty)).toEqual({value: 3});
+                expect(validate<any>(4, ty)).toEqual({value: 4});
+                expect(validate<any>(5, ty)).toEqual({value: 5});
+                expect(validate<any>(6, ty)).toEqual({value: 6});
                 expect(validate<any>('4', ty)).toEqual(null);
             }
         }
@@ -426,6 +554,70 @@ describe("compiler-5", function() {
                 expect(validate<any>(4, ty)).toEqual({value: 4});
                 expect(validate<any>(5, ty)).toEqual(null);
                 expect(validate<any>(6, ty)).toEqual(null);
+                expect(validate<any>('4', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-10a", function() {
+        const schemas = [compile(`
+            type X = @lessThan(5) number;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'number',
+                    lessThanValue: 5,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual({value: 0});
+                expect(validate<any>(1, ty)).toEqual({value: 1});
+                expect(validate<any>(2, ty)).toEqual({value: 2});
+                expect(validate<any>(3, ty)).toEqual({value: 3});
+                expect(validate<any>(4, ty)).toEqual({value: 4});
+                expect(validate<any>(5, ty)).toEqual(null);
+                expect(validate<any>(6, ty)).toEqual(null);
+                expect(validate<any>('4', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-10b", function() {
+        const schemas = [compile(`
+            type X = @greaterThan(3) number;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'number',
+                    greaterThanValue: 3,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual(null);
+                expect(validate<any>(1, ty)).toEqual(null);
+                expect(validate<any>(2, ty)).toEqual(null);
+                expect(validate<any>(3, ty)).toEqual(null);
+                expect(validate<any>(4, ty)).toEqual({value: 4});
+                expect(validate<any>(5, ty)).toEqual({value: 5});
+                expect(validate<any>(6, ty)).toEqual({value: 6});
                 expect(validate<any>('4', ty)).toEqual(null);
             }
         }
