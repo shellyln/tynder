@@ -8,60 +8,6 @@ import { compile }           from '../compiler';
 
 
 describe("compiler-5", function() {
-    it("compiler-spread-optional-length-1", function() {
-        const schemas = [compile(`
-            type X = [number, string?, boolean?];
-        `)];
-
-        {
-            expect(Array.from(schemas[0].keys())).toEqual([
-                'X',
-            ]);
-        }
-        for (const schema of schemas) {
-            {
-                const rhs: TypeAssertion = {
-                    name: 'X',
-                    typeName: 'X',
-                    kind: 'sequence',
-                    sequence: [{
-                        kind: 'primitive',
-                        primitiveName: 'number',
-                    }, {
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'string',
-                        },
-                    }, {
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'boolean',
-                        },
-                    }],
-                };
-                const ty = getType(schema, 'X');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>([], ty)).toEqual(null);
-
-                expect(validate<any>([0], ty)).toEqual({value: [0]});
-                expect(validate<any>([0, '1'], ty)).toEqual({value: [0, '1']});
-                expect(validate<any>([0, '1', '2'], ty)).toEqual(null);
-
-                expect(validate<any>([0, false], ty)).toEqual(null);
-                expect(validate<any>([0, '1', false], ty)).toEqual({value: [0, '1', false]});
-                expect(validate<any>([0, '1', '2', false], ty)).toEqual(null);
-
-                expect(validate<any>([0, false, true], ty)).toEqual(null);
-                expect(validate<any>([0, '1', false, true], ty)).toEqual(null);
-                expect(validate<any>([0, '1', '2', false, true], ty)).toEqual(null);
-            }
-        }
-    });
-
-
-
     it("compiler-decorators-1", function() {
         const schemas = [compile(`
             type X = @minLength(3) @maxLength(5) string;
@@ -91,6 +37,7 @@ describe("compiler-5", function() {
                 expect(validate<any>('1234', ty)).toEqual({value: '1234'});
                 expect(validate<any>('12345', ty)).toEqual({value: '12345'});
                 expect(validate<any>('123456', ty)).toEqual(null);
+                expect(validate<any>(4, ty)).toEqual(null);
             }
         }
     });
@@ -131,6 +78,7 @@ describe("compiler-5", function() {
                 expect(validate<any>({a: '1234'}, ty)).toEqual({value: {a: '1234'}});
                 expect(validate<any>({a: '12345'}, ty)).toEqual({value: {a: '12345'}});
                 expect(validate<any>({a: '123456'}, ty)).toEqual(null);
+                expect(validate<any>({a: 4}, ty)).toEqual(null);
             }
         }
     });
@@ -174,12 +122,10 @@ describe("compiler-5", function() {
                 expect(validate<any>({a: '1234'}, ty)).toEqual({value: {a: '1234'}});
                 expect(validate<any>({a: '12345'}, ty)).toEqual({value: {a: '12345'}});
                 expect(validate<any>({a: '123456'}, ty)).toEqual(null);
+                expect(validate<any>({a: 4}, ty)).toEqual(null);
             }
         }
     });
-
-
-
     it("compiler-decorators-4", function() {
         const schemas = [compile(`
             type X = @minValue(3) @maxValue(5) number;
@@ -214,6 +160,7 @@ describe("compiler-5", function() {
                 expect(validate<any>(4, ty)).toEqual({value: 4});
                 expect(validate<any>(5, ty)).toEqual({value: 5});
                 expect(validate<any>(6, ty)).toEqual(null);
+                expect(validate<any>('4', ty)).toEqual(null);
             }
         }
     });
@@ -261,6 +208,7 @@ describe("compiler-5", function() {
                 expect(validate<any>({a: 4}, ty)).toEqual({value: {a: 4}});
                 expect(validate<any>({a: 5}, ty)).toEqual({value: {a: 5}});
                 expect(validate<any>({a: 6}, ty)).toEqual(null);
+                expect(validate<any>({a: '4'}, ty)).toEqual(null);
             }
         }
     });
@@ -311,13 +259,145 @@ describe("compiler-5", function() {
                 expect(validate<any>({a: 4}, ty)).toEqual({value: {a: 4}});
                 expect(validate<any>({a: 5}, ty)).toEqual({value: {a: 5}});
                 expect(validate<any>({a: 6}, ty)).toEqual(null);
+                expect(validate<any>({a: '4'}, ty)).toEqual(null);
             }
         }
     });
-
-
-
     it("compiler-decorators-7", function() {
+        const schemas = [compile(`
+            type X = @minValue('C') @maxValue('E') string;
+        `), compile(`
+            type X = @range('C', 'E') string;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    minValue: 'C',
+                    maxValue: 'E',
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual(null);
+                expect(validate<any>('A', ty)).toEqual(null);
+                expect(validate<any>('B', ty)).toEqual(null);
+                expect(validate<any>('C', ty)).toEqual({value: 'C'});
+                expect(validate<any>('D', ty)).toEqual({value: 'D'});
+                expect(validate<any>('E', ty)).toEqual({value: 'E'});
+                expect(validate<any>('F', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-8", function() {
+        const schemas = [compile(`
+            interface X {
+                a: @minValue('C') @maxValue('E') string;
+            }
+        `), compile(`
+            interface X {
+                a: @range('C', 'E') string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            minValue: 'C',
+                            maxValue: 'E',
+                        }]
+                    ],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 0}, ty)).toEqual(null);
+                expect(validate<any>({a: 'A'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'B'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'C'}, ty)).toEqual({value: {a: 'C'}});
+                expect(validate<any>({a: 'D'}, ty)).toEqual({value: {a: 'D'}});
+                expect(validate<any>({a: 'E'}, ty)).toEqual({value: {a: 'E'}});
+                expect(validate<any>({a: 'F'}, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-9", function() {
+        const schemas = [compile(`
+            interface X {
+                a?: @minValue('C') @maxValue('E') string;
+            }
+        `), compile(`
+            interface X {
+                a?: @range('C', 'E') string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                                minValue: 'C',
+                                maxValue: 'E',
+                            }
+                        }]
+                    ],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 0}, ty)).toEqual(null);
+                expect(validate<any>({a: 'A'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'B'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'C'}, ty)).toEqual({value: {a: 'C'}});
+                expect(validate<any>({a: 'D'}, ty)).toEqual({value: {a: 'D'}});
+                expect(validate<any>({a: 'E'}, ty)).toEqual({value: {a: 'E'}});
+                expect(validate<any>({a: 'F'}, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-10", function() {
         const schemas = [compile(`
             type X = @greaterThan(3) @lessThan(5) number;
         `)];
@@ -346,10 +426,11 @@ describe("compiler-5", function() {
                 expect(validate<any>(4, ty)).toEqual({value: 4});
                 expect(validate<any>(5, ty)).toEqual(null);
                 expect(validate<any>(6, ty)).toEqual(null);
+                expect(validate<any>('4', ty)).toEqual(null);
             }
         }
     });
-    it("compiler-decorators-8", function() {
+    it("compiler-decorators-11", function() {
         const schemas = [compile(`
             interface X {
                 a: @greaterThan(3) @lessThan(5) number;
@@ -386,10 +467,11 @@ describe("compiler-5", function() {
                 expect(validate<any>({a: 4}, ty)).toEqual({value: {a: 4}});
                 expect(validate<any>({a: 5}, ty)).toEqual(null);
                 expect(validate<any>({a: 6}, ty)).toEqual(null);
+                expect(validate<any>({a: '4'}, ty)).toEqual(null);
             }
         }
     });
-    it("compiler-decorators-9", function() {
+    it("compiler-decorators-12", function() {
         const schemas = [compile(`
             interface X {
                 a?: @greaterThan(3) @lessThan(5) number;
@@ -429,6 +511,122 @@ describe("compiler-5", function() {
                 expect(validate<any>({a: 4}, ty)).toEqual({value: {a: 4}});
                 expect(validate<any>({a: 5}, ty)).toEqual(null);
                 expect(validate<any>({a: 6}, ty)).toEqual(null);
+                expect(validate<any>({a: '4'}, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-13", function() {
+        const schemas = [compile(`
+            type X = @greaterThan('C') @lessThan('E') string;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    greaterThanValue: 'C',
+                    lessThanValue: 'E',
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual(null);
+                expect(validate<any>('A', ty)).toEqual(null);
+                expect(validate<any>('B', ty)).toEqual(null);
+                expect(validate<any>('C', ty)).toEqual(null);
+                expect(validate<any>('D', ty)).toEqual({value: 'D'});
+                expect(validate<any>('E', ty)).toEqual(null);
+                expect(validate<any>('F', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-14", function() {
+        const schemas = [compile(`
+            interface X {
+                a: @greaterThan('C') @lessThan('E') string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            greaterThanValue: 'C',
+                            lessThanValue: 'E',
+                        }]
+                    ],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 0}, ty)).toEqual(null);
+                expect(validate<any>({a: 'A'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'B'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'C'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'D'}, ty)).toEqual({value: {a: 'D'}});
+                expect(validate<any>({a: 'E'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'F'}, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-15", function() {
+        const schemas = [compile(`
+            interface X {
+                a?: @greaterThan('C') @lessThan('E') string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                                greaterThanValue: 'C',
+                                lessThanValue: 'E',
+                            }
+                        }]
+                    ],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 0}, ty)).toEqual(null);
+                expect(validate<any>({a: 'A'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'B'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'C'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'D'}, ty)).toEqual({value: {a: 'D'}});
+                expect(validate<any>({a: 'E'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'F'}, ty)).toEqual(null);
             }
         }
     });
