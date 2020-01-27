@@ -822,6 +822,118 @@ describe("compiler-5", function() {
             }
         }
     });
+    it("compiler-decorators-16", function() {
+        const schemas = [compile(`
+            type X = @match(/^[C-E]$/) string;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    pattern: /^[C-E]$/,
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual(null);
+                expect(validate<any>('A', ty)).toEqual(null);
+                expect(validate<any>('B', ty)).toEqual(null);
+                expect(validate<any>('C', ty)).toEqual({value: 'C'});
+                expect(validate<any>('D', ty)).toEqual({value: 'D'});
+                expect(validate<any>('E', ty)).toEqual({value: 'E'});
+                expect(validate<any>('F', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-17", function() {
+        const schemas = [compile(`
+            interface X {
+                a: @match(/^[C-E]$/) string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            pattern: /^[C-E]$/,
+                        }]
+                    ],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 0}, ty)).toEqual(null);
+                expect(validate<any>({a: 'A'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'B'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'C'}, ty)).toEqual({value: {a: 'C'}});
+                expect(validate<any>({a: 'D'}, ty)).toEqual({value: {a: 'D'}});
+                expect(validate<any>({a: 'E'}, ty)).toEqual({value: {a: 'E'}});
+                expect(validate<any>({a: 'F'}, ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-decorators-18", function() {
+        const schemas = [compile(`
+            interface X {
+                a?: @match(/^[C-E]$/) string;
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                                pattern: /^[C-E]$/,
+                            }
+                        }]
+                    ],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>({a: 0}, ty)).toEqual(null);
+                expect(validate<any>({a: 'A'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'B'}, ty)).toEqual(null);
+                expect(validate<any>({a: 'C'}, ty)).toEqual({value: {a: 'C'}});
+                expect(validate<any>({a: 'D'}, ty)).toEqual({value: {a: 'D'}});
+                expect(validate<any>({a: 'E'}, ty)).toEqual({value: {a: 'E'}});
+                expect(validate<any>({a: 'F'}, ty)).toEqual(null);
+            }
+        }
+    });
     // TODO: decorators
     // TODO: deep cherrypick and patch
     // TODO: error reporting
