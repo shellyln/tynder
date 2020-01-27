@@ -690,28 +690,28 @@ export function withMaxValue(maxValue: number | string) {
 }
 
 
-export function withGreaterThan(greaterThan: number | string) {
+export function withGreaterThan(greaterThanValue: number | string) {
     return (ty: PrimitiveTypeAssertion) => {
-        if (typeof greaterThan !== 'number' && typeof greaterThan !== 'string') {
+        if (typeof greaterThanValue !== 'number' && typeof greaterThanValue !== 'string') {
             throw new Error(`Decorator '@greaterThan' parameter 'greaterThan' should be number or string.`);
         }
         if (!ty || ty.kind !== 'primitive') {
             throw new Error(`Decorator '@greaterThan' cannot be applied to anything other than 'primitive'.`);
         }
-        return ({...ty, greaterThan});
+        return ({...ty, greaterThanValue});
     };
 }
 
 
-export function withLessThan(lessThan: number | string) {
+export function withLessThan(lessThanValue: number | string) {
     return (ty: PrimitiveTypeAssertion) => {
-        if (typeof lessThan !== 'number' && typeof lessThan !== 'string') {
+        if (typeof lessThanValue !== 'number' && typeof lessThanValue !== 'string') {
             throw new Error(`Decorator '@lessThan' parameter 'lessThan' should be number or string.`);
         }
         if (!ty || ty.kind !== 'primitive') {
             throw new Error(`Decorator '@lessThan' cannot be applied to anything other than 'primitive'.`);
         }
-        return ({...ty, lessThan});
+        return ({...ty, lessThanValue});
     };
 }
 
