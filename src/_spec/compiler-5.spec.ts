@@ -934,9 +934,4 @@ describe("compiler-5", function() {
             }
         }
     });
-    // TODO: decorators
-    // TODO: deep cherrypick and patch
-    // TODO: error reporting
-    // TODO: directives
-    // TODO: import statement
 });
