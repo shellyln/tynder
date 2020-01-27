@@ -12,7 +12,4 @@ describe("compiler-6", function() {
         expect(0).toEqual(0);
     });
     // TODO: decorators + error reporting
-    // TODO: deep cherrypick and patch
-    // TODO: directives
-    // TODO: import statement
 });
