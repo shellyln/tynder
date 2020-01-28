@@ -11,5 +11,5 @@ describe("compiler-6", function() {
     it("compiler-error-reporting-1", function() {
         expect(0).toEqual(0);
     });
-    // TODO: decorators + error reporting
+    // TODO: error message decorators + error reporting
 });
