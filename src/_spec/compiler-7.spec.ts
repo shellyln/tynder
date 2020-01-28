@@ -230,19 +230,19 @@ describe("compiler-7", function() {
 
         const ty = getType(schema, 'C');
         const original = {
-            c1: 'ccc',
+            c1: 'ccccc',
             c2: {
                 b1: true,
                 b2: {
-                    a1: 'aaaaa',
+                    a1: 'bbbbb',
                     a2: 22,
                     a3: ['1', '2'],
                     a4: true,
                 },
-                b3: '333333',
+                b3: '33333',
             },
             c3: {
-                a1: 'aaa',
+                a1: 'aaaaa',
                 a2: 2,
                 a3: ['11', '12'],
                 a4: false,
@@ -252,17 +252,17 @@ describe("compiler-7", function() {
 
         const needle = pick(original, ty);
         expect(needle).toEqual({
-            c1: 'ccc',
+            c1: 'ccccc',
             c2: {
                 b1: true,
                 b2: {
-                    a1: 'aaaaa',
+                    a1: 'bbbbb',
                     a2: 22,
                     a3: ['1', '2'],
                 },
             },
             c3: {
-                a1: 'aaa',
+                a1: 'aaaaa',
                 a2: 2,
                 a3: ['11', '12'],
             },
@@ -272,19 +272,19 @@ describe("compiler-7", function() {
 
         const patched = patch(original, needle, ty);
         expect(patched).toEqual({
-            c1: 'ccc',
+            c1: 'ccccc',
             c2: {
                 b1: true,
                 b2: {
-                    a1: 'aaaaa',
+                    a1: 'bbbbb',
                     a2: 22,
                     a3: ['1', '2'],
                     a4: true,
                 },
-                b3: '333333',
+                b3: '33333',
             },
             c3: {
-                a1: 'aaa',
+                a1: 'aaaaa',
                 a2: 2,
                 a3: ['11', '12'],
                 a4: false,
@@ -312,19 +312,19 @@ describe("compiler-7", function() {
 
         const ty = getType(schema, 'C');
         const original = {
-            c1: 'ccc',
+            c1: 'ccccc',
             c2: {
                 b1: true,
                 b2: {
-                    a1: 'aaaaa',
+                    a1: 'bbbbb',
                     a2: 22,
                     a3: ['1', '2'],
                     a4: true,
                 },
-                b3: '333333',
+                b3: '33333',
             },
             c3: {
-                a1: 'aaa',
+                a1: 'aaaaa',
                 a2: 2,
                 a3: ['11', '12'],
                 a4: false,
@@ -334,23 +334,23 @@ describe("compiler-7", function() {
 
         const needle = pick(original, ty);
         expect(needle).toEqual({
-            c1: 'ccc',
+            c1: 'ccccc',
             c2: {
                 b1: true,
                 b2: {
-                    a1: 'aaaaa',
+                    a1: 'bbbbb',
                     a2: 22,
                     a3: ['1', '2'],
                 },
             },
             c3: {
-                a1: 'aaa',
+                a1: 'aaaaa',
                 a2: 2,
                 a3: ['11', '12'],
             },
         } as any);
 
-        needle.c1 = '!ccc!';
+        needle.c1 = '!ccccc!';
         needle.c4 = '!44444!';
         (needle as any).c5 = true;
 
@@ -358,24 +358,120 @@ describe("compiler-7", function() {
         needle.c2.b2.a4 = false;
         (needle.c2.b2 as any).a5 = 999;
 
+        needle.c3.a4 = true;
+
         const patched = patch(original, needle, ty);
         expect(patched).toEqual({
-            c1: '!ccc!',
+            c1: '!ccccc!',
             c2: {
                 b1: true,
                 b2: {
-                    a1: 'aaaaa',
+                    a1: 'bbbbb',
                     a2: 22,
                     a3: ['!1!'],
                     a4: true,
                 },
-                b3: '333333',
+                b3: '33333',
             },
             c3: {
-                a1: 'aaa',
+                a1: 'aaaaa',
                 a2: 2,
                 a3: ['11', '12'],
                 a4: false,
+            },
+            c4: '44444',
+        } as any);
+    });
+    it("compiler-deep-cherrypick-patch-3", function() {
+        const schema = compile(`
+            interface A {
+                a1: string;
+                a2?: number;
+                a3: string[];
+                [propNames: string]: any;
+            }
+            interface B {
+                b1: boolean;
+                b2: A;
+            }
+            interface C {
+                c1: string;
+                c2: B;
+                c3?: A;
+            }
+        `);
+
+        const ty = getType(schema, 'C');
+        const original = {
+            c1: 'ccccc',
+            c2: {
+                b1: true,
+                b2: {
+                    a1: 'bbbbb',
+                    a2: 22,
+                    a3: ['1', '2'],
+                    a4: true,
+                },
+                b3: '33333',
+            },
+            c3: {
+                a1: 'aaaaa',
+                a2: 2,
+                a3: ['11', '12'],
+                a4: false,
+            },
+            c4: '44444',
+        };
+
+        const needle = pick(original, ty);
+        expect(needle).toEqual({
+            c1: 'ccccc',
+            c2: {
+                b1: true,
+                b2: {
+                    a1: 'bbbbb',
+                    a2: 22,
+                    a3: ['1', '2'],
+                    a4: true,
+                },
+            },
+            c3: {
+                a1: 'aaaaa',
+                a2: 2,
+                a3: ['11', '12'],
+                a4: false,
+            },
+        } as any);
+
+        needle.c1 = '!ccccc!';
+        needle.c4 = '!44444!';
+        (needle as any).c5 = true;
+
+        needle.c2.b2.a3 = ['!1!'];
+        needle.c2.b2.a4 = false;
+        (needle.c2.b2 as any).a5 = 999;
+
+        needle.c3.a4 = true;
+
+        const patched = patch(original, needle, ty);
+        expect(patched).toEqual({
+            c1: '!ccccc!',
+            c2: {
+                b1: true,
+                b2: {
+                    a1: 'bbbbb',
+                    a2: 22,
+                    a3: ['!1!'],
+                    a4: false,
+                    a5: 999,
+                },
+                b3: '33333',
+            },
+            c3: {
+                a1: 'aaaaa',
+                a2: 2,
+                a3: ['11', '12'],
+                a4: true,
             },
             c4: '44444',
         } as any);
