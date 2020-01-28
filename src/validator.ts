@@ -369,6 +369,17 @@ function validateObjectAssertion<T>(
                 }
             }
         }
+        if (ctx.noAdditionalProps && Array.isArray(data) && 0 < data.length) {
+            const aps = ty.additionalProps || [];
+            if (aps.filter(x => x[0].includes('number')).length === 0) {
+                reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched
+                if (ctx && ctx.checkAll) {
+                    retVal = null;
+                } else {
+                    return null;
+                }
+            }
+        }
 
         for (const x of ty.members) {
             dataMembers.delete(x[0]);
