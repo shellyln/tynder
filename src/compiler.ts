@@ -361,7 +361,7 @@ const additionalPropPrimitiveTypeName =
 
 const nullUndefinedTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
-        first(seq('null'), seq('undefined'), seq('any'), seq('never')), );
+        first(seq('null'), seq('undefined'), seq('any'), seq('unknown'), seq('never')), );
 
 const simpleTypeName =
     first(primitiveTypeName,
