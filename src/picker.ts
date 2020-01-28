@@ -116,14 +116,14 @@ function merge(data: any, needle: any) {
         if (Array.isArray(data)) {
             return [...needle];
         } else {
-            const r: any = {};
+            const r: any = {...data};
             for (const k in needle) {
                 if (Object.prototype.hasOwnProperty.call(needle, k)) {
                     // TODO: check prototype pollution
                     r[k] = merge(r[k], needle[k]);
                 }
             }
-            return ({...data, ...r});
+            return r;
         }
     default:
         return needle;

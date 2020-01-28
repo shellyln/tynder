@@ -3,6 +3,8 @@ import { TypeAssertion,
          ValidationContext } from '../types';
 import { validate,
          getType }           from '../validator';
+import { pick,
+         patch }             from '../picker';
 import { compile }           from '../compiler';
 import { generateTypeScriptCode } from '../codegen';
 
@@ -208,6 +210,87 @@ describe("compiler-7", function() {
             expect(validate<string>(true, ty)).toEqual(null);
         }
     });
-    // TODO: primitives (any, unknown, never)
+    it("compiler-deep-cherrypick-patch-1", function() {
+        const schema = compile(`
+            interface A {
+                a1: string;
+                a2?: number;
+                a3: string[];
+            }
+            interface B {
+                b1: boolean;
+                b2: A;
+            }
+            interface C {
+                c1: string;
+                c2: B;
+                c3?: A;
+            }
+        `);
+
+        const ty = getType(schema, 'C');
+        const original = {
+            c1: 'ccc',
+            c2: {
+                b1: true,
+                b2: {
+                    a1: 'aaaaa',
+                    a2: 22,
+                    a3: ['1', '2'],
+                    a4: true,
+                },
+                b3: '333333',
+            },
+            c3: {
+                a1: 'aaa',
+                a2: 2,
+                a3: ['11', '12'],
+                a4: false,
+            },
+            c4: '44444',
+        };
+
+        const needle = pick(original, ty);
+        expect(needle).toEqual({
+            c1: 'ccc',
+            c2: {
+                b1: true,
+                b2: {
+                    a1: 'aaaaa',
+                    a2: 22,
+                    a3: ['1', '2'],
+                },
+            },
+            c3: {
+                a1: 'aaa',
+                a2: 2,
+                a3: ['11', '12'],
+            },
+        } as any);
+
+        // no changes
+
+        const patched = patch(original, needle, ty);
+        expect(patched).toEqual({
+            c1: 'ccc',
+            c2: {
+                b1: true,
+                b2: {
+                    a1: 'aaaaa',
+                    a2: 22,
+                    a3: ['1', '2'],
+                    a4: true,
+                },
+                b3: '333333',
+            },
+            c3: {
+                a1: 'aaa',
+                a2: 2,
+                a3: ['11', '12'],
+                a4: false,
+            },
+            c4: '44444',
+        } as any);
+    });
     // TODO: deep cherrypick and patch
 });
