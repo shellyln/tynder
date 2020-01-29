@@ -794,9 +794,9 @@ const interfaceDef =
                 ret.tokens.push(text ? text : null);
             }
             return ret;
-        },                                       // [0]
+        },                                       // [0] base types
         erase(repeat(commentOrSpace)),
-        symbolName,                              // [1]
+        symbolName,                              // [1] symbol
         erase(repeat(commentOrSpace)),
         first(interfaceExtendsClause,            // [2]
               zeroWidth(() => []), ),
@@ -873,13 +873,26 @@ const enumDef =
             erase(seq('}')), )));
 
 
+const internalDef =
+    first(typeDef,
+          interfaceDef,
+          enumDef, );
+
+
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
               repeat(commentOrSpace), ),
-        first(typeDef,
-              interfaceDef,
-              enumDef, ));
+        internalDef, );
+
+
+const defStatement =
+    trans(tokens => [{symbol: '$pipe'}, tokens[1], ...(tokens[0] as Ast[])])(
+        trans(tokens => [tokens])(first(
+            decoratorsClause,
+            zeroWidth(() => []), )),      // [0] decorators
+        first(exportedDef,                // [1]
+              internalDef), );
 
 
 const externalTypeDef =
@@ -907,10 +920,7 @@ const importStatement =
 
 const definition =
     first(directiveLineComment,
-          typeDef,
-          interfaceDef,
-          enumDef,
-          exportedDef,
+          defStatement,
           externalTypeDef,
           importStatement, );
 

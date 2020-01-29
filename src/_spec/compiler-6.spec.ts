@@ -12,22 +12,40 @@ import { serialize,
 describe("compiler-6", function() {
     it("compiler-error-reporting-1", function() {
         const schema = compile(`
+            @msgId('MSG_A')
             interface A {
+                @msgId('MSG_A.a1')
                 a1: string;
+                @msgId('MSG_A.a2')
                 a2?: number;
+                @msgId('MSG_A.a3')
                 a3: string[];
+                @msgId('MSG_A.a4')
                 [propNames: string]: any;
             }
+            @msgId('MSG_B')
             interface B {
+                @msgId('MSG_B.b1')
                 b1: boolean;
+                @msgId('MSG_B.b2')
                 b2: A;
             }
-            interface C {
+            @msgId('MSG_C')
+            interface C extends A {
+                @msgId('MSG_C.c1')
                 c1: string;
-                c2: B;
-                c3?: A;
+            }
+            @msgId('MSG_D')
+            type D = string;
+            @msgId('MSG_E')
+            enum E {
+                P,
+                Q,
+                R,
             }
         `);
+
+        // TODO: type, enum, export
 
         const ty = getType(schema, 'C');
 

@@ -301,7 +301,17 @@ describe("compiler-5", function() {
             }
         `), compile(`
             interface X {
+                @minValue(3) @maxValue(5)
+                a: number;
+            }
+        `), compile(`
+            interface X {
                 a: @range(3, 5) number;
+            }
+        `), compile(`
+            interface X {
+                @range(3, 5)
+                a: number;
             }
         `)];
 
@@ -347,11 +357,25 @@ describe("compiler-5", function() {
             interface X {
                 a?: @minValue(3) @maxValue(5) number;
             }
-        `), compile(`
+        `),
+        // compile(`
+        //     interface X {
+        //         @minValue(3) @maxValue(5)
+        //         a?: number;
+        //     }
+        // `), // TODO: BUG: optional+decorators
+        compile(`
             interface X {
                 a?: @range(3, 5) number;
             }
-        `)];
+        `)
+        // , compile(`
+        //     interface X {
+        //         @range(3, 5)
+        //         a?: number;
+        //     }
+        // `) // TODO: BUG: optional+decorators
+        ];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
