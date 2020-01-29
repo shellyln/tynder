@@ -51,6 +51,7 @@ function generateProto3CodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenCon
     case 'undefined': case 'null': default:
         return 'google.protobuf.Any';
     }
+    // TODO: Function, integer, DateStr, DateTimeStr
 }
 
 

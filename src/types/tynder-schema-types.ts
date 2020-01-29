@@ -3,9 +3,9 @@
 // https://github.com/shellyln
 
 
-export type PrimitiveValueTypes = number | bigint | string | boolean | null | undefined;                               // TODO: function
-export type PrimitiveValueTypeNames = 'number' | 'bigint' | 'string' | 'boolean' | 'null' | 'undefined';               // TODO: function
-export type OptionalPrimitiveValueTypeNames = 'number?' | 'bigint?' | 'string?' | 'boolean?' | 'null?' | 'undefined?'; // TODO: function
+export type PrimitiveValueTypes = number | bigint | string | boolean | null | undefined;                               // TODO: Function
+export type PrimitiveValueTypeNames = 'number' | 'bigint' | 'string' | 'boolean' | 'null' | 'undefined';               // TODO: Function, integer, DateStr, DateTimeStr
+export type OptionalPrimitiveValueTypeNames = 'number?' | 'bigint?' | 'string?' | 'boolean?' | 'null?' | 'undefined?'; // TODO: Function?, integer?, DateStr?, DateTimeStr?
 export type PlaceholderTypeNames = 'never' | 'any' | 'unknown';
 export type OptionalPlaceholderTypeNames = 'never?' | 'any?' | 'unknown?';
 

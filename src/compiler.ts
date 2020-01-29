@@ -905,7 +905,6 @@ const importStatement =
             cls(';'), ));
 
 
-// TODO: ~~output default externals? (RegExp, Map, Set, ...)~~
 const definition =
     first(directiveLineComment,
           typeDef,

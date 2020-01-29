@@ -49,6 +49,7 @@ function generateGraphQlCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenCo
     case 'undefined': case 'null': default:
         return 'Any'; // TODO: Any is invalid type.
     }
+    // TODO: Function, integer, DateStr, DateTimeStr
 }
 
 

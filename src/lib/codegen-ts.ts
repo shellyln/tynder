@@ -40,6 +40,7 @@ function formatTypeScriptCodeDocComment(ty: TypeAssertion | string, nestLevel: n
 
 
 function generateTypeScriptCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenContext) {
+    // TODO: Function, integer, DateStr, DateTimeStr
     return ty.primitiveName;
 }
 

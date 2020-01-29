@@ -343,6 +343,7 @@ export function primitive(typeName: PrimitiveValueTypeNames |
     default:
         throw new Error(`Unknown primitive type assertion: ${typeName}`);
     }
+    // TODO: Function, integer, DateStr, DateTimeStr, Funtion?, integer?, DateStr?, DateTimeStr?
 }
 
 

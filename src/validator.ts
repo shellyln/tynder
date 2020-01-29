@@ -66,6 +66,7 @@ function validatePrimitiveTypeAssertion<T>(
         reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         return null;
     }
+    // TODO: Function, integer, DateStr, DateTimeStr
 
     let err = false;
     let valueRangeErr = false;

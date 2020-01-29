@@ -167,6 +167,7 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
                     return addMetaInfo(ret, ty);
                 }
             }
+            // TODO: Function, integer, DateStr, DateTimeStr
         }
     case 'primitive-value':
         {
