@@ -7,6 +7,8 @@ import { pick,
          patch }             from '../picker';
 import { compile }           from '../compiler';
 import { generateTypeScriptCode } from '../codegen';
+import { serialize,
+         deserialize }       from '../serializer';
 
 
 
@@ -476,5 +478,4 @@ describe("compiler-7", function() {
             c4: '44444',
         } as any);
     });
-    // TODO: deep cherrypick and patch
 });
