@@ -657,10 +657,18 @@ export function withRange(minValue: number | string, maxValue: number | string) 
         if (typeof maxValue !== 'number' && typeof maxValue !== 'string') {
             throw new Error(`Decorator '@range' parameter 'maxValue' should be number or string.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@range' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@range' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, minValue, maxValue}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@range' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, minValue, maxValue});
         }
-        return ({...ty, minValue, maxValue});
     };
 }
 
@@ -670,10 +678,18 @@ export function withMinValue(minValue: number | string) {
         if (typeof minValue !== 'number' && typeof minValue !== 'string') {
             throw new Error(`Decorator '@minValue' parameter 'minValue' should be number or string.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@minValue' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@minValue' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, minValue}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@minValue' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, minValue});
         }
-        return ({...ty, minValue});
     };
 }
 
@@ -683,10 +699,18 @@ export function withMaxValue(maxValue: number | string) {
         if (typeof maxValue !== 'number' && typeof maxValue !== 'string') {
             throw new Error(`Decorator '@maxValue' parameter 'maxValue' should be number or string.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@maxValue' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@maxValue' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, maxValue}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@maxValue' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, maxValue});
         }
-        return ({...ty, maxValue});
     };
 }
 
@@ -696,10 +720,18 @@ export function withGreaterThan(greaterThanValue: number | string) {
         if (typeof greaterThanValue !== 'number' && typeof greaterThanValue !== 'string') {
             throw new Error(`Decorator '@greaterThan' parameter 'greaterThan' should be number or string.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@greaterThan' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@greaterThan' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, greaterThanValue}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@greaterThan' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, greaterThanValue});
         }
-        return ({...ty, greaterThanValue});
     };
 }
 
@@ -709,10 +741,18 @@ export function withLessThan(lessThanValue: number | string) {
         if (typeof lessThanValue !== 'number' && typeof lessThanValue !== 'string') {
             throw new Error(`Decorator '@lessThan' parameter 'lessThan' should be number or string.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@lessThan' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@lessThan' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, lessThanValue}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@lessThan' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, lessThanValue});
         }
-        return ({...ty, lessThanValue});
     };
 }
 
@@ -722,10 +762,18 @@ export function withMinLength(minLength: number) {
         if (typeof minLength !== 'number') {
             throw new Error(`Decorator '@minLength' parameter 'minLength' should be number.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@minLength' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@minLength' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, minLength}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@minLength' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, minLength});
         }
-        return ({...ty, minLength});
     };
 }
 
@@ -735,10 +783,18 @@ export function withMaxLength(maxLength: number) {
         if (typeof maxLength !== 'number') {
             throw new Error(`Decorator '@maxLength' parameter 'maxLength' should be number.`);
         }
-        if (!ty || ty.kind !== 'primitive') {
-            throw new Error(`Decorator '@maxLength' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@maxLength' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, maxLength}});
+        } else {
+            if (!ty || ty.kind !== 'primitive') {
+                throw new Error(`Decorator '@maxLength' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, maxLength});
         }
-        return ({...ty, maxLength});
     };
 }
 
@@ -748,10 +804,18 @@ export function withMatch(pattern: RegExp) {
         if (typeof pattern !== 'object') {
             throw new Error(`Decorator '@match' parameter 'pattern' should be RegExp.`);
         }
-        if (!ty || ty.kind !== 'primitive' || ty.primitiveName !== 'string') {
-            throw new Error(`Decorator '@match' cannot be applied to anything other than 'primitive'.`);
+        if ((ty as TypeAssertion)?.kind === 'optional') {
+            const opt = (ty as any as OptionalAssertion).optional;
+            if (opt.kind !== 'primitive') {
+                throw new Error(`Decorator '@match' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, optional: {...opt, pattern}});
+        } else {
+            if (!ty || ty.kind !== 'primitive' || ty.primitiveName !== 'string') {
+                throw new Error(`Decorator '@match' cannot be applied to anything other than 'primitive'.`);
+            }
+            return ({...ty, pattern});
         }
-        return ({...ty, pattern});
     };
 }
 

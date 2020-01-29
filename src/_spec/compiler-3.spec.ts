@@ -4,6 +4,8 @@ import { TypeAssertion,
 import { validate,
          getType }           from '../validator';
 import { compile }           from '../compiler';
+import { serialize,
+         deserialize }       from '../serializer';
 
 
 

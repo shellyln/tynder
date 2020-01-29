@@ -3,6 +3,8 @@ import { TypeAssertion } from '../types';
 import { validate,
          getType }       from '../validator';
 import { compile }       from '../compiler';
+import { serialize,
+         deserialize }   from '../serializer';
 
 
 
@@ -26,14 +28,13 @@ describe("compiler-1", function() {
                 'FooA', 'FooB', 'FooC', 'FooD', 'FooE', 'FooF', 'BarA', 'BarB', 'BarC', 'BarD',
             ]);
         }
-        {
+        for (const ty of [getType(deserialize(serialize(schema)), 'FooA'), getType(schema, 'FooA')]) {
             const rhs: TypeAssertion = {
                 name: 'FooA',
                 typeName: 'FooA',
                 kind: 'primitive',
                 primitiveName: 'number',
             };
-            const ty = getType(schema, 'FooA');
             expect(ty).toEqual(rhs);
             expect(validate<number>(0, ty)).toEqual({value: 0});
             expect(validate<number>(1, ty)).toEqual({value: 1});
@@ -52,14 +53,13 @@ describe("compiler-1", function() {
             expect(validate<number>('XB', ty)).toEqual(null);
             expect(validate<number>(true, ty)).toEqual(null);
         }
-        {
+        for (const ty of [getType(deserialize(serialize(schema)), 'FooB'), getType(schema, 'FooB')]) {
             const rhs: TypeAssertion = {
                 name: 'FooB',
                 typeName: 'FooB',
                 kind: 'primitive',
                 primitiveName: 'bigint',
             };
-            const ty = getType(schema, 'FooB');
             expect(ty).toEqual(rhs);
             expect(validate<BigInt>(0, ty)).toEqual(null);
             expect(validate<BigInt>(1, ty)).toEqual(null);
@@ -78,14 +78,13 @@ describe("compiler-1", function() {
             expect(validate<BigInt>('XB', ty)).toEqual(null);
             expect(validate<BigInt>(true, ty)).toEqual(null);
         }
-        {
+        for (const ty of [getType(deserialize(serialize(schema)), 'FooC'), getType(schema, 'FooC')]) {
             const rhs: TypeAssertion = {
                 name: 'FooC',
                 typeName: 'FooC',
                 kind: 'primitive',
                 primitiveName: 'string',
             };
-            const ty = getType(schema, 'FooC');
             expect(ty).toEqual(rhs);
             expect(validate<string>(0, ty)).toEqual(null);
             expect(validate<string>(1, ty)).toEqual(null);
@@ -104,14 +103,13 @@ describe("compiler-1", function() {
             expect(validate<string>('XB', ty)).toEqual({value: 'XB'});
             expect(validate<string>(true, ty)).toEqual(null);
         }
-        {
+        for (const ty of [getType(deserialize(serialize(schema)), 'FooD'), getType(schema, 'FooD')]) {
             const rhs: TypeAssertion = {
                 name: 'FooD',
                 typeName: 'FooD',
                 kind: 'primitive',
                 primitiveName: 'boolean',
             };
-            const ty = getType(schema, 'FooD');
             expect(ty).toEqual(rhs);
             expect(validate<boolean>(0, ty)).toEqual(null);
             expect(validate<boolean>(1, ty)).toEqual(null);
@@ -130,14 +128,13 @@ describe("compiler-1", function() {
             expect(validate<boolean>('XB', ty)).toEqual(null);
             expect(validate<boolean>(true, ty)).toEqual({value: true});
         }
-        {
+        for (const ty of [getType(deserialize(serialize(schema)), 'FooE'), getType(schema, 'FooE')]) {
             const rhs: TypeAssertion = {
                 name: 'FooE',
                 typeName: 'FooE',
                 kind: 'primitive',
                 primitiveName: 'null',
             };
-            const ty = getType(schema, 'FooE');
             expect(ty).toEqual(rhs);
             expect(validate<null>(0, ty)).toEqual(null);
             expect(validate<null>(1, ty)).toEqual(null);
@@ -156,14 +153,13 @@ describe("compiler-1", function() {
             expect(validate<null>('XB', ty)).toEqual(null);
             expect(validate<null>(true, ty)).toEqual(null);
         }
-        {
+        for (const ty of [getType(deserialize(serialize(schema)), 'FooF'), getType(schema, 'FooF')]) {
             const rhs: TypeAssertion = {
                 name: 'FooF',
                 typeName: 'FooF',
                 kind: 'primitive',
                 primitiveName: 'undefined',
             };
-            const ty = getType(schema, 'FooF');
             expect(ty).toEqual(rhs);
             expect(validate<undefined>(0, ty)).toEqual(null);
             expect(validate<undefined>(1, ty)).toEqual(null);

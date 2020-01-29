@@ -84,6 +84,7 @@ export interface PrimitiveTypeAssertion extends TypeAssertionBase, PrimitiveType
 export interface PrimitiveValueTypeAssertion extends TypeAssertionBase {
     kind: 'primitive-value';
     value: PrimitiveValueTypes;
+    primitiveName?: 'bigint'; // for deserializer hinting
 }
 
 

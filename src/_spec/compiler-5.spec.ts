@@ -4,6 +4,8 @@ import { TypeAssertion,
 import { validate,
          getType }           from '../validator';
 import { compile }           from '../compiler';
+import { serialize,
+         deserialize }       from '../serializer';
 
 
 
@@ -110,10 +112,18 @@ describe("compiler-5", function() {
             interface X {
                 a: @minLength(3) @maxLength(5) string;
             }
+        `), compile(`
+            interface X {
+                @minLength(3) @maxLength(5)
+                a: string;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -151,10 +161,18 @@ describe("compiler-5", function() {
             interface X {
                 a?: @minLength(3) @maxLength(5) string;
             }
+        `), compile(`
+            interface X {
+                @minLength(3) @maxLength(5)
+                a?: string;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -299,7 +317,17 @@ describe("compiler-5", function() {
             }
         `), compile(`
             interface X {
+                @minValue(3) @maxValue(5)
+                a: number;
+            }
+        `), compile(`
+            interface X {
                 a: @range(3, 5) number;
+            }
+        `), compile(`
+            interface X {
+                @range(3, 5)
+                a: number;
             }
         `)];
 
@@ -308,6 +336,12 @@ describe("compiler-5", function() {
                 'X',
             ]);
             expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[2].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[3].keys())).toEqual([
                 'X',
             ]);
         }
@@ -347,7 +381,17 @@ describe("compiler-5", function() {
             }
         `), compile(`
             interface X {
+                @minValue(3) @maxValue(5)
+                a?: number;
+            }
+        `), compile(`
+            interface X {
                 a?: @range(3, 5) number;
+            }
+        `), compile(`
+            interface X {
+                @range(3, 5)
+                a?: number;
             }
         `)];
 
@@ -356,6 +400,12 @@ describe("compiler-5", function() {
                 'X',
             ]);
             expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[2].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[3].keys())).toEqual([
                 'X',
             ]);
         }
@@ -435,7 +485,17 @@ describe("compiler-5", function() {
             }
         `), compile(`
             interface X {
+                @minValue('C') @maxValue('E')
+                a: string;
+            }
+        `), compile(`
+            interface X {
                 a: @range('C', 'E') string;
+            }
+        `), compile(`
+            interface X {
+                @range('C', 'E')
+                a: string;
             }
         `)];
 
@@ -444,6 +504,12 @@ describe("compiler-5", function() {
                 'X',
             ]);
             expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[2].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[3].keys())).toEqual([
                 'X',
             ]);
         }
@@ -482,7 +548,17 @@ describe("compiler-5", function() {
             }
         `), compile(`
             interface X {
+                @minValue('C') @maxValue('E')
+                a?: string;
+            }
+        `), compile(`
+            interface X {
                 a?: @range('C', 'E') string;
+            }
+        `), compile(`
+            interface X {
+                @range('C', 'E')
+                a?: string;
             }
         `)];
 
@@ -491,6 +567,12 @@ describe("compiler-5", function() {
                 'X',
             ]);
             expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[2].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[3].keys())).toEqual([
                 'X',
             ]);
         }
@@ -627,10 +709,18 @@ describe("compiler-5", function() {
             interface X {
                 a: @greaterThan(3) @lessThan(5) number;
             }
+        `), compile(`
+            interface X {
+                @greaterThan(3) @lessThan(5)
+                a: number;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -668,10 +758,18 @@ describe("compiler-5", function() {
             interface X {
                 a?: @greaterThan(3) @lessThan(5) number;
             }
+        `), compile(`
+            interface X {
+                @greaterThan(3) @lessThan(5)
+                a?: number;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -744,10 +842,18 @@ describe("compiler-5", function() {
             interface X {
                 a: @greaterThan('C') @lessThan('E') string;
             }
+        `), compile(`
+            interface X {
+                @greaterThan('C') @lessThan('E')
+                a: string;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -784,10 +890,18 @@ describe("compiler-5", function() {
             interface X {
                 a?: @greaterThan('C') @lessThan('E') string;
             }
+        `), compile(`
+            interface X {
+                @greaterThan('C') @lessThan('E')
+                a?: string;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -858,10 +972,18 @@ describe("compiler-5", function() {
             interface X {
                 a: @match(/^[C-E]$/) string;
             }
+        `), compile(`
+            interface X {
+                @match(/^[C-E]$/)
+                a: string;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }
@@ -897,10 +1019,18 @@ describe("compiler-5", function() {
             interface X {
                 a?: @match(/^[C-E]$/) string;
             }
+        `), compile(`
+            interface X {
+                @match(/^[C-E]$/)
+                a?: string;
+            }
         `)];
 
         {
             expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
                 'X',
             ]);
         }

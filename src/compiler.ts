@@ -794,9 +794,9 @@ const interfaceDef =
                 ret.tokens.push(text ? text : null);
             }
             return ret;
-        },                                       // [0]
+        },                                       // [0] base types
         erase(repeat(commentOrSpace)),
-        symbolName,                              // [1]
+        symbolName,                              // [1] symbol
         erase(repeat(commentOrSpace)),
         first(interfaceExtendsClause,            // [2]
               zeroWidth(() => []), ),
@@ -873,13 +873,32 @@ const enumDef =
             erase(seq('}')), )));
 
 
+const internalDef =
+    first(typeDef,
+          interfaceDef,
+          enumDef, );
+
+
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
               repeat(commentOrSpace), ),
-        first(typeDef,
-              interfaceDef,
-              enumDef, ));
+        internalDef, );
+
+
+const defStatement =
+    trans(tokens => [
+        [{symbol: '$local'}, [
+                [{symbol: '_ty'}, tokens[1]],
+            ],
+            [{symbol: 'redef'},
+                {symbol: '_ty'},
+                [{symbol: '$pipe'}, {symbol: '_ty'}, ...(tokens[0] as Ast[])], ]]])(
+        trans(tokens => [tokens])(first(
+            decoratorsClause,
+            zeroWidth(() => []), )),      // [0] decorators
+        first(exportedDef,                // [1] body
+              internalDef), );
 
 
 const externalTypeDef =
@@ -907,10 +926,7 @@ const importStatement =
 
 const definition =
     first(directiveLineComment,
-          typeDef,
-          interfaceDef,
-          enumDef,
-          exportedDef,
+          defStatement,
           externalTypeDef,
           importStatement, );
 
@@ -1013,10 +1029,27 @@ export function compile(s: string) {
         def,
         ref,
         export: (ty: TypeAssertion) => {
-            const tySet = mapTyToTySet.has(ty) ? mapTyToTySet.get(ty) as TypeAssertionSetValue : {ty, exported: false};
-            tySet.exported = true;
             // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+            const tySet = mapTyToTySet.has(ty) ?
+                mapTyToTySet.get(ty) as TypeAssertionSetValue :
+                {ty, exported: false, resolved: false};
+            tySet.exported = true;
             return ty;
+        },
+        redef: (original: TypeAssertion, ty: TypeAssertion) => {
+            if (original === ty) {
+                return ty;
+            }
+            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+            const tySet = mapTyToTySet.has(original) ?
+                mapTyToTySet.get(original) as TypeAssertionSetValue :
+                {ty: original, exported: false, resolved: false};
+            tySet.ty = ty;
+            mapTyToTySet.set(tySet.ty, tySet);
+            if (ty.name) {
+                schema.set(ty.name, tySet);
+            }
+            return tySet.ty;
         },
         external,
         passthru: (str: string) => {

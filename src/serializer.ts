@@ -26,7 +26,13 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
 
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
-    case 'never': case 'any': case 'unknown': case 'primitive-value': case 'symlink': case 'operator':
+    case 'never': case 'any': case 'unknown': case 'symlink': case 'operator':
+        break;
+    case 'primitive-value':
+        if (typeof ret.value === 'bigint') {
+            ret.value = String(ret.value);
+            ret.primitiveName = 'bigint';
+        }
         break;
     case 'primitive':
         if (ret.pattern) {
@@ -102,9 +108,15 @@ export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
 function deserializeInner(ty: TypeAssertion) {
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
-    case 'never': case 'any': case 'unknown': case 'primitive-value':
+    case 'never': case 'any': case 'unknown':
     case 'enum': case 'symlink': case 'operator':
         // NOTE: 'symlink' and 'operator' will resolved by calling 'resolveSymbols()' in 'deserialize()'.
+        break;
+    case 'primitive-value':
+        if (ret.primitiveName === 'bigint') {
+            delete ret.primitiveName;
+            ret.value = BigInt(ret.value);
+        }
         break;
     case 'primitive':
         if (ret.pattern) {
