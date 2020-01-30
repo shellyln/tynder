@@ -81,11 +81,17 @@ describe("compiler-7", function() {
                 Q,
                 R,
             }
+            interface F {
+                @msg(${mkmsg('F.f1')})
+                f1: B;
+                @msg('MSG_F.f2')
+                f2?: A;
+            }
         `);
 
         {
             expect(Array.from(schema.keys())).toEqual([
-                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E', 'F',
             ]);
         }
         {
@@ -245,12 +251,46 @@ describe("compiler-7", function() {
             };
             expect(ty).toEqual(rhs);
         }
+        {
+            const ty = getType(schema, 'F');
+            expect(false).toEqual(schema.get('F')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'F',
+                typeName: 'F',
+                kind: 'object',
+                members: [
+                    ['f1', {
+                        name: 'f1',
+                        typeName: 'B',
+                        kind: 'object',
+                        members: [...(getType(schema, 'B') as ObjectAssertion).members],
+                        messages: mkmsgobj('F.f1'), // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
+                        docComment: 'Comment B',
+                    }],
+                    ['f2', {
+                        name: 'f2',
+                        typeName: 'A',
+                        kind: 'optional',
+                        optional: {
+                            name: 'A',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            messages: mkmsgobj('A'), // TODO: remove ret.optional.message|messages|messageId ?
+                        },
+                        message: 'MSG_F.f2',
+                    }],
+                ],
+            };
+            expect(ty).toEqual(rhs);
+        }
     });
     it("compiler-error-reporting-6", function() {
         const schema = compile(`
-            @msg('MSG_A')
+            @msg(${mkmsg('A')})
             export interface A {
-                @msg('MSG_A.a1')
+                @msg(${mkmsg('A.a1')})
                 a1: string;
                 @msg('MSG_A.a2')
                 a2?: number;
@@ -270,26 +310,32 @@ describe("compiler-7", function() {
                 @msg('MSG_B.b2')
                 b2: A;
             }
-            @msg('MSG_C')
+            @msg(${mkmsg('C')})
             export interface C extends A {
                 @msg('MSG_C.c1')
                 c1: string;
             }
             /** Comment D */
-            @msg('MSG_D')
+            @msg(${mkmsg('D')})
             export type D = string;
             /** Comment E */
-            @msg('MSG_E')
+            @msg(${mkmsg('E')})
             export enum E {
                 P,
                 Q,
                 R,
             }
+            export interface F {
+                @msg(${mkmsg('F.f1')})
+                f1: B;
+                @msg('MSG_F.f2')
+                f2?: A;
+            }
         `);
 
         {
             expect(Array.from(schema.keys())).toEqual([
-                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E', 'F',
             ]);
         }
         {
@@ -304,7 +350,7 @@ describe("compiler-7", function() {
                         name: 'a1',
                         kind: 'primitive',
                         primitiveName: 'string',
-                        message: 'MSG_A.a1',
+                        messages: mkmsgobj('A.a1'),
                     }],
                     ['a2', {
                         name: 'a2',
@@ -333,7 +379,7 @@ describe("compiler-7", function() {
                         message: 'MSG_A.a4',
                     }, false, 'Comment A.a4'],
                 ],
-                message: 'MSG_A',
+                messages: mkmsgobj('A'),
             };
             expect(ty).toEqual(rhs);
         }
@@ -357,7 +403,7 @@ describe("compiler-7", function() {
                         kind: 'object',
                         members: [...(getType(schema, 'A') as ObjectAssertion).members],
                         additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                        message: 'MSG_B.b2',
+                        message: 'MSG_B.b2', // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
                     }, false, 'Comment B.b2'],
                 ],
                 message: 'MSG_B',
@@ -383,7 +429,7 @@ describe("compiler-7", function() {
                         name: 'a1',
                         kind: 'primitive',
                         primitiveName: 'string',
-                        message: 'MSG_A.a1',
+                        messages: mkmsgobj('A.a1'),
                     }, true],
                     ['a2', {
                         name: 'a2',
@@ -415,7 +461,7 @@ describe("compiler-7", function() {
                         message: 'MSG_A.a4',
                     }, true, 'Comment A.a4']
                 ],
-                message: 'MSG_C',
+                messages: mkmsgobj('C'),
             };
             expect(ty).toEqual(rhs);
         }
@@ -427,7 +473,7 @@ describe("compiler-7", function() {
                 typeName: 'D',
                 kind: 'primitive',
                 primitiveName: 'string',
-                message: 'MSG_D',
+                messages: mkmsgobj('D'),
                 docComment: 'Comment D',
             };
             expect(ty).toEqual(rhs);
@@ -444,8 +490,42 @@ describe("compiler-7", function() {
                     ['Q', 1],
                     ['R', 2],
                 ],
-                message: 'MSG_E',
+                messages: mkmsgobj('E'),
                 docComment: 'Comment E',
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'F');
+            expect(true).toEqual(schema.get('F')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'F',
+                typeName: 'F',
+                kind: 'object',
+                members: [
+                    ['f1', {
+                        name: 'f1',
+                        typeName: 'B',
+                        kind: 'object',
+                        members: [...(getType(schema, 'B') as ObjectAssertion).members],
+                        messages: mkmsgobj('F.f1'), // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
+                        docComment: 'Comment B',
+                    }],
+                    ['f2', {
+                        name: 'f2',
+                        typeName: 'A',
+                        kind: 'optional',
+                        optional: {
+                            name: 'A',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            messages: mkmsgobj('A'), // TODO: remove ret.optional.message|messages|messageId ?
+                        },
+                        message: 'MSG_F.f2',
+                    }],
+                ],
             };
             expect(ty).toEqual(rhs);
         }
