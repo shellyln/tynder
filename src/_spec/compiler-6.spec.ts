@@ -828,5 +828,4 @@ describe("compiler-6", function() {
             expect(ty).toEqual(rhs);
         }
     });
-    // TODO: error message decorators + error reporting
 });
