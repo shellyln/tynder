@@ -1,481 +1,534 @@
 
 import { TypeAssertion,
-         ValidationContext } from '../types';
+         ObjectAssertion,
+         AdditionalPropsMember,
+         ValidationContext,
+         ErrorMessages }     from '../types';
 import { validate,
          getType }           from '../validator';
-import { pick,
-         patch }             from '../picker';
 import { compile }           from '../compiler';
-import { generateTypeScriptCode } from '../codegen';
 import { serialize,
          deserialize }       from '../serializer';
 
 
 
 describe("compiler-7", function() {
-    it("compiler-import-statement-1", function() {
-        const schemas = [compile(`
-            import from 'foo';
-            import * as foo from 'foo';
-            import {\na, b as bb} from 'foo';
-        `)];
+    const myMessages: ErrorMessages = {
+        invalidDefinition:     ':invalidDefinition: %{name} %{parentType}',
+        required:              ':required: %{name} %{parentType}',
+        typeUnmatched:         ':typeUnmatched: %{name} %{parentType} %{expectedType}',
+        repeatQtyUnmatched:    ':repeatQtyUnmatched: %{name} %{parentType} %{repeatQty}',
+        sequenceUnmatched:     ':sequenceUnmatched: %{name} %{parentType}',
+        valueRangeUnmatched:   ':valueRangeUnmatched: %{name} %{parentType} %{minValue} %{maxValue}',
+        valuePatternUnmatched: ':valuePatternUnmatched: %{name} %{parentType} %{pattern}',
+        valueLengthUnmatched:  ':valueLengthUnmatched: %{name} %{parentType} %{minLength} %{maxLength}',
+        valueUnmatched:        ':valueUnmatched: %{name} %{parentType} %{expectedValue}',
+    };
+    function mkmsgobj(s: string): ErrorMessages {
+        const m: ErrorMessages = {
+            invalidDefinition: s + myMessages.invalidDefinition,
+            required: s + myMessages.required,
+            typeUnmatched: s + myMessages.typeUnmatched,
+            repeatQtyUnmatched: s + myMessages.repeatQtyUnmatched,
+            sequenceUnmatched: s + myMessages.sequenceUnmatched,
+            valueRangeUnmatched: s + myMessages.valueRangeUnmatched,
+            valuePatternUnmatched: s + myMessages.valuePatternUnmatched,
+            valueLengthUnmatched: s + myMessages.valueLengthUnmatched,
+            valueUnmatched: s + myMessages.valueUnmatched,
+        };
+        return m;
+    }
+    function mkmsg(s: string): string {
+        return JSON.stringify(mkmsgobj(s));
+    }
 
-        {
-            expect(Array.from(schemas[0].keys())).toEqual([
-                '__$$$gensym_0$$$__',
-                '__$$$gensym_1$$$__',
-                '__$$$gensym_2$$$__',
-            ]);
-        }
-        for (const schema of schemas) {
-            {
-                const rhs: TypeAssertion = {
-                    kind: 'never',
-                    passThruCodeBlock: `import from 'foo';`,
-                };
-                const ty = getType(schema, '__$$$gensym_0$$$__');
-                expect(ty).toEqual(rhs);
-            }
-            {
-                const rhs: TypeAssertion = {
-                    kind: 'never',
-                    passThruCodeBlock: `import * as foo from 'foo';`,
-                };
-                const ty = getType(schema, '__$$$gensym_1$$$__');
-                expect(ty).toEqual(rhs);
-            }
-            {
-                const rhs: TypeAssertion = {
-                    kind: 'never',
-                    passThruCodeBlock: `import {\na, b as bb} from 'foo';`,
-                };
-                const ty = getType(schema, '__$$$gensym_2$$$__');
-                expect(ty).toEqual(rhs);
-            }
-            {
-                expect(generateTypeScriptCode(schema).trim()).toEqual(
-                    `import from 'foo';\n\n` +
-                    `import * as foo from 'foo';\n\n` +
-                    `import {\na, b as bb} from 'foo';`
-                );
-            }
-        }
-    });
-    it("compiler-directives-1", function() {
-        const schemas = [compile(`
-            /// @tynder-external P, Q, R
-            // @tynder-external S
-
-            type X = Q;
-            interface Y { a: R; }
-        `), compile(`
-            external P, Q, R;
-            external S;
-
-            type X = Q;
-            interface Y { a: R; }
-        `)];
-
-        {
-            expect(Array.from(schemas[0].keys())).toEqual([
-                'P', 'Q', 'R', 'S', 'X', 'Y',
-            ]);
-            expect(Array.from(schemas[1].keys())).toEqual([
-                'P', 'Q', 'R', 'S', 'X', 'Y',
-            ]);
-        }
-        for (const schema of schemas) {
-            {
-                const rhs: TypeAssertion = {
-                    name: 'P',
-                    typeName: 'P',
-                    kind: 'any',
-                    noOutput: true,
-                };
-                const ty = getType(schema, 'P');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>(3, ty)).toEqual({value: 3});
-            }
-            {
-                const rhs: TypeAssertion = {
-                    name: 'X',
-                    typeName: 'X',
-                    kind: 'any',
-                };
-                const ty = getType(schema, 'X');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>(3, ty)).toEqual({value: 3});
-            }
-            {
-                const rhs: TypeAssertion = {
-                    name: 'Y',
-                    typeName: 'Y',
-                    kind: 'object',
-                    members: [['a', {
-                        name: 'a',
-                        typeName: 'R',
-                        kind: 'any',
-                    }]],
-                };
-                const ty = getType(schema, 'Y');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({a: 3}, ty)).toEqual({value: {a: 3}});
-                expect(validate<any>({b: 3}, ty)).toEqual(null);
-            }
-        }
-    });
-    it("compiler-primitive", function() {
+    it("compiler-error-reporting-5", function() {
         const schema = compile(`
-            type FooA = any;
-            type FooB = unknown;
-            type FooC = never;
+            @msg(${mkmsg('A')})
+            interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: string;
+                @msg('MSG_A.a2')
+                a2?: number;
+                /** Comment A.a3 */
+                @msg('MSG_A.a3')
+                a3: string[];
+                /** Comment A.a4 */
+                @msg('MSG_A.a4')
+                [propNames: string]: any;
+            }
+            /** Comment B */
+            @msg('MSG_B')
+            interface B {
+                @msg('MSG_B.b1')
+                b1: boolean;
+                /** Comment B.b2 */
+                @msg('MSG_B.b2')
+                b2: A;
+            }
+            @msg(${mkmsg('C')})
+            interface C extends A {
+                @msg('MSG_C.c1')
+                c1: string;
+            }
+            /** Comment D */
+            @msg(${mkmsg('D')})
+            type D = string;
+            /** Comment E */
+            @msg(${mkmsg('E')})
+            enum E {
+                P,
+                Q,
+                R,
+            }
+            interface F {
+                @msg(${mkmsg('F.f1')})
+                f1: B;
+                @msg('MSG_F.f2')
+                f2?: A;
+            }
         `);
 
         {
             expect(Array.from(schema.keys())).toEqual([
-                'FooA', 'FooB', 'FooC',
+                'A', 'B', 'C', 'D', 'E', 'F',
             ]);
         }
         {
+            const ty = getType(schema, 'A');
+            expect(false).toEqual(schema.get('A')?.exported as any);
             const rhs: TypeAssertion = {
-                name: 'FooA',
-                typeName: 'FooA',
-                kind: 'any',
+                name: 'A',
+                typeName: 'A',
+                kind: 'object',
+                members: [
+                    ['a1', {
+                        name: 'a1',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                        messages: mkmsgobj('A.a1'),
+                    }],
+                    ['a2', {
+                        name: 'a2',
+                        kind: 'optional',
+                        optional: {
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        },
+                        message: 'MSG_A.a2',
+                    }],
+                    ['a3', {
+                        name: 'a3',
+                        kind: 'repeated',
+                        min: null,
+                        max: null,
+                        repeated: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                        message: 'MSG_A.a3',
+                    }, false, 'Comment A.a3'],
+                ],
+                additionalProps: [
+                    [['string'], {
+                        kind: 'any',
+                        message: 'MSG_A.a4',
+                    }, false, 'Comment A.a4'],
+                ],
+                messages: mkmsgobj('A'),
             };
-            const ty = getType(schema, 'FooA');
             expect(ty).toEqual(rhs);
-            expect(validate<any>(0, ty)).toEqual({value: 0});
-            expect(validate<any>(1, ty)).toEqual({value: 1});
-            expect(validate<any>(BigInt(0), ty)).toEqual({value: BigInt(0)});
-            expect(validate<any>(BigInt(1), ty)).toEqual({value: BigInt(1)});
-            expect(validate<any>('', ty)).toEqual({value: ''});
-            expect(validate<any>('1', ty)).toEqual({value: '1'});
-            expect(validate<any>(false, ty)).toEqual({value: false});
-            expect(validate<any>(true, ty)).toEqual({value: true});
-            expect(validate<any>(null, ty)).toEqual({value: null});
-            expect(validate<any>(void 0, ty)).toEqual({value: void 0});
-            expect(validate<any>({}, ty)).toEqual({value: {}});
-            expect(validate<any>([], ty)).toEqual({value: []});
-            expect(validate<any>(3, ty)).toEqual({value: 3});
-            expect(validate<any>(BigInt(7), ty)).toEqual({value: BigInt(7)});
-            expect(validate<any>('XB', ty)).toEqual({value: 'XB'});
-            expect(validate<any>(true, ty)).toEqual({value: true});
         }
         {
+            const ty = getType(schema, 'B');
+            expect(false).toEqual(schema.get('B')?.exported as any);
             const rhs: TypeAssertion = {
-                name: 'FooB',
-                typeName: 'FooB',
-                kind: 'unknown',
+                name: 'B',
+                typeName: 'B',
+                kind: 'object',
+                members: [
+                    ['b1', {
+                        name: 'b1',
+                        kind: 'primitive',
+                        primitiveName: 'boolean',
+                        message: 'MSG_B.b1',
+                    }],
+                    ['b2', {
+                        name: 'b2',
+                        typeName: 'A',
+                        kind: 'object',
+                        members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                        additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                        message: 'MSG_B.b2', // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
+                    }, false, 'Comment B.b2'],
+                ],
+                message: 'MSG_B',
+                docComment: 'Comment B',
             };
-            const ty = getType(schema, 'FooB');
             expect(ty).toEqual(rhs);
-            expect(validate<any>(0, ty)).toEqual({value: 0});
-            expect(validate<any>(1, ty)).toEqual({value: 1});
-            expect(validate<any>(BigInt(0), ty)).toEqual({value: BigInt(0)});
-            expect(validate<any>(BigInt(1), ty)).toEqual({value: BigInt(1)});
-            expect(validate<any>('', ty)).toEqual({value: ''});
-            expect(validate<any>('1', ty)).toEqual({value: '1'});
-            expect(validate<any>(false, ty)).toEqual({value: false});
-            expect(validate<any>(true, ty)).toEqual({value: true});
-            expect(validate<any>(null, ty)).toEqual(null);
-            expect(validate<any>(void 0, ty)).toEqual(null);
-            expect(validate<any>({}, ty)).toEqual({value: {}});
-            expect(validate<any>([], ty)).toEqual({value: []});
-            expect(validate<any>(3, ty)).toEqual({value: 3});
-            expect(validate<any>(BigInt(7), ty)).toEqual({value: BigInt(7)});
-            expect(validate<any>('XB', ty)).toEqual({value: 'XB'});
-            expect(validate<any>(true, ty)).toEqual({value: true});
         }
         {
+            const ty = getType(schema, 'C');
+            expect(false).toEqual(schema.get('C')?.exported as any);
             const rhs: TypeAssertion = {
-                name: 'FooC',
-                typeName: 'FooC',
-                kind: 'never',
+                name: 'C',
+                typeName: 'C',
+                kind: 'object',
+                members: [
+                    ['c1', {
+                        name: 'c1',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                        message: 'MSG_C.c1',
+                    }],
+                    ['a1', {
+                        name: 'a1',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                        messages: mkmsgobj('A.a1'),
+                    }, true],
+                    ['a2', {
+                        name: 'a2',
+                        kind: 'optional',
+                        optional: {
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        },
+                        message: 'MSG_A.a2',
+                    }, true],
+                    ['a3', {
+                        name: 'a3',
+                        kind: 'repeated',
+                        min: null,
+                        max: null,
+                        repeated: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                        message: 'MSG_A.a3',
+                    }, true, 'Comment A.a3'],
+                ],
+                baseTypes: [
+                    getType(schema, 'A') as any,
+                ],
+                additionalProps: [
+                    [['string'], {
+                        kind: 'any',
+                        message: 'MSG_A.a4',
+                    }, true, 'Comment A.a4']
+                ],
+                messages: mkmsgobj('C'),
             };
-            const ty = getType(schema, 'FooC');
             expect(ty).toEqual(rhs);
-            expect(validate<string>(0, ty)).toEqual(null);
-            expect(validate<string>(1, ty)).toEqual(null);
-            expect(validate<string>(BigInt(0), ty)).toEqual(null);
-            expect(validate<string>(BigInt(1), ty)).toEqual(null);
-            expect(validate<string>('', ty)).toEqual(null);
-            expect(validate<string>('1', ty)).toEqual(null);
-            expect(validate<string>(false, ty)).toEqual(null);
-            expect(validate<string>(true, ty)).toEqual(null);
-            expect(validate<string>(null, ty)).toEqual(null);
-            expect(validate<string>(void 0, ty)).toEqual(null);
-            expect(validate<string>({}, ty)).toEqual(null);
-            expect(validate<string>([], ty)).toEqual(null);
-            expect(validate<string>(3, ty)).toEqual(null);
-            expect(validate<string>(BigInt(7), ty)).toEqual(null);
-            expect(validate<string>('XB', ty)).toEqual(null);
-            expect(validate<string>(true, ty)).toEqual(null);
+        }
+        {
+            const ty = getType(schema, 'D');
+            expect(false).toEqual(schema.get('D')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'D',
+                typeName: 'D',
+                kind: 'primitive',
+                primitiveName: 'string',
+                messages: mkmsgobj('D'),
+                docComment: 'Comment D',
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'E');
+            expect(false).toEqual(schema.get('E')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'E',
+                typeName: 'E',
+                kind: 'enum',
+                values: [
+                    ['P', 0],
+                    ['Q', 1],
+                    ['R', 2],
+                ],
+                messages: mkmsgobj('E'),
+                docComment: 'Comment E',
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'F');
+            expect(false).toEqual(schema.get('F')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'F',
+                typeName: 'F',
+                kind: 'object',
+                members: [
+                    ['f1', {
+                        name: 'f1',
+                        typeName: 'B',
+                        kind: 'object',
+                        members: [...(getType(schema, 'B') as ObjectAssertion).members],
+                        messages: mkmsgobj('F.f1'), // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
+                        docComment: 'Comment B',
+                    }],
+                    ['f2', {
+                        name: 'f2',
+                        typeName: 'A',
+                        kind: 'optional',
+                        optional: {
+                            name: 'A',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            messages: mkmsgobj('A'), // TODO: remove ret.optional.message|messages|messageId ?
+                        },
+                        message: 'MSG_F.f2',
+                    }],
+                ],
+            };
+            expect(ty).toEqual(rhs);
         }
     });
-    it("compiler-deep-cherrypick-patch-1", function() {
+    it("compiler-error-reporting-6", function() {
         const schema = compile(`
-            interface A {
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
                 a1: string;
+                @msg('MSG_A.a2')
                 a2?: number;
+                /** Comment A.a3 */
+                @msg('MSG_A.a3')
                 a3: string[];
-            }
-            interface B {
-                b1: boolean;
-                b2: A;
-            }
-            interface C {
-                c1: string;
-                c2: B;
-                c3?: A;
-            }
-        `);
-
-        const ty = getType(schema, 'C');
-        const original = {
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                    a4: true,
-                },
-                b3: '33333',
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: false,
-            },
-            c4: '44444',
-        };
-
-        const needle = pick(original, ty);
-        expect(needle).toEqual({
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                },
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-            },
-        } as any);
-
-        // no changes
-
-        const patched = patch(original, needle, ty);
-        expect(patched).toEqual({
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                    a4: true,
-                },
-                b3: '33333',
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: false,
-            },
-            c4: '44444',
-        } as any);
-    });
-    it("compiler-deep-cherrypick-patch-2", function() {
-        const schema = compile(`
-            interface A {
-                a1: string;
-                a2?: number;
-                a3: string[];
-            }
-            interface B {
-                b1: boolean;
-                b2: A;
-            }
-            interface C {
-                c1: string;
-                c2: B;
-                c3?: A;
-            }
-        `);
-
-        const ty = getType(schema, 'C');
-        const original = {
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                    a4: true,
-                },
-                b3: '33333',
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: false,
-            },
-            c4: '44444',
-        };
-
-        const needle = pick(original, ty);
-        expect(needle).toEqual({
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                },
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-            },
-        } as any);
-
-        needle.c1 = '!ccccc!';
-        needle.c4 = '!44444!';
-        (needle as any).c5 = true;
-
-        needle.c2.b2.a3 = ['!1!'];
-        needle.c2.b2.a4 = false;
-        (needle.c2.b2 as any).a5 = 999;
-
-        needle.c3.a4 = true;
-
-        const patched = patch(original, needle, ty);
-        expect(patched).toEqual({
-            c1: '!ccccc!',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['!1!'],
-                    a4: true,
-                },
-                b3: '33333',
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: false,
-            },
-            c4: '44444',
-        } as any);
-    });
-    it("compiler-deep-cherrypick-patch-3", function() {
-        const schema = compile(`
-            interface A {
-                a1: string;
-                a2?: number;
-                a3: string[];
+                /** Comment A.a4 */
+                @msg('MSG_A.a4')
                 [propNames: string]: any;
             }
-            interface B {
+            /** Comment B */
+            @msg('MSG_B')
+            export interface B {
+                @msg('MSG_B.b1')
                 b1: boolean;
+                /** Comment B.b2 */
+                @msg('MSG_B.b2')
                 b2: A;
             }
-            interface C {
+            @msg(${mkmsg('C')})
+            export interface C extends A {
+                @msg('MSG_C.c1')
                 c1: string;
-                c2: B;
-                c3?: A;
+            }
+            /** Comment D */
+            @msg(${mkmsg('D')})
+            export type D = string;
+            /** Comment E */
+            @msg(${mkmsg('E')})
+            export enum E {
+                P,
+                Q,
+                R,
+            }
+            export interface F {
+                @msg(${mkmsg('F.f1')})
+                f1: B;
+                @msg('MSG_F.f2')
+                f2?: A;
             }
         `);
 
-        const ty = getType(schema, 'C');
-        const original = {
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                    a4: true,
-                },
-                b3: '33333',
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: false,
-            },
-            c4: '44444',
-        };
-
-        const needle = pick(original, ty);
-        expect(needle).toEqual({
-            c1: 'ccccc',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['1', '2'],
-                    a4: true,
-                },
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: false,
-            },
-        } as any);
-
-        needle.c1 = '!ccccc!';
-        needle.c4 = '!44444!';
-        (needle as any).c5 = true;
-
-        needle.c2.b2.a3 = ['!1!'];
-        needle.c2.b2.a4 = false;
-        (needle.c2.b2 as any).a5 = 999;
-
-        needle.c3.a4 = true;
-
-        const patched = patch(original, needle, ty);
-        expect(patched).toEqual({
-            c1: '!ccccc!',
-            c2: {
-                b1: true,
-                b2: {
-                    a1: 'bbbbb',
-                    a2: 22,
-                    a3: ['!1!'],
-                    a4: false,
-                    a5: 999,
-                },
-                b3: '33333',
-            },
-            c3: {
-                a1: 'aaaaa',
-                a2: 2,
-                a3: ['11', '12'],
-                a4: true,
-            },
-            c4: '44444',
-        } as any);
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'A', 'B', 'C', 'D', 'E', 'F',
+            ]);
+        }
+        {
+            const ty = getType(schema, 'A');
+            expect(true).toEqual(schema.get('A')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'A',
+                typeName: 'A',
+                kind: 'object',
+                members: [
+                    ['a1', {
+                        name: 'a1',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                        messages: mkmsgobj('A.a1'),
+                    }],
+                    ['a2', {
+                        name: 'a2',
+                        kind: 'optional',
+                        optional: {
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        },
+                        message: 'MSG_A.a2',
+                    }],
+                    ['a3', {
+                        name: 'a3',
+                        kind: 'repeated',
+                        min: null,
+                        max: null,
+                        repeated: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                        message: 'MSG_A.a3',
+                    }, false, 'Comment A.a3'],
+                ],
+                additionalProps: [
+                    [['string'], {
+                        kind: 'any',
+                        message: 'MSG_A.a4',
+                    }, false, 'Comment A.a4'],
+                ],
+                messages: mkmsgobj('A'),
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'B');
+            expect(true).toEqual(schema.get('B')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'B',
+                typeName: 'B',
+                kind: 'object',
+                members: [
+                    ['b1', {
+                        name: 'b1',
+                        kind: 'primitive',
+                        primitiveName: 'boolean',
+                        message: 'MSG_B.b1',
+                    }],
+                    ['b2', {
+                        name: 'b2',
+                        typeName: 'A',
+                        kind: 'object',
+                        members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                        additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                        message: 'MSG_B.b2', // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
+                    }, false, 'Comment B.b2'],
+                ],
+                message: 'MSG_B',
+                docComment: 'Comment B',
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'C');
+            expect(true).toEqual(schema.get('C')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'C',
+                typeName: 'C',
+                kind: 'object',
+                members: [
+                    ['c1', {
+                        name: 'c1',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                        message: 'MSG_C.c1',
+                    }],
+                    ['a1', {
+                        name: 'a1',
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                        messages: mkmsgobj('A.a1'),
+                    }, true],
+                    ['a2', {
+                        name: 'a2',
+                        kind: 'optional',
+                        optional: {
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        },
+                        message: 'MSG_A.a2',
+                    }, true],
+                    ['a3', {
+                        name: 'a3',
+                        kind: 'repeated',
+                        min: null,
+                        max: null,
+                        repeated: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                        message: 'MSG_A.a3',
+                    }, true, 'Comment A.a3'],
+                ],
+                baseTypes: [
+                    getType(schema, 'A') as any,
+                ],
+                additionalProps: [
+                    [['string'], {
+                        kind: 'any',
+                        message: 'MSG_A.a4',
+                    }, true, 'Comment A.a4']
+                ],
+                messages: mkmsgobj('C'),
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'D');
+            expect(true).toEqual(schema.get('D')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'D',
+                typeName: 'D',
+                kind: 'primitive',
+                primitiveName: 'string',
+                messages: mkmsgobj('D'),
+                docComment: 'Comment D',
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'E');
+            expect(true).toEqual(schema.get('E')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'E',
+                typeName: 'E',
+                kind: 'enum',
+                values: [
+                    ['P', 0],
+                    ['Q', 1],
+                    ['R', 2],
+                ],
+                messages: mkmsgobj('E'),
+                docComment: 'Comment E',
+            };
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const ty = getType(schema, 'F');
+            expect(true).toEqual(schema.get('F')?.exported as any);
+            const rhs: TypeAssertion = {
+                name: 'F',
+                typeName: 'F',
+                kind: 'object',
+                members: [
+                    ['f1', {
+                        name: 'f1',
+                        typeName: 'B',
+                        kind: 'object',
+                        members: [...(getType(schema, 'B') as ObjectAssertion).members],
+                        messages: mkmsgobj('F.f1'), // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
+                        docComment: 'Comment B',
+                    }],
+                    ['f2', {
+                        name: 'f2',
+                        typeName: 'A',
+                        kind: 'optional',
+                        optional: {
+                            name: 'A',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            messages: mkmsgobj('A'), // TODO: remove ret.optional.message|messages|messageId ?
+                        },
+                        message: 'MSG_F.f2',
+                    }],
+                ],
+            };
+            expect(ty).toEqual(rhs);
+        }
     });
+    // TODO: error message decorators + error reporting
 });

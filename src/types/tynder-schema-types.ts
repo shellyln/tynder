@@ -39,8 +39,8 @@ export type ErrorMessages = Partial<{
 
 export interface TypeAssertionBase {
     messageId?: string;
-    message?: string;
-    messages?: ErrorMessages;
+    message?: string;           // Only one of 'message' or 'messages' can be set.
+    messages?: ErrorMessages;   // Only one of 'message' or 'messages' can be set.
     name?: string;              // Member name or 'typeName' below. For error reporting and codegen.
     typeName?: string;          // Named user defined 'type' or 'interface' name. For error reporting and codegen.
     docComment?: string;        // Doc comment.
