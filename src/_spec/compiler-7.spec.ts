@@ -66,16 +66,16 @@ describe("compiler-7", function() {
                 @msg('MSG_B.b2')
                 b2: A;
             }
-            @msg('MSG_C')
+            @msg(${mkmsg('C')})
             interface C extends A {
                 @msg('MSG_C.c1')
                 c1: string;
             }
             /** Comment D */
-            @msg('MSG_D')
+            @msg(${mkmsg('D')})
             type D = string;
             /** Comment E */
-            @msg('MSG_E')
+            @msg(${mkmsg('E')})
             enum E {
                 P,
                 Q,
@@ -153,7 +153,7 @@ describe("compiler-7", function() {
                         kind: 'object',
                         members: [...(getType(schema, 'A') as ObjectAssertion).members],
                         additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                        message: 'MSG_B.b2',
+                        message: 'MSG_B.b2', // NOTE: 'messages' is overwritten by 'B.b2's 'message'. Only one of 'message' or 'messages' can be set.
                     }, false, 'Comment B.b2'],
                 ],
                 message: 'MSG_B',
@@ -211,7 +211,7 @@ describe("compiler-7", function() {
                         message: 'MSG_A.a4',
                     }, true, 'Comment A.a4']
                 ],
-                message: 'MSG_C',
+                messages: mkmsgobj('C'),
             };
             expect(ty).toEqual(rhs);
         }
@@ -223,7 +223,7 @@ describe("compiler-7", function() {
                 typeName: 'D',
                 kind: 'primitive',
                 primitiveName: 'string',
-                message: 'MSG_D',
+                messages: mkmsgobj('D'),
                 docComment: 'Comment D',
             };
             expect(ty).toEqual(rhs);
@@ -240,7 +240,7 @@ describe("compiler-7", function() {
                     ['Q', 1],
                     ['R', 2],
                 ],
-                message: 'MSG_E',
+                messages: mkmsgobj('E'),
                 docComment: 'Comment E',
             };
             expect(ty).toEqual(rhs);
