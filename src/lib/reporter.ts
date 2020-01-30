@@ -30,15 +30,15 @@ export const errorTypeNames = [
 
 
 export const defaultMessages: ErrorMessages = {
-    invalidDefinition: '"%{name}" of "%{parentType}" type definition is invalid.',
-    required: '"%{name}" of "%{parentType}" is required.',
-    typeUnmatched: '"%{name}" of "%{parentType}" should be type "%{expectedType}".',
-    repeatQtyUnmatched: '"%{name}" of "%{parentType}" should repeat %{repeatQty} times.',
-    sequenceUnmatched: '"%{name}" of "%{parentType}" sequence is not matched',
-    valueRangeUnmatched: '"%{name}" of "%{parentType}" value should be in the range %{minValue} to %{maxValue}.',
-    valuePatternUnmatched: '%{name}" of "%{parentType}" value should be matched to pattern "%{pattern}"',
-    valueLengthUnmatched: '"%{name}" of "%{parentType}" length should be in the range %{minLength} to %{maxLength}.',
-    valueUnmatched: '"%{name}" of "%{parentType}" value should be "%{expectedValue}".',
+    invalidDefinition:     '"%{name}" of "%{parentType}" type definition is invalid.',
+    required:              '"%{name}" of "%{parentType}" is required.',
+    typeUnmatched:         '"%{name}" of "%{parentType}" should be type "%{expectedType}".',
+    repeatQtyUnmatched:    '"%{name}" of "%{parentType}" should repeat %{repeatQty} times.',
+    sequenceUnmatched:     '"%{name}" of "%{parentType}" sequence is not matched',
+    valueRangeUnmatched:   '"%{name}" of "%{parentType}" value should be in the range %{minValue} to %{maxValue}.',
+    valuePatternUnmatched: '"%{name}" of "%{parentType}" value should be matched to pattern "%{pattern}"',
+    valueLengthUnmatched:  '"%{name}" of "%{parentType}" length should be in the range %{minLength} to %{maxLength}.',
+    valueUnmatched:        '"%{name}" of "%{parentType}" value should be "%{expectedValue}".',
 };
 
 

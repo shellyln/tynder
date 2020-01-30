@@ -823,9 +823,13 @@ export function withMatch(pattern: RegExp) {
 export function withMsg<T extends TypeAssertion>(messages: string | ErrorMessages) {
     return (ty: T) => {
         if (typeof messages === 'string') {
-            return Object.assign({}, ty, { message: messages });
+            const ret = Object.assign({}, ty, { message: messages });
+            delete ret.messages;
+            return ret;
         } else {
-            return Object.assign({}, ty, { messages });
+            const ret = Object.assign({}, ty, { messages });
+            delete ret.message;
+            return ret;
         }
     };
 }
