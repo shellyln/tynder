@@ -534,5 +534,26 @@ describe("compiler-7", function() {
             expect(ty).toEqual(rhs);
         }
     });
+    it("compiler-error-reporting-reporter-1-1", function() {
+        const schema = compile(`
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: string;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({}, getType(schema, 'A'), ctx)).toEqual(null);
+        // console.log(JSON.stringify(ctx.errors, null, 4));
+        expect(ctx.errors).toEqual([{
+            code: 'Required',
+            message: 'A.a1:required: a1 A',
+            dataPath: 'A.a1',
+            constraints: {},
+            // value: null,
+        }]);
+    });
     // TODO: error message decorators + error reporting
 });
