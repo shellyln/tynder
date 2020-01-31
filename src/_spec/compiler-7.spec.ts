@@ -536,6 +536,7 @@ describe("compiler-7", function() {
     });
     it("compiler-error-reporting-reporter-1-1", function() {
         const schema = compile(`
+            @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: string;
@@ -546,13 +547,98 @@ describe("compiler-7", function() {
             schema,
         };
         expect(validate({}, getType(schema, 'A'), ctx)).toEqual(null);
-        // console.log(JSON.stringify(ctx.errors, null, 4));
         expect(ctx.errors).toEqual([{
             code: 'Required',
             message: 'A.a1:required: a1 A',
             dataPath: 'A.a1',
             constraints: {},
-            // value: null,
+        }]);
+    });
+    it("compiler-error-reporting-reporter-1-2", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: string;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: 1}, getType(schema, 'A'), ctx)).toEqual(null);
+        expect(ctx.errors).toEqual([{
+            code: 'TypeUnmatched',
+            message: 'A.a1:typeUnmatched: a1 A string',
+            dataPath: 'A.a1',
+            constraints: {},
+            value: 1,
+        }]);
+    });
+    it("compiler-error-reporting-reporter-1-3", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @range(3, 5)
+                a1: number;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: 1}, getType(schema, 'A'), ctx)).toEqual(null);
+        expect(ctx.errors).toEqual([{
+            code: 'ValueRangeUnmatched',
+            message: 'A.a1:valueRangeUnmatched: a1 A 3 5',
+            dataPath: 'A.a1',
+            constraints: {minValue: 3, maxValue: 5},
+            value: 1,
+        }]);
+    });
+    it("compiler-error-reporting-reporter-1-4", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @minLength(3) @maxLength(5)
+                a1: string;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
+        expect(ctx.errors).toEqual([{
+            code: 'ValueLengthUnmatched',
+            message: 'A.a1:valueLengthUnmatched: a1 A 3 5',
+            dataPath: 'A.a1',
+            constraints: {minLength: 3, maxLength: 5},
+            value: '1',
+        }]);
+    });
+    it("compiler-error-reporting-reporter-1-5", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: 5;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: 4}, getType(schema, 'A'), ctx)).toEqual(null);
+        // console.log(JSON.stringify(ctx.errors, null, 4));
+        expect(ctx.errors).toEqual([{
+            code: 'ValueUnmatched',
+            message: 'A.a1:valueUnmatched: a1 A 5',
+            dataPath: 'A.a1',
+            constraints: {},
+            value: 4,
         }]);
     });
     // TODO: error message decorators + error reporting
