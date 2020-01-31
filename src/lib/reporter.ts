@@ -210,7 +210,7 @@ export function formatErrorMessage(
 
     ret = ret.replace(/%{pattern}/g, escapeString(
         ty.kind === 'primitive' ?
-            `${ty.pattern ? String(ty.pattern) : '(pattern)'}` : '?'));
+            `${ty.pattern ? `/${ty.pattern.source}/${ty.pattern.flags}` : '(pattern)'}` : '?'));
 
     ret = ret.replace(/%{minLength}/g, escapeString(
         ty.kind === 'primitive' ?
@@ -308,7 +308,8 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
             constraints.maxLength = cSrc.maxLength;
         }
         if (nvl(cSrc.pattern, false)) {
-            constraints.pattern = (cSrc.pattern as any as RegExp).source;
+            const pat = cSrc.pattern as any as RegExp;
+            constraints.pattern = `/${pat.source}/${pat.flags}`;
         }
         if (nvl(cSrc.min, false)) {
             constraints.min = cSrc.min;

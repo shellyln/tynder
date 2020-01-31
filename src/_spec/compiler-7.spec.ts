@@ -624,6 +624,54 @@ describe("compiler-7", function() {
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
+                @match(/^[0-9]+$/)
+                a1: string;
+            }
+        `);
+        for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: 'A'}, ty, ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'ValuePatternUnmatched',
+                message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/',
+                dataPath: 'A.a1',
+                constraints: {pattern: '/^[0-9]+$/'},
+                value: 'A',
+            }]);
+        }
+    });
+    it("compiler-error-reporting-reporter-1-5b", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @match(/^[0-9]+$/gi)
+                a1: string;
+            }
+        `);
+        for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: 'A'}, ty, ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'ValuePatternUnmatched',
+                message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/gi',
+                dataPath: 'A.a1',
+                constraints: {pattern: '/^[0-9]+$/gi'},
+                value: 'A',
+            }]);
+        }
+    });
+    it("compiler-error-reporting-reporter-1-6", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
                 a1: 5;
             }
         `);

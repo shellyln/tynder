@@ -36,7 +36,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         break;
     case 'primitive':
         if (ret.pattern) {
-            ret.pattern = (ret.pattern.source as any);
+            ret.pattern = `/${ret.pattern.source}/${ret.pattern.flags}` as any;
         }
         break;
     case 'repeated':
@@ -120,7 +120,12 @@ function deserializeInner(ty: TypeAssertion) {
         break;
     case 'primitive':
         if (ret.pattern) {
-            ret.pattern = new RegExp(ret.pattern as any);
+            const m = (/^\/(.*)\/([gimsuy]*)$/s).exec(ret.pattern as any);
+            if (m) {
+                ret.pattern = new RegExp(m[1], m[2]);
+            } else {
+                throw new Error(`Unknown pattern match assertion: ${ret.pattern as any}`);
+            }
         }
         break;
     case 'repeated':
