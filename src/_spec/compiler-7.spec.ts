@@ -114,6 +114,7 @@ describe("compiler-7", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }],
@@ -193,6 +194,7 @@ describe("compiler-7", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }, true],
@@ -277,7 +279,7 @@ describe("compiler-7", function() {
                             kind: 'object',
                             members: [...(getType(schema, 'A') as ObjectAssertion).members],
                             additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                            messages: mkmsgobj('A'), // TODO: remove ret.optional.message|messages|messageId ?
+                            message: 'MSG_F.f2',
                         },
                         message: 'MSG_F.f2',
                     }],
@@ -358,6 +360,7 @@ describe("compiler-7", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }],
@@ -437,6 +440,7 @@ describe("compiler-7", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }, true],
@@ -521,7 +525,7 @@ describe("compiler-7", function() {
                             kind: 'object',
                             members: [...(getType(schema, 'A') as ObjectAssertion).members],
                             additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                            messages: mkmsgobj('A'), // TODO: remove ret.optional.message|messages|messageId ?
+                            message: 'MSG_F.f2',
                         },
                         message: 'MSG_F.f2',
                     }],
