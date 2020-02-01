@@ -555,243 +555,335 @@ describe("compiler-7", function() {
         }]);
     });
     it("compiler-error-reporting-reporter-1-2", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: string;
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: 1}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'TypeUnmatched',
-            message: 'A.a1:typeUnmatched: a1 A string',
-            dataPath: 'A.a1',
-            constraints: {},
-            value: 1,
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: 1}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: 'A.a1:typeUnmatched: a1 A string',
+                dataPath: 'A.a1',
+                constraints: {},
+                value: 1,
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-2b", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: string;
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'TypeUnmatched',
-            message: 'A.a1:typeUnmatched: a1 A string',
-            dataPath: 'A.a1',
-            constraints: {},
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: 'A.a1:typeUnmatched: a1 A string',
+                dataPath: 'A.a1',
+                constraints: {},
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-2c", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: string[];
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'TypeUnmatched',
-            message: 'A.a1:typeUnmatched: a1 A (repeated string)',
-            dataPath: 'A.a1',
-            constraints: {},
-            value: '1',
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: string[];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: 'A.a1:typeUnmatched: a1 A (repeated string)',
+                dataPath: 'A.a1',
+                constraints: {},
+                value: '1',
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-2d", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: string[];
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'TypeUnmatched',
-            message: '"repeated item of a1" of "A" should be type "string".',
-            dataPath: 'A.a1.(0:repeated)',
-            constraints: {},
-            value: 1,
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: string[];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: '"repeated item of a1" of "A" should be type "string".',
+                dataPath: 'A.a1.(0:repeated)',
+                constraints: {},
+                value: 1,
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-2e", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: [string];
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'TypeUnmatched',
-            message: 'A.a1:typeUnmatched: a1 A (sequence)',
-            dataPath: 'A.a1',
-            constraints: {},
-            value: '1',
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: [string];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: 'A.a1:typeUnmatched: a1 A (sequence)',
+                dataPath: 'A.a1',
+                constraints: {},
+                value: '1',
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-2f", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: [string];
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'TypeUnmatched',
-            message: '"sequence item of a1" of "A" should be type "string".',
-            dataPath: 'A.a1.(0:sequence)',
-            constraints: {},
-            value: 1,
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: [string];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: '"sequence item of a1" of "A" should be type "string".',
+                dataPath: 'A.a1.(0:sequence)',
+                constraints: {},
+                value: 1,
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-3", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 @range(3, 5)
                 a1: number;
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: 1}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'ValueRangeUnmatched',
-            message: 'A.a1:valueRangeUnmatched: a1 A 3 5',
-            dataPath: 'A.a1',
-            constraints: {minValue: 3, maxValue: 5},
-            value: 1,
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @range(3, 5)
+                a1?: number;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: 1}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'ValueRangeUnmatched',
+                message: 'A.a1:valueRangeUnmatched: a1 A 3 5',
+                dataPath: 'A.a1',
+                constraints: {minValue: 3, maxValue: 5},
+                value: 1,
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-4", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 @minLength(3) @maxLength(5)
                 a1: string;
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
-        expect(ctx.errors).toEqual([{
-            code: 'ValueLengthUnmatched',
-            message: 'A.a1:valueLengthUnmatched: a1 A 3 5',
-            dataPath: 'A.a1',
-            constraints: {minLength: 3, maxLength: 5},
-            value: '1',
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @minLength(3) @maxLength(5)
+                a1?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'ValueLengthUnmatched',
+                message: 'A.a1:valueLengthUnmatched: a1 A 3 5',
+                dataPath: 'A.a1',
+                constraints: {minLength: 3, maxLength: 5},
+                value: '1',
+            }]);
+        }
     });
     it("compiler-error-reporting-reporter-1-5", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 @match(/^[0-9]+$/)
                 a1: string;
             }
-        `);
-        for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
-            const ctx: Partial<ValidationContext> = {
-                checkAll: true,
-                schema,
-            };
-            expect(validate({a1: 'A'}, ty, ctx)).toEqual(null);
-            expect(ctx.errors).toEqual([{
-                code: 'ValuePatternUnmatched',
-                message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/',
-                dataPath: 'A.a1',
-                constraints: {pattern: '/^[0-9]+$/'},
-                value: 'A',
-            }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @match(/^[0-9]+$/)
+                a1?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    schema,
+                };
+                expect(validate({a1: 'A'}, ty, ctx)).toEqual(null);
+                expect(ctx.errors).toEqual([{
+                    code: 'ValuePatternUnmatched',
+                    message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/',
+                    dataPath: 'A.a1',
+                    constraints: {pattern: '/^[0-9]+$/'},
+                    value: 'A',
+                }]);
+            }
         }
     });
     it("compiler-error-reporting-reporter-1-5b", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 @match(/^[0-9]+$/gi)
                 a1: string;
             }
-        `);
-        for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
-            const ctx: Partial<ValidationContext> = {
-                checkAll: true,
-                schema,
-            };
-            expect(validate({a1: 'A'}, ty, ctx)).toEqual(null);
-            expect(ctx.errors).toEqual([{
-                code: 'ValuePatternUnmatched',
-                message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/gi',
-                dataPath: 'A.a1',
-                constraints: {pattern: '/^[0-9]+$/gi'},
-                value: 'A',
-            }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                @match(/^[0-9]+$/gi)
+                a1?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    schema,
+                };
+                expect(validate({a1: 'A'}, ty, ctx)).toEqual(null);
+                expect(ctx.errors).toEqual([{
+                    code: 'ValuePatternUnmatched',
+                    message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/gi',
+                    dataPath: 'A.a1',
+                    constraints: {pattern: '/^[0-9]+$/gi'},
+                    value: 'A',
+                }]);
+            }
         }
     });
     it("compiler-error-reporting-reporter-1-6", function() {
-        const schema = compile(`
+        const schemas = [compile(`
             @msg(${mkmsg('A')})
             export interface A {
                 @msg(${mkmsg('A.a1')})
                 a1: 5;
             }
-        `);
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            schema,
-        };
-        expect(validate({a1: 4}, getType(schema, 'A'), ctx)).toEqual(null);
-        // console.log(JSON.stringify(ctx.errors, null, 4));
-        expect(ctx.errors).toEqual([{
-            code: 'ValueUnmatched',
-            message: 'A.a1:valueUnmatched: a1 A 5',
-            dataPath: 'A.a1',
-            constraints: {},
-            value: 4,
-        }]);
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: 5;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: 4}, getType(schema, 'A'), ctx)).toEqual(null);
+            // console.log(JSON.stringify(ctx.errors, null, 4));
+            expect(ctx.errors).toEqual([{
+                code: 'ValueUnmatched',
+                message: 'A.a1:valueUnmatched: a1 A 5',
+                dataPath: 'A.a1',
+                constraints: {},
+                value: 4,
+            }]);
+        }
     });
     // TODO: error message decorators + error reporting
 });
