@@ -6,6 +6,7 @@
 import { TypeAssertion,
          ValidationContext } from './types';
 import { ValidationError }   from './lib/errors';
+import { isUnsafeVarNames }  from './lib/util';
 import { validate }          from './validator';
 
 
@@ -119,7 +120,9 @@ function merge(data: any, needle: any) {
             const r: any = {...data};
             for (const k in needle) {
                 if (Object.prototype.hasOwnProperty.call(needle, k)) {
-                    // TODO: check prototype pollution
+                    if (isUnsafeVarNames(r, k)) {
+                        continue;
+                    }
                     r[k] = merge(r[k], needle[k]);
                 }
             }

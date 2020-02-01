@@ -21,6 +21,8 @@ import { TypeAssertion,
          TypeAssertionMap }      from './types';
 import * as operators            from './operators';
 import { resolveSchema }         from './lib/resolver';
+import { dummyTargetObject,
+         isUnsafeVarNames }      from './lib/util';
 
 
 
@@ -314,8 +316,8 @@ const objectValue = first(
     trans(tokens => {
         const ast: Ast = [{symbol: '#'}];
         for (let i = 0; i < tokens.length; i += 2) {
-            if (tokens[i] === '__proto__') {
-                continue; // NOTE: prevent prototype pollution attacks
+            if (isUnsafeVarNames(dummyTargetObject, tokens[i] as string)) {
+                throw new Error(`Unsafe symbol name is appeared in object literal: ${tokens[i]}`);
             }
             ast.push([tokens[i], tokens[i + 1]]);
         }
@@ -970,7 +972,12 @@ export function compile(s: string) {
 
     const def = (name: SxSymbol | string, ty: TypeAssertion): TypeAssertion => {
         let ret = ty;
+
         const sym = typeof name === 'string' ? name : name.symbol;
+        if (isUnsafeVarNames(dummyTargetObject, sym)) {
+            throw new Error(`Unsafe symbol name is appeared: ${sym}`);
+        }
+
         if (! mapTyToTySet.has(ret)) {
             ret = operators.withName(operators.withTypeName(ret, sym), sym);
         }
@@ -990,6 +997,10 @@ export function compile(s: string) {
 
     const ref = (name: SxSymbol | string): TypeAssertion => {
         const sym = typeof name === 'string' ? name : name.symbol;
+        if (isUnsafeVarNames(dummyTargetObject, sym)) {
+            throw new Error(`Unsafe symbol name is appeared: ${sym}`);
+        }
+
         if (! schema.has(sym)) {
             return ({
                 kind: 'symlink',
