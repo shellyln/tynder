@@ -885,5 +885,61 @@ describe("compiler-7", function() {
             }]);
         }
     });
+    it("compiler-error-reporting-reporter-1-7a", function() {
+        const schemas = [compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: [...<string,3..5>];
+            }
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: [...<string,3..5>];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: '"sequence item of a1" of "A" should be type "string".',
+                dataPath: 'A.a1.(0:sequence)',
+                constraints: {min: 3, max: 5},
+            }]);
+        }
+    });
+    it("compiler-error-reporting-reporter-1-7b", function() {
+        const schemas = [compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: [...<string,3..5>];
+            }
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: [...<string,3..5>];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: ['1', '2']}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'RepeatQtyUnmatched',
+                message: '"sequence item of a1" of "A" should repeat 3..5 times.',
+                dataPath: 'A.a1.(2:sequence)',
+                constraints: {min: 3, max: 5},
+            }]);
+        }
+    });
     // TODO: error message decorators + error reporting
 });
