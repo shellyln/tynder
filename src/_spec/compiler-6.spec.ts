@@ -78,6 +78,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            messageId: 'MSG_A.a2',
                         },
                         messageId: 'MSG_A.a2',
                     }],
@@ -157,6 +158,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            messageId: 'MSG_A.a2',
                         },
                         messageId: 'MSG_A.a2',
                     }, true],
@@ -282,6 +284,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            messageId: 'MSG_A.a2',
                         },
                         messageId: 'MSG_A.a2',
                     }],
@@ -361,6 +364,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            messageId: 'MSG_A.a2',
                         },
                         messageId: 'MSG_A.a2',
                     }, true],
@@ -486,6 +490,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }],
@@ -565,6 +570,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }, true],
@@ -690,6 +696,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }],
@@ -769,6 +776,7 @@ describe("compiler-6", function() {
                         optional: {
                             kind: 'primitive',
                             primitiveName: 'number',
+                            message: 'MSG_A.a2',
                         },
                         message: 'MSG_A.a2',
                     }, true],

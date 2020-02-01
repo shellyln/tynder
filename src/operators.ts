@@ -820,23 +820,53 @@ export function withMatch(pattern: RegExp) {
 }
 
 
-export function withMsg<T extends TypeAssertion>(messages: string | ErrorMessages) {
+export function withMsg<T extends TypeAssertion>(messages: string | ErrorMessages): (ty: T) => T {
     return (ty: T) => {
-        if (typeof messages === 'string') {
-            const ret = Object.assign({}, ty, { message: messages });
-            delete ret.messages; // TODO: remove ret.optional.message|messages|messageId ?
-            return ret;
+        if (ty.kind === 'optional') {
+            if (typeof messages === 'string') {
+                const ret = ({
+                    ...ty,
+                    message: messages,
+                    optional: {...(ty as OptionalAssertion).optional, message: messages},
+                });
+                delete ret.messages;
+                delete ret.optional.messages;
+                return ret;
+            } else {
+                const ret = ({
+                    ...ty,
+                    messages,
+                    optional: {...(ty as OptionalAssertion).optional, messages},
+                });
+                delete ret.message;
+                delete ret.optional.message;
+                return ret;
+            }
         } else {
-            const ret = Object.assign({}, ty, { messages });
-            delete ret.message; // TODO: remove ret.optional.message|messages|messageId ?
-            return ret;
+            if (typeof messages === 'string') {
+                const ret = ({...ty, message: messages});
+                delete ret.messages;
+                return ret;
+            } else {
+                const ret = ({...ty, messages});
+                delete ret.message;
+                return ret;
+            }
         }
     };
 }
 
 
-export function withMsgId<T extends TypeAssertion>(messageId: string) {
+export function withMsgId<T extends TypeAssertion>(messageId: string): (ty: T) => T {
     return (ty: T) => {
-        return Object.assign({}, ty, { messageId }); // TODO: remove ret.optional.message|messages|messageId ?
+        if (ty.kind === 'optional') {
+            return ({
+                ...ty,
+                messageId,
+                optional: {...(ty as OptionalAssertion).optional, messageId},
+            });
+        } else {
+            return ({...ty, messageId});
+        }
     };
 }

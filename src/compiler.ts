@@ -230,13 +230,16 @@ const stringValue =
 
 const regexpStringValue =
     // TODO: '/' ']' '\\' in character class '[]' is not parsed correctly.
-    trans(tokens => [{value: new RegExp(tokens[0] as string)}])(
+    trans(tokens => [{value: tokens[1] ?
+            new RegExp(tokens[0] as string, tokens[1] as string) :
+            new RegExp(tokens[0] as string)}])(
         erase(seq('/')),
             cat(repeat(first(
                 stringEscapeSeq,
                 notCls('/'),
             ))),
-        erase(seq('/')), );
+        erase(seq('/')),
+        cat(qty(0)(cls('g', 'i', 'm', 's', 'u', 'y'))), );
 
 
 const symbolName =
