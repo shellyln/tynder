@@ -254,6 +254,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
         const pt = Array.isArray(p) ? p[0] : p;
         const pi = Array.isArray(next) ? next[1] : void 0;
 
+        let isSet = false;
         if (pt.kind === 'repeated') {
             if (i !== ctx.typeStack.length - 1) {
                 if (pt.name) {
@@ -261,6 +262,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 } else {
                     dataPathArray.push(`(repeated)`);
                 }
+                isSet = true;
             }
         } else if (pt.kind === 'sequence') {
             if (i !== ctx.typeStack.length - 1) {
@@ -269,8 +271,10 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 } else {
                     dataPathArray.push(`(sequence)`);
                 }
+                isSet = true;
             }
-        } else {
+        }
+        if (! isSet) {
             if (pt.name) {
                 dataPathArray.push(`${pt.name}`);
             } else if (pt.typeName) {

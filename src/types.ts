@@ -23,7 +23,7 @@ export interface TypeAssertionErrorMessage {
     message: string;
     dataPath: string;
     constraints: TypeAssertionErrorMessageConstraints;
-    value?: any;
+    value?: any; // Only number, bigint, string, boolean, undefined, null
 }
 
 

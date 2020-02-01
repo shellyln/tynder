@@ -575,6 +575,68 @@ describe("compiler-7", function() {
             value: 1,
         }]);
     });
+    it("compiler-error-reporting-reporter-1-2b", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: string;
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
+        expect(ctx.errors).toEqual([{
+            code: 'TypeUnmatched',
+            message: 'A.a1:typeUnmatched: a1 A string',
+            dataPath: 'A.a1',
+            constraints: {},
+        }]);
+    });
+    it("compiler-error-reporting-reporter-1-2c", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: string[];
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
+        expect(ctx.errors).toEqual([{
+            code: 'TypeUnmatched',
+            message: 'A.a1:typeUnmatched: a1 A (repeated string)',
+            dataPath: 'A.a1',
+            constraints: {},
+            value: '1',
+        }]);
+    });
+    it("compiler-error-reporting-reporter-1-2d", function() {
+        const schema = compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: [string];
+            }
+        `);
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            schema,
+        };
+        expect(validate({a1: '1'}, getType(schema, 'A'), ctx)).toEqual(null);
+        expect(ctx.errors).toEqual([{
+            code: 'TypeUnmatched',
+            message: 'A.a1:typeUnmatched: a1 A (sequence)',
+            dataPath: 'A.a1',
+            constraints: {},
+            value: '1',
+        }]);
+    });
     it("compiler-error-reporting-reporter-1-3", function() {
         const schema = compile(`
             @msg(${mkmsg('A')})
