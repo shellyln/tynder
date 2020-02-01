@@ -1,7 +1,7 @@
 {
   "name": "tynder",
   "private": false,
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "TypeScript friendly Data validator for JavaScript.",
   "keywords": [
     "data validator",
