@@ -26,7 +26,9 @@ import { NeverTypeAssertion,
          ObjectAssertion,
          AssertionSymlink,
          AssertionOperator,
-         TypeAssertion } from './types';
+         TypeAssertion }    from './types';
+import { dummyTargetObject,
+         isUnsafeVarNames } from './lib/util';
 
 
 
@@ -454,6 +456,10 @@ export function enumType(...values: Array<[string, number | string | null, strin
     const ar = values.slice();
     let value = 0;
     for (let i = 0; i < ar.length; i++) {
+        if (isUnsafeVarNames(dummyTargetObject, ar[i][0])) {
+            throw new Error(`Unsafe symbol name is appeared in enum assertion: ${ar[i][0]}`);
+        }
+
         if (ar[i][1] === null || ar[i][1] === void 0) {
             ar[i][1] = value++;
         } else if (typeof ar[i][1] === 'number') {
@@ -479,6 +485,9 @@ export function objectType(
     const revMembers = members.slice().reverse();
     for (const x of members) {
         if (typeof x[0] === 'string') {
+            if (isUnsafeVarNames(dummyTargetObject, x[0])) {
+                throw new Error(`Unsafe symbol name is appeared in object assertion: ${x[0]}`);
+            }
             if (members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
                 throw new Error(`Duplicated member is found: ${x[0]}`);
             }
