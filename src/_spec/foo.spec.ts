@@ -273,31 +273,6 @@ describe("foo", function() {
             expect(1).toEqual(0);
         }
     });
-    it("foo-3", function() {
-        const z = compile(`
-            type Foo = string;
-            interface A {
-                a: Foo;
-                @range(3, 5)
-                b: number;
-                @maxLength(3)  // TODO: BUG: $ref: keywords ignored in schema at path "#/properties/c"
-                c: Foo;
-            }
-        `);
-        const schema = generateJsonSchemaObject(z);
-        // console.log(JSON.stringify(schema, null, 2));
-
-        const ajv = new Ajv({allErrors: true});
-        // tslint:disable-next-line: no-implicit-dependencies
-        ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
-
-        const ajvValidate = ajv.addSchema(schema).getSchema('#/definitions/A');
-        const valid = ajvValidate({b: 6, c: '1234'});
-        // if (! valid) {
-        //     console.log(ajvValidate.errors);
-        // }
-        expect(1).toEqual(1);
-    });
     it("foo-4", function() {
         const z = compile(`
             type Foo = string;
@@ -305,7 +280,7 @@ describe("foo", function() {
                 a: Foo;
                 @range(3, 5)
                 b: number;
-                @maxLength(3)  // TODO: BUG: $ref: keywords ignored in schema at path "#/properties/c"
+                @maxLength(3)
                 c: Foo;
             }
         `);

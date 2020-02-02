@@ -409,5 +409,24 @@ describe("compiler-8", function() {
             }]);
         }
     });
-    // TODO: error message decorators + error reporting
+    it("compiler-error-reporting-reporter-3", function() {
+        const schemas = [compile(`
+            export type A = string;
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+                errorMessages: mkmsgobj('G'),
+            };
+            expect(validate(1, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: 'G:typeUnmatched: ? A string',
+                dataPath: 'A',
+                constraints: {},
+                value: 1,
+            }]);
+        }
+    });
 });
