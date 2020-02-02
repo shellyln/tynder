@@ -522,7 +522,7 @@ enum Baz {
 ### Primitive types
 
 ```ts
-type A = number | bigint | string | boolean;
+type A = number | integer | bigint | string | boolean;
 ```
 
 

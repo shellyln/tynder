@@ -302,6 +302,8 @@ export function primitive(typeName: PrimitiveValueTypeNames |
         });
     case 'number':
         // FALL_THRU
+    case 'integer':
+        // FALL_THRU
     case 'bigint':
         // FALL_THRU
     case 'string':
@@ -329,6 +331,8 @@ export function primitive(typeName: PrimitiveValueTypeNames |
         }));
     case 'number?':
         // FALL_THRU
+    case 'integer?':
+        // FALL_THRU
     case 'bigint?':
         // FALL_THRU
     case 'string?':
@@ -345,7 +349,7 @@ export function primitive(typeName: PrimitiveValueTypeNames |
     default:
         throw new Error(`Unknown primitive type assertion: ${typeName}`);
     }
-    // TODO: Function, integer, DateStr, DateTimeStr, Funtion?, integer?, DateStr?, DateTimeStr?
+    // TODO: Function, DateStr, DateTimeStr, Funtion?, DateStr?, DateTimeStr?
 }
 
 

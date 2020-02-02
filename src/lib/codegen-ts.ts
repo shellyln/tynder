@@ -40,8 +40,13 @@ function formatTypeScriptCodeDocComment(ty: TypeAssertion | string, nestLevel: n
 
 
 function generateTypeScriptCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenContext) {
-    // TODO: Function, integer, DateStr, DateTimeStr
-    return ty.primitiveName;
+    // TODO: Function, DateStr, DateTimeStr
+    switch (ty.primitiveName) {
+    case 'integer':
+        return 'number';
+    default:
+        return ty.primitiveName;
+    }
 }
 
 

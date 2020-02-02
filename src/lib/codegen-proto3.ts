@@ -42,6 +42,8 @@ function generateProto3CodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenCon
     switch (ty.primitiveName) {
     case 'number':
         return 'double';
+    case 'integer':
+        return 'int32';
     case 'bigint':
         return 'string';
     case 'string':

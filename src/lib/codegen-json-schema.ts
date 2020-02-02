@@ -218,6 +218,13 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
                     };
                     return addMetaInfo(ret, ty);
                 }
+            case 'integer':
+                {
+                    const ret: JsonSchema.JsonSchemaNumberAssertion = {
+                        type: 'integer',
+                    };
+                    return addMetaInfo(ret, ty);
+                }
             case 'string':
                 {
                     const ret: JsonSchema.JsonSchemaStringAssertion = {
@@ -233,7 +240,7 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
                     return addMetaInfo(ret, ty);
                 }
             }
-            // TODO: Function, integer, DateStr, DateTimeStr
+            // TODO: Function, DateStr, DateTimeStr
         }
     case 'primitive-value':
         {
