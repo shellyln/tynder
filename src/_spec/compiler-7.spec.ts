@@ -941,5 +941,4 @@ describe("compiler-7", function() {
             }]);
         }
     });
-    // TODO: error message decorators + error reporting
 });
