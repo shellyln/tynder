@@ -149,18 +149,55 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
     case 'object':
         {
             const properties: JsonSchema.JsonSchemaObjectPropertyAssertion = {};
+            const patternProperties: JsonSchema.JsonSchemaObjectPropertyAssertion = {};
+            let patternPropsCount = 0;
+            const required: string[] = [];
             for (const m of ty.members) {
-                const z = generateJsonSchemaInner(schema, m[1], nestLevel + 1);
+                const z = generateJsonSchemaInner(schema,
+                    m[1].kind === 'optional' ?
+                        m[1].optional :
+                        m[1],
+                    nestLevel + 1);
+
                 if (m[3]) {
                     z.description = m[3];
                 } else {
                     delete z.description;
                 }
                 properties[m[0]] = z;
+
+                if (m[1].kind !== 'optional') {
+                    required.push(m[0]);
+                }
+            }
+            for (const m of ty.additionalProps || []) {
+                const z = generateJsonSchemaInner(schema, m[1], nestLevel + 1);
+                if (m[3]) {
+                    z.description = m[3];
+                } else {
+                    delete z.description;
+                }
+                for (const k of m[0]) {
+                    patternPropsCount++;
+                    switch (k) {
+                    case 'number':
+                        patternProperties['^[0-9]+$'] = z;
+                        break;
+                    case 'string':
+                        patternProperties['^.+$'] = z;
+                        break;
+                    default:
+                        patternProperties[k.source] = z;
+                        break;
+                    }
+                }
             }
             const ret: JsonSchema.JsonSchemaObjectAssertion = {
                 type: 'object',
                 properties,
+                ...(0 < patternPropsCount ? {patternProperties} : {}),
+                ...(0 < required.length ? {required} : {}),
+                additionalProperties: false,
             };
             return addMetaInfo(ret, ty);
         }
