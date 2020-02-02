@@ -21,6 +21,7 @@ describe("compiler-2", function() {
                 a5: null;
                 a6: undefined;
                 a7: X;
+                a8: integer;
             }
         `);
         {
@@ -70,6 +71,11 @@ describe("compiler-2", function() {
                         kind: 'primitive',
                         primitiveName: 'string',
                     }],
+                    ['a8', {
+                        name: 'a8',
+                        kind: 'primitive',
+                        primitiveName: 'integer',
+                    }],
                 ],
             };
             const ty = getType(schema, 'Foo');
@@ -83,6 +89,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual({value: v});
             }
@@ -95,6 +102,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -107,6 +115,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -119,6 +128,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -131,6 +141,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -143,6 +154,7 @@ describe("compiler-2", function() {
                     // a5
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -155,6 +167,7 @@ describe("compiler-2", function() {
                     a5: null,
                     // a6
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -167,6 +180,20 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     // a7
+                    a8: 5,
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                    // a8
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -179,6 +206,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -191,6 +219,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -203,6 +232,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -215,6 +245,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -227,6 +258,7 @@ describe("compiler-2", function() {
                     a5: void 0, // wrong
                     a6: void 0,
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -239,6 +271,7 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: null, // wrong
                     a7: '',
+                    a8: 5,
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -251,6 +284,20 @@ describe("compiler-2", function() {
                     a5: null,
                     a6: void 0,
                     a7: 99, // wrong
+                    a8: 5,
+                };
+                expect(validate<any>(v, ty)).toEqual(null);
+            }
+            {
+                const v = {
+                    a1: 3,
+                    a2: BigInt(5),
+                    a3: 'C',
+                    a4: true,
+                    a5: null,
+                    a6: void 0,
+                    a7: '',
+                    a8: 5.5, // wrong
                 };
                 expect(validate<any>(v, ty)).toEqual(null);
             }
@@ -267,6 +314,7 @@ describe("compiler-2", function() {
                 a5?: null;
                 a6?: undefined;
                 a7?: X;
+                a8?: integer;
             }
         `), compile(`
             type X = string;
@@ -278,6 +326,7 @@ describe("compiler-2", function() {
                 a5: null,
                 a6: undefined,
                 a7: X,
+                a8: integer,
             }>;
         `), compile(`
             type X = string;
@@ -289,6 +338,7 @@ describe("compiler-2", function() {
                 a5?: null,
                 a6?: undefined,
                 a7?: X,
+                a8?: integer,
             }>;
         `), compile(`
             type X = string;
@@ -300,6 +350,7 @@ describe("compiler-2", function() {
                 a5: null;
                 a6: undefined;
                 a7: X;
+                a8: integer;
             }
             type Foo = Partial<Y>;
         `), compile(`
@@ -312,6 +363,7 @@ describe("compiler-2", function() {
                 a5?: null;
                 a6?: undefined;
                 a7?: X;
+                a8?: integer;
             }
             type Foo = Partial<Y>;
         `)];
@@ -398,6 +450,14 @@ describe("compiler-2", function() {
                                 primitiveName: 'string',
                             }
                         }],
+                        ['a8', {
+                            name: 'a8',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'integer',
+                            }
+                        }],
                     ],
                 };
                 const ty = getType(schema, 'Foo');
@@ -411,6 +471,7 @@ describe("compiler-2", function() {
                         a5: null,
                         a6: void 0,
                         a7: '',
+                        a8: 5,
                     };
                     expect(validate<any>(v, ty)).toEqual({value: v});
                 }
@@ -438,10 +499,12 @@ describe("compiler-2", function() {
             }
             interface Foo extends P, R {
                 a7: X;
+                a8: integer;
             }
         `), compile(`
             interface Foo extends P, R {
                 a7: X;
+                a8: integer;
             }
             interface R extends Q {
                 a5: null;
@@ -537,6 +600,11 @@ describe("compiler-2", function() {
                                 kind: 'primitive',
                                 primitiveName: 'string',
                             }],
+                            ['a8', {
+                                name: 'a8',
+                                kind: 'primitive',
+                                primitiveName: 'integer',
+                            }],
                         ] as any[]),
                         ...tyP.members.map(x => [x[0], x[1], true]),
                         ...tyR.members.map(x => [x[0], x[1], true]),
@@ -553,6 +621,7 @@ describe("compiler-2", function() {
                         a5: null,
                         a6: void 0,
                         a7: '',
+                        a8: 5,
                     };
                     expect(validate<any>(v, ty)).toEqual({value: v});
                 }
