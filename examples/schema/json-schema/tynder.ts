@@ -170,114 +170,45 @@ const schema = {
       "type": "object",
       "properties": {
         "invalidDefinition": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "required": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "repeatQtyUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "sequenceUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "valueRangeUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "valuePatternUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "valueLengthUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "valueUnmatched": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "TypeAssertionErrorMessageConstraints": {
       "type": "object",
       "properties": {
         "minValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -285,135 +216,10 @@ const schema = {
           ]
         },
         "maxValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "greaterThanValue": {
-          "oneOf": [
-            {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "lessThanValue": {
-          "oneOf": [
-            {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minLength": {
-          "oneOf": [
-            {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "maxLength": {
-          "oneOf": [
-            {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "min": {
-          "oneOf": [
-            {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "max": {
-          "oneOf": [
-            {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "pattern": {
-          "oneOf": [
             {
               "type": "string"
             },
@@ -421,8 +227,78 @@ const schema = {
               "type": "null"
             }
           ]
+        },
+        "greaterThanValue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lessThanValue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "minLength": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxLength": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pattern": {
+          "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "TypeAssertionErrorMessage": {
       "type": "object",
@@ -440,101 +316,53 @@ const schema = {
           "$ref": "#/definitions/TypeAssertionErrorMessageConstraints"
         },
         "value": {
-          "oneOf": [
-            {
-              "type": [
-                "null",
-                "number",
-                "string",
-                "boolean",
-                "array",
-                "object"
-              ]
-            },
-            {
-              "type": "null"
-            }
+          "type": [
+            "null",
+            "number",
+            "string",
+            "boolean",
+            "array",
+            "object"
           ]
         }
-      }
+      },
+      "required": [
+        "code",
+        "message",
+        "dataPath",
+        "constraints"
+      ],
+      "additionalProperties": false
     },
     "TypeAssertionBase": {
       "type": "object",
       "properties": {
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "NeverTypeAssertion": {
       "type": "object",
@@ -546,79 +374,34 @@ const schema = {
           ]
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
     },
     "AnyTypeAssertion": {
       "type": "object",
@@ -630,79 +413,34 @@ const schema = {
           ]
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
     },
     "UnknownTypeAssertion": {
       "type": "object",
@@ -714,97 +452,45 @@ const schema = {
           ]
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
     },
     "PrimitiveTypeAssertionConstraints": {
       "type": "object",
       "properties": {
         "minValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -812,19 +498,12 @@ const schema = {
           ]
         },
         "maxValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -832,19 +511,12 @@ const schema = {
           ]
         },
         "greaterThanValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -852,19 +524,12 @@ const schema = {
           ]
         },
         "lessThanValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -872,16 +537,9 @@ const schema = {
           ]
         },
         "minLength": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
             },
             {
               "type": "null"
@@ -889,16 +547,9 @@ const schema = {
           ]
         },
         "maxLength": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
             },
             {
               "type": "null"
@@ -906,23 +557,17 @@ const schema = {
           ]
         },
         "pattern": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "$ref": "#/definitions/RegExp"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "$ref": "#/definitions/RegExp"
             },
             {
               "type": "null"
             }
           ]
         }
-      }
+      },
+      "additionalProperties": false
     },
     "PrimitiveTypeAssertion": {
       "type": "object",
@@ -937,92 +582,36 @@ const schema = {
           "$ref": "#/definitions/PrimitiveValueTypeNames"
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         },
         "minValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -1030,19 +619,12 @@ const schema = {
           ]
         },
         "maxValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -1050,19 +632,12 @@ const schema = {
           ]
         },
         "greaterThanValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -1070,19 +645,12 @@ const schema = {
           ]
         },
         "lessThanValue": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
+            },
+            {
+              "type": "string"
             },
             {
               "type": "null"
@@ -1090,16 +658,9 @@ const schema = {
           ]
         },
         "minLength": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
             },
             {
               "type": "null"
@@ -1107,16 +668,9 @@ const schema = {
           ]
         },
         "maxLength": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "type": "number"
             },
             {
               "type": "null"
@@ -1124,23 +678,21 @@ const schema = {
           ]
         },
         "pattern": {
-          "oneOf": [
+          "anyOf": [
             {
-              "anyOf": [
-                {
-                  "$ref": "#/definitions/RegExp"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "$ref": "#/definitions/RegExp"
             },
             {
               "type": "null"
             }
           ]
         }
-      }
+      },
+      "required": [
+        "kind",
+        "primitiveName"
+      ],
+      "additionalProperties": false
     },
     "PrimitiveValueTypeAssertion": {
       "type": "object",
@@ -1155,79 +707,35 @@ const schema = {
           "$ref": "#/definitions/PrimitiveValueTypes"
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
     },
     "RepeatedAssertionConstraints": {
       "type": "object",
@@ -1252,7 +760,12 @@ const schema = {
             }
           ]
         }
-      }
+      },
+      "required": [
+        "min",
+        "max"
+      ],
+      "additionalProperties": false
     },
     "RepeatedAssertion": {
       "type": "object",
@@ -1267,77 +780,28 @@ const schema = {
           "$ref": "#/definitions/TypeAssertion"
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         },
         "min": {
           "anyOf": [
@@ -1359,7 +823,14 @@ const schema = {
             }
           ]
         }
-      }
+      },
+      "required": [
+        "kind",
+        "repeated",
+        "min",
+        "max"
+      ],
+      "additionalProperties": false
     },
     "SpreadAssertion": {
       "type": "object",
@@ -1374,77 +845,28 @@ const schema = {
           "$ref": "#/definitions/TypeAssertion"
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         },
         "min": {
           "anyOf": [
@@ -1466,7 +888,14 @@ const schema = {
             }
           ]
         }
-      }
+      },
+      "required": [
+        "kind",
+        "spread",
+        "min",
+        "max"
+      ],
+      "additionalProperties": false
     },
     "SequenceAssertion": {
       "type": "object",
@@ -1484,79 +913,35 @@ const schema = {
           }
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "sequence"
+      ],
+      "additionalProperties": false
     },
     "OneOfAssertion": {
       "type": "object",
@@ -1574,79 +959,35 @@ const schema = {
           }
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "oneOf"
+      ],
+      "additionalProperties": false
     },
     "OptionalAssertion": {
       "type": "object",
@@ -1661,79 +1002,35 @@ const schema = {
           "$ref": "#/definitions/TypeAssertion"
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "optional"
+      ],
+      "additionalProperties": false
     },
     "EnumAssertion": {
       "type": "object",
@@ -1778,79 +1075,35 @@ const schema = {
           }
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "values"
+      ],
+      "additionalProperties": false
     },
     "ObjectAssertionMember": {
       "anyOf": [
@@ -1994,112 +1247,54 @@ const schema = {
           }
         },
         "additionalProps": {
-          "oneOf": [
-            {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AdditionalPropsMember"
-              }
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AdditionalPropsMember"
+          }
         },
         "baseTypes": {
-          "oneOf": [
-            {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/ObjectAssertion"
-                  },
-                  {
-                    "$ref": "#/definitions/AssertionSymlink"
-                  }
-                ]
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/ObjectAssertion"
+              },
+              {
+                "$ref": "#/definitions/AssertionSymlink"
               }
-            },
-            {
-              "type": "null"
-            }
-          ]
+            ]
+          }
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "members"
+      ],
+      "additionalProperties": false
     },
     "AssertionSymlink": {
       "type": "object",
@@ -2114,79 +1309,35 @@ const schema = {
           "type": "string"
         },
         "messageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "message": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "messages": {
           "$ref": "#/definitions/ErrorMessages"
         },
         "name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "typeName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "docComment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "passThruCodeBlock": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "noOutput": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "kind",
+        "symlinkTargetName"
+      ],
+      "additionalProperties": false
     },
     "TypeAssertion": {
       "anyOf": [
@@ -2235,24 +1386,10 @@ const schema = {
       "type": "object",
       "properties": {
         "checkAll": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         },
         "noAdditionalProps": {
-          "oneOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "boolean"
         },
         "errorMessages": {
           "$ref": "#/definitions/ErrorMessages"
@@ -2335,7 +1472,12 @@ const schema = {
         "schema": {
           "$ref": "#/definitions/TypeAssertionMap"
         }
-      }
+      },
+      "required": [
+        "errors",
+        "typeStack"
+      ],
+      "additionalProperties": false
     },
     "TypeAssertionSetValue": {
       "type": "object",
@@ -2349,7 +1491,13 @@ const schema = {
         "resolved": {
           "type": "boolean"
         }
-      }
+      },
+      "required": [
+        "ty",
+        "exported",
+        "resolved"
+      ],
+      "additionalProperties": false
     },
     "TypeAssertionMap": {
       "type": [
@@ -2373,7 +1521,12 @@ const schema = {
             "type": "string"
           }
         }
-      }
+      },
+      "required": [
+        "nestLevel",
+        "symlinkStack"
+      ],
+      "additionalProperties": false
     },
     "CodegenContext": {
       "type": "object",
@@ -2384,7 +1537,11 @@ const schema = {
         "schema": {
           "$ref": "#/definitions/TypeAssertionMap"
         }
-      }
+      },
+      "required": [
+        "nestLevel"
+      ],
+      "additionalProperties": false
     }
   }
 };
