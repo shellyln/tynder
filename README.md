@@ -55,6 +55,7 @@ npm install --save tynder
 >            --experimental-json-modules \
 >            app.mjs
 >       ```
+>
 > * Use `import` statement:
 >     * ```ts
 >       import { ValidationContext }       from 'tynder/modules/types';
@@ -62,6 +63,8 @@ npm install --save tynder
 >       import { validate,
 >                getType }                 from 'tynder/modules/validator';
 >       ```
+> * Add package.json `{ "type": "module" }` or `{ "type": "commonjs" }` to your source directories.
+>
 > See [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart) and
 > [Node.js Documentation - ECMAScript Modules](https://nodejs.org/api/esm.html).
 
