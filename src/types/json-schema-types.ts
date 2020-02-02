@@ -25,7 +25,7 @@ export interface JsonSchemaUnknownAssertion extends JsonSchemaAssertionBase {
 }
 
 export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase {
-    type: 'number' | Array<'number' | 'null'>;
+    type: 'number' | 'integer' | Array<'number' | 'integer' | 'null'>;
     multipleOf?: number;
     maximum?: number;
     exclusiveMaximum?: number;

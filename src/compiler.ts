@@ -358,8 +358,8 @@ const primitiveValueNoNullUndefined =
 
 const primitiveTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
-        first(seq('number?'), seq('bigint?'), seq('string?'), seq('boolean?'), // TODO: '?' is allowed in the sequence assertion
-              seq('number'), seq('bigint'), seq('string'), seq('boolean'), )); // TODO: function
+        first(seq('number?'), seq('integer?'), seq('bigint?'), seq('string?'), seq('boolean?'), // TODO: '?' is allowed in the sequence assertion
+              seq('number'), seq('integer'), seq('bigint'), seq('string'), seq('boolean'), ));  // TODO: function
 
 const additionalPropPrimitiveTypeName =
     first(seq('number'), seq('string'));

@@ -21,11 +21,12 @@ describe("compiler-1", function() {
             type BarB = 7n;
             type BarC = 'XB';
             type BarD = true;
+            type BazA = integer;
         `);
 
         {
             expect(Array.from(schema.keys())).toEqual([
-                'FooA', 'FooB', 'FooC', 'FooD', 'FooE', 'FooF', 'BarA', 'BarB', 'BarC', 'BarD',
+                'FooA', 'FooB', 'FooC', 'FooD', 'FooE', 'FooF', 'BarA', 'BarB', 'BarC', 'BarD', 'BazA',
             ]);
         }
         for (const ty of [getType(deserialize(serialize(schema)), 'FooA'), getType(schema, 'FooA')]) {
@@ -38,6 +39,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<number>(0, ty)).toEqual({value: 0});
             expect(validate<number>(1, ty)).toEqual({value: 1});
+            expect(validate<number>(1.1, ty)).toEqual({value: 1.1});
             expect(validate<number>(BigInt(0), ty)).toEqual(null);
             expect(validate<number>(BigInt(1), ty)).toEqual(null);
             expect(validate<number>('', ty)).toEqual(null);
@@ -63,6 +65,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<BigInt>(0, ty)).toEqual(null);
             expect(validate<BigInt>(1, ty)).toEqual(null);
+            expect(validate<BigInt>(1.1, ty)).toEqual(null);
             expect(validate<BigInt>(BigInt(0), ty)).toEqual({value: BigInt(0)});
             expect(validate<BigInt>(BigInt(1), ty)).toEqual({value: BigInt(1)});
             expect(validate<BigInt>('', ty)).toEqual(null);
@@ -88,6 +91,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<string>(0, ty)).toEqual(null);
             expect(validate<string>(1, ty)).toEqual(null);
+            expect(validate<string>(1.1, ty)).toEqual(null);
             expect(validate<string>(BigInt(0), ty)).toEqual(null);
             expect(validate<string>(BigInt(1), ty)).toEqual(null);
             expect(validate<string>('', ty)).toEqual({value: ''});
@@ -113,6 +117,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<boolean>(0, ty)).toEqual(null);
             expect(validate<boolean>(1, ty)).toEqual(null);
+            expect(validate<boolean>(1.1, ty)).toEqual(null);
             expect(validate<boolean>(BigInt(0), ty)).toEqual(null);
             expect(validate<boolean>(BigInt(1), ty)).toEqual(null);
             expect(validate<boolean>('', ty)).toEqual(null);
@@ -138,6 +143,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<null>(0, ty)).toEqual(null);
             expect(validate<null>(1, ty)).toEqual(null);
+            expect(validate<null>(1.1, ty)).toEqual(null);
             expect(validate<null>(BigInt(0), ty)).toEqual(null);
             expect(validate<null>(BigInt(1), ty)).toEqual(null);
             expect(validate<null>('', ty)).toEqual(null);
@@ -163,6 +169,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<undefined>(0, ty)).toEqual(null);
             expect(validate<undefined>(1, ty)).toEqual(null);
+            expect(validate<undefined>(1.1, ty)).toEqual(null);
             expect(validate<undefined>(BigInt(0), ty)).toEqual(null);
             expect(validate<undefined>(BigInt(1), ty)).toEqual(null);
             expect(validate<undefined>('', ty)).toEqual(null);
@@ -189,6 +196,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<number>(0, ty)).toEqual(null);
             expect(validate<number>(1, ty)).toEqual(null);
+            expect(validate<number>(1.1, ty)).toEqual(null);
             expect(validate<number>(BigInt(0), ty)).toEqual(null);
             expect(validate<number>(BigInt(1), ty)).toEqual(null);
             expect(validate<number>('', ty)).toEqual(null);
@@ -215,6 +223,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<BigInt>(0, ty)).toEqual(null);
             expect(validate<BigInt>(1, ty)).toEqual(null);
+            expect(validate<BigInt>(1.1, ty)).toEqual(null);
             expect(validate<BigInt>(BigInt(0), ty)).toEqual(null);
             expect(validate<BigInt>(BigInt(1), ty)).toEqual(null);
             expect(validate<BigInt>('', ty)).toEqual(null);
@@ -241,6 +250,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<string>(0, ty)).toEqual(null);
             expect(validate<string>(1, ty)).toEqual(null);
+            expect(validate<string>(1.1, ty)).toEqual(null);
             expect(validate<string>(BigInt(0), ty)).toEqual(null);
             expect(validate<string>(BigInt(1), ty)).toEqual(null);
             expect(validate<string>('', ty)).toEqual(null);
@@ -267,6 +277,7 @@ describe("compiler-1", function() {
             expect(ty).toEqual(rhs);
             expect(validate<boolean>(0, ty)).toEqual(null);
             expect(validate<boolean>(1, ty)).toEqual(null);
+            expect(validate<boolean>(1.1, ty)).toEqual(null);
             expect(validate<boolean>(BigInt(0), ty)).toEqual(null);
             expect(validate<boolean>(BigInt(1), ty)).toEqual(null);
             expect(validate<boolean>('', ty)).toEqual(null);
@@ -282,6 +293,32 @@ describe("compiler-1", function() {
             expect(validate<boolean>('XB', ty)).toEqual(null);
             expect(validate<boolean>(true, ty)).toEqual({value: true});
         }
+        for (const ty of [getType(deserialize(serialize(schema)), 'BazA'), getType(schema, 'BazA')]) {
+            const rhs: TypeAssertion = {
+                name: 'BazA',
+                typeName: 'BazA',
+                kind: 'primitive',
+                primitiveName: 'integer',
+            };
+            expect(ty).toEqual(rhs);
+            expect(validate<number>(0, ty)).toEqual({value: 0});
+            expect(validate<number>(1, ty)).toEqual({value: 1});
+            expect(validate<number>(1.1, ty)).toEqual(null);
+            expect(validate<number>(BigInt(0), ty)).toEqual(null);
+            expect(validate<number>(BigInt(1), ty)).toEqual(null);
+            expect(validate<number>('', ty)).toEqual(null);
+            expect(validate<number>('1', ty)).toEqual(null);
+            expect(validate<number>(false, ty)).toEqual(null);
+            expect(validate<number>(true, ty)).toEqual(null);
+            expect(validate<number>(null, ty)).toEqual(null);
+            expect(validate<number>(void 0, ty)).toEqual(null);
+            expect(validate<number>({}, ty)).toEqual(null);
+            expect(validate<number>([], ty)).toEqual(null);
+            expect(validate<number>(3, ty)).toEqual({value: 3});
+            expect(validate<number>(BigInt(7), ty)).toEqual(null);
+            expect(validate<number>('XB', ty)).toEqual(null);
+            expect(validate<number>(true, ty)).toEqual(null);
+        }
     });
     it("compiler-array-of-primitive", function() {
         const schemas = [compile(`
@@ -295,6 +332,7 @@ describe("compiler-1", function() {
             type BarB = 7n[];
             type BarC = 'XB'[];
             type BarD = true[];
+            type BazA = integer[];
         `), compile(`
             type FooA = Array<number>;
             type FooB = Array<bigint>;
@@ -306,12 +344,13 @@ describe("compiler-1", function() {
             type BarB = Array<7n>;
             type BarC = Array<'XB'>;
             type BarD = Array<true>;
+            type BazA = Array<integer>;
         `)];
 
         for (const schema of schemas) {
             {
                 expect(Array.from(schema.keys())).toEqual([
-                    'FooA', 'FooB', 'FooC', 'FooD', 'FooE', 'FooF', 'BarA', 'BarB', 'BarC', 'BarD',
+                    'FooA', 'FooB', 'FooC', 'FooD', 'FooE', 'FooF', 'BarA', 'BarB', 'BarC', 'BarD', 'BazA',
                 ]);
             }
             {
@@ -341,6 +380,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual({value: [0]});
+                expect(validate<any>([1.1], ty)).toEqual({value: [1.1]});
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -378,6 +418,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual({value: [BigInt(0)]});
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -415,6 +456,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual({value: ['']});
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -452,6 +494,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual({value: [false]});
@@ -489,6 +532,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -526,6 +570,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -563,6 +608,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -600,6 +646,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -637,6 +684,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -674,6 +722,7 @@ describe("compiler-1", function() {
                 expect(validate<any>({}, ty)).toEqual(null);
                 expect(validate<any>([], ty)).toEqual({value: []});
                 expect(validate<any>([0], ty)).toEqual(null);
+                expect(validate<any>([1.1], ty)).toEqual(null);
                 expect(validate<any>([BigInt(0)], ty)).toEqual(null);
                 expect(validate<any>([''], ty)).toEqual(null);
                 expect(validate<any>([false], ty)).toEqual(null);
@@ -683,6 +732,45 @@ describe("compiler-1", function() {
                 expect(validate<any>([BigInt(7)], ty)).toEqual(null);
                 expect(validate<any>(['XB'], ty)).toEqual(null);
                 expect(validate<any>([true], ty)).toEqual({value: [true]});
+            }
+            {
+                const rhs: TypeAssertion = {
+                    name: 'BazA',
+                    typeName: 'BazA',
+                    kind: 'repeated',
+                    min: null,
+                    max: null,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'integer',
+                    },
+                };
+                const ty = getType(schema, 'BazA');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>(0, ty)).toEqual(null);
+                expect(validate<any>(1, ty)).toEqual(null);
+                expect(validate<any>(1.1, ty)).toEqual(null);
+                expect(validate<any>(BigInt(0), ty)).toEqual(null);
+                expect(validate<any>(BigInt(1), ty)).toEqual(null);
+                expect(validate<any>('', ty)).toEqual(null);
+                expect(validate<any>('1', ty)).toEqual(null);
+                expect(validate<any>(false, ty)).toEqual(null);
+                expect(validate<any>(true, ty)).toEqual(null);
+                expect(validate<any>(null, ty)).toEqual(null);
+                expect(validate<any>(void 0, ty)).toEqual(null);
+                expect(validate<any>({}, ty)).toEqual(null);
+                expect(validate<any>([], ty)).toEqual({value: []});
+                expect(validate<any>([0], ty)).toEqual({value: [0]});
+                expect(validate<any>([1.1], ty)).toEqual(null);
+                expect(validate<any>([BigInt(0)], ty)).toEqual(null);
+                expect(validate<any>([''], ty)).toEqual(null);
+                expect(validate<any>([false], ty)).toEqual(null);
+                expect(validate<any>([null], ty)).toEqual(null);
+                expect(validate<any>([void 0], ty)).toEqual(null);
+                expect(validate<any>([3], ty)).toEqual({value: [3]});
+                expect(validate<any>([BigInt(7)], ty)).toEqual(null);
+                expect(validate<any>(['XB'], ty)).toEqual(null);
+                expect(validate<any>([true], ty)).toEqual(null);
             }
         }
     });

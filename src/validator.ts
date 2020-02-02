@@ -63,11 +63,20 @@ function validatePrimitiveTypeAssertion<T>(
             reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
             return null;
         }
+    } else if (ty.primitiveName === 'integer') {
+        if (typeof data !== 'number') {
+            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+            return null;
+        }
+        if (Math.trunc(data) !== data) {
+            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+            return null;
+        }
     } else if (typeof data !== ty.primitiveName) {
         reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
         return null;
     }
-    // TODO: Function, integer, DateStr, DateTimeStr
+    // TODO: Function, DateStr, DateTimeStr
 
     let err = false;
     let valueRangeErr = false;

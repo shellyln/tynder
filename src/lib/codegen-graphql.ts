@@ -40,6 +40,8 @@ function generateGraphQlCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenCo
     switch (ty.primitiveName) {
     case 'number':
         return 'Float';
+    case 'integer':
+        return 'Int';
     case 'bigint':
         return 'String';
     case 'string':
@@ -49,7 +51,7 @@ function generateGraphQlCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenCo
     case 'undefined': case 'null': default:
         return 'Any'; // TODO: Any is invalid type.
     }
-    // TODO: Function, integer, DateStr, DateTimeStr
+    // TODO: Function, DateStr, DateTimeStr
 }
 
 
