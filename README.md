@@ -39,11 +39,30 @@ Validate data in browsers, node.js back-end servers, and various language platfo
     * A boilerplate for React client + Express server project using Tynder data validation library.
 
 
+
 ## Install
 
 ```sh
 npm install --save tynder
 ```
+
+> NOTICE:  
+> To use without webpack on Node.js, enabling ES Modules.
+> * Add flags:
+>     * ```bash
+>       node --experimental-modules \
+>            --es-module-specifier-resolution=node \
+>            --experimental-json-modules \
+>            app.mjs
+>       ```
+> * Use `import` statement:
+>     * ```ts
+>       import { ValidationContext }       from 'tynder/modules/types';
+>       import { deserializeFromObject }   from 'tynder/modules/serializer';
+>       import { validate,
+>                getType }                 from 'tynder/modules/validator';
+>       ```
+> See [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart).
 
 
 
@@ -252,11 +271,22 @@ import mySchema_                 from './path/to/compiled/my-schema.ts';
 const mySchema = deserializeFromObject(mySchema_);
 ```
 
+
 ### From object (require JSON file)
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
+// import { createRequireFromPath } from 'module';
+// import { fileURLToPath } from 'url';
+// const require = createRequireFromPath(fileURLToPath(import.meta.url));
 const mySchema = deserializeFromObject(require('./path/to/compiled/my-schema.json'));
 ```
+or
+```ts
+import { deserializeFromObject } from 'tynder/modules/lib/serializer';
+import mySchemaJson              from './path/to/compiled/my-schema.json';
+const mySchema = deserializeFromObject(mySchemaJson);
+```
+
 
 ### From text
 ```ts
