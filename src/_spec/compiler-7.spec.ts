@@ -662,7 +662,7 @@ describe("compiler-7", function() {
             expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
-                message: '"repeated item of a1" of "A" should be type "string".',
+                message: '"repeated item of a1" of "A" should be type "string".', // TODO:
                 dataPath: 'A.a1.(0:repeated)',
                 constraints: {},
                 value: 1,
@@ -720,7 +720,7 @@ describe("compiler-7", function() {
             expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
-                message: '"sequence item of a1" of "A" should be type "string".',
+                message: '"sequence item of a1" of "A" should be type "string".', // TODO:
                 dataPath: 'A.a1.(0:sequence)',
                 constraints: {},
                 value: 1,
@@ -875,7 +875,6 @@ describe("compiler-7", function() {
                 schema,
             };
             expect(validate({a1: 4}, getType(schema, 'A'), ctx)).toEqual(null);
-            // console.log(JSON.stringify(ctx.errors, null, 4));
             expect(ctx.errors).toEqual([{
                 code: 'ValueUnmatched',
                 message: 'A.a1:valueUnmatched: a1 A 5',
@@ -906,8 +905,8 @@ describe("compiler-7", function() {
             };
             expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
-                code: 'TypeUnmatched',
-                message: '"sequence item of a1" of "A" should be type "string".',
+                code: 'TypeUnmatched',                                            // TODO:
+                message: '"sequence item of a1" of "A" should be type "string".', // TODO:
                 dataPath: 'A.a1.(0:sequence)',
                 constraints: {min: 3, max: 5},
             }]);
@@ -935,9 +934,65 @@ describe("compiler-7", function() {
             expect(validate({a1: ['1', '2']}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
                 code: 'RepeatQtyUnmatched',
-                message: '"sequence item of a1" of "A" should repeat 3..5 times.',
+                message: '"sequence item of a1" of "A" should repeat 3..5 times.', // TODO:
                 dataPath: 'A.a1.(2:sequence)',
                 constraints: {min: 3, max: 5},
+            }]);
+        }
+    });
+    it("compiler-error-reporting-reporter-1-7c", function() {
+        const schemas = [compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: [string?];
+            }
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: [string?];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'SequenceUnmatched',
+                message: 'A.a1:sequenceUnmatched: a1 A',
+                dataPath: 'A.a1',
+                constraints: {},
+            }]);
+        }
+    });
+    it("compiler-error-reporting-reporter-1-7d", function() {
+        const schemas = [compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1: [string?];
+            }
+        `), compile(`
+            @msg(${mkmsg('A')})
+            export interface A {
+                @msg(${mkmsg('A.a1')})
+                a1?: [string?];
+            }
+        `)];
+        for (const schema of schemas) {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                schema,
+            };
+            expect(validate({a1: ['1', '2']}, getType(schema, 'A'), ctx)).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'RepeatQtyUnmatched',
+                message: '"sequence item of a1" of "A" should repeat 0..1 times.', // TODO:
+                dataPath: 'A.a1.(2:sequence)',
+                constraints: {},
             }]);
         }
     });

@@ -229,7 +229,7 @@ export function formatErrorMessage(
             findTopNamedAssertion(ctx)?.name || '?'}`));
 
     ret = ret.replace(/%{parentType}/g, escapeString(
-        findTopObjectAssertion(ctx)?.typeName || '?'));
+        findTopObjectAssertion(ctx)?.typeName || ty.typeName || '?'));
 
     ret = ret.replace(/%{dataPath}/g, values.dataPath);
 
