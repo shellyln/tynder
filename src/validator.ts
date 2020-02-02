@@ -20,6 +20,7 @@ import { ErrorTypes,
          ValidationContext,
          TypeAssertionMap }    from './types';
 import { ValidationError }     from './lib/errors';
+import { isUnsafeVarNames }    from './lib/util';
 import { reportError,
          reportErrorWithPush } from './lib/reporter';
 import { resolveSymbols }      from './lib/resolver';
@@ -399,6 +400,9 @@ function validateObjectAssertion<T>(
 
                 if (ret) {
                     if (retVal) {
+                        if (isUnsafeVarNames(retVal, x[0])) {
+                            continue;
+                        }
                         retVal[x[0]] = ret.value;
                     }
                 } else {
@@ -481,9 +485,12 @@ function validateObjectAssertion<T>(
                         } : at, ctx);
                     if (ret) {
                         if (retVal) {
-                            retVal[m] = ret.value;
                             hasError = false;
                             ctx.errors.length = savedErrLen;
+                            if (isUnsafeVarNames(retVal, m)) {
+                                continue;
+                            }
+                            retVal[m] = ret.value;
                         }
                         break;
                     } else {
