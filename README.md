@@ -62,7 +62,8 @@ npm install --save tynder
 >       import { validate,
 >                getType }                 from 'tynder/modules/validator';
 >       ```
-> See [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart).
+> See [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart) and
+> [Node.js Documentation - ECMAScript Modules](https://nodejs.org/api/esm.html).
 
 
 
