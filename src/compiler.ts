@@ -979,7 +979,12 @@ export function compile(s: string) {
         }
 
         if (! mapTyToTySet.has(ret)) {
-            ret = operators.withName(operators.withTypeName(ret, sym), sym);
+            const originalTypeName = ret.typeName;
+            ret = operators.withName(operators.withTypeName(
+                originalTypeName ?
+                    operators.withOriginalTypeName(ret, originalTypeName) :
+                    ret,
+                sym), sym);
         }
 
         const tySet = mapTyToTySet.has(ret) ?

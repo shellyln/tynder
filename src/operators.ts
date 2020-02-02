@@ -650,6 +650,14 @@ export function withTypeName(ty: TypeAssertion, typeName: string) {
 }
 
 
+export function withOriginalTypeName(ty: TypeAssertion, originalTypeName: string) {
+    if (! originalTypeName) {
+        return ty;
+    }
+    return ({...ty, originalTypeName});
+}
+
+
 export function withDocComment(ty: TypeAssertion, docComment: string) {
     if (! docComment) {
         return ty;

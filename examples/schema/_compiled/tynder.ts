@@ -3090,7 +3090,8 @@ const schema = {
       "TypeAssertionMap": {
         "kind": "any",
         "typeName": "TypeAssertionMap",
-        "name": "TypeAssertionMap"
+        "name": "TypeAssertionMap",
+        "originalTypeName": "Map"
       },
       "SymbolResolverContext": {
         "kind": "object",

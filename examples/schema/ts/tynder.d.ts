@@ -165,7 +165,7 @@ export interface TypeAssertionSetValue {
     resolved: boolean;
 }
 
-export type TypeAssertionMap = any;
+export type TypeAssertionMap = Map;
 
 export interface SymbolResolverContext {
     nestLevel: number;

@@ -232,7 +232,9 @@ export function generateTypeScriptCode(types: TypeAssertionMap): string {
         } else if (ty[1].ty.kind === 'never' && ty[1].ty.passThruCodeBlock) {
             code += `${ty[1].ty.passThruCodeBlock}\n\n`;
         } else {
-            code += `type ${ty[0]} = ${generateTypeScriptCodeInner(ty[1].ty, false, ctx)};\n\n`;
+            code += `type ${ty[0]} = ${
+                ty[1].ty.originalTypeName ||
+                generateTypeScriptCodeInner(ty[1].ty, false, ctx)};\n\n`;
         }
     }
     return code;

@@ -100,6 +100,7 @@ describe("compiler-9", function() {
                 const rhs: TypeAssertion = {
                     name: 'X',
                     typeName: 'X',
+                    originalTypeName: 'Q',
                     kind: 'any',
                 };
                 const ty = getType(schema, 'X');
