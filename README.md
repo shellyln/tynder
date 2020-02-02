@@ -33,18 +33,6 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 
 
 
-## Planned features
-* [X] ~~Merge data recursively.~~
-* [X] ~~Recursive types~~
-* [X] ~~Back reference of types~~
-
-
-
-## Project ToDo
-* Spec codes
-
-
-
 ## Get started
 
 * [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart)
@@ -914,15 +902,7 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
       [`Pick<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#picktk),
       [`Omit<T,K>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittk) and
       [`Partial<T>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialt).
-* ~~Recursive types are not available.~~
-* ~~Back reference of types are not available.~~
 
-
-
-## Bugs
-* [X] ~~Quantity assertion of the sequence type's last item is not checked.~~
-* [X] ~~Error reporter cannot resolve some keyword substitutions in complex type.~~
-* [X] ~~If validation fails on a nested component type of a complex type, the customized error message is lost.~~
 
 
 ## License
