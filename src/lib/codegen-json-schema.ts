@@ -10,67 +10,96 @@ import * as JsonSchema      from '../types/json-schema-types';
 
 
 function addMetaInfo(a: JsonSchema.JsonSchemaAssertion, ty: TypeAssertion) {
+    const a2 = {...a};
+    let changed = false;
+
     if (ty.docComment) {
-        a.description = ty.docComment;
+        a2.description = ty.docComment;
     }
     switch (ty.kind) {
     case 'repeated':
         if (typeof ty.min === 'number') {
-            (a as JsonSchema.JsonSchemaArrayAssertion).minItems = ty.min;
+            (a2 as JsonSchema.JsonSchemaArrayAssertion).minItems = ty.min;
+            changed = true;
         }
         if (typeof ty.max === 'number') {
-            (a as JsonSchema.JsonSchemaArrayAssertion).maxItems = ty.max;
+            (a2 as JsonSchema.JsonSchemaArrayAssertion).maxItems = ty.max;
+            changed = true;
         }
         break;
     case 'primitive':
         if (typeof ty.minValue === 'number') {
-            (a as JsonSchema.JsonSchemaNumberAssertion).minimum = ty.minValue;
+            (a2 as JsonSchema.JsonSchemaNumberAssertion).minimum = ty.minValue;
+            changed = true;
         }
         if (typeof ty.maxValue === 'number') {
-            (a as JsonSchema.JsonSchemaNumberAssertion).maximum = ty.maxValue;
+            (a2 as JsonSchema.JsonSchemaNumberAssertion).maximum = ty.maxValue;
+            changed = true;
         }
         if (typeof ty.greaterThanValue === 'number') {
-            (a as JsonSchema.JsonSchemaNumberAssertion).exclusiveMinimum = ty.greaterThanValue;
+            (a2 as JsonSchema.JsonSchemaNumberAssertion).exclusiveMinimum = ty.greaterThanValue;
+            changed = true;
         }
         if (typeof ty.lessThanValue === 'number') {
-            (a as JsonSchema.JsonSchemaNumberAssertion).exclusiveMaximum = ty.lessThanValue;
+            (a2 as JsonSchema.JsonSchemaNumberAssertion).exclusiveMaximum = ty.lessThanValue;
+            changed = true;
         }
         if (typeof ty.minLength === 'number') {
-            (a as JsonSchema.JsonSchemaStringAssertion).minLength = ty.minLength;
+            (a2 as JsonSchema.JsonSchemaStringAssertion).minLength = ty.minLength;
+            changed = true;
         }
         if (typeof ty.maxLength === 'number') {
-            (a as JsonSchema.JsonSchemaStringAssertion).maxLength = ty.maxLength;
+            (a2 as JsonSchema.JsonSchemaStringAssertion).maxLength = ty.maxLength;
+            changed = true;
         }
         if (ty.pattern) {
-            (a as JsonSchema.JsonSchemaStringAssertion).pattern = ty.pattern.source;
+            (a2 as JsonSchema.JsonSchemaStringAssertion).pattern = ty.pattern.source;
+            changed = true;
         }
         break;
     }
-    return a;
+    return (changed ? a2 : a);
 }
 
-function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSchema.JsonSchemaAssertion {
+function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, nestLevel: number): JsonSchema.JsonSchemaAssertion {
     if (0 < nestLevel && ty.typeName) {
         const ret: JsonSchema.JsonSchemaRefAssertion = {
             $ref: `#/definitions/${ty.typeName}`,
         };
-        return addMetaInfo(ret, ty);
+        const r2 = addMetaInfo(ret, ty);
+        if (ret !== r2) {
+            // NOTE: `$ref` cannot have value constraints.
+            return generateJsonSchemaInner(schema, ty, 0);
+        } else {
+            return ret;
+        }
     }
 
-    // const ret: TypeAssertion = {...ty};
     switch (ty.kind) {
     case 'symlink':
         {
             const ret: JsonSchema.JsonSchemaRefAssertion = {
                 $ref: `#/definitions/${ty.symlinkTargetName}`,
             };
-            return addMetaInfo(ret, ty);
+            const r2 = addMetaInfo(ret, ty);
+            if (ret !== r2) {
+                // NOTE: `$ref` cannot have value constraints.
+                const t2 = schema.get(ty.symlinkTargetName)?.ty;
+                if (t2) {
+                    return generateJsonSchemaInner(schema, t2, 0);
+                } else {
+                    // Drop constraints.
+                    return ret;
+                }
+            } else {
+                return ret;
+            }
         }
     case 'repeated':
         {
             const ret: JsonSchema.JsonSchemaArrayAssertion = {
                 type: 'array',
-                items: generateJsonSchemaInner(ty.repeated, nestLevel + 1),
+                items: generateJsonSchemaInner(schema, ty.repeated, nestLevel + 1),
             };
             if (typeof ty.min === 'number') {
                 ret.minItems = ty.min;
@@ -84,18 +113,18 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
         {
             const ret: JsonSchema.JsonSchemaArrayAssertion = {
                 type: 'array',
-                items: { anyOf: ty.sequence.map(x => generateJsonSchemaInner(x, nestLevel + 1)) },
+                items: { anyOf: ty.sequence.map(x => generateJsonSchemaInner(schema, x, nestLevel + 1)) },
             };
             return addMetaInfo(ret, ty);
         }
     case 'spread':
         {
-            return generateJsonSchemaInner(ty.spread, nestLevel + 1);
+            return generateJsonSchemaInner(schema, ty.spread, nestLevel + 1);
         }
     case 'one-of':
         {
             const ret: JsonSchema.JsonSchemaAnyOfAssertion = {
-                anyOf: ty.oneOf.map(x => generateJsonSchemaInner(x, nestLevel + 1)),
+                anyOf: ty.oneOf.map(x => generateJsonSchemaInner(schema, x, nestLevel + 1)),
             };
             return addMetaInfo(ret, ty);
         }
@@ -103,7 +132,7 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
         {
             const ret: JsonSchema.JsonSchemaOneOfAssertion = {
                 oneOf: [
-                    generateJsonSchemaInner(ty.optional, nestLevel + 1),
+                    generateJsonSchemaInner(schema, ty.optional, nestLevel + 1),
                     {type: 'null'},
                 ],
             };
@@ -121,7 +150,7 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
         {
             const properties: JsonSchema.JsonSchemaObjectPropertyAssertion = {};
             for (const m of ty.members) {
-                const z = generateJsonSchemaInner(m[1], nestLevel + 1);
+                const z = generateJsonSchemaInner(schema, m[1], nestLevel + 1);
                 if (m[3]) {
                     z.description = m[3];
                 } else {
@@ -237,23 +266,23 @@ function generateJsonSchemaInner(ty: TypeAssertion, nestLevel: number): JsonSche
 }
 
 
-export function generateJsonSchemaObject(types: TypeAssertionMap) {
+export function generateJsonSchemaObject(schema: TypeAssertionMap) {
     const ret: JsonSchema.JsonSchemaRootAssertion = {
         $schema: 'http://json-schema.org/draft-06/schema#',
         definitions: {},
     };
-    for (const ty of types.entries()) {
+    for (const ty of schema.entries()) {
         if (ty[1].ty.noOutput) {
             continue;
         }
-        (ret.definitions as object)[ty[0]] = generateJsonSchemaInner(ty[1].ty, 0);
+        (ret.definitions as object)[ty[0]] = generateJsonSchemaInner(schema, ty[1].ty, 0);
     }
     return ret;
 }
 
 
-export function generateJsonSchema(types: TypeAssertionMap, asTs?: boolean): string {
-    const ret = generateJsonSchemaObject(types);
+export function generateJsonSchema(schema: TypeAssertionMap, asTs?: boolean): string {
+    const ret = generateJsonSchemaObject(schema);
 
     if (asTs) {
         return (
