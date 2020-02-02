@@ -12,7 +12,7 @@ import { serialize,
 
 
 
-describe("compiler-8", function() {
+describe("compiler-9", function() {
     it("compiler-import-statement-1", function() {
         const schemas = [compile(`
             import from 'foo';
