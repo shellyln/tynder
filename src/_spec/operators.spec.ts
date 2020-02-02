@@ -36,6 +36,8 @@ describe("operator", function() {
                     ['bar', optional(primitive('string'))],
                     ['bar2', primitive('string?')],
                     ['bar3', repeated('string', {min: 3, max: 10})],
+                    ['bar4', primitive('integer')],
+                    ['bar5', primitive('integer?')],
                     [[/^[a-z][0-9]$/], optional(primitive('string'))],
                 ),
                 intersect(
@@ -59,6 +61,22 @@ describe("operator", function() {
             primitive('string'),
             primitiveValue(50),
         );
+
+        expect(validate({
+            foo: 10,
+            www: [10, 20, 'a', 'b', 'c', 50],
+            bar3: ['a', 'b', 'c'],
+            bar4: 11,
+            bar5: 13,
+            baz: 10,
+        }, myType)).toEqual({value: {
+            foo: 10,
+            www: [10, 20, 'a', 'b', 'c', 50],
+            bar3: ['a', 'b', 'c'],
+            bar4: 11,
+            bar5: 13,
+            baz: 10,
+        }});
 
         /*
         console.log(JSON.stringify(myType, null, 2));
