@@ -13,14 +13,15 @@ export type OptionalPlaceholderTypeNames = 'never?' | 'any?' | 'unknown?';
 
 export enum ErrorTypes {
     InvalidDefinition = 1,
-    Required,              // (all)
-    TypeUnmatched,         // Never/Unknown/Primitive/Object
-    RepeatQtyUnmatched,    // Repeated/Spread
-    SequenceUnmatched,     // Sequence
-    ValueRangeUnmatched,   // Primitive: minValue, maxValue, greaterThanValue, lessThanValue
-    ValuePatternUnmatched, // Primitive: pattern
-    ValueLengthUnmatched,  // Primitive: minLength, maxLength
-    ValueUnmatched,        // PrimitiveValue
+    Required,                // (all)
+    TypeUnmatched,           // Never/Unknown/Primitive/Object
+    AdditionalPropUnmatched, //
+    RepeatQtyUnmatched,      // Repeated/Spread
+    SequenceUnmatched,       // Sequence
+    ValueRangeUnmatched,     // Primitive: minValue, maxValue, greaterThanValue, lessThanValue
+    ValuePatternUnmatched,   // Primitive: pattern
+    ValueLengthUnmatched,    // Primitive: minLength, maxLength
+    ValueUnmatched,          // PrimitiveValue
 }
 
 
@@ -28,6 +29,7 @@ export type ErrorMessages = Partial<{
     invalidDefinition: string,
     required: string,
     typeUnmatched: string,
+    additionalPropUnmatched: string,
     repeatQtyUnmatched: string,
     sequenceUnmatched: string,
     valueRangeUnmatched: string,

@@ -383,7 +383,7 @@ function validateObjectAssertion<T>(
         if (ctx.noAdditionalProps && Array.isArray(data) && 0 < data.length) {
             const aps = ty.additionalProps || [];
             if (aps.filter(x => x[0].includes('number')).length === 0) {
-                reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched
+                reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, ctx);
                 if (ctx && ctx.checkAll) {
                     retVal = null;
                 } else {
@@ -471,7 +471,7 @@ function validateObjectAssertion<T>(
                     if (allowImplicit) {
                         continue;
                     }
-                    reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched
+                    reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, ctx);
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                         continue;
@@ -517,7 +517,7 @@ function validateObjectAssertion<T>(
         }
 
         if (ctx.noAdditionalProps && 0 < dataMembers.size) {
-            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx); // TODO: new error type AdditionalPropUnmatched
+            reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, ctx);
             if (ctx && ctx.checkAll) {
                 retVal = null;
             } else {

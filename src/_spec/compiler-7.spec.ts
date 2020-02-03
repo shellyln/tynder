@@ -14,15 +14,16 @@ import { serialize,
 
 describe("compiler-7", function() {
     const myMessages: ErrorMessages = {
-        invalidDefinition:     ':invalidDefinition: %{name} %{parentType}',
-        required:              ':required: %{name} %{parentType}',
-        typeUnmatched:         ':typeUnmatched: %{name} %{parentType} %{expectedType}',
-        repeatQtyUnmatched:    ':repeatQtyUnmatched: %{name} %{parentType} %{repeatQty}',
-        sequenceUnmatched:     ':sequenceUnmatched: %{name} %{parentType}',
-        valueRangeUnmatched:   ':valueRangeUnmatched: %{name} %{parentType} %{minValue} %{maxValue}',
-        valuePatternUnmatched: ':valuePatternUnmatched: %{name} %{parentType} %{pattern}',
-        valueLengthUnmatched:  ':valueLengthUnmatched: %{name} %{parentType} %{minLength} %{maxLength}',
-        valueUnmatched:        ':valueUnmatched: %{name} %{parentType} %{expectedValue}',
+        invalidDefinition:       ':invalidDefinition: %{name} %{parentType}',
+        required:                ':required: %{name} %{parentType}',
+        typeUnmatched:           ':typeUnmatched: %{name} %{parentType} %{expectedType}',
+        additionalPropUnmatched: ':additionalPropUnmatched %{name} %{parentType}',
+        repeatQtyUnmatched:      ':repeatQtyUnmatched: %{name} %{parentType} %{repeatQty}',
+        sequenceUnmatched:       ':sequenceUnmatched: %{name} %{parentType}',
+        valueRangeUnmatched:     ':valueRangeUnmatched: %{name} %{parentType} %{minValue} %{maxValue}',
+        valuePatternUnmatched:   ':valuePatternUnmatched: %{name} %{parentType} %{pattern}',
+        valueLengthUnmatched:    ':valueLengthUnmatched: %{name} %{parentType} %{minLength} %{maxLength}',
+        valueUnmatched:          ':valueUnmatched: %{name} %{parentType} %{expectedValue}',
     };
     function mkmsgobj(s: string): ErrorMessages {
         const m: ErrorMessages = {
