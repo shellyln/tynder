@@ -180,65 +180,72 @@ export function formatErrorMessage(
 
     const tr = values.topRepeatable;
 
-    ret = ret.replace(/%{expectedType}/g, escapeString(getExpectedType(ty)));
+    const dict = new Map<string, string>([
+        ['expectedType',
+            escapeString(getExpectedType(ty))],
+        ['type',
+            escapeString(typeof data)],
+        ['expectedValue',
+            escapeString(
+                ty.kind === 'primitive-value' ?
+                    String(ty.value) :
+                ty.kind === 'enum' ?
+                    ty.typeName ?
+                        `enum member of ${ty.typeName}` :
+                        '?' :
+                '?')],
+        ['value',
+            escapeString(String(data))],
+        ['repeatQty',
+            escapeString(
+                tr ?
+                    tr.kind !== 'optional' ? `${
+                        nvl(tr.min, '')}${
+                            (tr.min !== null && tr.min !== void 0) ||
+                            (tr.max !== null && tr.max !== void 0) ? '..' : ''}${
+                            nvl(tr.max, '')}` :
+                        '0..1' :
+                    '?')],
+        ['minValue',
+            escapeString(
+                ty.kind === 'primitive' ?
+                    `${nvl(ty.minValue, nvl(ty.greaterThanValue, '(smallest)'))}` : '?')],
+        ['maxValue',
+            escapeString(
+                ty.kind === 'primitive' ?
+                    `${nvl(ty.maxValue, nvl(ty.lessThanValue, '(biggest)'))}` : '?')],
+        ['pattern',
+            escapeString(
+                ty.kind === 'primitive' ?
+                    `${ty.pattern ? `/${ty.pattern.source}/${ty.pattern.flags}` : '(pattern)'}` : '?')],
+        ['minLength',
+            escapeString(
+                ty.kind === 'primitive' ?
+                    `${nvl(ty.minLength, '0')}` : '?')],
+        ['maxLength',
+            escapeString(
+                ty.kind === 'primitive' ?
+                    `${nvl(ty.maxLength, '(biggest)')}` : '?')],
+        ['name',
+            escapeString(
+                `${ty.kind !== 'repeated' && values.dataPath.endsWith('repeated)') ?
+                    'repeated item of ' :
+                   ty.kind !== 'sequence' && values.dataPath.endsWith('sequence)') ?
+                    'sequence item of ' : ''}${
+                (ty.name && ty.name !== ty.typeName ? ty.name : null) ||
+                    findTopNamedAssertion(ctx)?.name || '?'}`)],
+        ['parentType',
+            escapeString(
+                findTopObjectAssertion(ctx)?.typeName || ty.typeName || '?')],
+        ['dataPath',
+            values.dataPath],
 
-    ret = ret.replace(/%{type}/g, escapeString(
-        typeof data));
+        // TODO: custom keywords, keyword overwriting
+    ]);
 
-    ret = ret.replace(/%{expectedValue}/g, escapeString(
-        ty.kind === 'primitive-value' ?
-            String(ty.value) :
-            ty.kind === 'enum' ?
-                ty.typeName ?
-                    `enum member of ${ty.typeName}` :
-                    '?' :
-                '?'));
-
-    ret = ret.replace(/%{value}/g, escapeString(
-        String(data)));
-
-    ret = ret.replace(/%{repeatQty}/g, escapeString(
-        tr ?
-        tr.kind !== 'optional' ? `${
-            nvl(tr.min, '')}${
-                (tr.min !== null && tr.min !== void 0) ||
-                (tr.max !== null && tr.max !== void 0) ? '..' : ''}${
-                nvl(tr.max, '')}` :
-            '0..1' :
-        '?'));
-
-    ret = ret.replace(/%{minValue}/g, escapeString(
-        ty.kind === 'primitive' ?
-            `${nvl(ty.minValue, nvl(ty.greaterThanValue, '(smallest)'))}` : '?'));
-
-    ret = ret.replace(/%{maxValue}/g, escapeString(
-        ty.kind === 'primitive' ?
-            `${nvl(ty.maxValue, nvl(ty.lessThanValue, '(biggest)'))}` : '?'));
-
-    ret = ret.replace(/%{pattern}/g, escapeString(
-        ty.kind === 'primitive' ?
-            `${ty.pattern ? `/${ty.pattern.source}/${ty.pattern.flags}` : '(pattern)'}` : '?'));
-
-    ret = ret.replace(/%{minLength}/g, escapeString(
-        ty.kind === 'primitive' ?
-            `${nvl(ty.minLength, '0')}` : '?'));
-
-    ret = ret.replace(/%{maxLength}/g, escapeString(
-        ty.kind === 'primitive' ?
-            `${nvl(ty.maxLength, '(biggest)')}` : '?'));
-
-    ret = ret.replace(/%{name}/g, escapeString(
-        `${ty.kind !== 'repeated' && values.dataPath.endsWith('repeated)') ?
-            'repeated item of ' :
-            ty.kind !== 'sequence' && values.dataPath.endsWith('sequence)') ?
-                'sequence item of ' : ''}${
-        (ty.name && ty.name !== ty.typeName ? ty.name : null) ||
-            findTopNamedAssertion(ctx)?.name || '?'}`));
-
-    ret = ret.replace(/%{parentType}/g, escapeString(
-        findTopObjectAssertion(ctx)?.typeName || ty.typeName || '?'));
-
-    ret = ret.replace(/%{dataPath}/g, values.dataPath);
+    for (const ent of dict.entries()) {
+        ret = ret.replace(new RegExp(`%{${ent[0]}}`), ent[1]);
+    }
 
     return ret;
 }
