@@ -49,7 +49,7 @@ type TopRepeatable = RepeatedAssertion | SpreadAssertion | OptionalAssertion | n
 
 interface ReportErrorArguments {
     ctx: ValidationContext;
-    replacements?: [[string, string]];
+    substitutions?: [[string, string]]; // addtional or overwritten substitution values
 }
 
 
@@ -251,7 +251,7 @@ export function formatErrorMessage(
         ['dataPath',
             values.dataPath],
 
-        ...(args.replacements || []),
+        ...(args.substitutions || []),
     ]);
 
     for (const ent of dict.entries()) {
