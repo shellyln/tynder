@@ -15,7 +15,7 @@ export enum ErrorTypes {
     InvalidDefinition = 1,
     Required,                // (all)
     TypeUnmatched,           // Never/Unknown/Primitive/Object
-    AdditionalPropUnmatched, //
+    AdditionalPropUnmatched, // Additional prop
     RepeatQtyUnmatched,      // Repeated/Spread
     SequenceUnmatched,       // Sequence
     ValueRangeUnmatched,     // Primitive: minValue, maxValue, greaterThanValue, lessThanValue

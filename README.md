@@ -112,20 +112,21 @@ export interface FooBar extends Bar, Baz {
     n: @range(-10, 10) number[];                                  // Array of ranged value
     @greaterThan(-10) @lessThan(10)
     o: number;                                                    // Ranged value
+    p: integer;                                                   // Integer value
     @range('AAA', 'FFF')
-    p: string;                                                    // Ranged value (string)
+    q: string;                                                    // Ranged value (string)
     @match(/^.+$/)
-    q: string;                                                    // Pattern matched value
-    r: Foo;                                                       // Refer a defined type
+    r: string;                                                    // Pattern matched value
+    s: Foo;                                                       // Refer a defined type
     @msgId('M1234')
-    s: number;                                                    // Custom error message id
+    t: number;                                                    // Custom error message id
     @msg({
         required: '"%{name}" of "%{parentType}" is required.',
         typeUnmatched: '"%{name}" of "%{parentType}" should be "%{expectedType}".',
     })
-    t: number;                                                    // Custom error message
-    @msg('"%{name}" of "%{parentType}" is not valid.')
     u: number;                                                    // Custom error message
+    @msg('"%{name}" of "%{parentType}" is not valid.')
+    v: number;                                                    // Custom error message
 }
 
 // line comment
@@ -745,8 +746,8 @@ Generics actual parameters are removed.
 /// @tynder-external Map, Set
 
 interface Foo {
-    a: Map<string, number>;
-    b: Set<string>;
+    a: Map<string, number>;  // validator treats it as `any`.
+    b: Set<string>;          // validator treats it as `any`.
 }
 ```
 
@@ -754,8 +755,8 @@ interface Foo {
 
 ```ts
 interface Foo {
-    a: any;
-    b: any;
+    a: Map;  // generics actual parameters are removed.
+    b: Set;  // generics actual parameters are removed.
 }
 ```
 

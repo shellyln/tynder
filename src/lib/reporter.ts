@@ -44,6 +44,15 @@ export const defaultMessages: ErrorMessages = {
 };
 
 
+type TopRepeatable = RepeatedAssertion | SpreadAssertion | OptionalAssertion | null;
+
+
+interface ReportErrorArguments {
+    ctx: ValidationContext;
+    replacements?: [[string, string]];
+}
+
+
 function getErrorMessage(errType: ErrorTypes, ...messages: ErrorMessages[]) {
     for (const m of messages) {
         switch (errType) {
@@ -109,6 +118,7 @@ function nvl(v: any, alt: any) {
     );
 }
 
+
 function findTopNamedAssertion(ctx: ValidationContext): TypeAssertion | null {
     const ret = ctx.typeStack
         .slice()
@@ -117,6 +127,7 @@ function findTopNamedAssertion(ctx: ValidationContext): TypeAssertion | null {
         .find(x => x.name && x.name !== x.typeName) || null;
     return ret;
 }
+
 
 function findTopObjectAssertion(ctx: ValidationContext): ObjectAssertion | null {
     const ret = ctx.typeStack
@@ -127,7 +138,6 @@ function findTopObjectAssertion(ctx: ValidationContext): ObjectAssertion | null 
     return ret;
 }
 
-type TopRepeatable = RepeatedAssertion | SpreadAssertion | OptionalAssertion | null;
 
 function findTopRepeatableAssertion(ctx: ValidationContext): TopRepeatable {
 
@@ -139,6 +149,7 @@ function findTopRepeatableAssertion(ctx: ValidationContext): TopRepeatable {
                 ) as RepeatedAssertion | SpreadAssertion | OptionalAssertion || null;
     return ret;
 }
+
 
 function getExpectedType(ty: TypeAssertion): string {
     switch (ty.kind) {
@@ -251,13 +262,10 @@ export function formatErrorMessage(
 }
 
 
-interface ReportErrorArguments {
-    ctx: ValidationContext;
-    replacements?: [[string, string]];
-}
+export function reportError(
+        errType: ErrorTypes, data: any, ty: TypeAssertion,
+        args: ReportErrorArguments) {
 
-
-export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, args: ReportErrorArguments) {
     const messages: ErrorMessages[] = [];
     if (ty.messages) {
         messages.push(ty.messages);
@@ -386,7 +394,8 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, a
 
 export function reportErrorWithPush(
         errType: ErrorTypes, data: any,
-        tyidx: [TypeAssertion, number | string | undefined], args: ReportErrorArguments) {
+        tyidx: [TypeAssertion, number | string | undefined],
+        args: ReportErrorArguments) {
 
     try {
         args.ctx.typeStack.push(tyidx);
