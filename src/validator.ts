@@ -30,7 +30,7 @@ import { resolveSymbols }      from './lib/resolver';
 function validateNeverTypeAssertion<T>(
     data: any, ty: NeverTypeAssertion, ctx: ValidationContext): null {
 
-    reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+    reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
     return null;
 }
 
@@ -47,7 +47,7 @@ function validateUnknownTypeAssertion<T>(
     data: any, ty: UnknownTypeAssertion, ctx: ValidationContext): {value: T} | null {
 
     if (data === null || data === void 0) {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     }
     // always matched
@@ -60,20 +60,20 @@ function validatePrimitiveTypeAssertion<T>(
 
     if (ty.primitiveName === 'null') {
         if (data !== null) {
-            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+            reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
             return null;
         }
     } else if (ty.primitiveName === 'integer') {
         if (typeof data !== 'number') {
-            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+            reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
             return null;
         }
         if (Math.trunc(data) !== data) {
-            reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+            reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
             return null;
         }
     } else if (typeof data !== ty.primitiveName) {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     }
     // TODO: Function, DateStr, DateTimeStr
@@ -84,7 +84,7 @@ function validatePrimitiveTypeAssertion<T>(
     case 'number': case 'string':
         if (data < ty.minValue) {
             if (! valueRangeErr) {
-                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, {ctx});
             }
             valueRangeErr = true;
             err = true;
@@ -94,7 +94,7 @@ function validatePrimitiveTypeAssertion<T>(
     case 'number': case 'string':
         if (data > ty.maxValue) {
             if (! valueRangeErr) {
-                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, {ctx});
             }
             valueRangeErr = true;
             err = true;
@@ -104,7 +104,7 @@ function validatePrimitiveTypeAssertion<T>(
     case 'number': case 'string':
         if (data <= ty.greaterThanValue) {
             if (! valueRangeErr) {
-                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, {ctx});
             }
             valueRangeErr = true;
             err = true;
@@ -114,7 +114,7 @@ function validatePrimitiveTypeAssertion<T>(
     case 'number': case 'string':
         if (data >= ty.lessThanValue) {
             if (! valueRangeErr) {
-                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.ValueRangeUnmatched, data, ty, {ctx});
             }
             valueRangeErr = true;
             err = true;
@@ -126,7 +126,7 @@ function validatePrimitiveTypeAssertion<T>(
     case 'number':
         if (typeof data !== 'string' || data.length < ty.minLength) {
             if (! valueLengthErr) {
-                reportError(ErrorTypes.ValueLengthUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.ValueLengthUnmatched, data, ty, {ctx});
             }
             valueLengthErr = true;
             err = true;
@@ -136,7 +136,7 @@ function validatePrimitiveTypeAssertion<T>(
     case 'number':
         if (typeof data !== 'string' || data.length > ty.maxLength) {
             if (! valueLengthErr) {
-                reportError(ErrorTypes.ValueLengthUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.ValueLengthUnmatched, data, ty, {ctx});
             }
             valueLengthErr = true;
             err = true;
@@ -145,7 +145,7 @@ function validatePrimitiveTypeAssertion<T>(
 
     if (ty.pattern) {
         if (! ty.pattern.test(data)) {
-            reportError(ErrorTypes.ValuePatternUnmatched, data, ty, ctx);
+            reportError(ErrorTypes.ValuePatternUnmatched, data, ty, {ctx});
             err = true;
         }
     }
@@ -163,7 +163,7 @@ function validatePrimitiveValueTypeAssertion<T>(
         {value: ctx.mapper ? ctx.mapper(data, ty) : data} :
         null;
     if (! ret) {
-        reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
     }
     return ret;
 }
@@ -173,15 +173,15 @@ function validateRepeatedAssertion<T>(
     data: any, ty: RepeatedAssertion, ctx: ValidationContext): {value: T} | null {
 
     if (! Array.isArray(data)) {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     }
     if (typeof ty.min === 'number' && data.length < ty.min) {
-        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, {ctx});
         return null;
     }
     if (typeof ty.max === 'number' && data.length > ty.max) {
-        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.RepeatQtyUnmatched, data, ty, {ctx});
         return null;
     }
 
@@ -202,7 +202,7 @@ function validateSequenceAssertion<T>(
     data: any, ty: SequenceAssertion, ctx: ValidationContext): {value: T} | null {
 
     if (! Array.isArray(data)) {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     }
     let dIdx = 0, // index of data
@@ -215,11 +215,11 @@ function validateSequenceAssertion<T>(
             reportErrorWithPush(
                 spreadLen === 0 ?
                     ErrorTypes.TypeUnmatched :
-                    ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
+                    ErrorTypes.RepeatQtyUnmatched, data, [ts, index], {ctx});
             return null;
         }
         if (typeof ts.max === 'number' && spreadLen > ts.max) {
-            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], {ctx});
             return null;
         }
         return ts;
@@ -230,10 +230,10 @@ function validateSequenceAssertion<T>(
             // All subsequent 'optional' assertions should be 'spreadLen === 0'.
             optionalOmitted = true;
         } else if (optionalOmitted) {
-            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], {ctx});
             return null;
         } else if (spreadLen > 1) {
-            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], ctx);
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, index], {ctx});
             return null;
         }
         return ts;
@@ -302,14 +302,14 @@ function validateSequenceAssertion<T>(
             spreadLen = 0;
             sIdx++;
         } else {
-            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, dIdx], ctx);
+            reportErrorWithPush(ErrorTypes.RepeatQtyUnmatched, data, [ts, dIdx], {ctx});
             return null;
         }
     }
 
     const ret = data.length === dIdx ? {value: retVals as any} : null;
     if (! ret) {
-        reportError(ErrorTypes.SequenceUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.SequenceUnmatched, data, ty, {ctx});
     }
     return ret;
 }
@@ -328,7 +328,7 @@ function validateOneOfAssertion<T>(
         }
         return r;
     }
-    reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+    reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
     return null;
 }
 
@@ -341,7 +341,7 @@ function validateEnumAssertion<T>(
             return ({value: ctx.mapper ? ctx.mapper(data, ty) : data});
         }
     }
-    reportError(ErrorTypes.ValueUnmatched, data, ty, ctx);
+    reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
     return null;
 }
 
@@ -356,14 +356,14 @@ function validateObjectAssertion<T>(
     const revMembers = ty.members.slice().reverse();
     for (const x of ty.members) {
         if (ty.members.find(m => m[0] === x[0]) !== revMembers.find(m => m[0] === x[0])) {
-            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            reportError(ErrorTypes.InvalidDefinition, data, ty, {ctx});
             throw new ValidationError(
                 `Duplicated member is found: ${x[0]} in ${ty.name || '(unnamed)'}`, ty, ctx);
         }
     }
 
     if (data === null || typeof data !== 'object') {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, ctx);
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         if (ctx && ctx.checkAll) {
             retVal = null;
         } else {
@@ -383,7 +383,7 @@ function validateObjectAssertion<T>(
         if (ctx.noAdditionalProps && Array.isArray(data) && 0 < data.length) {
             const aps = ty.additionalProps || [];
             if (aps.filter(x => x[0].includes('number')).length === 0) {
-                reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, ctx);
+                reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {ctx});
                 if (ctx && ctx.checkAll) {
                     retVal = null;
                 } else {
@@ -423,7 +423,7 @@ function validateObjectAssertion<T>(
                 }
             } else {
                 if (x[1].kind !== 'optional') {
-                    reportErrorWithPush(ErrorTypes.Required, data, [x[1], void 0], ctx);
+                    reportErrorWithPush(ErrorTypes.Required, data, [x[1], void 0], {ctx});
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                     } else {
@@ -471,7 +471,7 @@ function validateObjectAssertion<T>(
                     if (allowImplicit) {
                         continue;
                     }
-                    reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, ctx);
+                    reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {ctx});
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                         continue;
@@ -517,7 +517,7 @@ function validateObjectAssertion<T>(
         }
 
         if (ctx.noAdditionalProps && 0 < dataMembers.size) {
-            reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, ctx);
+            reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {ctx});
             if (ctx && ctx.checkAll) {
                 retVal = null;
             } else {
@@ -566,19 +566,19 @@ export function validateRoot<T>(
             if (ctx.schema) {
                 return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {nestLevel: 0, symlinkStack: []}), ctx);
             }
-            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            reportError(ErrorTypes.InvalidDefinition, data, ty, {ctx});
             throw new ValidationError(`Unresolved symbol '${ty.symlinkTargetName}' is appeared.`, ty, ctx);
         case 'operator':
             if (ctx.schema) {
                 return validateRoot<T>(data, resolveSymbols(ctx.schema, ty, {nestLevel: 0, symlinkStack: []}), ctx);
             }
-            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            reportError(ErrorTypes.InvalidDefinition, data, ty, {ctx});
             throw new ValidationError(`Unresolved type operator is found: ${ty.operator}`, ty, ctx);
         case 'spread': case 'optional':
-            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            reportError(ErrorTypes.InvalidDefinition, data, ty, {ctx});
             throw new ValidationError(`Unexpected type assertion: ${(ty as any).kind}`, ty, ctx);
         default:
-            reportError(ErrorTypes.InvalidDefinition, data, ty, ctx);
+            reportError(ErrorTypes.InvalidDefinition, data, ty, {ctx});
             throw new ValidationError(`Unknown type assertion: ${(ty as any).kind}`, ty, ctx);
         }
     } finally {

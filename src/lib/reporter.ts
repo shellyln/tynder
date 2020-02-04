@@ -171,7 +171,7 @@ function getExpectedType(ty: TypeAssertion): string {
 
 export function formatErrorMessage(
         msg: string, data: any, ty: TypeAssertion,
-        ctx: ValidationContext,
+        args: ReportErrorArguments,
         values: {dataPath: string, topRepeatable: TopRepeatable}) {
 
     let ret = msg;
@@ -233,14 +233,14 @@ export function formatErrorMessage(
                    ty.kind !== 'sequence' && values.dataPath.endsWith('sequence)') ?
                     'sequence item of ' : ''}${
                 (ty.name && ty.name !== ty.typeName ? ty.name : null) ||
-                    findTopNamedAssertion(ctx)?.name || '?'}`)],
+                    findTopNamedAssertion(args.ctx)?.name || '?'}`)],
         ['parentType',
             escapeString(
-                findTopObjectAssertion(ctx)?.typeName || ty.typeName || '?')],
+                findTopObjectAssertion(args.ctx)?.typeName || ty.typeName || '?')],
         ['dataPath',
             values.dataPath],
 
-        // TODO: custom keywords, keyword overwriting
+        ...(args.replacements || []),
     ]);
 
     for (const ent of dict.entries()) {
@@ -251,26 +251,32 @@ export function formatErrorMessage(
 }
 
 
-export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, ctx: ValidationContext) {
+interface ReportErrorArguments {
+    ctx: ValidationContext;
+    replacements?: [[string, string]];
+}
+
+
+export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, args: ReportErrorArguments) {
     const messages: ErrorMessages[] = [];
     if (ty.messages) {
         messages.push(ty.messages);
     }
-    if (ctx.errorMessages) {
-        messages.push(ctx.errorMessages);
+    if (args.ctx.errorMessages) {
+        messages.push(args.ctx.errorMessages);
     }
     messages.push(defaultMessages);
 
     const dataPathArray: string[] = [];
-    for (let i = 0; i < ctx.typeStack.length; i++) {
-        const p = ctx.typeStack[i];
-        const next = ctx.typeStack[i + 1];
+    for (let i = 0; i < args.ctx.typeStack.length; i++) {
+        const p = args.ctx.typeStack[i];
+        const next = args.ctx.typeStack[i + 1];
         const pt = Array.isArray(p) ? p[0] : p;
         const pi = Array.isArray(next) ? next[1] : void 0;
 
         let isSet = false;
         if (pt.kind === 'repeated') {
-            if (i !== ctx.typeStack.length - 1) {
+            if (i !== args.ctx.typeStack.length - 1) {
                 if (pt.name) {
                     dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}repeated)`);
                 } else {
@@ -279,7 +285,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
                 isSet = true;
             }
         } else if (pt.kind === 'sequence') {
-            if (i !== ctx.typeStack.length - 1) {
+            if (i !== args.ctx.typeStack.length - 1) {
                 if (pt.name) {
                     dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}sequence)`);
                 } else {
@@ -298,7 +304,7 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
     }
     const dataPath = dataPathArray.join('.');
 
-    const topRepeatable: TopRepeatable = findTopRepeatableAssertion(ctx);
+    const topRepeatable: TopRepeatable = findTopRepeatableAssertion(args.ctx);
     const values = {dataPath, topRepeatable};
 
     const constraints: TypeAssertionErrorMessageConstraints = {};
@@ -349,27 +355,27 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
     }
 
     if (ty.messageId) {
-        ctx.errors.push({
+        args.ctx.errors.push({
             code: `${ty.messageId}-${errorTypeNames[errType]}`,
             message: formatErrorMessage(ty.message ?
                 ty.message :
-                getErrorMessage(errType, ...messages), data, ty, ctx, values),
+                getErrorMessage(errType, ...messages), data, ty, args, values),
             dataPath,
             constraints,
             ...val,
         });
     } else if (ty.message) {
-        ctx.errors.push({
+        args.ctx.errors.push({
             code: `${errorTypeNames[errType]}`,
-            message: formatErrorMessage(ty.message, data, ty, ctx, values),
+            message: formatErrorMessage(ty.message, data, ty, args, values),
             dataPath,
             constraints,
             ...val,
         });
     } else {
-        ctx.errors.push({
+        args.ctx.errors.push({
             code: `${errorTypeNames[errType]}`,
-            message: formatErrorMessage(getErrorMessage(errType, ...messages), data, ty, ctx, values),
+            message: formatErrorMessage(getErrorMessage(errType, ...messages), data, ty, args, values),
             dataPath,
             constraints,
             ...val,
@@ -380,12 +386,12 @@ export function reportError(errType: ErrorTypes, data: any, ty: TypeAssertion, c
 
 export function reportErrorWithPush(
         errType: ErrorTypes, data: any,
-        tyidx: [TypeAssertion, number | string | undefined], ctx: ValidationContext) {
+        tyidx: [TypeAssertion, number | string | undefined], args: ReportErrorArguments) {
 
     try {
-        ctx.typeStack.push(tyidx);
-        reportError(errType, data, tyidx[0], ctx);
+        args.ctx.typeStack.push(tyidx);
+        reportError(errType, data, tyidx[0], args);
     } finally {
-        ctx.typeStack.pop();
+        args.ctx.typeStack.pop();
     }
 }
