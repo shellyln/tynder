@@ -557,7 +557,14 @@ enum Baz {
 ### Primitive types
 
 ```ts
+/** Primitive types */
 type A = number | integer | bigint | string | boolean;
+
+/** Null-like types */
+type B = null | undefined;
+
+/** Placeholder types */
+type C = unknown | any;
 ```
 
 
@@ -805,7 +812,7 @@ export const defaultMessages: ErrorMessages = {
     repeatQtyUnmatched:      '"%{name}" of "%{parentType}" should repeat %{repeatQty} times.',
     sequenceUnmatched:       '"%{name}" of "%{parentType}" sequence is not matched',
     valueRangeUnmatched:     '"%{name}" of "%{parentType}" value should be in the range %{minValue} to %{maxValue}.',
-    valuePatternUnmatched:   '%{name}" of "%{parentType}" value should be matched to pattern "%{pattern}"',
+    valuePatternUnmatched:   '"%{name}" of "%{parentType}" value should be matched to pattern "%{pattern}"',
     valueLengthUnmatched:    '"%{name}" of "%{parentType}" length should be in the range %{minLength} to %{maxLength}.',
     valueUnmatched:          '"%{name}" of "%{parentType}" value should be "%{expectedValue}".',
 };
@@ -866,6 +873,7 @@ Precedence is "`Default messages` < `ctx.errorMessages` < `@msg()`".
 * `%{name}`
 * `%{parentType}`
 * `%{dataPath}`
+* `%{addtionalProps}`
 
 
 
