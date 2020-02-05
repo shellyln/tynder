@@ -151,12 +151,23 @@ describe("compiler-3", function() {
                     expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual({value: v});
                 }
                 {
+                    const ctx: Partial<ValidationContext> = {
+                        checkAll: true,
+                        noAdditionalProps: true,
+                        schema,
+                    };
                     const v = {
                         a: '',
                         b: 0,
                         c: false,
                     };
-                    expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>(v, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"b, c" of "D" are not matched to additional property patterns.',
+                        dataPath: 'D',
+                        constraints: {},
+                    }]);
                 }
             }
         }
@@ -220,13 +231,24 @@ describe("compiler-3", function() {
                     expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual({value: v});
                 }
                 {
+                    const ctx: Partial<ValidationContext> = {
+                        checkAll: true,
+                        noAdditionalProps: true,
+                        schema,
+                    };
                     const v = {
                         a: '',
                         b: 0,
                         c: false,
                         d: BigInt(5),
                     };
-                    expect(validate<any>(v, ty, {schema, noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>(v, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"b, d" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
                 }
             }
         }
@@ -614,15 +636,194 @@ describe("compiler-3", function() {
                 expect(validate<any>({'B': 0}, ty)).toEqual(null);
                 expect(validate<any>({'C': ''}, ty)).toEqual(null);
                 expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({'D': ''}, ty)).toEqual(null);
-                expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
-                expect(validate<any>({'E': ''}, ty)).toEqual(null);
-                expect(validate<any>({'E': 0}, ty)).toEqual(null);
-                expect(validate<any>({0: ''}, ty)).toEqual(null);
-                expect(validate<any>({0: 0}, ty)).toEqual(null);
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual(null);
-                expect(validate<any>([0], ty)).toEqual(null);
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>({'D': ''}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'TypeUnmatched',
+                        message: '"?" of "C" should be type "number".', // TODO:
+                        dataPath: 'C',
+                        constraints: {},
+                        value: '',
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>({'D': 0}, ty, ctx)).toEqual({value: {'D': 0}});
+                }
+
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>({'E': ''}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"E" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>({'E': 0}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"E" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>({0: ''}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"0" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>({0: ''}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"0" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>({0: 0}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"0" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>({0: 0}, ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"0" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>([], ty, ctx)).toEqual({value: []});
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>([], ty, ctx)).toEqual({value: []});
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>([''], ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"0" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>([''], ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"[number]" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {};
+                    expect(validate<any>([0], ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"0" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>([0], ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"[number]" of "C" are not matched to additional property patterns.',
+                        dataPath: 'C',
+                        constraints: {},
+                    }]);
+                }
+            }
+        }
+    });
+    it("compiler-additional-props-1z", function() {
+        const schemas = [compile(`
+            interface A {
+            }
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'A',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'A',
+                    typeName: 'A',
+                    kind: 'object',
+                    members: [],
+                };
+                const ty = getType(schema, 'A');
+                expect(ty).toEqual(rhs);
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>([], ty, ctx)).toEqual({value: []});
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>([''], ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"[number]" of "A" are not matched to additional property patterns.',
+                        dataPath: 'A',
+                        constraints: {},
+                    }]);
+                }
+                {
+                    const ctx: Partial<ValidationContext> = {
+                        noAdditionalProps: true,
+                    };
+                    expect(validate<any>([0], ty, ctx)).toEqual(null);
+                    expect(ctx.errors).toEqual([{
+                        code: 'AdditionalPropUnmatched',
+                        message: '"[number]" of "A" are not matched to additional property patterns.',
+                        dataPath: 'A',
+                        constraints: {},
+                    }]);
+                }
             }
         }
     });
