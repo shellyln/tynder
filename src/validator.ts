@@ -383,7 +383,10 @@ function validateObjectAssertion<T>(
         if (ctx.noAdditionalProps && Array.isArray(data) && 0 < data.length) {
             const aps = ty.additionalProps || [];
             if (aps.filter(x => x[0].includes('number')).length === 0) {
-                reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {ctx});
+                reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {
+                    ctx,
+                    substitutions: [['addtionalProps', '[number]']],
+                });
                 if (ctx && ctx.checkAll) {
                     retVal = null;
                 } else {
@@ -471,7 +474,10 @@ function validateObjectAssertion<T>(
                     if (allowImplicit) {
                         continue;
                     }
-                    reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {ctx});
+                    reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {
+                        ctx,
+                        substitutions: [['addtionalProps', m]],
+                    });
                     if (ctx && ctx.checkAll) {
                         retVal = null;
                         continue;
@@ -517,7 +523,10 @@ function validateObjectAssertion<T>(
         }
 
         if (ctx.noAdditionalProps && 0 < dataMembers.size) {
-            reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {ctx});
+            reportError(ErrorTypes.AdditionalPropUnmatched, data, ty, {
+                ctx,
+                substitutions: [['addtionalProps', Array.from(dataMembers.values()).join(', ')]],
+            });
             if (ctx && ctx.checkAll) {
                 retVal = null;
             } else {

@@ -34,7 +34,7 @@ export const defaultMessages: ErrorMessages = {
     invalidDefinition:       '"%{name}" of "%{parentType}" type definition is invalid.',
     required:                '"%{name}" of "%{parentType}" is required.',
     typeUnmatched:           '"%{name}" of "%{parentType}" should be type "%{expectedType}".',
-    additionalPropUnmatched: '"Members of "%{parentType}" are not matched to additional property patterns.',
+    additionalPropUnmatched: '"%{addtionalProps}" of "%{parentType}" are not matched to additional property patterns.',
     repeatQtyUnmatched:      '"%{name}" of "%{parentType}" should repeat %{repeatQty} times.',
     sequenceUnmatched:       '"%{name}" of "%{parentType}" sequence is not matched',
     valueRangeUnmatched:     '"%{name}" of "%{parentType}" value should be in the range %{minValue} to %{maxValue}.',
