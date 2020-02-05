@@ -906,8 +906,8 @@ describe("compiler-7", function() {
             };
             expect(validate({a1: [1]}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
-                code: 'TypeUnmatched',                                            // TODO:
-                message: '"sequence item of a1" of "A" should be type "string".', // TODO:
+                code: 'TypeUnmatched',                                            // TODO: expect SequenceUnmatched?
+                message: '"sequence item of a1" of "A" should be type "string".', // TODO: custom error message is ignored
                 dataPath: 'A.a1.(0:sequence)',
                 constraints: {min: 3, max: 5},
             }]);
@@ -935,7 +935,7 @@ describe("compiler-7", function() {
             expect(validate({a1: ['1', '2']}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
                 code: 'RepeatQtyUnmatched',
-                message: '"sequence item of a1" of "A" should repeat 3..5 times.', // TODO:
+                message: '"sequence item of a1" of "A" should repeat 3..5 times.', // TODO: custom error message is ignored
                 dataPath: 'A.a1.(2:sequence)',
                 constraints: {min: 3, max: 5},
             }]);
@@ -991,7 +991,7 @@ describe("compiler-7", function() {
             expect(validate({a1: ['1', '2']}, getType(schema, 'A'), ctx)).toEqual(null);
             expect(ctx.errors).toEqual([{
                 code: 'RepeatQtyUnmatched',
-                message: '"sequence item of a1" of "A" should repeat 0..1 times.', // TODO:
+                message: '"sequence item of a1" of "A" should repeat 0..1 times.', // TODO: custom error message is ignored
                 dataPath: 'A.a1.(2:sequence)',
                 constraints: {},
             }]);

@@ -497,7 +497,11 @@ function validateObjectAssertion<T>(
                             message: at.message,
                             messages: at.messages,
                             messageId: at.messageId,
-                        } : at, ctx);
+                            name: m,
+                        } : {
+                            ...at,
+                            name: m,
+                        }, ctx);
                     if (ret) {
                         if (retVal) {
                             hasError = false;

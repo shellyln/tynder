@@ -641,8 +641,8 @@ describe("compiler-3", function() {
                     expect(validate<any>({'D': ''}, ty, ctx)).toEqual(null);
                     expect(ctx.errors).toEqual([{
                         code: 'TypeUnmatched',
-                        message: '"?" of "C" should be type "number".', // TODO:
-                        dataPath: 'C',
+                        message: '"D" of "C" should be type "number".',
+                        dataPath: 'C.D',
                         constraints: {},
                         value: '',
                     }]);

@@ -140,7 +140,6 @@ function findTopObjectAssertion(ctx: ValidationContext): ObjectAssertion | null 
 
 
 function findTopRepeatableAssertion(ctx: ValidationContext): TopRepeatable {
-
     const ret = ctx.typeStack
         .slice()
         .reverse()
@@ -183,7 +182,7 @@ function getExpectedType(ty: TypeAssertion): string {
 export function formatErrorMessage(
         msg: string, data: any, ty: TypeAssertion,
         args: ReportErrorArguments,
-        values: {dataPath: string, topRepeatable: TopRepeatable}) {
+        values: {dataPath: string, topRepeatable: TopRepeatable, parentType: string}) {
 
     let ret = msg;
     // TODO: complex type object members' custom error messages are not displayed?
@@ -247,7 +246,7 @@ export function formatErrorMessage(
                     findTopNamedAssertion(args.ctx)?.name || '?'}`)],
         ['parentType',
             escapeString(
-                findTopObjectAssertion(args.ctx)?.typeName || ty.typeName || '?')],
+                findTopObjectAssertion(args.ctx)?.typeName || ty.typeName || values.parentType || '?')],
         ['dataPath',
             values.dataPath],
 
@@ -275,6 +274,7 @@ export function reportError(
     }
     messages.push(defaultMessages);
 
+    let parentType = '';
     const dataPathArray: string[] = [];
     for (let i = 0; i < args.ctx.typeStack.length; i++) {
         const p = args.ctx.typeStack[i];
@@ -309,11 +309,14 @@ export function reportError(
                 dataPathArray.push(`${pt.typeName}`);
             }
         }
+        if (!parentType && pt.typeName) {
+            parentType = pt.typeName;
+        }
     }
     const dataPath = dataPathArray.join('.');
 
     const topRepeatable: TopRepeatable = findTopRepeatableAssertion(args.ctx);
-    const values = {dataPath, topRepeatable};
+    const values = {dataPath, topRepeatable, parentType};
 
     const constraints: TypeAssertionErrorMessageConstraints = {};
     const cSrces: TypeAssertionErrorMessageConstraints[] = [ty as any];
