@@ -180,7 +180,7 @@ import default as mySchema   from './myschema';
 const validated1 = validate({
     a: 'x',
     b: 3,
-}, getType(mySchema, 'A')); // {a: 'x', b: 3}
+}, getType(mySchema, 'A')); // {value: {a: 'x', b: 3}}
 
 
 const validated2 = validate({
@@ -215,7 +215,7 @@ import { getType }           from 'tynder/modules/validator';
 import { pick,
          patch }             from 'tynder/modules/picker';
 import { ValidationContext } from 'tynder/modules/types';
-import * as op               from 'tynder/modules//operators';
+import * as op               from 'tynder/modules/operators';
 import default as mySchema   from './myschema';
 
 
@@ -564,7 +564,7 @@ type A = number | integer | bigint | string | boolean;
 type B = null | undefined;
 
 /** Placeholder types */
-type C = unknown | any;
+type C = any | unknown | never;
 ```
 
 
