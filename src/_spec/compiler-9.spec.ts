@@ -178,8 +178,8 @@ describe("compiler-9", function() {
             expect(validate<any>('1', ty)).toEqual({value: '1'});
             expect(validate<any>(false, ty)).toEqual({value: false});
             expect(validate<any>(true, ty)).toEqual({value: true});
-            expect(validate<any>(null, ty)).toEqual(null);
-            expect(validate<any>(void 0, ty)).toEqual(null);
+            expect(validate<any>(null, ty)).toEqual({value: null});
+            expect(validate<any>(void 0, ty)).toEqual({value: void 0});
             expect(validate<any>({}, ty)).toEqual({value: {}});
             expect(validate<any>([], ty)).toEqual({value: []});
             expect(validate<any>(3, ty)).toEqual({value: 3});

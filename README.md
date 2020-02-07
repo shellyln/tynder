@@ -292,7 +292,8 @@ import { Foo, A }                from './path/to/schema-types/my-schema.ts'; // 
 const mySchema = deserializeFromObject(
     require('./path/to/schema-compiled/my-schema.json')); // pre-compiled schema
 
-const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
+const unknownInput: unknown = {a: 'x'};
+const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
 ```
 or
 ```ts
@@ -302,7 +303,8 @@ import mySchemaJson              from './path/to/schema-compiled/my-schema.json'
 
 const mySchema = deserializeFromObject(mySchemaJson);
 
-const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
+const unknownInput: unknown = {a: 'x'};
+const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
 ```
 
 
@@ -314,7 +316,8 @@ import * as fs         from 'fs';
 const mySchema = deserialize(
     fs.readFileSync('./path/to/compiled/my-schema.json', 'utf8')); // pre-compiled schema
 
-const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
+const unknownInput: unknown = {a: 'x'};
+const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
 ```
 
 

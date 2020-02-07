@@ -46,10 +46,6 @@ function validateAnyTypeAssertion<T>(
 function validateUnknownTypeAssertion<T>(
     data: any, ty: UnknownTypeAssertion, ctx: ValidationContext): {value: T} | null {
 
-    if (data === null || data === void 0) {
-        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
-        return null;
-    }
     // always matched
     return ({value: ctx.mapper ? ctx.mapper(data, ty) : data});
 }
