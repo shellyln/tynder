@@ -228,9 +228,12 @@ const needleType = op.picked(getType(mySchema, 'A'), 'a');
 
 try {
     const needle1 = pick(original, needleType); // {a: 'x'}
-    needle1.a = 'y';   // Edit the needle data
-    needle1.q = 1234;
-    const changed1 = patch(original, needle1, needleType); // {a: 'y', b: 3}
+    const unknownInput1: unknown = { // Edit the needle data
+        ...needle1,
+        a: 'y',
+        q: 1234,
+    };
+    const changed1 = patch(original, unknownInput1, needleType); // {a: 'y', b: 3}
 } catch (e) {
     console.log(e.message);
     console.log(e.ctx?.errors);
@@ -239,9 +242,12 @@ try {
 
 try {
     const needle2 = pick(original, needleType); // {a: 'x'}
-    needle2.a = 'yyyyy';   // Edit the needle data
-    needle2.q = 1234;
-    const changed1 = patch(original, needle1, needleType); // Throws an error
+    const unknownInput2: unknown = { // Edit the needle data
+        ...needle2,
+        a: 'yyyyy',
+        q: 1234,
+    };
+    const changed1 = patch(original, unknownInput2, needleType); // Throws an error
 } catch (e) {
     console.log(e.message);
     console.log(e.ctx?.errors);

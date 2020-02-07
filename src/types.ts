@@ -12,6 +12,15 @@ export * from './types/tynder-schema-types';
 
 
 
+// https://stackoverflow.com/questions/41980195/recursive-partialt-in-typescript
+export type RecursivePartial<T> = {
+    [P in keyof T]?:
+      T[P] extends (infer U)[] ? RecursivePartial<U>[] :
+      T[P] extends object ? RecursivePartial<T[P]> :
+      T[P];
+};
+
+
 export type TypeAssertionErrorMessageConstraints =
     Partial<Omit<PrimitiveTypeAssertionConstraints &
         RepeatedAssertionConstraints, 'pattern'> &

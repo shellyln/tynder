@@ -357,11 +357,11 @@ describe("compiler-9", function() {
         needle.c4 = '!44444!';
         (needle as any).c5 = true;
 
-        needle.c2.b2.a3 = ['!1!'];
-        needle.c2.b2.a4 = false;
-        (needle.c2.b2 as any).a5 = 999;
+        (needle as any).c2.b2.a3 = ['!1!'];
+        (needle as any).c2.b2.a4 = false;
+        (needle as any).c2.b2.a5 = 999;
 
-        needle.c3.a4 = true;
+        (needle as any).c3.a4 = true;
 
         const patched = patch(original, needle, ty);
         expect(patched).toEqual({
@@ -450,11 +450,11 @@ describe("compiler-9", function() {
         needle.c4 = '!44444!';
         (needle as any).c5 = true;
 
-        needle.c2.b2.a3 = ['!1!'];
-        needle.c2.b2.a4 = false;
-        (needle.c2.b2 as any).a5 = 999;
+        (needle as any).c2.b2.a3 = ['!1!'];
+        (needle as any).c2.b2.a4 = false;
+        (needle as any).c2.b2.a5 = 999;
 
-        needle.c3.a4 = true;
+        (needle as any).c3.a4 = true;
 
         const patched = patch(original, needle, ty);
         expect(patched).toEqual({

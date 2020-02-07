@@ -3,7 +3,8 @@
 // https://github.com/shellyln
 
 
-import { TypeAssertion,
+import { RecursivePartial,
+         TypeAssertion,
          ValidationContext } from './types';
 import { ValidationError }   from './lib/errors';
 import { isUnsafeVarNames }  from './lib/util';
@@ -92,7 +93,7 @@ export function pickRoot<T>(data: T, ty: TypeAssertion, ctx: ValidationContext):
 }
 
 
-export function pick<T>(data: T, ty: TypeAssertion, ctx?: Partial<ValidationContext>): T {
+export function pick<T>(data: T, ty: TypeAssertion, ctx?: Partial<ValidationContext>): RecursivePartial<T> {
     const ctx2: ValidationContext = {
         ...{errors: [], typeStack: []},
         ...(ctx || {}),

@@ -288,4 +288,159 @@ describe("foo", function() {
         // console.log(zz.keys());
         expect(1).toEqual(1);
     });
+    it("readme-examples-1", function() {
+        {
+            const mySchema = compile(`
+                type Foo = string;
+                interface A {
+                    @maxLength(4)
+                    a: Foo;
+                    z?: boolean;
+                }
+            `);
+            type Foo = string;
+            interface A {
+                a: Foo;
+                z?: boolean;
+            }
+            {
+                const validated1 = validate({
+                    a: 'x',
+                    b: 3,
+                }, getType(mySchema, 'A')); // {value: {a: 'x', b: 3}}
+                expect(validated1).toEqual({value: {a: 'x', b: 3}});
+
+
+                const validated2 = validate({
+                    aa: 'x',
+                    b: 3,
+                }, getType(mySchema, 'A')); // null
+
+                if (validated2 === null) {
+                    expect(1).toEqual(1);
+                } else {
+                    expect(1).toEqual(0);
+                }
+
+
+                const ctx3: Partial<ValidationContext> =
+                {                            // To receive the error messages, define the context as a variable.
+                    checkAll: true,          // (optional) Set to true to continue validation after the first error.
+                    noAdditionalProps: true, // (optional) Do not allow implicit additional properties.
+                    schema: mySchema,        // (optional) Pass "schema" to check for recursive types.
+                };
+
+                const validated3 = validate({
+                    aa: 'x',
+                    b: 3,
+                }, getType(mySchema, 'A'), ctx3);
+
+                if (validated3 === null) {
+                    expect(1).toEqual(1);
+                    // console.log(JSON.stringify(
+                    //     ctx3.errors, // error messages
+                    //     null, 2));
+                } else {
+                    expect(1).toEqual(0);
+                }
+            }
+            {
+                const original = {
+                    a: 'x',
+                    b: 3,
+                };
+                const needleType = op.picked(getType(mySchema, 'A'), 'a');
+
+
+                try {
+                    const needle1 = pick(original, needleType); // {a: 'x'}
+                    const unknownInput1: unknown = { // Edit the needle data
+                        ...needle1,
+                        a: 'y',
+                        q: 1234,
+                    };
+                    const changed1 = patch(original, unknownInput1, needleType); // {a: 'y', b: 3}
+                    expect(changed1).toEqual({a: 'y', b: 3});
+                } catch (e) {
+                    expect(1).toEqual(0);
+                    // console.log(e.message);
+                    // console.log(e.ctx?.errors);
+                }
+
+
+                try {
+                    const needle2 = pick(original, needleType); // {a: 'x'}
+                    const unknownInput2: unknown = { // Edit the needle data
+                        ...needle2,
+                        a: 'yyyyy',
+                        q: 1234,
+                    };
+                    const changed1 = patch(original, unknownInput2, needleType); // Throws an error
+                    expect(1).toEqual(0);
+                } catch (e) {
+                    expect(1).toEqual(1);
+                    // console.log(e.message);
+                    // console.log(e.ctx?.errors);
+                }
+
+
+                try {
+                    const ctx3: Partial<ValidationContext> =
+                    {                     // To receive the error messages, define the context as a variable.
+                        checkAll: true,   // (optional) Set to true to continue validation after the first error.
+                        schema: mySchema, // (optional) Pass "schema" to check for recursive types.
+                    };
+
+                    const needle3 = pick({
+                        aa: 'x',
+                        b: 3,
+                    }, needleType, ctx3); // Throws an error
+                    expect(1).toEqual(0);
+                } catch (e) {
+                    expect(1).toEqual(1);
+                    // console.log(e.message);
+                    // console.log(e.ctx?.errors);
+                }
+            }
+            {
+                const unknownInput: unknown = {a: 'x'};
+                const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
+
+                if (validated) {
+                    const validatedInput = validated.value;
+                    expect(validatedInput).toEqual({a: 'x'});
+                } else {
+                    expect(1).toEqual(0);
+                }
+            }
+            {
+                interface Store {
+                    baz: A;
+                }
+                const store: Store = {
+                    baz: {
+                        a: 'x',
+                        z: false,
+                    }
+                };
+
+                const needleType = op.picked(getType(mySchema, 'A'), 'a');
+
+                try {
+                    const needle = pick(store.baz, needleType); // {a: 'x'}
+                    const unknownInput: unknown = { // Edit the needle data
+                        ...needle,
+                        a: 'y',
+                        q: 1234,
+                    };
+                    store.baz = patch(store.baz, unknownInput, needleType); // {a: 'y', z: false}
+                    expect(store.baz).toEqual({a: 'y', z: false});
+                } catch (e) {
+                    expect(1).toEqual(0);
+                    // console.log(e.message);
+                    // console.log(e.ctx?.errors);
+                }
+            }
+        }
+    });
 });
