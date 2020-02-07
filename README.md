@@ -266,30 +266,43 @@ try {
 ```
 
 
-## Load pre-compiled schema
+## Load pre-compiled schema and type definitions
 
 ### From object (import)
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
-import mySchema_                 from './path/to/compiled/my-schema.ts';
+import { Foo, A }                from './path/to/schema-types/my-schema.ts';    // type definitions
+import mySchema_                 from './path/to/schema-compiled/my-schema.ts'; // pre-compiled schema
 
 const mySchema = deserializeFromObject(mySchema_);
+
+const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
 ```
 
 
 ### From object (require JSON file)
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
+import { Foo, A }                from './path/to/schema-types/my-schema.ts'; // type definitions
+
 // import { createRequireFromPath } from 'module';
-// import { fileURLToPath } from 'url';
+// import { fileURLToPath }         from 'url';
 // const require = createRequireFromPath(fileURLToPath(import.meta.url));
-const mySchema = deserializeFromObject(require('./path/to/compiled/my-schema.json'));
+
+const mySchema = deserializeFromObject(
+    require('./path/to/schema-compiled/my-schema.json')); // pre-compiled schema
+
+const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
 ```
 or
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
-import mySchemaJson              from './path/to/compiled/my-schema.json';
+import { Foo, A }                from './path/to/schema-types/my-schema.ts';      // type definitions
+import mySchemaJson              from './path/to/schema-compiled/my-schema.json'; // pre-compiled schema
+
 const mySchema = deserializeFromObject(mySchemaJson);
+
+const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
 ```
 
 
@@ -297,7 +310,11 @@ const mySchema = deserializeFromObject(mySchemaJson);
 ```ts
 import { deserialize } from 'tynder/modules/lib/serializer';
 import * as fs         from 'fs';
-const mySchema = deserialize(fs.readFileSync('./path/to/compiled/my-schema.json', 'utf8'));
+
+const mySchema = deserialize(
+    fs.readFileSync('./path/to/compiled/my-schema.json', 'utf8')); // pre-compiled schema
+
+const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
 ```
 
 
