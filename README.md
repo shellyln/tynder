@@ -271,53 +271,75 @@ try {
 ### From object (import)
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
-import { Foo, A }                from './path/to/schema-types/my-schema.ts';    // type definitions
-import mySchema_                 from './path/to/schema-compiled/my-schema.ts'; // pre-compiled schema
+import { Foo, A }                from './path/to/schema-types/my-schema';    // type definitions (.d.ts)
+import mySchema_                 from './path/to/schema-compiled/my-schema'; // pre-compiled schema (.ts)
 
 const mySchema = deserializeFromObject(mySchema_);
 
-const validated = validate<A>({a: 'x'}, getType(mySchema, 'A'));
+const unknownInput: unknown = {a: 'x'};
+const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
+
+if (validated) {
+    const validatedInput = validated.value; // validatedInput is type-safe
+    ...
+}
 ```
 
 
 ### From object (require JSON file)
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
-import { Foo, A }                from './path/to/schema-types/my-schema.ts'; // type definitions
+import { Foo, A }                from './path/to/schema-types/my-schema'; // type definitions (.d.ts)
 
 // import { createRequireFromPath } from 'module';
 // import { fileURLToPath }         from 'url';
 // const require = createRequireFromPath(fileURLToPath(import.meta.url));
 
 const mySchema = deserializeFromObject(
-    require('./path/to/schema-compiled/my-schema.json')); // pre-compiled schema
+    require('./path/to/schema-compiled/my-schema.json')); // pre-compiled schema (.json)
 
 const unknownInput: unknown = {a: 'x'};
 const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
+
+if (validated) {
+    const validatedInput = validated.value; // validatedInput is type-safe
+    ...
+}
 ```
 or
 ```ts
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
-import { Foo, A }                from './path/to/schema-types/my-schema.ts';      // type definitions
-import mySchemaJson              from './path/to/schema-compiled/my-schema.json'; // pre-compiled schema
+import { Foo, A }                from './path/to/schema-types/my-schema';         // type definitions (.d.ts)
+import mySchemaJson              from './path/to/schema-compiled/my-schema.json'; // pre-compiled schema (.json)
 
 const mySchema = deserializeFromObject(mySchemaJson);
 
 const unknownInput: unknown = {a: 'x'};
 const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
+
+if (validated) {
+    const validatedInput = validated.value; // validatedInput is type-safe
+    ...
+}
 ```
 
 
 ### From text
 ```ts
 import { deserialize } from 'tynder/modules/lib/serializer';
+import { Foo, A }      from './path/to/schema-types/my-schema'; // type definitions (.d.ts)
 import * as fs         from 'fs';
 
 const mySchema = deserialize(
-    fs.readFileSync('./path/to/compiled/my-schema.json', 'utf8')); // pre-compiled schema
+    fs.readFileSync('./path/to/compiled/my-schema.json', 'utf8')); // pre-compiled schema (.json)
 
 const unknownInput: unknown = {a: 'x'};
 const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
+
+if (validated) {
+    const validatedInput = validated.value; // validatedInput is type-safe
+    ...
+}
 ```
 
 
