@@ -349,6 +349,40 @@ if (validated) {
 ```
 
 
+### Type-safe Cherrypicking and patching:
+
+```ts
+// Load pre-compiled schema and type definitions
+...
+
+interface Store {
+    baz: A;
+}
+const store: Store = {
+    baz: {
+        a: 'x',
+        z: false,
+    }
+};
+
+const needleType = op.picked(getType(mySchema, 'A'), 'a');
+
+try {
+    const needle = pick(store.baz, needleType); // {a: 'x'}
+                                                // `needle` is RecursivePartial<A>
+    const unknownInput: unknown = {             // Edit the needle data
+        ...needle,
+        a: 'y',
+        q: 1234,
+    };
+    store.baz = patch(store.baz, unknownInput, needleType); // {a: 'y', z: false}
+} catch (e) {
+    console.log(e.message);
+    console.log(e.ctx?.errors);
+}
+```
+
+
 ## Define schema with functional API
 
 ```ts
