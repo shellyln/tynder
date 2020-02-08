@@ -14,10 +14,6 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 [![GitHub stars](https://img.shields.io/github/stars/shellyln/tynder.svg?style=social&label=Star)](https://github.com/shellyln/tynder)
 
 
-> NOTICE:  
-> API and DSL syntax are unstable until `v0.1.0`.
-
-
 
 ## Features
 * Define the **schema with TypeScript-like DSL**.
