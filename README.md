@@ -35,6 +35,10 @@ Validate data in browsers, node.js back-end servers, and various language platfo
     * A boilerplate for React client + Express server project using Tynder data validation library.
 
 
+## Playground
+* [TypeScript (Tynder DSL) → JSON Schema | GraphQL | Protobuf Converter](https://shellyln.github.io/tynder/playground.html)
+    * Convert schema from `Tynder DSL` to JSON Schema, GraphQL and Protobuf.
+
 
 ## Install
 
