@@ -318,6 +318,7 @@ const schema = {
         "value": {
           "type": [
             "null",
+            "integer",
             "number",
             "string",
             "boolean",
@@ -1502,6 +1503,7 @@ const schema = {
     "TypeAssertionMap": {
       "type": [
         "null",
+        "integer",
         "number",
         "string",
         "boolean",

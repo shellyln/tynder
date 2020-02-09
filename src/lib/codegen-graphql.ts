@@ -110,7 +110,7 @@ function generateGraphQlCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 
 
 function generateGraphQlCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
-    if (ty.members.filter(x => !(x[2])).length === 0) {
+    if (ty.members.length === 0) {
         return '{}';
     }
     const sep = '\n';

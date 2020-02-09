@@ -288,17 +288,10 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
             };
             return addMetaInfo(ret, ty);
         }
-    case 'any':
+    case 'any': case 'unknown':
         {
             const ret: JsonSchema.JsonSchemaAnyAssertion = {
-                type: ['null', 'number', 'string', 'boolean', 'array', 'object'],
-            };
-            return addMetaInfo(ret, ty);
-        }
-    case 'unknown':
-        {
-            const ret: JsonSchema.JsonSchemaUnknownAssertion = {
-                type: ['number', 'string', 'boolean', 'array', 'object'],
+                type: ['null', 'integer', 'number', 'string', 'boolean', 'array', 'object'],
             };
             return addMetaInfo(ret, ty);
         }
