@@ -211,10 +211,17 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
                     };
                     return addMetaInfo(ret, ty);
                 }
-            case 'number': case 'bigint':
+            case 'number':
                 {
                     const ret: JsonSchema.JsonSchemaNumberAssertion = {
                         type: 'number',
+                    };
+                    return addMetaInfo(ret, ty);
+                }
+            case 'bigint':
+                {
+                    const ret: JsonSchema.JsonSchemaBigIntAssertion = {
+                        type: ['integer', 'string'],
                     };
                     return addMetaInfo(ret, ty);
                 }
@@ -255,10 +262,13 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
                 }
             case 'bigint':
                 {
-                    const ret: JsonSchema.JsonSchemaBigintNumberValueAssertion = {
-                        type: 'number',
+                    const ret: JsonSchema.JsonSchemaBigIntNumberValueAssertion = {
+                        type: ['integer', 'string'],
                         enum: [ty.value.toString()],
                     };
+                    if (BigInt(Number.MIN_SAFE_INTEGER) <= ty.value && ty.value <= BigInt(Number.MAX_SAFE_INTEGER)) {
+                        ret.enum.push(Number(ty.value));
+                    }
                     return addMetaInfo(ret, ty);
                 }
             case 'string':

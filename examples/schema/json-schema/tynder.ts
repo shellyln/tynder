@@ -9,7 +9,10 @@ const schema = {
           "type": "number"
         },
         {
-          "type": "number"
+          "type": [
+            "integer",
+            "string"
+          ]
         },
         {
           "type": "string"
