@@ -22,8 +22,7 @@ export interface JsonSchemaAnyAssertion extends JsonSchemaAssertionBase {
 
 export type JsonSchemaUnknownAssertion = JsonSchemaAnyAssertion;
 
-export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase {
-    type: 'number' | 'integer' | Array<'number' | 'integer' | 'null'>;
+interface JsonSchemaNumberAssertionConstraints {
     multipleOf?: number;
     maximum?: number;
     exclusiveMaximum?: number;
@@ -31,14 +30,22 @@ export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase {
     exclusiveMinimum?: number;
 }
 
+export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase, JsonSchemaNumberAssertionConstraints {
+    type: 'number' | 'integer' | Array<'number' | 'integer' | 'null'>;
+}
+
+export interface JsonSchemaBigIntAssertion extends JsonSchemaAssertionBase, JsonSchemaNumberAssertionConstraints {
+    type: Array<'integer' | 'string'>;
+}
+
 export interface JsonSchemaNumberValueAssertion extends JsonSchemaAssertionBase {
     type: 'number';
     enum: number[];
 }
 
-export interface JsonSchemaBigintNumberValueAssertion extends JsonSchemaAssertionBase {
-    type: 'number';
-    enum: string[];
+export interface JsonSchemaBigIntNumberValueAssertion extends JsonSchemaAssertionBase {
+    type: Array<'integer' | 'string'>;
+    enum: Array<number | string>;
 }
 
 export interface JsonSchemaStringAssertion extends JsonSchemaAssertionBase {
@@ -116,8 +123,9 @@ export type JsonSchemaAssertion =
     JsonSchemaAnyAssertion |
     JsonSchemaUnknownAssertion |
     JsonSchemaNumberAssertion |
+    JsonSchemaBigIntAssertion |
     JsonSchemaNumberValueAssertion |
-    JsonSchemaBigintNumberValueAssertion |
+    JsonSchemaBigIntNumberValueAssertion |
     JsonSchemaStringAssertion |
     JsonSchemaStringValueAssertion |
     JsonSchemaBooleanAssertion |

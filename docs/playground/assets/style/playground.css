@@ -1,0 +1,59 @@
+
+
+body {
+    font-family: 'Ubuntu Mono', monospace;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.AceEditorOuterWrap {
+    width: calc(50% - 10px);
+    min-width: 400px;
+    margin: 8px 4px 4px 4px;
+}
+
+.AceEditorOuterWrap div.AceEditorDiv {
+    font-size: 12pt;
+}
+
+.AceEditorDiv {
+    width: 100%;
+    height: calc(100vh - 64px - 220px - 55px - 15px);
+    min-height: 300px;
+}
+
+.OutletDiv {
+    width: calc(50% - 10px);
+    min-width: 400px;
+    height: calc(100vh - 64px - 220px - 55px - 15px);
+    min-height: 300px;
+    margin: 8px 4px 4px 4px;
+    overflow: auto;
+}
+
+@media only screen and (max-width: 1200px) {
+    .AceEditorOuterWrap {
+        width: 100%;
+    }
+    .AceEditorDiv {
+        height: calc(100vh - 130px);
+    }
+    .OutletDiv {
+        width: 100%;
+        height: calc(100vh - 20px);
+    }
+}
+
+@media print {
+    .AceEditorOuterWrap {
+        width: 100%;
+    }
+    .OutletDiv {
+        width: 100%;
+    }
+}
