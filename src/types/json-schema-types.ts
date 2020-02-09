@@ -17,12 +17,10 @@ export interface JsonSchemaNullAssertion extends JsonSchemaAssertionBase {
 }
 
 export interface JsonSchemaAnyAssertion extends JsonSchemaAssertionBase {
-    type: Array<'null' | 'number' | 'string' | 'boolean' | 'array' | 'object'>;
+    type: Array<'null' | 'number' | 'integer' | 'string' | 'boolean' | 'array' | 'object'>;
 }
 
-export interface JsonSchemaUnknownAssertion extends JsonSchemaAssertionBase {
-    type: Array<'number' | 'string' | 'boolean' | 'array' | 'object'>;
-}
+export type JsonSchemaUnknownAssertion = JsonSchemaAnyAssertion;
 
 export interface JsonSchemaNumberAssertion extends JsonSchemaAssertionBase {
     type: 'number' | 'integer' | Array<'number' | 'integer' | 'null'>;

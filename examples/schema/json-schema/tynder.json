@@ -316,6 +316,7 @@
         "value": {
           "type": [
             "null",
+            "integer",
             "number",
             "string",
             "boolean",
@@ -1500,6 +1501,7 @@
     "TypeAssertionMap": {
       "type": [
         "null",
+        "integer",
         "number",
         "string",
         "boolean",

@@ -107,6 +107,10 @@ function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) 
     switch (r) {
     case 'double':
         return 'google.protobuf.DoubleValue';
+    case 'int64':
+        return 'google.protobuf.Int64Value';
+    case 'int32':
+        return 'google.protobuf.Int32Value';
     case 'string':
         return 'google.protobuf.StringValue';
     case 'bool':
@@ -123,7 +127,7 @@ function generateProto3CodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 
 
 function generateProto3CodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
-    if (ty.members.filter(x => !(x[2])).length === 0) {
+    if (ty.members.length === 0) {
         return '{}';
     }
     const sep = isInterface ? ';\n' : ',\n';
