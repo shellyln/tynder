@@ -1,0 +1,28 @@
+
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+nav {
+    font-family: 'Ubuntu Mono', monospace;
+}
+
+main {
+    flex: 1 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: radial-gradient(#F2B9A1, #EA6264);
+}
+
+footer {
+    font-family: 'Ubuntu Mono', monospace;
+}
+
+.dots {
+    border-width: 0 0 8px;
+    border-style: solid;
+    border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1"><circle fill="hsla(0, 0%, 65%, 1.0)" cx="1" cy="0.5" r="0.5"/></svg>') 0 0 100% repeat;
+    width: 216px;
+}
