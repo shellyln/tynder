@@ -43,7 +43,7 @@ function generateGraphQlCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenCo
     case 'integer':
         return 'Int';
     case 'bigint':
-        return 'String';
+        return 'BigInt';
     case 'string':
         return 'String';
     case 'boolean':
@@ -66,7 +66,7 @@ function generateGraphQlCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx:
         case 'number':
             return 'Float';
         case 'bigint':
-            return 'String';
+            return 'BigInt';
         case 'string':
             return 'String';
         case 'boolean':
@@ -181,7 +181,7 @@ function generateGraphQlCodeInner(ty: TypeAssertion, isInterface: boolean, ctx: 
 
 
 export function generateGraphQlCode(types: TypeAssertionMap): string {
-    let code = `\nscalar Any\n\n`;
+    let code = `\nscalar Any\nunion BigInt = String | Int\n\n`;
 
     const ctx = {nestLevel: 0};
     for (const ty of types.entries()) {

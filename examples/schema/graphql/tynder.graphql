@@ -1,11 +1,12 @@
 
 scalar Any
+union BigInt = String | Int
 
 scalar RegExp
 
 scalar Map
 
-union PrimitiveValueTypes = Float | String | String | Boolean | Any | Any
+union PrimitiveValueTypes = Float | BigInt | String | Boolean | Any | Any
 
 union PrimitiveValueTypeNames = String | String | String | String | String | String
 
