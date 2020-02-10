@@ -255,6 +255,9 @@ class App extends React.Component {
         }
 
         let x = document.createElement('pre');
+        x.style.margin = '0';
+        x.spellcheck = false;
+        x.contentEditable = true;
         x.innerText = r;
 
         ReactDOM.unmountComponentAtNode(outputElement);
@@ -275,6 +278,9 @@ class App extends React.Component {
         }
 
         let x = document.createElement('pre');
+        x.style.margin = '0';
+        x.spellcheck = false;
+        x.contentEditable = true;
         x.innerText = r;
 
         ReactDOM.unmountComponentAtNode(outputElement);
@@ -295,6 +301,9 @@ class App extends React.Component {
         }
 
         let x = document.createElement('pre');
+        x.style.margin = '0';
+        x.spellcheck = false;
+        x.contentEditable = true;
         x.innerText = r;
 
         ReactDOM.unmountComponentAtNode(outputElement);
