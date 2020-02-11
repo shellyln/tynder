@@ -27,6 +27,7 @@ Validate data in browsers, node.js back-end servers, and various language platfo
     * Protocol Buffers 3 (experimental)
     * GraphQL (experimental)
 
+![write-once-use-anywhere](https://shellyln.github.io/tynder/assets/image/write-once.svg)
 
 
 ## Get started
