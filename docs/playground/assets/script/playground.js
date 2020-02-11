@@ -64,8 +64,8 @@ type StringValueType = 'XB';
 type BooleanValueType = true;`},
 
 
-//// [2] ////
-{name: "Example2: Fields",
+//// [3] ////
+{name: "Example3: Fields",
  code:
  `type NumberType = number;
 
@@ -107,7 +107,12 @@ interface B {
 
 interface C extends A {}
 
-type D = Partial<A>;`},
+type D = Partial<A>;
+
+interface E {
+    /** additional props */
+    [propNames: string]: any;
+}`},
 
 
 ];

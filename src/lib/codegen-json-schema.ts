@@ -184,7 +184,7 @@ function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, ne
                         patternProperties['^[0-9]+$'] = z;
                         break;
                     case 'string':
-                        patternProperties['^.+$'] = z;
+                        patternProperties['^.*$'] = z;
                         break;
                     default:
                         patternProperties[k.source] = z;
