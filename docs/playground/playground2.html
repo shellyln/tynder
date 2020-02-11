@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<!--
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-127170266-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-127170266-1');
+</script>
+-->
+
+    <meta charset="utf-8">
+    <title>Tynder - Playground</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#424242">
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu+Mono">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="assets/style/playground2.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.7.0/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.7.0/umd/react-dom.development.js" crossorigin="anonymous"></script>
+    <script src="https://shellyln.github.io/releases/liyad/0.4.0/liyad.min.js?v=671b6c2" crossorigin="anonymous"></script>
+    <script src="../../dist/tynder.min.js"></script>
+    <script src="assets/script/playground2.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/6.11.0/ajv.min.js" crossorigin="anonymous" async></script>
+</head>
+
+<body>
+    <nav class="grey darken-3">
+        <div class="nav-wrapper">
+            <span class="brand-logo left">
+                <a href="https://github.com/shellyln/tynder">
+                    <img alt="Liyad" style="width: 130px; vertical-align: middle;" src="https://shellyln.github.io/assets/image/tynder-logo.svg">
+                </a>
+                <span style="font-size: 14pt;">TypeScript (Tynder DSL) Schema Validator</span>
+            </span>
+            <ul class="brand-logo right hide-on-med-and-down" style="padding-right: 30px;">
+                <li>
+                    <a href="https://github.com/shellyln/tynder#tynder">Documentation</a>
+                </li>
+                <li>
+                    <a href="https://github.com/shellyln/tynder/releases">Download</a>
+                </li>
+                <li class="active grey darken-2">
+                    <a href="#!">Playground</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="app" class="grey darken-1"></main>
+
+    <footer class="page-footer grey darken-3" style="padding-top: 0;">
+        <div class="container" style="width: 90%;">
+            <div class="row" style="margin-bottom: 0;">
+                <div class="col l6 s12">
+                    <a href="https://github.com/shellyln/tynder">
+                    <p class="grey-text text-lighten-4">
+                        <img alt="Tynder" style="width: 100px; vertical-align: middle;" src="https://shellyln.github.io/assets/image/tynder-logo.svg">
+                        TypeScript friendly Data validator for JavaScript.
+                    </p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright" style="padding: 5px;">
+            <div class="container">
+                © 2020 Copyright <a class="grey-text text-lighten-4" href="https://shellyln.github.io/">Shellyl_N</a> and Authors.
+                <a class="grey-text text-lighten-4 right" href="https://shellyln.github.io/">
+                    <img alt="Shellyl_N"
+                        style="width: 25px; margin-left: 40px; vertical-align: middle; filter: invert(90%);"
+                        src="https://shellyln.github.io/assets/image/shellyln-bw.png">
+                </a>
+                <a class="grey-text text-lighten-4 right" href="https://github.com/shellyln">
+                    <img alt="GitHub"
+                        style="width: 25px; margin-left: 40px; vertical-align: middle; filter: invert(90%)"
+                        src="https://shellyln.github.io/assets/octicons-6.0.1/svg/octoface.svg">
+                </a>
+                <a class="grey-text text-lighten-4 right" href="https://www.npmjs.com/~shellyln">
+                    <img alt="NPM"
+                        style="width: 25px; margin-left: 40px; vertical-align: middle; filter: invert(90%)"
+                        src="https://shellyln.github.io/assets/image/npm.svg">
+                </a>
+                <a class="grey-text text-lighten-4 right" href="https://twitter.com/shellyl_n">
+                    <img alt="Twitter"
+                        style="width: 25px; margin-left: 40px; vertical-align: middle; filter: invert(90%)"
+                        src="https://shellyln.github.io/assets/image/twitter.svg">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        ReactDOM.render(lsx`(App)`, document.getElementById('app'));
+    </script>
+</body>
