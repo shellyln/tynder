@@ -39,7 +39,8 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 ## Playground
 * [TypeScript (Tynder DSL) → JSON Schema | GraphQL | Protobuf Converter](https://shellyln.github.io/tynder/playground.html)
     * Convert schema from `Tynder DSL` to JSON Schema, GraphQL and Protobuf.
-
+* [TypeScript (Tynder DSL) Schema Validator](https://shellyln.github.io/tynder/playground2.html)
+    * Validate data against the schema.
 
 ## Install
 
