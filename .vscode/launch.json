@@ -9,6 +9,22 @@
             "outFiles": [
                 "${workspaceRoot}/bin.test/index.spec.js"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program (cli)",
+            "program": "${workspaceRoot}/src/cli.ts",
+            "outFiles": [
+                "${workspaceRoot}/bin.cli/tynder.js"
+            ],
+            "args": [
+                "compile",
+                "--indir",
+                "./examples/schema/tynder",
+                "--outdir",
+                "./examples/schema/_compiled",
+            ]
         }
     ]
 }
