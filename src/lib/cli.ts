@@ -35,8 +35,13 @@ function compileTo(fn: (types: TypeAssertionMap) => string, srcDir: string, dest
             } else {
                 if (entry.toLowerCase().endsWith(options.srcExt)) {
                     const code = fs.readFileSync(srcEntryPath, {encoding: 'utf8'});
-                    const typeMap = compile(code);
-                    const trans = fn(typeMap);
+                    let trans = "";
+                    try {
+                        const typeMap = compile(code);
+                        trans = fn(typeMap);
+                    } catch (error) {
+                        throw SyntaxError(`${srcEntryPath} - ${error.message}`);
+                    }
                     fs.writeFileSync(
                         path.join(destDir, entry.slice(0, -(options.srcExt.length)) + options.destExt),
                         trans,
