@@ -35,7 +35,7 @@ function compileTo(fn: (types: TypeAssertionMap) => string, srcDir: string, dest
             } else {
                 if (entry.toLowerCase().endsWith(options.srcExt)) {
                     const code = fs.readFileSync(srcEntryPath, {encoding: 'utf8'});
-                    let trans = "";
+                    let trans = '';
                     try {
                         const typeMap = compile(code);
                         trans = fn(typeMap);
