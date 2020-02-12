@@ -561,7 +561,7 @@ const complexTypeInnerWOSinpleArrayType = (edge: ParserFnWithCtx<string, Ctx, As
           pickOrOmitType,
           complexArrayType,
           sequenceType,
-          input => interfaceDefInner(seq(','))(input), );
+          input => interfaceDefInner(first(seq(';'), seq(',')))(input), );
 
 const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => ParserFnWithCtx<string, Ctx, Ast> =
     (edge: ParserFnWithCtx<string, Ctx, Ast>) =>
@@ -806,7 +806,8 @@ const interfaceDef =
         first(interfaceExtendsClause,            // [2]
               zeroWidth(() => []), ),
         erase(repeat(commentOrSpace)),
-    input => interfaceDefInner(seq(';'))(input), // [3]
+    input => interfaceDefInner(
+        first(seq(';'), seq(',')), )(input),     // [3]
 );
 
 

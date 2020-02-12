@@ -129,7 +129,9 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
     if (ty.members.filter(x => !(x[2])).length === 0) {
         return '{}';
     }
-    const sep = isInterface ? ';\n' : ',\n';
+    // NOTE: Semicolon is always preferred.
+    // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/member-delimiter-style.md
+    const sep = isInterface ? ';\n' : ';\n';
 
     const memberLines =
         ty.members.filter(x => !(x[2]))
