@@ -12,8 +12,8 @@ import { serialize,
 
 
 
-describe("compiler-9", function() {
-    it("compiler-import-statement-1", function() {
+describe("fix-1", function() {
+    it("fix-interface-member-delimiter-1", function() {
         const schemas = [compile(`
             interface O {
                 a: string;
@@ -100,6 +100,23 @@ describe("compiler-9", function() {
                 const ty = getType(schema, 'P');
                 expect(ty).toEqual(rhs);
                 expect(validate<any>({a: '', b: 0}, ty)).toEqual({value: {a: '', b: 0}});
+            }
+        }
+    });
+    it("fix-improve-error-messages-1", function() {
+        const schemas = [compile(`
+            @msgId()
+            interface O {
+            }
+            @msgId
+            type P = {
+            };
+            enum R {
+            }
+        `)];
+        for (const schema of schemas) {
+            {
+                expect(1).toEqual(1);
             }
         }
     });

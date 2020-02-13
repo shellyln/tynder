@@ -544,6 +544,7 @@ const decorator =
                     qty(0, 1)(erase(
                         seq(','),
                         repeat(commentOrSpace), )),
+                    first(ahead(seq(')')), err('decorator: Unexpected token has appeared. Expect ")".')),
                 erase(seq(')')),
             ), )));
 
@@ -676,12 +677,17 @@ const typeDef =
                 return ret;
             },                                                       // [0]
             erase(repeat(commentOrSpace)),
-            symbolName,                                              // [1]
+            first(symbolName,                                        // [1]
+                  err('typeDef: Unexpected token has appeared. Expect symbol name.'), ),
             erase(repeat(commentOrSpace)),
+        first(ahead(seq('=')), err('typeDef: Unexpected token has appeared. Expect "=".')),
         erase(seq('=')),
-            erase(repeat(commentOrSpace)),
-            input => complexType(first(seq(','), seq(';')))(input),  // [2]
-            erase(repeat(commentOrSpace)),
+            first(
+                combine(erase(repeat(commentOrSpace)),
+                        input => complexType(first(seq(','), seq(';')))(input),  // [2]
+                        erase(repeat(commentOrSpace)), ),
+                err('typeDef: Unexpected token has appeared.'), ),
+        first(ahead(seq(';')), err('typeDef: Unexpected token has appeared. Expect ";".')),
         erase(seq(';')), );
 
 
@@ -689,14 +695,19 @@ const interfaceExtendsClause =
     trans(tokens => [
             [{symbol: '$list'},
                 ...tokens.map(x => [{symbol: 'ref'}, x])], ])(
-        erase(seq('extends')),
+        erase(first(
+            seq('extends'),
+            combine(symbolName,
+                    err('interfaceExtendsClause: Unexpected token has appeared. Expect "extends" keyword.'), ))),
         erase(repeat(commentOrSpace)),
-        symbolName,
+        first(symbolName,
+              err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ),
         repeat(combine(
             erase(repeat(commentOrSpace)),
             erase(seq(',')),
             erase(repeat(commentOrSpace)),
-            symbolName, )));
+            first(symbolName,
+                err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ))));
 
 const interfaceKey =
     first(
@@ -705,7 +716,7 @@ const interfaceKey =
                 erase(repeat(commentOrSpace),
                       objKey,
                       repeat(commentOrSpace),
-                      seq(':'),
+                      first(seq(':'), err('":" is needed.')),
                       repeat(commentOrSpace), ),
                 repeat(combine(
                     first(regexpStringValue,
@@ -716,6 +727,7 @@ const interfaceKey =
                 first(regexpStringValue,
                       additionalPropPrimitiveTypeName, ),
                 erase(repeat(commentOrSpace)),
+                first(ahead(seq(']')), err('interfaceKey: Unexpected token has appeared. Expect "]".')),
             erase(seq(']')), ),
         objKey, );
 
@@ -778,7 +790,7 @@ const interfaceDefInner: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Parse
                     qty(0, 1)(erase(
                         separator,
                         repeat(commentOrSpace), )),
-                    first(ahead(seq('}')), err('interfaceDefInner: Unexpected token has appeared.')),
+                    first(ahead(seq('}')), err('interfaceDefInner: Unexpected token has appeared. Expect "}".')),
                 erase(seq('}')), )));
 
 const interfaceDef =
@@ -801,13 +813,16 @@ const interfaceDef =
             return ret;
         },                                       // [0] base types
         erase(repeat(commentOrSpace)),
-        symbolName,                              // [1] symbol
+        first(symbolName,                        // [1] symbol
+              err('interfaceDef: Unexpected token has appeared. Expect symbol name.'), ),
         erase(repeat(commentOrSpace)),
         first(interfaceExtendsClause,            // [2]
               zeroWidth(() => []), ),
         erase(repeat(commentOrSpace)),
-    input => interfaceDefInner(
-        first(seq(';'), seq(',')), )(input),     // [3]
+    first(
+        input => interfaceDefInner(
+            first(seq(';'), seq(',')), )(input), // [3]
+        err('interfaceDef: Unexpected token has appeared.'), ),
 );
 
 
@@ -829,10 +844,12 @@ const enumKeyValue =
         first(
             combine(
                 erase(seq('=')),
-                erase(repeat(commentOrSpace)),
-                first(decimalIntegerValue,
-                      stringValue, ),
-                erase(repeat(commentOrSpace)), ),
+                first(
+                    combine(erase(repeat(commentOrSpace)),
+                            first(decimalIntegerValue,
+                                  stringValue, ),
+                            erase(repeat(commentOrSpace)), ),
+                    err('enumKeyValue: Unexpected token has appeared.'), )),
             zeroWidth(() => null), ));
 
 const enumDef =
@@ -854,7 +871,8 @@ const enumDef =
             return ret;
         },                                       // [0]
         erase(repeat(commentOrSpace)),
-        symbolName,
+        first(symbolName,
+              err('enumDef: Unexpected token has appeared. Expect symbol name.'), ),
         erase(repeat(commentOrSpace)),
     first(
         combine(erase(
@@ -875,8 +893,9 @@ const enumDef =
                 qty(0, 1)(erase(
                     seq(','),
                     repeat(commentOrSpace), )),
-                first(ahead(seq('}')), err('enumDef: Unexpected token has appeared.')),
-            erase(seq('}')), )));
+                first(ahead(seq('}')), err('enumDef: Unexpected token has appeared. Expect "}".')),
+            erase(seq('}')), ),
+        err('enumDef: Unexpected token has appeared.'), ));
 
 
 const internalDef =
@@ -889,7 +908,8 @@ const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
               repeat(commentOrSpace), ),
-        internalDef, );
+        first(internalDef,
+              err('exportedDef: Unexpected token has appeared.'), ));
 
 
 const defStatement =
