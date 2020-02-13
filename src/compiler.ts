@@ -531,20 +531,23 @@ const decorator =
                 seq(')'), )),
             combine(
                 erase(seq('(')),
-                    combine(
-                        erase(repeat(commentOrSpace)),
-                        first(regexpStringValue, constExpr),
-                        erase(repeat(commentOrSpace)), ),
-                    repeat(combine(
-                        erase(repeat(commentOrSpace)),
-                        erase(seq(',')),
-                        erase(repeat(commentOrSpace)),
-                        first(regexpStringValue, constExpr),
-                        erase(repeat(commentOrSpace)), )),
-                    qty(0, 1)(erase(
-                        seq(','),
-                        repeat(commentOrSpace), )),
-                    first(ahead(seq(')')), err('decorator: Unexpected token has appeared. Expect ")".')),
+                    first(
+                        combine(
+                            combine(
+                                erase(repeat(commentOrSpace)),
+                                first(regexpStringValue, constExpr),
+                                erase(repeat(commentOrSpace)), ),
+                            repeat(combine(
+                                erase(repeat(commentOrSpace)),
+                                erase(seq(',')),
+                                erase(repeat(commentOrSpace)),
+                                first(regexpStringValue, constExpr),
+                                erase(repeat(commentOrSpace)), )),
+                            qty(0, 1)(erase(
+                                seq(','),
+                                repeat(commentOrSpace), )),
+                            first(ahead(seq(')')), err('decorator: Unexpected token has appeared. Expect ")".')), ),
+                        err('decorator: Unexpected token has appeared.'), ),
                 erase(seq(')')),
             ), )));
 
