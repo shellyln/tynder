@@ -707,7 +707,7 @@ const interfaceExtendsClause =
             erase(seq(',')),
             erase(repeat(commentOrSpace)),
             first(symbolName,
-                err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ))));
+                  err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ))));
 
 const interfaceKey =
     first(
@@ -936,10 +936,12 @@ const externalTypeDef =
                 erase(repeat(commentOrSpace)),
                 erase(cls(',')),
                 erase(repeat(commentOrSpace)),
-                symbolName,
+                first(symbolName,
+                      err('externalTypeDef: Unexpected token has appeared. Expect symbol name.'), ),
                 erase(repeat(commentOrSpace)),
             )),
             erase(repeat(commentOrSpace)),
+        first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect "}".')),
         erase(cls(';')), );
 
 const importStatement =
