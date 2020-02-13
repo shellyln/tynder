@@ -941,7 +941,7 @@ const externalTypeDef =
                 erase(repeat(commentOrSpace)),
             )),
             erase(repeat(commentOrSpace)),
-        first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect "}".')),
+        first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect ";".')),
         erase(cls(';')), );
 
 const importStatement =
