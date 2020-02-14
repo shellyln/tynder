@@ -62,21 +62,24 @@ const directiveLineComment =
         cat(seq('@tynder-'), repeat(classes.alnum)), // [0]
         erase(repeat(classes.space)),
         cat(repeat(notCls('\r\n', '\n', '\r'))),     // [1]
-        erase(classes.newline), );
+        erase(first(classes.newline, ahead(end()))), );
 
 const lineComment =
     combine(
         erase(qty(2)(cls('/'))),
-        ahead(repeat(classes.space),
-              notCls('@tynder-'), ),
-        repeat(notCls('\r\n', '\n', '\r')),
-        classes.newline, );
+        first(
+            combine(
+                ahead(repeat(classes.space),
+                      notCls('@tynder-'), ),
+                repeat(notCls('\r\n', '\n', '\r')),
+                first(classes.newline, ahead(end())), ),
+            first(classes.newline, ahead(end())), ));
 
 const hashLineComment =
     combine(
         seq('#'),
         repeat(notCls('\r\n', '\n', '\r')),
-        classes.newline, );
+        first(classes.newline, ahead(end())), );
 
 const docComment =
     combine(
@@ -87,7 +90,7 @@ const docComment =
             if (ret.succeeded) {
                 // define a reducer
                 const ctx2 = {...ret.next.context}; // NOTE: context is immutable
-                ctx2.docComment = (ret.tokens[0] as string).trim();
+                ctx2.docComment = (ret.tokens[0] as string || '').trim();
                 ret.next.context = ctx2;
             }
             return ret;
@@ -969,6 +972,8 @@ const program =
         repeat(combine(
             definition,
             erase(repeat(commentOrSpace)), )),
+        erase(repeat(commentOrSpace)),
+        first(ahead(end()), err('program: Unexpected token has appeared.')),
         end(), );
 
 
