@@ -3,6 +3,28 @@
 const schema = {
   "$schema": "http://json-schema.org/draft-06/schema#",
   "definitions": {
+    "RegExp": {
+      "type": [
+        "null",
+        "integer",
+        "number",
+        "string",
+        "boolean",
+        "array",
+        "object"
+      ]
+    },
+    "Map": {
+      "type": [
+        "null",
+        "integer",
+        "number",
+        "string",
+        "boolean",
+        "array",
+        "object"
+      ]
+    },
     "PrimitiveValueTypes": {
       "anyOf": [
         {

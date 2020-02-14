@@ -413,7 +413,7 @@ const arraySizeFactorInner =
             decimalIntegerValue,
             erase(repeat(commentOrSpace)),
             erase(seq('..')), ),
-        trans(tokens => [[{symbol: '#'}, ['max', tokens[0]]]])(
+        trans(tokens => [[{symbol: '#'}, ['min', tokens[0]], ['max', tokens[0]]]])(
             decimalIntegerValue, ));
 
 const arraySizeFactor =
@@ -439,7 +439,8 @@ const complexArrayType =
             qty(0, 1)(combine(
                 erase(seq(',')),
                 erase(repeat(commentOrSpace)),
-                arraySizeFactorInner,                               // [1]
+                first(arraySizeFactorInner,                         // [1]
+                      err('complexArrayType: Unexpected token has appeared. Expect array size.'), ),
                 erase(repeat(commentOrSpace)), )),
         first(ahead(seq('>')),
               err('\'>\' is expected in Array type.'), ),
@@ -516,8 +517,10 @@ const spreadType =
             qty(0, 1)(combine(
                 erase(seq(',')),
                 erase(repeat(commentOrSpace)),
-                arraySizeFactorInner,
+                first(arraySizeFactorInner,
+                      err('spreadType: Unexpected token has appeared. Expect array size.'), ),
                 erase(repeat(commentOrSpace)), )),
+            first(ahead(seq('>')), err('spreadType: Unexpected token has appeared.')),
         erase(seq('>')), );
 
 
@@ -596,8 +599,7 @@ const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Pa
                     first(
                         qty(1)(combine(
                             erase(repeat(commentOrSpace)),
-                            arraySizeFactor,
-                        )),
+                            arraySizeFactor, )),
                         zeroWidth(() => null), )),
             combine(first(
                 trans(tokens => [tokens[0], ...(tokens[1] as Ast[])])(

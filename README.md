@@ -674,6 +674,7 @@ type A = Array<boolean|number|boolean[]|{a: string}|'a'>;
 type A = string[10..20]; // 10 <= data.length <= 20
 type B = string[10..];   // 10 <= data.length
 type C = string[..20];   //       data.length <= 20
+type D = string[10];     // data.length === 10
 ```
 
 #### Complex array type with quantity assertion
@@ -681,6 +682,7 @@ type C = string[..20];   //       data.length <= 20
 type A = Array<boolean, 10..20>; // 10 <= data.length <= 20
 type B = Array<boolean, 10..>;   // 10 <= data.length
 type C = Array<boolean, ..20>;   //       data.length <= 20
+type D = Array<boolean, 10>;     // data.length === 10
 ```
 
 
