@@ -15,6 +15,7 @@ function addMetaInfo(a: JsonSchema.JsonSchemaAssertion, ty: TypeAssertion) {
 
     if (ty.docComment) {
         a2.description = ty.docComment;
+        changed = true;
     }
     switch (ty.kind) {
     case 'repeated':
