@@ -320,6 +320,9 @@ export function generateJsonSchemaObject(schema: TypeAssertionMap) {
         definitions: {},
     };
     for (const ty of schema.entries()) {
+        if (ty[1].ty.kind === 'never' && ty[1].ty.passThruCodeBlock) {
+            continue;
+        }
         (ret.definitions as object)[ty[0]] = generateJsonSchemaInner(schema, ty[1].ty, 0);
     }
     return ret;

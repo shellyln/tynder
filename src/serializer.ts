@@ -68,7 +68,6 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         throw new Error(`Unknown type assertion: ${(ret as any).kind}`);
     }
 
-    delete ret.passThruCodeBlock;
     return ret;
 }
 

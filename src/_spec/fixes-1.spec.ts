@@ -125,6 +125,7 @@ describe("fix-1", function() {
             }
             external S;
         `),
+        compile(``),
         compile(`//`),
         compile(`//a`),
         compile(`//@tynder-external P`),
@@ -132,6 +133,7 @@ describe("fix-1", function() {
         compile(`/**/`),
         compile(`/***/`),
         compile(`/**a*/`),
+        compile(`import;`),
         ]; // <- no errors
         for (const schema of schemas) {
             {
@@ -176,6 +178,20 @@ describe("fix-1", function() {
         `)).toThrowMatching(err =>
             err.message.includes(
                 'typeDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-3c", function() {
+        expect(() => compile(`
+            type P = {
+                a: string;
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
+        expect(() => compile(`
+            export type P = {
+                a: string;
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
     });
     it("fix-improve-error-messages-4", function() {
         expect(() => compile(`
@@ -241,7 +257,7 @@ describe("fix-1", function() {
             err.message.includes(
                 '":" is needed.\n'));
     });
-    it("fix-improve-error-messages-8", function() {
+    it("fix-improve-error-messages-8a", function() {
         expect(() => compile(`
             interface P = {
             }
@@ -254,6 +270,20 @@ describe("fix-1", function() {
         `)).toThrowMatching(err =>
             err.message.includes(
                 'interfaceDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-8b", function() {
+        expect(() => compile(`
+            interface {
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDef: Unexpected token has appeared. Expect symbol name.\n'));
+        expect(() => compile(`
+            export interface {
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDef: Unexpected token has appeared. Expect symbol name.\n'));
     });
     it("fix-improve-error-messages-9", function() {
         expect(() => compile(`
@@ -307,6 +337,20 @@ describe("fix-1", function() {
             err.message.includes(
                 'interfaceDef: Unexpected token has appeared.\n'));
     });
+    it("fix-improve-error-messages-11c", function() {
+        expect(() => compile(`
+            interface P {
+                a: string;
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
+        expect(() => compile(`
+            export interface P {
+                a: string;
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
+    });
     it("fix-improve-error-messages-12", function() {
         expect(() => compile(`
             interface P {
@@ -320,5 +364,178 @@ describe("fix-1", function() {
         `)).toThrowMatching(err =>
             err.message.includes(
                 'program: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-13", function() {
+        expect(() => compile(`
+            interface P {
+                a: string
+                b: number;
+            };
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
+        expect(() => compile(`
+            export interface P {
+                a: string
+                b: number;
+            };
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
+    });
+    it("fix-improve-error-messages-14", function() {
+        expect(() => compile(`
+            interface P {
+                a string;
+                b: number;
+            };
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '":" is needed.'));
+        expect(() => compile(`
+            export interface P {
+                a string;
+                b: number;
+            };
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '":" is needed.'));
+    });
+    it("fix-improve-error-messages-15a", function() {
+        expect(() => compile(`
+            enum P = {
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared.\n'));
+        expect(() => compile(`
+            export enum P = {
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-15b", function() {
+        expect(() => compile(`
+            enum {
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared. Expect symbol name.\n'));
+        expect(() => compile(`
+            export enum {
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared. Expect symbol name.\n'));
+    });
+    it("fix-improve-error-messages-16a", function() {
+        expect(() => compile(`
+            enum P {
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared.\n'));
+        expect(() => compile(`
+            export enum P {
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-16b", function() {
+        expect(() => compile(`
+            enum P }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared.\n'));
+        expect(() => compile(`
+            export enum P }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-17", function() {
+        expect(() => compile(`
+            enum P {
+                A
+                B
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared. Expect "}".\n'));
+        expect(() => compile(`
+            export enum P {
+                A
+                B
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumDef: Unexpected token has appeared. Expect "}".\n'));
+    });
+    it("fix-improve-error-messages-18a", function() {
+        expect(() => compile(`
+            enum P {
+                A =
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumKeyValue: Unexpected token has appeared.\n'));
+        expect(() => compile(`
+            export enum P {
+                A =
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumKeyValue: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-18b", function() {
+        expect(() => compile(`
+            enum P {
+                A = B
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumKeyValue: Unexpected token has appeared.\n'));
+        expect(() => compile(`
+            export enum P {
+                A = B
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'enumKeyValue: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-19", function() {
+        expect(() => compile(`
+            external
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'program: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-20", function() {
+        expect(() => compile(`
+            external A
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'externalTypeDef: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-21", function() {
+        expect(() => compile(`
+            external A = B
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'externalTypeDef: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-23", function() {
+        expect(() => compile(`
+            external A B
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'externalTypeDef: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24", function() {
+        expect(() => compile(`
+            import
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'importStatement: Unexpected token has appeared. Expect ";".\n'));
     });
 });

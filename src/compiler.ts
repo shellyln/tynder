@@ -957,6 +957,7 @@ const importStatement =
         cat(seq('import'),
             repeat(commentOrSpace),
             cat(repeat(notCls(';'))),
+            first(ahead(seq(';')), err('importStatement: Unexpected token has appeared. Expect ";".')),
             cls(';'), ));
 
 
@@ -1107,7 +1108,7 @@ export function compile(s: string) {
         passthru: (str: string) => {
             const ty: TypeAssertion = {
                 kind: 'never',
-                passThruCodeBlock: str,
+                passThruCodeBlock: str || '',
             };
             schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
             return ty;

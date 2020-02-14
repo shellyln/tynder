@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 export type PrimitiveValueTypes = (number | bigint | string | boolean | null | undefined);
 
 export type PrimitiveValueTypeNames = ('number' | 'bigint' | 'string' | 'boolean' | 'null' | 'undefined');
