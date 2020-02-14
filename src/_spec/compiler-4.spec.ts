@@ -490,7 +490,47 @@ describe("compiler-4", function() {
             }
         }
     });
-    it("compiler-array-length-4", function() {
+    it("compiler-array-length-4a", function() {
+        const schemas = [compile(`
+            type X = string[3];
+        `), compile(`
+            type X = Array<string, 3>;
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+            expect(Array.from(schemas[1].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'repeated',
+                    min: 3,
+                    max: 3,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    },
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>(['1'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2', '3'], ty)).toEqual({value: ['1', '2', '3']});
+                expect(validate<any>(['1', '2', '3', '4'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2', '3', '4', '5'], ty)).toEqual(null);
+                expect(validate<any>(['1', '2', '3', '4', '5', '6'], ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-array-length-4b", function() {
         const schemas = [compile(`
             type X = string[];
         `), compile(`
@@ -665,7 +705,52 @@ describe("compiler-4", function() {
             }
         }
     });
-    it("compiler-spread-length-4", function() {
+    it("compiler-spread-length-4a", function() {
+        const schemas = [compile(`
+            type X = [number, ...<string, 3>, boolean];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                'X',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'X',
+                    typeName: 'X',
+                    kind: 'sequence',
+                    sequence: [{
+                        kind: 'primitive',
+                        primitiveName: 'number',
+                    }, {
+                        kind: 'spread',
+                        min: 3,
+                        max: 3,
+                        spread: {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        },
+                    }, {
+                        kind: 'primitive',
+                        primitiveName: 'boolean',
+                    }],
+                };
+                const ty = getType(schema, 'X');
+                expect(ty).toEqual(rhs);
+                expect(validate<any>([], ty)).toEqual(null);
+                expect(validate<any>([0, false], ty)).toEqual(null);
+                expect(validate<any>([0, '1', false], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2', false], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2', '3', false], ty)).toEqual({value: [0, '1', '2', '3', false]});
+                expect(validate<any>([0, '1', '2', '3', '4', false], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2', '3', '4', '5', false], ty)).toEqual(null);
+                expect(validate<any>([0, '1', '2', '3', '4', '5', '6', false], ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-spread-length-4b", function() {
         const schemas = [compile(`
             type X = [number, ...<string>, boolean];
         `)];
