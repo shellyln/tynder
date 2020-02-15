@@ -1,0 +1,34 @@
+
+scalar Any
+union BigInt = String | Int
+
+union NumberType = Float
+
+union IntegerType = Int
+
+union BigIntType = BigInt
+
+union StringType = String
+
+union BooleanType = Boolean
+
+union NullType = Any
+
+union UndefinedType = Any
+
+union AnyType = Any
+
+union UnknownType = Any
+
+union NeverType = Any
+
+union NumberValueType = Float
+
+union IntegerValueType = Int
+
+union BigIntValueType = BigInt
+
+union StringValueType = String
+
+union BooleanValueType = Boolean
+

@@ -16,6 +16,10 @@ const schema = {
         "name": "Map",
         "noOutput": true
       },
+      "__$$$gensym_0$$$__": {
+        "kind": "never",
+        "passThruCodeBlock": "import * as fs from 'fs';"
+      },
       "PrimitiveValueTypes": {
         "kind": "one-of",
         "oneOf": [

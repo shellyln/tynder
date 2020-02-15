@@ -1,0 +1,46 @@
+type NumberType = number;
+
+interface A {
+    numberTypeField: NumberType;
+    integerTypeField: integer;
+    bigIntTypeField: bigint;
+    stringTypeField: string;
+    booleanTypeField: boolean;
+    nullTypeField: null;
+    undefinedTypeField: undefined;
+    anyTypeField: any;
+    unknownTypeField: unknown;
+    neverTypeField: never;
+    numberValueTypeField: 3;
+    integerValueTypeField: integer;
+    bigIntValueTypeField: 7n;
+    stringValueTypeField: 'XB';
+    booleanValueTypeField: true;
+}
+
+interface B {
+    numberTypeField?: NumberType;
+    integerTypeField?: integer;
+    bigIntTypeField?: bigint;
+    stringTypeField?: string;
+    booleanTypeField?: boolean;
+    nullTypeField?: null;
+    undefinedTypeField?: undefined;
+    anyTypeField?: any;
+    unknownTypeField?: unknown;
+    neverTypeField?: never;
+    numberValueTypeField?: 3;
+    integerValueTypeField?: integer;
+    bigIntValueTypeField?: 7n;
+    stringValueTypeField?: 'XB';
+    booleanValueTypeField?: true;
+}
+
+interface C extends A {}
+
+type D = Partial<A>;
+
+interface E {
+    /** additional props */
+    [propNames: string]: any;
+}

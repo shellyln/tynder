@@ -1,0 +1,45 @@
+
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+
+message ACL {
+    string target = 1;
+    string value = 2;
+}
+
+/** Entry base */
+message EntryBase {
+    /** Entry name */
+    string name = 1;
+    /** ACL infos */
+    repeated ACL acl = 2;
+}
+
+/** File entry */
+message File {
+    /** Entry type */
+    string type = 1;
+    /** Entry name */
+    string name = 2;
+    /** ACL infos */
+    repeated ACL acl = 3;
+}
+
+/** Folder entry */
+message Folder {
+    /** Entry type */
+    string type = 1;
+    /** Child entries */
+    repeated Entry entries = 2;
+    /** Entry name */
+    string name = 3;
+    /** ACL infos */
+    repeated ACL acl = 4;
+}
+
+/** Entry (union type) */
+message Entry {
+    google.protobuf.Any value = 1;
+}
+

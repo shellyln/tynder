@@ -1,0 +1,188 @@
+
+// tslint:disable: object-literal-key-quotes
+const schema = {
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "ACL": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "target",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "EntryBase": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Entry name"
+        },
+        "acl": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ACL"
+          },
+          "description": "ACL infos"
+        }
+      },
+      "required": [
+        "name",
+        "acl"
+      ],
+      "additionalProperties": false,
+      "description": "Entry base"
+    },
+    "File": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "file"
+          ],
+          "description": "Entry type"
+        },
+        "name": {
+          "type": "string",
+          "description": "Entry name"
+        },
+        "acl": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ACL"
+          },
+          "description": "ACL infos"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "acl"
+      ],
+      "additionalProperties": false,
+      "description": "File entry"
+    },
+    "Folder": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "folder"
+          ],
+          "description": "Entry type"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Entry"
+          },
+          "description": "Child entries"
+        },
+        "name": {
+          "type": "string",
+          "description": "Entry name"
+        },
+        "acl": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ACL"
+          },
+          "description": "ACL infos"
+        }
+      },
+      "required": [
+        "type",
+        "entries",
+        "name",
+        "acl"
+      ],
+      "additionalProperties": false,
+      "description": "Folder entry"
+    },
+    "Entry": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "file"
+              ],
+              "description": "Entry type"
+            },
+            "name": {
+              "type": "string",
+              "description": "Entry name"
+            },
+            "acl": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ACL"
+              },
+              "description": "ACL infos"
+            }
+          },
+          "required": [
+            "type",
+            "name",
+            "acl"
+          ],
+          "additionalProperties": false,
+          "description": "File entry"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "folder"
+              ],
+              "description": "Entry type"
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Entry"
+              },
+              "description": "Child entries"
+            },
+            "name": {
+              "type": "string",
+              "description": "Entry name"
+            },
+            "acl": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ACL"
+              },
+              "description": "ACL infos"
+            }
+          },
+          "required": [
+            "type",
+            "entries",
+            "name",
+            "acl"
+          ],
+          "additionalProperties": false,
+          "description": "Folder entry"
+        }
+      ],
+      "description": "Entry (union type)"
+    }
+  }
+};
+export default schema;
+// tslint:enable: object-literal-key-quotes

@@ -6,7 +6,7 @@
 // external RegExp, Map;
 /// @tynder-external RegExp, Map
 
-
+import * as fs from 'fs';
 
 export type PrimitiveValueTypes = number | bigint | string | boolean | null | undefined;                               // TODO: function
 export type PrimitiveValueTypeNames = 'number' | 'bigint' | 'string' | 'boolean' | 'null' | 'undefined';               // TODO: function

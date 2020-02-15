@@ -1,0 +1,65 @@
+
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+
+message NumberType {
+    double value = 1;
+}
+
+message IntegerType {
+    int32 value = 1;
+}
+
+message BigIntType {
+    string value = 1;
+}
+
+message StringType {
+    string value = 1;
+}
+
+message BooleanType {
+    bool value = 1;
+}
+
+message NullType {
+    google.protobuf.Any value = 1;
+}
+
+message UndefinedType {
+    google.protobuf.Any value = 1;
+}
+
+message AnyType {
+    google.protobuf.Any value = 1;
+}
+
+message UnknownType {
+    google.protobuf.Any value = 1;
+}
+
+message NeverType {
+    google.protobuf.Any value = 1;
+}
+
+message NumberValueType {
+    double value = 1;
+}
+
+message IntegerValueType {
+    int32 value = 1;
+}
+
+message BigIntValueType {
+    string value = 1;
+}
+
+message StringValueType {
+    string value = 1;
+}
+
+message BooleanValueType {
+    bool value = 1;
+}
+

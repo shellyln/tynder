@@ -62,21 +62,24 @@ const directiveLineComment =
         cat(seq('@tynder-'), repeat(classes.alnum)), // [0]
         erase(repeat(classes.space)),
         cat(repeat(notCls('\r\n', '\n', '\r'))),     // [1]
-        erase(classes.newline), );
+        erase(first(classes.newline, ahead(end()))), );
 
 const lineComment =
     combine(
         erase(qty(2)(cls('/'))),
-        ahead(repeat(classes.space),
-              notCls('@tynder-'), ),
-        repeat(notCls('\r\n', '\n', '\r')),
-        classes.newline, );
+        first(
+            combine(
+                ahead(repeat(classes.space),
+                      notCls('@tynder-'), ),
+                repeat(notCls('\r\n', '\n', '\r')),
+                first(classes.newline, ahead(end())), ),
+            first(classes.newline, ahead(end())), ));
 
 const hashLineComment =
     combine(
         seq('#'),
         repeat(notCls('\r\n', '\n', '\r')),
-        classes.newline, );
+        first(classes.newline, ahead(end())), );
 
 const docComment =
     combine(
@@ -87,7 +90,7 @@ const docComment =
             if (ret.succeeded) {
                 // define a reducer
                 const ctx2 = {...ret.next.context}; // NOTE: context is immutable
-                ctx2.docComment = (ret.tokens[0] as string).trim();
+                ctx2.docComment = (ret.tokens[0] as string || '').trim();
                 ret.next.context = ctx2;
             }
             return ret;
@@ -413,7 +416,7 @@ const arraySizeFactorInner =
             decimalIntegerValue,
             erase(repeat(commentOrSpace)),
             erase(seq('..')), ),
-        trans(tokens => [[{symbol: '#'}, ['max', tokens[0]]]])(
+        trans(tokens => [[{symbol: '#'}, ['min', tokens[0]], ['max', tokens[0]]]])(
             decimalIntegerValue, ));
 
 const arraySizeFactor =
@@ -439,7 +442,8 @@ const complexArrayType =
             qty(0, 1)(combine(
                 erase(seq(',')),
                 erase(repeat(commentOrSpace)),
-                arraySizeFactorInner,                               // [1]
+                first(arraySizeFactorInner,                         // [1]
+                      err('complexArrayType: Unexpected token has appeared. Expect array size.'), ),
                 erase(repeat(commentOrSpace)), )),
         first(ahead(seq('>')),
               err('\'>\' is expected in Array type.'), ),
@@ -516,8 +520,10 @@ const spreadType =
             qty(0, 1)(combine(
                 erase(seq(',')),
                 erase(repeat(commentOrSpace)),
-                arraySizeFactorInner,
+                first(arraySizeFactorInner,
+                      err('spreadType: Unexpected token has appeared. Expect array size.'), ),
                 erase(repeat(commentOrSpace)), )),
+            first(ahead(seq('>')), err('spreadType: Unexpected token has appeared.')),
         erase(seq('>')), );
 
 
@@ -531,19 +537,23 @@ const decorator =
                 seq(')'), )),
             combine(
                 erase(seq('(')),
-                    combine(
-                        erase(repeat(commentOrSpace)),
-                        first(regexpStringValue, constExpr),
-                        erase(repeat(commentOrSpace)), ),
-                    repeat(combine(
-                        erase(repeat(commentOrSpace)),
-                        erase(seq(',')),
-                        erase(repeat(commentOrSpace)),
-                        first(regexpStringValue, constExpr),
-                        erase(repeat(commentOrSpace)), )),
-                    qty(0, 1)(erase(
-                        seq(','),
-                        repeat(commentOrSpace), )),
+                    first(
+                        combine(
+                            combine(
+                                erase(repeat(commentOrSpace)),
+                                first(regexpStringValue, constExpr),
+                                erase(repeat(commentOrSpace)), ),
+                            repeat(combine(
+                                erase(repeat(commentOrSpace)),
+                                erase(seq(',')),
+                                erase(repeat(commentOrSpace)),
+                                first(regexpStringValue, constExpr),
+                                erase(repeat(commentOrSpace)), )),
+                            qty(0, 1)(erase(
+                                seq(','),
+                                repeat(commentOrSpace), )),
+                            first(ahead(seq(')')), err('decorator: Unexpected token has appeared. Expect ")".')), ),
+                        err('decorator: Unexpected token has appeared.'), ),
                 erase(seq(')')),
             ), )));
 
@@ -592,8 +602,7 @@ const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Pa
                     first(
                         qty(1)(combine(
                             erase(repeat(commentOrSpace)),
-                            arraySizeFactor,
-                        )),
+                            arraySizeFactor, )),
                         zeroWidth(() => null), )),
             combine(first(
                 trans(tokens => [tokens[0], ...(tokens[1] as Ast[])])(
@@ -675,13 +684,18 @@ const typeDef =
                 }
                 return ret;
             },                                                       // [0]
+            erase(qty(1)(commentOrSpace)),
+            first(symbolName,                                        // [1]
+                  err('typeDef: Unexpected token has appeared. Expect symbol name.'), ),
             erase(repeat(commentOrSpace)),
-            symbolName,                                              // [1]
-            erase(repeat(commentOrSpace)),
+        first(ahead(seq('=')), err('typeDef: Unexpected token has appeared. Expect "=".')),
         erase(seq('=')),
-            erase(repeat(commentOrSpace)),
-            input => complexType(first(seq(','), seq(';')))(input),  // [2]
-            erase(repeat(commentOrSpace)),
+            first(
+                combine(erase(repeat(commentOrSpace)),
+                        input => complexType(first(seq(','), seq(';')))(input),  // [2]
+                        erase(repeat(commentOrSpace)), ),
+                err('typeDef: Unexpected token has appeared.'), ),
+        first(ahead(seq(';')), err('typeDef: Unexpected token has appeared. Expect ";".')),
         erase(seq(';')), );
 
 
@@ -689,14 +703,19 @@ const interfaceExtendsClause =
     trans(tokens => [
             [{symbol: '$list'},
                 ...tokens.map(x => [{symbol: 'ref'}, x])], ])(
-        erase(seq('extends')),
-        erase(repeat(commentOrSpace)),
-        symbolName,
+        erase(first(
+            seq('extends'),
+            combine(symbolName,
+                    err('interfaceExtendsClause: Unexpected token has appeared. Expect "extends" keyword.'), ))),
+        erase(qty(1)(commentOrSpace)),
+        first(symbolName,
+              err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ),
         repeat(combine(
             erase(repeat(commentOrSpace)),
             erase(seq(',')),
             erase(repeat(commentOrSpace)),
-            symbolName, )));
+            first(symbolName,
+                  err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ))));
 
 const interfaceKey =
     first(
@@ -705,7 +724,7 @@ const interfaceKey =
                 erase(repeat(commentOrSpace),
                       objKey,
                       repeat(commentOrSpace),
-                      seq(':'),
+                      first(seq(':'), err('":" is needed.')),
                       repeat(commentOrSpace), ),
                 repeat(combine(
                     first(regexpStringValue,
@@ -716,6 +735,7 @@ const interfaceKey =
                 first(regexpStringValue,
                       additionalPropPrimitiveTypeName, ),
                 erase(repeat(commentOrSpace)),
+                first(ahead(seq(']')), err('interfaceKey: Unexpected token has appeared. Expect "]".')),
             erase(seq(']')), ),
         objKey, );
 
@@ -778,7 +798,7 @@ const interfaceDefInner: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Parse
                     qty(0, 1)(erase(
                         separator,
                         repeat(commentOrSpace), )),
-                    first(ahead(seq('}')), err('interfaceDefInner: Unexpected token has appeared.')),
+                    first(ahead(seq('}')), err('interfaceDefInner: Unexpected token has appeared. Expect "}".')),
                 erase(seq('}')), )));
 
 const interfaceDef =
@@ -800,14 +820,17 @@ const interfaceDef =
             }
             return ret;
         },                                       // [0] base types
-        erase(repeat(commentOrSpace)),
-        symbolName,                              // [1] symbol
+        erase(qty(1)(commentOrSpace)),
+        first(symbolName,                        // [1] symbol
+              err('interfaceDef: Unexpected token has appeared. Expect symbol name.'), ),
         erase(repeat(commentOrSpace)),
         first(interfaceExtendsClause,            // [2]
               zeroWidth(() => []), ),
         erase(repeat(commentOrSpace)),
-    input => interfaceDefInner(
-        first(seq(';'), seq(',')), )(input),     // [3]
+    first(
+        input => interfaceDefInner(
+            first(seq(';'), seq(',')), )(input), // [3]
+        err('interfaceDef: Unexpected token has appeared.'), ),
 );
 
 
@@ -829,10 +852,12 @@ const enumKeyValue =
         first(
             combine(
                 erase(seq('=')),
-                erase(repeat(commentOrSpace)),
-                first(decimalIntegerValue,
-                      stringValue, ),
-                erase(repeat(commentOrSpace)), ),
+                first(
+                    combine(erase(repeat(commentOrSpace)),
+                            first(decimalIntegerValue,
+                                  stringValue, ),
+                            erase(repeat(commentOrSpace)), ),
+                    err('enumKeyValue: Unexpected token has appeared.'), )),
             zeroWidth(() => null), ));
 
 const enumDef =
@@ -853,8 +878,9 @@ const enumDef =
             }
             return ret;
         },                                       // [0]
-        erase(repeat(commentOrSpace)),
-        symbolName,
+        erase(qty(1)(commentOrSpace)),
+        first(symbolName,
+              err('enumDef: Unexpected token has appeared. Expect symbol name.'), ),
         erase(repeat(commentOrSpace)),
     first(
         combine(erase(
@@ -875,8 +901,9 @@ const enumDef =
                 qty(0, 1)(erase(
                     seq(','),
                     repeat(commentOrSpace), )),
-                first(ahead(seq('}')), err('enumDef: Unexpected token has appeared.')),
-            erase(seq('}')), )));
+                first(ahead(seq('}')), err('enumDef: Unexpected token has appeared. Expect "}".')),
+            erase(seq('}')), ),
+        err('enumDef: Unexpected token has appeared.'), ));
 
 
 const internalDef =
@@ -888,8 +915,9 @@ const internalDef =
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
-              repeat(commentOrSpace), ),
-        internalDef, );
+              qty(1)(commentOrSpace), ),
+        first(internalDef,
+              err('exportedDef: Unexpected token has appeared.'), ));
 
 
 const defStatement =
@@ -910,23 +938,26 @@ const defStatement =
 const externalTypeDef =
     trans(tokens => [[{symbol: 'external'}, ...tokens]])(
         erase(seq('external')),
-            erase(repeat(commentOrSpace)),
+            erase(qty(1)(commentOrSpace)),
             symbolName,
             repeat(combine(
                 erase(repeat(commentOrSpace)),
                 erase(cls(',')),
                 erase(repeat(commentOrSpace)),
-                symbolName,
+                first(symbolName,
+                      err('externalTypeDef: Unexpected token has appeared. Expect symbol name.'), ),
                 erase(repeat(commentOrSpace)),
             )),
             erase(repeat(commentOrSpace)),
+        first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect ";".')),
         erase(cls(';')), );
 
 const importStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
         cat(seq('import'),
-            repeat(commentOrSpace),
+            qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
+            first(ahead(seq(';')), err('importStatement: Unexpected token has appeared. Expect ";".')),
             cls(';'), ));
 
 
@@ -942,6 +973,8 @@ const program =
         repeat(combine(
             definition,
             erase(repeat(commentOrSpace)), )),
+        erase(repeat(commentOrSpace)),
+        first(ahead(end()), err('program: Unexpected token has appeared.')),
         end(), );
 
 
@@ -1075,7 +1108,7 @@ export function compile(s: string) {
         passthru: (str: string) => {
             const ty: TypeAssertion = {
                 kind: 'never',
-                passThruCodeBlock: str,
+                passThruCodeBlock: str || '',
             };
             schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
             return ty;
