@@ -587,9 +587,9 @@ const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Pa
                 ...(tokens[3] ? [tokens[3]] : []),
                 ...tokens.slice(4),
             ]]);
-        })(                                                              // [0]
-        trans(tokens => [tokens])(qty(0, 1)(decoratorsClause)),          // [1]
-        first(                                                           // [2]
+        })(
+        trans(tokens => [tokens])(qty(0, 1)(decoratorsClause)),          // [0]
+        first(                                                           // [1]
             input => complexTypeInnerWOSinpleArrayType(edge)(input),
             combine(
                 erase(seq('(')),
@@ -597,14 +597,14 @@ const complexTypeInnerRoot: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Pa
                     input => complexType(edge)(input),
                     erase(repeat(commentOrSpace)),
                 erase(seq(')')), )),
-            combine(
-                trans(tokens => tokens[0] !== null ? [tokens] : [null])(
-                    first(
-                        qty(1)(combine(
-                            erase(repeat(commentOrSpace)),
-                            arraySizeFactor, )),
-                        zeroWidth(() => null), )),
-            combine(first(
+        combine(
+            trans(tokens => tokens[0] !== null ? [tokens] : [null])(     // [2]
+                first(
+                    qty(1)(combine(
+                        erase(repeat(commentOrSpace)),
+                        arraySizeFactor, )),
+                    zeroWidth(() => null), )),
+            combine(first(                                               // [3]...
                 trans(tokens => [tokens[0], ...(tokens[1] as Ast[])])(
                     qty(1)(combine(
                         erase(repeat(commentOrSpace)),
