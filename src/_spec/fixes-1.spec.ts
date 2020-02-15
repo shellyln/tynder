@@ -124,6 +124,34 @@ describe("fix-1", function() {
             export enum R {
             }
             external S;
+        `), compile(`
+            interface P {
+                [p: string]: string;
+            }
+        `), compile(`
+            interface P {
+                ['p': string]: string;
+            }
+        `), compile(`
+            interface P {
+                a: Partial<{}>;
+            }
+        `), compile(`
+            interface P {
+                a: Pick<{},'a'>;
+            }
+        `), compile(`
+            interface P {
+                a: Pick<{},'a'|'b'>;
+            }
+        `), compile(`
+            interface P {
+                a: Omit<{},'a'>;
+            }
+        `), compile(`
+            interface P {
+                a: Omit<{},'a'|'b'>;
+            }
         `),
         compile(``),
         compile(`//`),
@@ -537,5 +565,184 @@ describe("fix-1", function() {
         `)).toThrowMatching(err =>
             err.message.includes(
                 'importStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-25", function() {
+        expect(() => compile(`
+            //@tynder-
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'Unknown directive is appeared: @tynder-'));
+    });
+    it("fix-improve-error-messages-26", function() {
+        expect(() => compile(`
+            interface P {
+                a: string[a];
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDefInner: Unexpected token has appeared. Expect "}".\n'));
+    });
+    it("fix-improve-error-messages-27a", function() {
+        expect(() => compile(`
+            interface P {
+                a: Array<string,>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'complexArrayType: Unexpected token has appeared. Expect array size.\n'));
+    });
+    it("fix-improve-error-messages-27b", function() {
+        expect(() => compile(`
+            interface P {
+                a: Array<string,qqq>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'complexArrayType: Unexpected token has appeared. Expect array size.\n'));
+    });
+    it("fix-improve-error-messages-27c", function() {
+        expect(() => compile(`
+            interface P {
+                a: Array<string,10;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '\'>\' is expected in Array type.\n'));
+    });
+    it("fix-improve-error-messages-28", function() {
+        expect(() => compile(`
+            interface P {
+                a: Pick<{}>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interface member type is needed.\n'));
+        expect(() => compile(`
+            interface P {
+                a: Omit<{}>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interface member type is needed.\n'));
+    });
+    it("fix-improve-error-messages-29", function() {
+        expect(() => compile(`
+            interface P {
+                a: Pick<{},'a'|>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '\'>\' is expected in Pick|Omit type.\n'));
+        expect(() => compile(`
+            interface P {
+                a: Omit<{},'a'|>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '\'>\' is expected in Pick|Omit type.\n'));
+    });
+    it("fix-improve-error-messages-30", function() {
+        expect(() => compile(`
+            interface P {
+                a: Pick<{},10>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interface member type is needed.\n'));
+        expect(() => compile(`
+            interface P {
+                a: Omit<{},10>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interface member type is needed.\n'));
+    });
+    it("fix-improve-error-messages-31", function() {
+        expect(() => compile(`
+            interface P {
+                a: Pick<{},a>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interface member type is needed.\n'));
+        expect(() => compile(`
+            interface P {
+                a: Omit<{},a>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interface member type is needed.\n'));
+    });
+    it("fix-improve-error-messages-32", function() {
+        expect(() => compile(`
+            interface P {
+                a: Partial<{},>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '\'>\' is expected in Partial type.\n'));
+    });
+    it("fix-improve-error-messages-33", function() {
+        expect(() => compile(`
+            interface P {
+                a: Partial<{},'a'>;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '\'>\' is expected in Partial type.\n'));
+    });
+    it("fix-improve-error-messages-34", function() {
+        expect(() => compile(`
+            interface P {
+                a: Partial<{};
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '\'>\' is expected in Partial type.\n'));
+    });
+    it("fix-improve-error-messages-35a", function() {
+        expect(() => compile(`
+            interface P {
+                []: string;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-35b", function() {
+        expect(() => compile(`
+            interface P {
+                [propNames: 111]: string;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-35c", function() {
+        expect(() => compile(`
+            interface P {
+                ['p': string|]: string;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceDef: Unexpected token has appeared.\n'));
+    });
+    it("fix-improve-error-messages-35d", function() {
+        expect(() => compile(`
+            interface P {
+                [p]: string;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                '":" is needed.\n'));
+    });
+    it("fix-improve-error-messages-35e", function() {
+        expect(() => compile(`
+            interface P {
+                [propNames: string : string;
+            }
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'interfaceKey: Unexpected token has appeared. Expect "]".\n'));
     });
 });
