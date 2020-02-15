@@ -161,7 +161,7 @@ describe("fix-1", function() {
         compile(`/**/`),
         compile(`/***/`),
         compile(`/**a*/`),
-        compile(`import;`),
+        compile(`import ;`),
         ]; // <- no errors
         for (const schema of schemas) {
             {

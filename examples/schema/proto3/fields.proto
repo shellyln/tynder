@@ -1,0 +1,83 @@
+
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+
+message NumberType {
+    double value = 1;
+}
+
+message A {
+    NumberType numberTypeField = 1;
+    int32 integerTypeField = 2;
+    string bigIntTypeField = 3;
+    string stringTypeField = 4;
+    bool booleanTypeField = 5;
+    google.protobuf.Any nullTypeField = 6;
+    google.protobuf.Any undefinedTypeField = 7;
+    google.protobuf.Any anyTypeField = 8;
+    google.protobuf.Any unknownTypeField = 9;
+    google.protobuf.Any neverTypeField = 10;
+    double numberValueTypeField = 11;
+    int32 integerValueTypeField = 12;
+    string bigIntValueTypeField = 13;
+    string stringValueTypeField = 14;
+    bool booleanValueTypeField = 15;
+}
+
+message B {
+    NumberType numberTypeField = 1;
+    google.protobuf.Int32Value integerTypeField = 2;
+    google.protobuf.StringValue bigIntTypeField = 3;
+    google.protobuf.StringValue stringTypeField = 4;
+    google.protobuf.BoolValue booleanTypeField = 5;
+    google.protobuf.Any nullTypeField = 6;
+    google.protobuf.Any undefinedTypeField = 7;
+    google.protobuf.Any anyTypeField = 8;
+    google.protobuf.Any unknownTypeField = 9;
+    google.protobuf.Any neverTypeField = 10;
+    google.protobuf.DoubleValue numberValueTypeField = 11;
+    google.protobuf.Int32Value integerValueTypeField = 12;
+    google.protobuf.StringValue bigIntValueTypeField = 13;
+    google.protobuf.StringValue stringValueTypeField = 14;
+    google.protobuf.BoolValue booleanValueTypeField = 15;
+}
+
+message C {
+    NumberType numberTypeField = 1;
+    int32 integerTypeField = 2;
+    string bigIntTypeField = 3;
+    string stringTypeField = 4;
+    bool booleanTypeField = 5;
+    google.protobuf.Any nullTypeField = 6;
+    google.protobuf.Any undefinedTypeField = 7;
+    google.protobuf.Any anyTypeField = 8;
+    google.protobuf.Any unknownTypeField = 9;
+    google.protobuf.Any neverTypeField = 10;
+    double numberValueTypeField = 11;
+    int32 integerValueTypeField = 12;
+    string bigIntValueTypeField = 13;
+    string stringValueTypeField = 14;
+    bool booleanValueTypeField = 15;
+}
+
+message D {
+    NumberType numberTypeField = 1;
+    google.protobuf.Int32Value integerTypeField = 2;
+    google.protobuf.StringValue bigIntTypeField = 3;
+    google.protobuf.StringValue stringTypeField = 4;
+    google.protobuf.BoolValue booleanTypeField = 5;
+    google.protobuf.Any nullTypeField = 6;
+    google.protobuf.Any undefinedTypeField = 7;
+    google.protobuf.Any anyTypeField = 8;
+    google.protobuf.Any unknownTypeField = 9;
+    google.protobuf.Any neverTypeField = 10;
+    google.protobuf.DoubleValue numberValueTypeField = 11;
+    google.protobuf.Int32Value integerValueTypeField = 12;
+    google.protobuf.StringValue bigIntValueTypeField = 13;
+    google.protobuf.StringValue stringValueTypeField = 14;
+    google.protobuf.BoolValue booleanValueTypeField = 15;
+}
+
+message E {}
+

@@ -1,0 +1,42 @@
+
+scalar Any
+union BigInt = String | Int
+
+type ACL {
+    target: String!
+    value: String!
+}
+
+/** Entry base */
+type EntryBase {
+    /** Entry name */
+    name: String!
+    /** ACL infos */
+    acl: [ACL!]!
+}
+
+/** File entry */
+type File {
+    /** Entry type */
+    type: String!
+    /** Entry name */
+    name: String!
+    /** ACL infos */
+    acl: [ACL!]!
+}
+
+/** Folder entry */
+type Folder {
+    /** Entry type */
+    type: String!
+    /** Child entries */
+    entries: [Entry!]!
+    /** Entry name */
+    name: String!
+    /** ACL infos */
+    acl: [ACL!]!
+}
+
+/** Entry (union type) */
+union Entry = File | Folder
+

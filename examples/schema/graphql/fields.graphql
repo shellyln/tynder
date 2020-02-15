@@ -1,0 +1,80 @@
+
+scalar Any
+union BigInt = String | Int
+
+union NumberType = Float
+
+type A {
+    numberTypeField: NumberType!
+    integerTypeField: Int!
+    bigIntTypeField: BigInt!
+    stringTypeField: String!
+    booleanTypeField: Boolean!
+    nullTypeField: Any!
+    undefinedTypeField: Any!
+    anyTypeField: Any!
+    unknownTypeField: Any!
+    neverTypeField: Any!
+    numberValueTypeField: Float!
+    integerValueTypeField: Int!
+    bigIntValueTypeField: BigInt!
+    stringValueTypeField: String!
+    booleanValueTypeField: Boolean!
+}
+
+type B {
+    numberTypeField: NumberType
+    integerTypeField: Int
+    bigIntTypeField: BigInt
+    stringTypeField: String
+    booleanTypeField: Boolean
+    nullTypeField: Any
+    undefinedTypeField: Any
+    anyTypeField: Any
+    unknownTypeField: Any
+    neverTypeField: Any
+    numberValueTypeField: Float
+    integerValueTypeField: Int
+    bigIntValueTypeField: BigInt
+    stringValueTypeField: String
+    booleanValueTypeField: Boolean
+}
+
+type C {
+    numberTypeField: NumberType!
+    integerTypeField: Int!
+    bigIntTypeField: BigInt!
+    stringTypeField: String!
+    booleanTypeField: Boolean!
+    nullTypeField: Any!
+    undefinedTypeField: Any!
+    anyTypeField: Any!
+    unknownTypeField: Any!
+    neverTypeField: Any!
+    numberValueTypeField: Float!
+    integerValueTypeField: Int!
+    bigIntValueTypeField: BigInt!
+    stringValueTypeField: String!
+    booleanValueTypeField: Boolean!
+}
+
+type D {
+    numberTypeField: NumberType
+    integerTypeField: Int
+    bigIntTypeField: BigInt
+    stringTypeField: String
+    booleanTypeField: Boolean
+    nullTypeField: Any
+    undefinedTypeField: Any
+    anyTypeField: Any
+    unknownTypeField: Any
+    neverTypeField: Any
+    numberValueTypeField: Float
+    integerValueTypeField: Int
+    bigIntValueTypeField: BigInt
+    stringValueTypeField: String
+    booleanValueTypeField: Boolean
+}
+
+type E {}
+

@@ -684,7 +684,7 @@ const typeDef =
                 }
                 return ret;
             },                                                       // [0]
-            erase(repeat(commentOrSpace)),
+            erase(qty(1)(commentOrSpace)),
             first(symbolName,                                        // [1]
                   err('typeDef: Unexpected token has appeared. Expect symbol name.'), ),
             erase(repeat(commentOrSpace)),
@@ -707,7 +707,7 @@ const interfaceExtendsClause =
             seq('extends'),
             combine(symbolName,
                     err('interfaceExtendsClause: Unexpected token has appeared. Expect "extends" keyword.'), ))),
-        erase(repeat(commentOrSpace)),
+        erase(qty(1)(commentOrSpace)),
         first(symbolName,
               err('interfaceExtendsClause: Unexpected token has appeared. Expect symbol name.'), ),
         repeat(combine(
@@ -820,7 +820,7 @@ const interfaceDef =
             }
             return ret;
         },                                       // [0] base types
-        erase(repeat(commentOrSpace)),
+        erase(qty(1)(commentOrSpace)),
         first(symbolName,                        // [1] symbol
               err('interfaceDef: Unexpected token has appeared. Expect symbol name.'), ),
         erase(repeat(commentOrSpace)),
@@ -878,7 +878,7 @@ const enumDef =
             }
             return ret;
         },                                       // [0]
-        erase(repeat(commentOrSpace)),
+        erase(qty(1)(commentOrSpace)),
         first(symbolName,
               err('enumDef: Unexpected token has appeared. Expect symbol name.'), ),
         erase(repeat(commentOrSpace)),
@@ -915,7 +915,7 @@ const internalDef =
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
-              repeat(commentOrSpace), ),
+              qty(1)(commentOrSpace), ),
         first(internalDef,
               err('exportedDef: Unexpected token has appeared.'), ));
 
@@ -938,7 +938,7 @@ const defStatement =
 const externalTypeDef =
     trans(tokens => [[{symbol: 'external'}, ...tokens]])(
         erase(seq('external')),
-            erase(repeat(commentOrSpace)),
+            erase(qty(1)(commentOrSpace)),
             symbolName,
             repeat(combine(
                 erase(repeat(commentOrSpace)),
@@ -955,7 +955,7 @@ const externalTypeDef =
 const importStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
         cat(seq('import'),
-            repeat(commentOrSpace),
+            qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
             first(ahead(seq(';')), err('importStatement: Unexpected token has appeared. Expect ";".')),
             cls(';'), ));
