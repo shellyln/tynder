@@ -31,16 +31,16 @@
     "tynder": "./bin.cli/tynder.js"
   },
   "dependencies": {
-    "fruitsconfits": "^0.2.0",
+    "fruitsconfits": "^0.3.0",
     "liyad": "^0.4.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
-    "@types/jasmine": "^3.5.3",
-    "@types/node": "^13.7.0",
-    "@types/react": "^16.9.19",
+    "@types/jasmine": "^3.5.4",
+    "@types/node": "^13.7.1",
+    "@types/react": "^16.9.20",
     "@types/react-dom": "^16.9.5",
     "ajv": "^6.11.0",
     "babel-loader": "^8.0.6",
@@ -55,8 +55,8 @@
     "ts-loader": "^6.2.1",
     "tslint": "^6.0.0",
     "typescript": "^3.7.5",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "clean": "run-s clean:cjs clean:esm clean:cli clean:spec clean:dist",

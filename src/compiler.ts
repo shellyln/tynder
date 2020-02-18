@@ -5,6 +5,7 @@
 
 import { parserInput,
          ParserFnWithCtx }       from 'fruitsconfits/modules/lib/types';
+import { formatErrorMessage }    from 'fruitsconfits/modules/lib/parser';
 import { getStringParsers }      from 'fruitsconfits/modules/lib/string-parser';
 import { getObjectParsers }      from 'fruitsconfits/modules/lib/object-parser';
 import { SxTokenChild,
@@ -52,7 +53,8 @@ const $o = getObjectParsers<Ast[], Ctx, Ast>({
 
 const {seq, cls, notCls, clsFn, classes, numbers, cat,
        once, repeat, qty, zeroWidth, err, beginning, end,
-       first, or, combine, erase, trans, ahead, rules} = $s;
+       first, or, combine, erase, trans, ahead, rules,
+       makeProgram} = $s;
 
 
 const directiveLineComment =
@@ -968,20 +970,20 @@ const definition =
           importStatement, );
 
 const program =
-    combine(
+    makeProgram(combine(
         erase(repeat(commentOrSpace)),
         repeat(combine(
             definition,
             erase(repeat(commentOrSpace)), )),
         erase(repeat(commentOrSpace)),
         first(ahead(end()), err('program: Unexpected token has appeared.')),
-        end(), );
+        end(), ));
 
 
 export function parse(s: string) {
     const z = program(parserInput(s, {/* TODO: set initial state to the context */}));
     if (! z.succeeded) {
-        throw new Error(z.message);
+        throw new Error(formatErrorMessage(z));
     }
     return z.tokens;
 }
