@@ -326,17 +326,18 @@ export function reportError(
     for (let i = dataPathEntryArray.length - 1; 0 <= i; i--) {
         const p = dataPathEntryArray[i];
         if (p.kind === 'type') {
-            if (i !== 0) {
+            if (i !== 0 && i === dataPathEntryArray.length - 1) {
                 const q = dataPathEntryArray[i - 1];
                 if (q.kind === 'index') {
-                    continue;
+                    continue; // e.g.: "File:acl.(0:repeated).ACL"
                 }
-            }
+            }                 // else: "File:acl.(0:repeated).ACL:target"
             parentType = p.name;
             for (let j = i + 1; j < dataPathEntryArray.length; j++) {
                 const q = dataPathEntryArray[j];
                 if (q.kind === 'key') {
                     entryName = q.name;
+                    break;
                 }
             }
             break;

@@ -745,4 +745,64 @@ describe("fix-1", function() {
             err.message.includes(
                 'interfaceKey: Unexpected token has appeared. Expect "]".\n'));
     });
+    it("fix-improve-validation-message-1", function() {
+        const schema = compile(`
+            interface ACL {
+                target: string;
+                value: string;
+            }
+
+            /** Entry base */
+            interface EntryBase {
+                /** Entry name */
+                name: string;
+                /** ACL infos */
+                acl: ACL[];
+            }
+
+            /** File entry */
+            interface File extends EntryBase {
+                /** Entry type */
+                type: 'file';
+            }
+
+            /** Folder entry */
+            interface Folder extends EntryBase {
+                /** Entry type */
+                type: 'folder';
+                /** Child entries */
+                entries: Entry[];
+            }
+
+            /** Entry (union type) */
+            type Entry = File | Folder;
+            type Foo = string[]|number;
+        `);
+        {
+            const ctx: Partial<ValidationContext> = {checkAll: true};
+            const z = validate<any>({type: 'file', name: '', acl: [{}]}, getType(schema, 'File'), ctx);
+            expect(ctx.errors).toEqual([{
+                code: 'Required',
+                message: '"target" of "ACL" is required.',
+                dataPath: 'File.acl.(0:repeated).ACL.target',
+                constraints: {},
+            }, {
+                code: 'Required',
+                message: '"value" of "ACL" is required.',
+                dataPath: 'File.acl.(0:repeated).ACL.value',
+                constraints: {},
+            }] as any);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {checkAll: true};
+            const z = validate<any>({type: 'file', name: '', acl: [1]}, getType(schema, 'File'), ctx);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: '"acl" of "File" should be type "ACL".',
+                dataPath: 'File.acl.(0:repeated).ACL',
+                constraints: {},
+                value: 1,
+            }] as any);
+        }
+    });
 });
