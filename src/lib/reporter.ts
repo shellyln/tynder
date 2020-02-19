@@ -318,7 +318,7 @@ export function reportError(
         if (i + 1 === dataPathEntryArray.length) {
             break;
         }
-        dataPath += p.kind === 'type' ? '.' : '.';
+        dataPath += p.kind === 'type' ? ':' : '.';
     }
 
     let parentType = '';

@@ -784,12 +784,12 @@ describe("fix-1", function() {
             expect(ctx.errors).toEqual([{
                 code: 'Required',
                 message: '"target" of "ACL" is required.',
-                dataPath: 'File.acl.(0:repeated).ACL.target',
+                dataPath: 'File:acl.(0:repeated).ACL:target',
                 constraints: {},
             }, {
                 code: 'Required',
                 message: '"value" of "ACL" is required.',
-                dataPath: 'File.acl.(0:repeated).ACL.value',
+                dataPath: 'File:acl.(0:repeated).ACL:value',
                 constraints: {},
             }] as any);
         }
@@ -799,7 +799,7 @@ describe("fix-1", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: '"acl" of "File" should be type "ACL".',
-                dataPath: 'File.acl.(0:repeated).ACL',
+                dataPath: 'File:acl.(0:repeated).ACL',
                 constraints: {},
                 value: 1,
             }] as any);

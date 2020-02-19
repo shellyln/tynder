@@ -749,7 +749,7 @@ describe("compiler-2", function() {
                 expect(ctx1.errors).toEqual([{
                     code: 'InvalidDefinition',
                     message: '"entries" of "Folder" type definition is invalid.',
-                    dataPath: 'Folder.entries.(0:repeated).Entry',
+                    dataPath: 'Folder:entries.(0:repeated).Entry',
                     constraints: {}
                 }]);
                 expect(validate<any>(v, ty, {schema})).toEqual({value: v});
@@ -880,7 +880,7 @@ describe("compiler-2", function() {
                 expect(ctx1.errors).toEqual([{
                     code: 'InvalidDefinition',
                     message: '"entries" of "Folder" type definition is invalid.',
-                    dataPath: 'Folder.entries.(0:sequence).Entry',
+                    dataPath: 'Folder:entries.(0:sequence).Entry',
                     constraints: {}
                 }]);
                 expect(validate<any>(v, ty, {schema})).toEqual({value: v});
