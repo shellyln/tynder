@@ -119,26 +119,6 @@ function nvl(v: any, alt: any) {
 }
 
 
-function findTopNamedAssertion(ctx: ValidationContext): TypeAssertion | null {
-    const ret = ctx.typeStack
-        .slice()
-        .reverse()
-        .map(x => Array.isArray(x) ? x[0] : x)
-        .find(x => x.name && x.name !== x.typeName) || null;
-    return ret;
-}
-
-
-function findTopObjectAssertion(ctx: ValidationContext): ObjectAssertion | null {
-    const ret = ctx.typeStack
-        .slice()
-        .reverse()
-        .map(x => Array.isArray(x) ? x[0] : x)
-        .find(x => x.kind === 'object') as ObjectAssertion || null;
-    return ret;
-}
-
-
 function findTopRepeatableAssertion(ctx: ValidationContext): TopRepeatable {
     const ret = ctx.typeStack
         .slice()
@@ -168,7 +148,7 @@ function getExpectedType(ty: TypeAssertion): string {
     case 'optional':
         return getExpectedType(ty.optional);
     case 'one-of':
-        return `(one of ${ty.oneOf.map(x => getExpectedType(x)).join(', ')}`;
+        return `(one of ${ty.oneOf.map(x => getExpectedType(x)).join(', ')})`;
     case 'never': case 'any': case 'unknown':
         return ty.kind;
     case 'symlink':
@@ -182,7 +162,7 @@ function getExpectedType(ty: TypeAssertion): string {
 export function formatErrorMessage(
         msg: string, data: any, ty: TypeAssertion,
         args: ReportErrorArguments,
-        values: {dataPath: string, topRepeatable: TopRepeatable, parentType: string}) {
+        values: {dataPath: string, topRepeatable: TopRepeatable, parentType: string, entryName: string}) {
 
     let ret = msg;
     // TODO: complex type object members' custom error messages are not displayed?
@@ -242,11 +222,10 @@ export function formatErrorMessage(
                     'repeated item of ' :
                    ty.kind !== 'sequence' && values.dataPath.endsWith('sequence)') ?
                     'sequence item of ' : ''}${
-                (ty.name && ty.name !== ty.typeName ? ty.name : null) ||
-                    findTopNamedAssertion(args.ctx)?.name || '?'}`)],
+                values.entryName || '?'}`)],
         ['parentType',
             escapeString(
-                findTopObjectAssertion(args.ctx)?.typeName || ty.typeName || values.parentType || '?')],
+                values.parentType || '?')],
         ['dataPath',
             values.dataPath],
 
@@ -258,6 +237,12 @@ export function formatErrorMessage(
     }
 
     return ret;
+}
+
+
+interface DataPathEntry {
+    name: string;
+    kind: 'type' | 'key' | 'index';
 }
 
 
@@ -274,8 +259,8 @@ export function reportError(
     }
     messages.push(defaultMessages);
 
-    let parentType = '';
-    const dataPathArray: string[] = [];
+    const dataPathEntryArray: DataPathEntry[] = [];
+
     for (let i = 0; i < args.ctx.typeStack.length; i++) {
         const p = args.ctx.typeStack[i];
         const next = args.ctx.typeStack[i + 1];
@@ -286,43 +271,98 @@ export function reportError(
         if (pt.kind === 'repeated') {
             if (i !== args.ctx.typeStack.length - 1) {
                 if (pt.name) {
-                    dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}repeated)`);
-                } else {
-                    dataPathArray.push(`(repeated)`);
+                    dataPathEntryArray.push({kind: 'key', name: pt.name});
                 }
+                dataPathEntryArray.push({kind: 'index', name: `(${pi !== void 0 ? `${pi}:` : ''}repeated)`});
                 isSet = true;
             }
         } else if (pt.kind === 'sequence') {
             if (i !== args.ctx.typeStack.length - 1) {
                 if (pt.name) {
-                    dataPathArray.push(`${pt.name}.(${pi !== void 0 ? `${pi}:` : ''}sequence)`);
-                } else {
-                    dataPathArray.push(`(sequence)`);
+                    dataPathEntryArray.push({kind: 'key', name: pt.name});
                 }
+                dataPathEntryArray.push({kind: 'index', name: `(${pi !== void 0 ? `${pi}:` : ''}sequence)`});
                 isSet = true;
             }
         }
         if (! isSet) {
             if (pt.name) {
-                dataPathArray.push(`${pt.name}`);
+                if (i === 0) {
+                    if (pt.typeName) {
+                        dataPathEntryArray.push({kind: 'type', name: pt.typeName});
+                    } else {
+                        dataPathEntryArray.push({kind: 'key', name: pt.name});
+                    }
+                } else {
+                    const len = dataPathEntryArray.length;
+                    if (len && dataPathEntryArray[len - 1].kind === 'type') {
+                        dataPathEntryArray.push({kind: 'key', name: pt.name});
+                    } else {
+                        if (pt.typeName) {
+                            dataPathEntryArray.push({kind: 'type', name: pt.typeName});
+                        } else {
+                            dataPathEntryArray.push({kind: 'key', name: pt.name});
+                        }
+                    }
+                }
             } else if (pt.typeName) {
-                dataPathArray.push(`${pt.typeName}`);
+                dataPathEntryArray.push({kind: 'type', name: pt.typeName});
             }
         }
-        if (!parentType && pt.typeName) {
-            parentType = pt.typeName;
+    }
+
+    let dataPath = '';
+    for (let i = 0; i < dataPathEntryArray.length; i++) {
+        const p = dataPathEntryArray[i];
+        dataPath += p.name;
+        if (i + 1 === dataPathEntryArray.length) {
+            break;
+        }
+        dataPath += p.kind === 'type' ? ':' : '.';
+    }
+
+    let parentType = '';
+    let entryName = '';
+    for (let i = dataPathEntryArray.length - 1; 0 <= i; i--) {
+        const p = dataPathEntryArray[i];
+        if (p.kind === 'type') {
+            if (i !== 0 && i === dataPathEntryArray.length - 1) {
+                const q = dataPathEntryArray[i - 1];
+                if (q.kind === 'index') {
+                    continue; // e.g.: "File:acl.(0:repeated).ACL"
+                }
+            }                 // else: "File:acl.(0:repeated).ACL:target"
+            parentType = p.name;
+            for (let j = i + 1; j < dataPathEntryArray.length; j++) {
+                const q = dataPathEntryArray[j];
+                if (q.kind === 'key') {
+                    entryName = q.name;
+                    break;
+                }
+            }
+            break;
         }
     }
-    const dataPath = dataPathArray.join('.');
+    if (! parentType) {
+        for (let i = args.ctx.typeStack.length - 1; 0 <= i; i--) {
+            const p = args.ctx.typeStack[i];
+            const pt = Array.isArray(p) ? p[0] : p;
+            if (pt.typeName) {
+                parentType = pt.typeName;
+            }
+        }
+    }
 
     const topRepeatable: TopRepeatable = findTopRepeatableAssertion(args.ctx);
-    const values = {dataPath, topRepeatable, parentType};
+    const values = {dataPath, topRepeatable, parentType, entryName};
 
     const constraints: TypeAssertionErrorMessageConstraints = {};
     const cSrces: TypeAssertionErrorMessageConstraints[] = [ty as any];
+
     if (errType === ErrorTypes.RepeatQtyUnmatched && topRepeatable) {
         cSrces.unshift(topRepeatable as any);
     }
+
     for (const cSrc of cSrces) {
         if (nvl(cSrc.minValue, false)) {
             constraints.minValue = cSrc.minValue;
@@ -355,6 +395,7 @@ export function reportError(
     }
 
     const val: {value?: any} = {};
+
     switch (typeof data) {
     case 'number': case 'bigint': case 'string': case 'boolean': case 'undefined':
         val.value = data;

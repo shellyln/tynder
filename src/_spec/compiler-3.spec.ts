@@ -642,7 +642,7 @@ describe("compiler-3", function() {
                     expect(ctx.errors).toEqual([{
                         code: 'TypeUnmatched',
                         message: '"D" of "C" should be type "number".',
-                        dataPath: 'C.D',
+                        dataPath: 'C:D',
                         constraints: {},
                         value: '',
                     }]);

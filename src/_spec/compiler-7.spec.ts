@@ -551,7 +551,7 @@ describe("compiler-7", function() {
         expect(ctx.errors).toEqual([{
             code: 'Required',
             message: 'A.a1:required: a1 A',
-            dataPath: 'A.a1',
+            dataPath: 'A:a1',
             constraints: {},
         }]);
     });
@@ -578,7 +578,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: 'A.a1:typeUnmatched: a1 A string',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {},
                 value: 1,
             }]);
@@ -607,7 +607,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: 'A.a1:typeUnmatched: a1 A string',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {},
             }]);
         }
@@ -635,7 +635,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: 'A.a1:typeUnmatched: a1 A (repeated string)',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {},
                 value: '1',
             }]);
@@ -664,7 +664,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: '"repeated item of a1" of "A" should be type "string".', // TODO:
-                dataPath: 'A.a1.(0:repeated)',
+                dataPath: 'A:a1.(0:repeated)',
                 constraints: {},
                 value: 1,
             }]);
@@ -693,7 +693,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: 'A.a1:typeUnmatched: a1 A (sequence)',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {},
                 value: '1',
             }]);
@@ -722,7 +722,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',
                 message: '"sequence item of a1" of "A" should be type "string".', // TODO:
-                dataPath: 'A.a1.(0:sequence)',
+                dataPath: 'A:a1.(0:sequence)',
                 constraints: {},
                 value: 1,
             }]);
@@ -753,7 +753,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'ValueRangeUnmatched',
                 message: 'A.a1:valueRangeUnmatched: a1 A 3 5',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {minValue: 3, maxValue: 5},
                 value: 1,
             }]);
@@ -784,7 +784,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'ValueLengthUnmatched',
                 message: 'A.a1:valueLengthUnmatched: a1 A 3 5',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {minLength: 3, maxLength: 5},
                 value: '1',
             }]);
@@ -816,7 +816,7 @@ describe("compiler-7", function() {
                 expect(ctx.errors).toEqual([{
                     code: 'ValuePatternUnmatched',
                     message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/',
-                    dataPath: 'A.a1',
+                    dataPath: 'A:a1',
                     constraints: {pattern: '/^[0-9]+$/'},
                     value: 'A',
                 }]);
@@ -849,7 +849,7 @@ describe("compiler-7", function() {
                 expect(ctx.errors).toEqual([{
                     code: 'ValuePatternUnmatched',
                     message: 'A.a1:valuePatternUnmatched: a1 A /^[0-9]+$/gi',
-                    dataPath: 'A.a1',
+                    dataPath: 'A:a1',
                     constraints: {pattern: '/^[0-9]+$/gi'},
                     value: 'A',
                 }]);
@@ -879,7 +879,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'ValueUnmatched',
                 message: 'A.a1:valueUnmatched: a1 A 5',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {},
                 value: 4,
             }]);
@@ -908,7 +908,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'TypeUnmatched',                                            // TODO: expect SequenceUnmatched?
                 message: '"sequence item of a1" of "A" should be type "string".', // TODO: custom error message is ignored
-                dataPath: 'A.a1.(0:sequence)',
+                dataPath: 'A:a1.(0:sequence)',
                 constraints: {min: 3, max: 5},
             }]);
         }
@@ -936,7 +936,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'RepeatQtyUnmatched',
                 message: '"sequence item of a1" of "A" should repeat 3..5 times.', // TODO: custom error message is ignored
-                dataPath: 'A.a1.(2:sequence)',
+                dataPath: 'A:a1.(2:sequence)',
                 constraints: {min: 3, max: 5},
             }]);
         }
@@ -964,7 +964,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'SequenceUnmatched',
                 message: 'A.a1:sequenceUnmatched: a1 A',
-                dataPath: 'A.a1',
+                dataPath: 'A:a1',
                 constraints: {},
             }]);
         }
@@ -992,7 +992,7 @@ describe("compiler-7", function() {
             expect(ctx.errors).toEqual([{
                 code: 'RepeatQtyUnmatched',
                 message: '"sequence item of a1" of "A" should repeat 0..1 times.', // TODO: custom error message is ignored
-                dataPath: 'A.a1.(2:sequence)',
+                dataPath: 'A:a1.(2:sequence)',
                 constraints: {},
             }]);
         }
