@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.1.7
+## v0.2.0
 ### Breaking changes
 * Change the `dataPath` format for validation errors.
   * Path separator after `type` is changed from `.` to `:`.
