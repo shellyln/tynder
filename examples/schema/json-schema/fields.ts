@@ -402,6 +402,127 @@ const schema = {
         }
       },
       "additionalProperties": false
+    },
+    "Z1": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "$ref": "#/definitions/ACL/properties/target"
+        },
+        "bar": {
+          "type": "string",
+          "minLength": 0
+        },
+        "baz": {
+          "$ref": "#/definitions/ACL/properties/target"
+        }
+      },
+      "required": [
+        "foo",
+        "bar",
+        "baz"
+      ],
+      "additionalProperties": false
+    },
+    "ACL": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "target",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Z2": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "$ref": "#/definitions/ACL/properties/target"
+        },
+        "bar": {
+          "type": "string",
+          "minLength": 0
+        },
+        "baz": {
+          "type": "string",
+          "maxLength": 10
+        }
+      },
+      "required": [
+        "foo",
+        "bar",
+        "baz"
+      ],
+      "additionalProperties": false
+    },
+    "Foo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z]+$"
+        },
+        "email": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "Bar": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "$ref": "#/definitions/Foo"
+        }
+      },
+      "required": [
+        "foo"
+      ],
+      "additionalProperties": false
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string",
+          "pattern": "^[A-Za-z]+$"
+        },
+        "primaryEmail": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+        },
+        "primaryAliasName": {
+          "type": "string",
+          "pattern": "^[A-Za-z]+$"
+        },
+        "aliasNames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z]+$"
+          }
+        }
+      },
+      "required": [
+        "userName",
+        "primaryEmail",
+        "primaryAliasName",
+        "aliasNames"
+      ],
+      "additionalProperties": false
     }
   }
 };

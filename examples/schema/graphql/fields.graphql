@@ -78,3 +78,36 @@ type D {
 
 type E {}
 
+type Z1 {
+    foo: ACL.target!
+    bar: ACL.value!
+    baz: ACL.target!
+}
+
+type ACL {
+    target: String!
+    value: String!
+}
+
+type Z2 {
+    foo: ACL.target!
+    bar: ACL.value!
+    baz: ACL.target!
+}
+
+type Foo {
+    name: String!
+    email: String!
+}
+
+type Bar {
+    foo: Foo!
+}
+
+type User {
+    userName: Foo.name!
+    primaryEmail: Foo.email!
+    primaryAliasName: Bar.foo.name!
+    aliasNames: [Bar.foo.name!]!
+}
+

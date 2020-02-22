@@ -10,6 +10,9 @@ const objConstructor = ({}).constructor; // NOTE: objConstructor            === 
 const funConstructor = Function;         // NOTE: ({}).toString.constructor === Function
 
 
+export const NumberPattern = /^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/;
+
+
 export const dummyTargetObject = {};
 
 

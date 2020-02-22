@@ -17,7 +17,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             }
           ],
           [
@@ -141,7 +143,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             }
           ],
           [
@@ -307,7 +311,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             },
             true
           ],
@@ -439,7 +445,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "A"
+            "symlinkTargetName": "A",
+            "typeName": "A",
+            "name": "A"
           }
         ],
         "typeName": "C",
@@ -452,7 +460,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             }
           ],
           [
@@ -628,6 +638,195 @@ const schema = {
         ],
         "typeName": "E",
         "name": "E"
+      },
+      "Z1": {
+        "kind": "object",
+        "members": [
+          [
+            "foo",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target",
+              "typeName": "ACL.target",
+              "name": "foo"
+            }
+          ],
+          [
+            "bar",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minLength": 0,
+              "name": "bar",
+              "typeName": "ACL.value"
+            }
+          ],
+          [
+            "baz",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target",
+              "typeName": "ACL.target",
+              "name": "baz"
+            }
+          ]
+        ],
+        "typeName": "Z1",
+        "name": "Z1"
+      },
+      "ACL": {
+        "kind": "object",
+        "members": [
+          [
+            "target",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "name": "target"
+            }
+          ],
+          [
+            "value",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minLength": 0,
+              "name": "value"
+            }
+          ]
+        ],
+        "typeName": "ACL",
+        "name": "ACL"
+      },
+      "Z2": {
+        "kind": "object",
+        "members": [
+          [
+            "foo",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target",
+              "typeName": "ACL.target",
+              "name": "foo"
+            }
+          ],
+          [
+            "bar",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minLength": 0,
+              "name": "bar",
+              "typeName": "ACL.value"
+            }
+          ],
+          [
+            "baz",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "name": "baz",
+              "typeName": "ACL.target",
+              "maxLength": 10
+            }
+          ]
+        ],
+        "typeName": "Z2",
+        "name": "Z2"
+      },
+      "Foo": {
+        "kind": "object",
+        "members": [
+          [
+            "name",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "pattern": "/^[A-Za-z]+$/",
+              "name": "name"
+            }
+          ],
+          [
+            "email",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "pattern": "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/",
+              "name": "email"
+            }
+          ]
+        ],
+        "typeName": "Foo",
+        "name": "Foo"
+      },
+      "Bar": {
+        "kind": "object",
+        "members": [
+          [
+            "foo",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "Foo",
+              "typeName": "Foo",
+              "name": "foo"
+            }
+          ]
+        ],
+        "typeName": "Bar",
+        "name": "Bar"
+      },
+      "User": {
+        "kind": "object",
+        "members": [
+          [
+            "userName",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "pattern": "/^[A-Za-z]+$/",
+              "name": "userName",
+              "typeName": "Foo.name"
+            }
+          ],
+          [
+            "primaryEmail",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "pattern": "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/",
+              "name": "primaryEmail",
+              "typeName": "Foo.email"
+            }
+          ],
+          [
+            "primaryAliasName",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "pattern": "/^[A-Za-z]+$/",
+              "name": "primaryAliasName",
+              "typeName": "Bar.foo.name"
+            }
+          ],
+          [
+            "aliasNames",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string",
+                "pattern": "/^[A-Za-z]+$/",
+                "name": "name",
+                "typeName": "Bar.foo.name"
+              },
+              "name": "aliasNames"
+            }
+          ]
+        ],
+        "typeName": "User",
+        "name": "User"
       }
     }
   }

@@ -20,6 +20,19 @@ import { escapeString }   from '../lib/escape';
 
 
 
+function formatTypeName(typeName: string) {
+    if (typeName.includes('.')) {
+        const z = typeName.split('.');
+        let s = z[0];
+        for (let i = 1; i < z.length; i++) {
+            s += `['${escapeString(z[i])}']`
+        }
+        return `(${s})`;
+    }
+    return typeName;
+}
+
+
 function formatTypeScriptCodeDocComment(ty: TypeAssertion | string, nestLevel: number) {
     let code = '';
     const indent = '    '.repeat(nestLevel);
@@ -77,10 +90,10 @@ function generateTypeScriptCodeRepeated(ty: RepeatedAssertion, ctx: CodegenConte
             ty.repeated.kind === 'symlink' ||
             (ty.repeated.kind === 'one-of' && ty.repeated.typeName) ?
         `${ty.repeated.typeName ?
-            ty.repeated.typeName :
+            formatTypeName(ty.repeated.typeName) :
             generateTypeScriptCodeInner(ty.repeated, false, ctx)}[]` :
         `Array<${ty.repeated.typeName ?
-            ty.repeated.typeName :
+            formatTypeName(ty.repeated.typeName) :
             generateTypeScriptCodeInner(ty.repeated, false, ctx)}>`
     );
 }
@@ -96,7 +109,7 @@ function generateTypeScriptCodeSequence(ty: SequenceAssertion, ctx: CodegenConte
         ty.sequence
             .filter(x => x.kind !== 'spread')
             .map(x => x.typeName ?
-                x.typeName :
+                formatTypeName(x.typeName) :
                 generateTypeScriptCodeInner(x, false, {...ctx, nestLevel: ctx.nestLevel + 1}))
             .join(', ')}]`;
 }
@@ -105,7 +118,7 @@ function generateTypeScriptCodeSequence(ty: SequenceAssertion, ctx: CodegenConte
 function generateTypeScriptCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
     return `(${ty.oneOf
         .map(x => x.typeName ?
-            x.typeName :
+            formatTypeName(x.typeName) :
             generateTypeScriptCodeInner(x, false, ctx)).join(' | ')})`;
 }
 
@@ -140,7 +153,7 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
                 '    '.repeat(ctx.nestLevel + 1)}${
                 x[0]}${x[1].kind === 'optional' ? '?' : ''}: ${
                 x[1].typeName ?
-                    x[1].typeName :
+                    formatTypeName(x[1].typeName) :
                     generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`);
 
     const additionalPropsLines =
@@ -150,7 +163,7 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
                 '    '.repeat(ctx.nestLevel + 1)}${
                 formatAdditionalPropsName(x[0], i)}${x[1].kind === 'optional' ? '?' : ''}: ${
                 x[1].typeName ?
-                    x[1].typeName :
+                    formatTypeName(x[1].typeName) :
                     generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`) || [];
 
     return (
@@ -211,7 +224,7 @@ export function generateTypeScriptCode(types: TypeAssertionMap): string {
                 ty[1].ty.baseTypes && ty[1].ty.baseTypes.length ? ` extends ${
                     ty[1].ty.baseTypes
                         .filter(x => x.typeName)
-                        .map(x => x.typeName)
+                        .map(x => formatTypeName(x.typeName as string))
                         .join(', ')}` : ''} ${
                 generateTypeScriptCodeInner(ty[1].ty, true, ctx)}\n\n`;
         } else if (ty[1].ty.kind === 'enum') {
@@ -240,7 +253,9 @@ export function generateTypeScriptCode(types: TypeAssertionMap): string {
             code += `${ty[1].ty.passThruCodeBlock}\n\n`;
         } else {
             code += `type ${ty[0]} = ${
-                ty[1].ty.originalTypeName ||
+                (ty[1].ty.originalTypeName ?
+                    formatTypeName(ty[1].ty.originalTypeName) :
+                    void 0) ||
                 generateTypeScriptCodeInner(ty[1].ty, false, ctx)};\n\n`;
         }
     }

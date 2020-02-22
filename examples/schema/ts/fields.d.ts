@@ -58,3 +58,36 @@ interface D {
 
 interface E {}
 
+interface Z1 {
+    foo: (ACL['target']);
+    bar: (ACL['value']);
+    baz: (ACL['target']);
+}
+
+interface ACL {
+    target: string;
+    value: string;
+}
+
+interface Z2 {
+    foo: (ACL['target']);
+    bar: (ACL['value']);
+    baz: (ACL['target']);
+}
+
+interface Foo {
+    name: string;
+    email: string;
+}
+
+interface Bar {
+    foo: Foo;
+}
+
+interface User {
+    userName: (Foo['name']);
+    primaryEmail: (Foo['email']);
+    primaryAliasName: (Bar['foo']['name']);
+    aliasNames: (Bar['foo']['name'])[];
+}
+

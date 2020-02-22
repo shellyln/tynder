@@ -10,6 +10,7 @@ import { TypeAssertion,
          SymbolResolverOperators,
          SymbolResolverContext } from '../types';
 import * as operators            from '../operators';
+import { NumberPattern }         from '../lib/util';
 
 
 
@@ -17,6 +18,7 @@ function mergeTypeAndSymlink(ty: TypeAssertion, link: AssertionSymlink): TypeAss
     const link2 = {...link};
     delete link2.kind;
     delete link2.symlinkTargetName;
+    delete link2.memberTree;
     return ({...ty, ...link2} as any as TypeAssertion);
 }
 
@@ -26,6 +28,83 @@ function updateSchema(original: TypeAssertion, schema: TypeAssertionMap, ty: Typ
         const z: TypeAssertionSetValue = schema.get(typeName) as TypeAssertionSetValue;
         if (z.ty === original) {
             schema.set(typeName, {...z, ty, resolved: true});
+        }
+    }
+    return ty;
+}
+
+
+export function resolveMemberNames(
+        ty: TypeAssertion, rootSym: string, memberTreeSymbols: string[], memberPos: number): TypeAssertion {
+
+    const addTypeName = (mt: TypeAssertion, typeName: string | undefined, memberSym: string) => {
+        if (typeName) {
+            return ({
+                ...mt,
+                typeName: memberPos === 0 ?
+                    `${rootSym}.${memberTreeSymbols.join('.')}` :
+                    `${typeName}.${memberSym}`,
+            });
+        } else {
+            return mt;
+        }
+    };
+
+    for (let i = memberPos; i < memberTreeSymbols.length; i++) {
+        const memberSym = memberTreeSymbols[i];
+
+        switch (ty.kind) {
+        case 'optional':
+            return resolveMemberNames(ty.optional, rootSym, memberTreeSymbols, i + 1);
+        case 'object':
+            for (const m of ty.members) {
+                if (memberSym === m[0]) {
+                    return addTypeName(
+                        resolveMemberNames(m[1], rootSym, memberTreeSymbols, i + 1),
+                        ty.typeName,
+                        memberSym,
+                    );
+                }
+            }
+            if (ty.additionalProps) {
+                for (const m of ty.additionalProps) {
+                    for (const k of m[0]) {
+                        switch (k) {
+                        case 'number':
+                            if (NumberPattern.test(memberSym)) {
+                                return resolveMemberNames(m[1], rootSym, memberTreeSymbols, i + 1);
+                            }
+                            break;
+                        case 'string':
+                            return resolveMemberNames(m[1], rootSym, memberTreeSymbols, i + 1);
+                        default:
+                            if (k.test(memberSym)) {
+                                return resolveMemberNames(m[1], rootSym, memberTreeSymbols, i + 1);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            throw new Error(`Undefined member name is appeared: ${memberSym}`);
+        case 'symlink':
+            if (! ty.typeName) {
+                throw new Error(`Reference of anonymous type is appeared: ${memberSym}`);
+            }
+            return ({
+                ...{
+                    kind: 'symlink',
+                    symlinkTargetName: rootSym,
+                    name: memberSym,
+                    typeName: rootSym,
+                },
+                ...(0 < memberTreeSymbols.length ? {
+                    memberTree: memberTreeSymbols,
+                } : {}),
+            });
+        default:
+            // TODO: kind === 'operator'
+            throw new Error(`Unsupported type kind is appeared: (kind:${ty.kind}).${memberSym}`);
         }
     }
     return ty;
@@ -44,11 +123,21 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             if (0 <= ctx.symlinkStack.findIndex(s => s === ty.symlinkTargetName)) {
                 return ty;
             }
+
+            const ty2 = {...ty};
+            let xTy = x.ty;
+            if (ty.memberTree && 0 < ty.memberTree.length) {
+                xTy = {
+                    ...resolveMemberNames(xTy, ty.symlinkTargetName, ty.memberTree, 0),
+                };
+                ty2.typeName = xTy.typeName;
+            }
+
             return (
                 resolveSymbols(
                     schema,
-                    mergeTypeAndSymlink(x.ty, ty),
-                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.symlinkTargetName]},
+                    mergeTypeAndSymlink(xTy, ty2),
+                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty2.symlinkTargetName]},
                 )
             );
         }

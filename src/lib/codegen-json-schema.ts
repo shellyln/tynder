@@ -65,7 +65,7 @@ function addMetaInfo(a: JsonSchema.JsonSchemaAssertion, ty: TypeAssertion) {
 function generateJsonSchemaInner(schema: TypeAssertionMap, ty: TypeAssertion, nestLevel: number): JsonSchema.JsonSchemaAssertion {
     if (0 < nestLevel && ty.typeName) {
         const ret: JsonSchema.JsonSchemaRefAssertion = {
-            $ref: `#/definitions/${ty.typeName}`,
+            $ref: `#/definitions/${ty.typeName.replace(/\./g, '/properties/')}`,
         };
         const r2 = addMetaInfo(ret, ty);
         if (ret !== r2) {

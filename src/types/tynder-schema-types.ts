@@ -182,6 +182,7 @@ export interface ObjectAssertion extends TypeAssertionBase {
 export interface AssertionSymlink extends TypeAssertionBase {
     kind: 'symlink';
     symlinkTargetName: string;
+    memberTree?: string[];
 }
 
 

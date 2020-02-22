@@ -44,3 +44,42 @@ interface E {
     /** additional props */
     [propNames: string]: any;
 }
+
+
+interface Z1 {
+    foo: ACL.target;
+    bar: ACL.value;
+    //@maxLength(10) // TODO: BUG: can't set to kind === symlink
+    baz: ACL.target;
+}
+
+interface ACL {
+    target: string;
+    @minLength(0)
+    value: string;
+}
+
+interface Z2 {
+    foo: ACL.target;
+    bar: ACL.value;
+    @maxLength(10)
+    baz: ACL.target;
+}
+
+interface Foo {
+    @match(/^[A-Za-z]+$/)
+    name: string;
+    @match(/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
+    email: string;
+}
+
+interface Bar {
+    foo: Foo
+}
+
+interface User {
+    userName: Foo.name;
+    primaryEmail: Foo.email;
+    primaryAliasName: Bar.foo.name;
+    aliasNames: Bar.foo.name[];
+}

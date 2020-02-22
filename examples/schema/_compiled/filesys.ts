@@ -48,7 +48,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ACL"
+                "symlinkTargetName": "ACL",
+                "typeName": "ACL",
+                "name": "ACL"
               },
               "name": "acl"
             },
@@ -91,7 +93,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ACL"
+                "symlinkTargetName": "ACL",
+                "typeName": "ACL",
+                "name": "ACL"
               },
               "name": "acl"
             },
@@ -102,7 +106,10 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "EntryBase"
+            "symlinkTargetName": "EntryBase",
+            "typeName": "EntryBase",
+            "name": "EntryBase",
+            "docComment": "Entry base"
           }
         ],
         "docComment": "File entry",
@@ -130,7 +137,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "Entry"
+                "symlinkTargetName": "Entry",
+                "typeName": "Entry",
+                "name": "Entry"
               },
               "name": "entries"
             },
@@ -155,7 +164,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ACL"
+                "symlinkTargetName": "ACL",
+                "typeName": "ACL",
+                "name": "ACL"
               },
               "name": "acl"
             },
@@ -166,7 +177,10 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "EntryBase"
+            "symlinkTargetName": "EntryBase",
+            "typeName": "EntryBase",
+            "name": "EntryBase",
+            "docComment": "Entry base"
           }
         ],
         "docComment": "Folder entry",
@@ -178,11 +192,17 @@ const schema = {
         "oneOf": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "File"
+            "symlinkTargetName": "File",
+            "typeName": "File",
+            "name": "File",
+            "docComment": "File entry"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "Folder"
+            "symlinkTargetName": "Folder",
+            "typeName": "Folder",
+            "name": "Folder",
+            "docComment": "Folder entry"
           }
         ],
         "docComment": "Entry (union type)",

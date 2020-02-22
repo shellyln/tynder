@@ -46,7 +46,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ACL"
+                "symlinkTargetName": "ACL",
+                "typeName": "ACL",
+                "name": "ACL"
               },
               "name": "acl"
             },
@@ -89,7 +91,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ACL"
+                "symlinkTargetName": "ACL",
+                "typeName": "ACL",
+                "name": "ACL"
               },
               "name": "acl"
             },
@@ -100,7 +104,10 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "EntryBase"
+            "symlinkTargetName": "EntryBase",
+            "typeName": "EntryBase",
+            "name": "EntryBase",
+            "docComment": "Entry base"
           }
         ],
         "docComment": "File entry",
@@ -128,7 +135,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "Entry"
+                "symlinkTargetName": "Entry",
+                "typeName": "Entry",
+                "name": "Entry"
               },
               "name": "entries"
             },
@@ -153,7 +162,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ACL"
+                "symlinkTargetName": "ACL",
+                "typeName": "ACL",
+                "name": "ACL"
               },
               "name": "acl"
             },
@@ -164,7 +175,10 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "EntryBase"
+            "symlinkTargetName": "EntryBase",
+            "typeName": "EntryBase",
+            "name": "EntryBase",
+            "docComment": "Entry base"
           }
         ],
         "docComment": "Folder entry",
@@ -176,11 +190,17 @@
         "oneOf": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "File"
+            "symlinkTargetName": "File",
+            "typeName": "File",
+            "name": "File",
+            "docComment": "File entry"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "Folder"
+            "symlinkTargetName": "Folder",
+            "typeName": "Folder",
+            "name": "Folder",
+            "docComment": "Folder entry"
           }
         ],
         "docComment": "Entry (union type)",

@@ -525,7 +525,9 @@ const schema = {
             "constraints",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionErrorMessageConstraints"
+              "symlinkTargetName": "TypeAssertionErrorMessageConstraints",
+              "typeName": "TypeAssertionErrorMessageConstraints",
+              "name": "constraints"
             }
           ],
           [
@@ -571,7 +573,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             }
           ],
           [
@@ -672,7 +676,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -740,7 +746,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "NeverTypeAssertion",
@@ -785,7 +793,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -853,7 +863,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "AnyTypeAssertion",
@@ -898,7 +910,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -966,7 +980,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "UnknownTypeAssertion",
@@ -1120,7 +1136,9 @@ const schema = {
                 "oneOf": [
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "RegExp"
+                    "symlinkTargetName": "RegExp",
+                    "typeName": "RegExp",
+                    "name": "RegExp"
                   },
                   {
                     "kind": "primitive",
@@ -1150,7 +1168,9 @@ const schema = {
             "primitiveName",
             {
               "kind": "symlink",
-              "symlinkTargetName": "PrimitiveValueTypeNames"
+              "symlinkTargetName": "PrimitiveValueTypeNames",
+              "typeName": "PrimitiveValueTypeNames",
+              "name": "primitiveName"
             }
           ],
           [
@@ -1181,7 +1201,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1396,7 +1418,9 @@ const schema = {
                 "oneOf": [
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "RegExp"
+                    "symlinkTargetName": "RegExp",
+                    "typeName": "RegExp",
+                    "name": "RegExp"
                   },
                   {
                     "kind": "primitive",
@@ -1412,11 +1436,15 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "PrimitiveTypeAssertionConstraints"
+            "symlinkTargetName": "PrimitiveTypeAssertionConstraints",
+            "typeName": "PrimitiveTypeAssertionConstraints",
+            "name": "PrimitiveTypeAssertionConstraints"
           }
         ],
         "typeName": "PrimitiveTypeAssertion",
@@ -1437,7 +1465,9 @@ const schema = {
             "value",
             {
               "kind": "symlink",
-              "symlinkTargetName": "PrimitiveValueTypes"
+              "symlinkTargetName": "PrimitiveValueTypes",
+              "typeName": "PrimitiveValueTypes",
+              "name": "value"
             }
           ],
           [
@@ -1468,7 +1498,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1536,7 +1568,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "PrimitiveValueTypeAssertion",
@@ -1598,7 +1632,9 @@ const schema = {
             "repeated",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "repeated"
             }
           ],
           [
@@ -1629,7 +1665,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1733,11 +1771,15 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "RepeatedAssertionConstraints"
+            "symlinkTargetName": "RepeatedAssertionConstraints",
+            "typeName": "RepeatedAssertionConstraints",
+            "name": "RepeatedAssertionConstraints"
           }
         ],
         "typeName": "RepeatedAssertion",
@@ -1758,7 +1800,9 @@ const schema = {
             "spread",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "spread"
             }
           ],
           [
@@ -1789,7 +1833,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1893,11 +1939,15 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "RepeatedAssertionConstraints"
+            "symlinkTargetName": "RepeatedAssertionConstraints",
+            "typeName": "RepeatedAssertionConstraints",
+            "name": "RepeatedAssertionConstraints"
           }
         ],
         "typeName": "SpreadAssertion",
@@ -1922,7 +1972,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               "name": "sequence"
             }
@@ -1955,7 +2007,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2023,7 +2077,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "SequenceAssertion",
@@ -2048,7 +2104,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               "name": "oneOf"
             }
@@ -2081,7 +2139,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2149,7 +2209,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "OneOfAssertion",
@@ -2170,7 +2232,9 @@ const schema = {
             "optional",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "optional"
             }
           ],
           [
@@ -2201,7 +2265,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2269,7 +2335,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "OptionalAssertion",
@@ -2352,7 +2420,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2420,7 +2490,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "EnumAssertion",
@@ -2438,7 +2510,9 @@ const schema = {
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               }
             ]
           },
@@ -2451,7 +2525,9 @@ const schema = {
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2468,7 +2544,9 @@ const schema = {
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2501,7 +2579,9 @@ const schema = {
             },
             {
               "kind": "symlink",
-              "symlinkTargetName": "RegExp"
+              "symlinkTargetName": "RegExp",
+              "typeName": "RegExp",
+              "name": "RegExp"
             }
           ]
         },
@@ -2516,11 +2596,15 @@ const schema = {
             "sequence": [
               {
                 "kind": "symlink",
-                "symlinkTargetName": "AdditionalPropsKey"
+                "symlinkTargetName": "AdditionalPropsKey",
+                "typeName": "AdditionalPropsKey",
+                "name": "AdditionalPropsKey"
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               }
             ]
           },
@@ -2529,11 +2613,15 @@ const schema = {
             "sequence": [
               {
                 "kind": "symlink",
-                "symlinkTargetName": "AdditionalPropsKey"
+                "symlinkTargetName": "AdditionalPropsKey",
+                "typeName": "AdditionalPropsKey",
+                "name": "AdditionalPropsKey"
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2546,11 +2634,15 @@ const schema = {
             "sequence": [
               {
                 "kind": "symlink",
-                "symlinkTargetName": "AdditionalPropsKey"
+                "symlinkTargetName": "AdditionalPropsKey",
+                "typeName": "AdditionalPropsKey",
+                "name": "AdditionalPropsKey"
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2585,7 +2677,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ObjectAssertionMember"
+                "symlinkTargetName": "ObjectAssertionMember",
+                "typeName": "ObjectAssertionMember",
+                "name": "ObjectAssertionMember"
               },
               "name": "members"
             }
@@ -2600,7 +2694,9 @@ const schema = {
                 "max": null,
                 "repeated": {
                   "kind": "symlink",
-                  "symlinkTargetName": "AdditionalPropsMember"
+                  "symlinkTargetName": "AdditionalPropsMember",
+                  "typeName": "AdditionalPropsMember",
+                  "name": "AdditionalPropsMember"
                 }
               },
               "name": "additionalProps"
@@ -2619,11 +2715,15 @@ const schema = {
                   "oneOf": [
                     {
                       "kind": "symlink",
-                      "symlinkTargetName": "ObjectAssertion"
+                      "symlinkTargetName": "ObjectAssertion",
+                      "typeName": "ObjectAssertion",
+                      "name": "ObjectAssertion"
                     },
                     {
                       "kind": "symlink",
-                      "symlinkTargetName": "AssertionSymlink"
+                      "symlinkTargetName": "AssertionSymlink",
+                      "typeName": "AssertionSymlink",
+                      "name": "AssertionSymlink"
                     }
                   ]
                 }
@@ -2659,7 +2759,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2727,7 +2829,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "ObjectAssertion",
@@ -2780,7 +2884,9 @@ const schema = {
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2848,7 +2954,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "AssertionSymlink",
@@ -2859,55 +2967,81 @@ const schema = {
         "oneOf": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "NeverTypeAssertion"
+            "symlinkTargetName": "NeverTypeAssertion",
+            "typeName": "NeverTypeAssertion",
+            "name": "NeverTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "AnyTypeAssertion"
+            "symlinkTargetName": "AnyTypeAssertion",
+            "typeName": "AnyTypeAssertion",
+            "name": "AnyTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "UnknownTypeAssertion"
+            "symlinkTargetName": "UnknownTypeAssertion",
+            "typeName": "UnknownTypeAssertion",
+            "name": "UnknownTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "PrimitiveTypeAssertion"
+            "symlinkTargetName": "PrimitiveTypeAssertion",
+            "typeName": "PrimitiveTypeAssertion",
+            "name": "PrimitiveTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "PrimitiveValueTypeAssertion"
+            "symlinkTargetName": "PrimitiveValueTypeAssertion",
+            "typeName": "PrimitiveValueTypeAssertion",
+            "name": "PrimitiveValueTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "RepeatedAssertion"
+            "symlinkTargetName": "RepeatedAssertion",
+            "typeName": "RepeatedAssertion",
+            "name": "RepeatedAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "SpreadAssertion"
+            "symlinkTargetName": "SpreadAssertion",
+            "typeName": "SpreadAssertion",
+            "name": "SpreadAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "SequenceAssertion"
+            "symlinkTargetName": "SequenceAssertion",
+            "typeName": "SequenceAssertion",
+            "name": "SequenceAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "OneOfAssertion"
+            "symlinkTargetName": "OneOfAssertion",
+            "typeName": "OneOfAssertion",
+            "name": "OneOfAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "OptionalAssertion"
+            "symlinkTargetName": "OptionalAssertion",
+            "typeName": "OptionalAssertion",
+            "name": "OptionalAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "EnumAssertion"
+            "symlinkTargetName": "EnumAssertion",
+            "typeName": "EnumAssertion",
+            "name": "EnumAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "ObjectAssertion"
+            "symlinkTargetName": "ObjectAssertion",
+            "typeName": "ObjectAssertion",
+            "name": "ObjectAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "AssertionSymlink"
+            "symlinkTargetName": "AssertionSymlink",
+            "typeName": "AssertionSymlink",
+            "name": "AssertionSymlink"
           }
         ],
         "typeName": "TypeAssertion",
@@ -2942,7 +3076,9 @@ const schema = {
             "errorMessages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "errorMessages"
             }
           ],
           [
@@ -2953,7 +3089,9 @@ const schema = {
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertionErrorMessage"
+                "symlinkTargetName": "TypeAssertionErrorMessage",
+                "typeName": "TypeAssertionErrorMessage",
+                "name": "TypeAssertionErrorMessage"
               },
               "name": "errors"
             }
@@ -2969,62 +3107,90 @@ const schema = {
                 "oneOf": [
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "NeverTypeAssertion"
+                    "symlinkTargetName": "NeverTypeAssertion",
+                    "typeName": "NeverTypeAssertion",
+                    "name": "NeverTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "AnyTypeAssertion"
+                    "symlinkTargetName": "AnyTypeAssertion",
+                    "typeName": "AnyTypeAssertion",
+                    "name": "AnyTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "UnknownTypeAssertion"
+                    "symlinkTargetName": "UnknownTypeAssertion",
+                    "typeName": "UnknownTypeAssertion",
+                    "name": "UnknownTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "PrimitiveTypeAssertion"
+                    "symlinkTargetName": "PrimitiveTypeAssertion",
+                    "typeName": "PrimitiveTypeAssertion",
+                    "name": "PrimitiveTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "PrimitiveValueTypeAssertion"
+                    "symlinkTargetName": "PrimitiveValueTypeAssertion",
+                    "typeName": "PrimitiveValueTypeAssertion",
+                    "name": "PrimitiveValueTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "RepeatedAssertion"
+                    "symlinkTargetName": "RepeatedAssertion",
+                    "typeName": "RepeatedAssertion",
+                    "name": "RepeatedAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "SpreadAssertion"
+                    "symlinkTargetName": "SpreadAssertion",
+                    "typeName": "SpreadAssertion",
+                    "name": "SpreadAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "SequenceAssertion"
+                    "symlinkTargetName": "SequenceAssertion",
+                    "typeName": "SequenceAssertion",
+                    "name": "SequenceAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "OneOfAssertion"
+                    "symlinkTargetName": "OneOfAssertion",
+                    "typeName": "OneOfAssertion",
+                    "name": "OneOfAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "OptionalAssertion"
+                    "symlinkTargetName": "OptionalAssertion",
+                    "typeName": "OptionalAssertion",
+                    "name": "OptionalAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "EnumAssertion"
+                    "symlinkTargetName": "EnumAssertion",
+                    "typeName": "EnumAssertion",
+                    "name": "EnumAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "ObjectAssertion"
+                    "symlinkTargetName": "ObjectAssertion",
+                    "typeName": "ObjectAssertion",
+                    "name": "ObjectAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "AssertionSymlink"
+                    "symlinkTargetName": "AssertionSymlink",
+                    "typeName": "AssertionSymlink",
+                    "name": "AssertionSymlink"
                   },
                   {
                     "kind": "sequence",
                     "sequence": [
                       {
                         "kind": "symlink",
-                        "symlinkTargetName": "TypeAssertion"
+                        "symlinkTargetName": "TypeAssertion",
+                        "typeName": "TypeAssertion",
+                        "name": "TypeAssertion"
                       },
                       {
                         "kind": "one-of",
@@ -3054,7 +3220,9 @@ const schema = {
             "schema",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionMap"
+              "symlinkTargetName": "TypeAssertionMap",
+              "typeName": "TypeAssertionMap",
+              "name": "schema"
             }
           ]
         ],
@@ -3068,7 +3236,9 @@ const schema = {
             "ty",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "ty"
             }
           ],
           [
@@ -3140,7 +3310,9 @@ const schema = {
             "schema",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionMap"
+              "symlinkTargetName": "TypeAssertionMap",
+              "typeName": "TypeAssertionMap",
+              "name": "schema"
             }
           ]
         ],

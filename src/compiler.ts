@@ -21,7 +21,8 @@ import { TypeAssertion,
          TypeAssertionSetValue,
          TypeAssertionMap }      from './types';
 import * as operators            from './operators';
-import { resolveSchema }         from './lib/resolver';
+import { resolveMemberNames,
+         resolveSchema }         from './lib/resolver';
 import { dummyTargetObject,
          isUnsafeVarNames }      from './lib/util';
 
@@ -373,13 +374,17 @@ const nullUndefinedTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
         first(seq('null'), seq('undefined'), seq('any'), seq('unknown'), seq('never')), );
 
-const simpleTypeName =
+const simpleOrDottedTypeName =
     first(primitiveTypeName,
           nullUndefinedTypeName,
           trans(tokens =>
-                [[{symbol: 'ref'}, tokens[0]]])(
+                [[{symbol: 'ref'}, ...tokens]])(
             ahead(notCls('Array', 'Partial', 'Pick', 'Omit')),
-            symbolName, ));
+            combine(
+                symbolName,
+                repeat(combine(
+                    erase(repeat(commentOrSpace), seq('.'), repeat(commentOrSpace)),
+                    symbolName, )))));
 
 
 const sequenceType =
@@ -490,7 +495,7 @@ const pickOrOmitType =
 
 const genericOrSimpleType =
     trans(tokens => [tokens[0]])(                     // remove generics parameters
-        simpleTypeName,                               // [0]
+        simpleOrDottedTypeName,                       // [0]
         erase(repeat(commentOrSpace)),
         qty(0, 1)(combine(
             erase(seq('<')),
@@ -1036,21 +1041,40 @@ export function compile(s: string) {
         return ret;
     };
 
-    const ref = (name: SxSymbol | string): TypeAssertion => {
+    const ref = (name: SxSymbol | string, ...memberNames: (SxSymbol | string)[]): TypeAssertion => {
         const sym = typeof name === 'string' ? name : name.symbol;
         if (isUnsafeVarNames(dummyTargetObject, sym)) {
             throw new Error(`Unsafe symbol name is appeared: ${sym}`);
         }
 
+        const memberTreeSymbols = memberNames.map(x => {
+            const ms = typeof x === 'string' ? x : x.symbol;
+            if (isUnsafeVarNames(dummyTargetObject, ms)) {
+                throw new Error(`Unsafe symbol name is appeared: ${ms}`);
+            }
+            return ms;
+        });
+
         if (! schema.has(sym)) {
             return ({
-                kind: 'symlink',
-                symlinkTargetName: sym,
-                name: sym,
-                typeName: sym,
+                ...{
+                    kind: 'symlink',
+                    symlinkTargetName: sym,
+                    name: sym,
+                    typeName: sym,
+                },
+                ...(0 < memberTreeSymbols.length ? {
+                    memberTree: memberTreeSymbols,
+                } : {}),
             });
         }
-        let ty = (schema.get(sym) as TypeAssertionSetValue).ty;
+
+        let ty = resolveMemberNames(
+            (schema.get(sym) as TypeAssertionSetValue).ty,
+            sym, memberTreeSymbols,
+            0,
+        );
+
         if (ty.noOutput) {
             ty = {...ty};
             delete ty.noOutput;

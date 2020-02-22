@@ -805,4 +805,53 @@ describe("fix-1", function() {
             }] as any);
         }
     });
+    it("dotted-types-1", function() {
+        const schema = compile(`
+            interface Z1 {
+                foo: ACL.target;
+                bar: ACL.value;
+                //@maxLength(10) // TODO: BUG: can't set to kind === symlink
+                baz: ACL.target;
+            }
+            interface ACL {
+                target: string;
+                @minLength(0)
+                value: string;
+            }
+            interface Z2 {
+                foo: ACL.target;
+                bar: ACL.value;
+                @maxLength(10)
+                baz: ACL.target;
+            }
+        `);
+        {
+            const rhs: TypeAssertion = {
+                name: 'Z1',
+                typeName: 'Z1',
+                kind: 'object',
+                members: [
+                    ['foo', {kind: 'primitive', primitiveName: 'string', name: 'foo', typeName: 'ACL.target'}],
+                    ['bar', {kind: 'primitive', primitiveName: 'string', name: 'bar', typeName: 'ACL.value', minLength: 0}],
+                    ['baz', {kind: 'primitive', primitiveName: 'string', name: 'baz', typeName: 'ACL.target'}],
+                ],
+            };
+            const ty = getType(schema, 'Z1');
+            expect(ty).toEqual(rhs);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Z2',
+                typeName: 'Z2',
+                kind: 'object',
+                members: [
+                    ['foo', {kind: 'primitive', primitiveName: 'string', name: 'foo', typeName: 'ACL.target'}],
+                    ['bar', {kind: 'primitive', primitiveName: 'string', name: 'bar', typeName: 'ACL.value', minLength: 0}],
+                    ['baz', {kind: 'primitive', primitiveName: 'string', name: 'baz', typeName: 'ACL.target', maxLength: 10}],
+                ],
+            };
+            const ty = getType(schema, 'Z2');
+            expect(ty).toEqual(rhs);
+        }
+    });
 });
