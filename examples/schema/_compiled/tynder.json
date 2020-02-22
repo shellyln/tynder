@@ -523,7 +523,9 @@
             "constraints",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionErrorMessageConstraints"
+              "symlinkTargetName": "TypeAssertionErrorMessageConstraints",
+              "typeName": "TypeAssertionErrorMessageConstraints",
+              "name": "constraints"
             }
           ],
           [
@@ -569,7 +571,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             }
           ],
           [
@@ -670,7 +674,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -738,7 +744,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "NeverTypeAssertion",
@@ -783,7 +791,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -851,7 +861,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "AnyTypeAssertion",
@@ -896,7 +908,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -964,7 +978,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "UnknownTypeAssertion",
@@ -1118,7 +1134,9 @@
                 "oneOf": [
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "RegExp"
+                    "symlinkTargetName": "RegExp",
+                    "typeName": "RegExp",
+                    "name": "RegExp"
                   },
                   {
                     "kind": "primitive",
@@ -1148,7 +1166,9 @@
             "primitiveName",
             {
               "kind": "symlink",
-              "symlinkTargetName": "PrimitiveValueTypeNames"
+              "symlinkTargetName": "PrimitiveValueTypeNames",
+              "typeName": "PrimitiveValueTypeNames",
+              "name": "primitiveName"
             }
           ],
           [
@@ -1179,7 +1199,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1394,7 +1416,9 @@
                 "oneOf": [
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "RegExp"
+                    "symlinkTargetName": "RegExp",
+                    "typeName": "RegExp",
+                    "name": "RegExp"
                   },
                   {
                     "kind": "primitive",
@@ -1410,11 +1434,15 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "PrimitiveTypeAssertionConstraints"
+            "symlinkTargetName": "PrimitiveTypeAssertionConstraints",
+            "typeName": "PrimitiveTypeAssertionConstraints",
+            "name": "PrimitiveTypeAssertionConstraints"
           }
         ],
         "typeName": "PrimitiveTypeAssertion",
@@ -1435,7 +1463,9 @@
             "value",
             {
               "kind": "symlink",
-              "symlinkTargetName": "PrimitiveValueTypes"
+              "symlinkTargetName": "PrimitiveValueTypes",
+              "typeName": "PrimitiveValueTypes",
+              "name": "value"
             }
           ],
           [
@@ -1466,7 +1496,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1534,7 +1566,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "PrimitiveValueTypeAssertion",
@@ -1596,7 +1630,9 @@
             "repeated",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "repeated"
             }
           ],
           [
@@ -1627,7 +1663,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1731,11 +1769,15 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "RepeatedAssertionConstraints"
+            "symlinkTargetName": "RepeatedAssertionConstraints",
+            "typeName": "RepeatedAssertionConstraints",
+            "name": "RepeatedAssertionConstraints"
           }
         ],
         "typeName": "RepeatedAssertion",
@@ -1756,7 +1798,9 @@
             "spread",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "spread"
             }
           ],
           [
@@ -1787,7 +1831,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -1891,11 +1937,15 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "RepeatedAssertionConstraints"
+            "symlinkTargetName": "RepeatedAssertionConstraints",
+            "typeName": "RepeatedAssertionConstraints",
+            "name": "RepeatedAssertionConstraints"
           }
         ],
         "typeName": "SpreadAssertion",
@@ -1920,7 +1970,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               "name": "sequence"
             }
@@ -1953,7 +2005,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2021,7 +2075,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "SequenceAssertion",
@@ -2046,7 +2102,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               "name": "oneOf"
             }
@@ -2079,7 +2137,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2147,7 +2207,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "OneOfAssertion",
@@ -2168,7 +2230,9 @@
             "optional",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "optional"
             }
           ],
           [
@@ -2199,7 +2263,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2267,7 +2333,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "OptionalAssertion",
@@ -2350,7 +2418,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2418,7 +2488,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "EnumAssertion",
@@ -2436,7 +2508,9 @@
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               }
             ]
           },
@@ -2449,7 +2523,9 @@
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2466,7 +2542,9 @@
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2499,7 +2577,9 @@
             },
             {
               "kind": "symlink",
-              "symlinkTargetName": "RegExp"
+              "symlinkTargetName": "RegExp",
+              "typeName": "RegExp",
+              "name": "RegExp"
             }
           ]
         },
@@ -2514,11 +2594,15 @@
             "sequence": [
               {
                 "kind": "symlink",
-                "symlinkTargetName": "AdditionalPropsKey"
+                "symlinkTargetName": "AdditionalPropsKey",
+                "typeName": "AdditionalPropsKey",
+                "name": "AdditionalPropsKey"
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               }
             ]
           },
@@ -2527,11 +2611,15 @@
             "sequence": [
               {
                 "kind": "symlink",
-                "symlinkTargetName": "AdditionalPropsKey"
+                "symlinkTargetName": "AdditionalPropsKey",
+                "typeName": "AdditionalPropsKey",
+                "name": "AdditionalPropsKey"
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2544,11 +2632,15 @@
             "sequence": [
               {
                 "kind": "symlink",
-                "symlinkTargetName": "AdditionalPropsKey"
+                "symlinkTargetName": "AdditionalPropsKey",
+                "typeName": "AdditionalPropsKey",
+                "name": "AdditionalPropsKey"
               },
               {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertion"
+                "symlinkTargetName": "TypeAssertion",
+                "typeName": "TypeAssertion",
+                "name": "TypeAssertion"
               },
               {
                 "kind": "primitive",
@@ -2583,7 +2675,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "ObjectAssertionMember"
+                "symlinkTargetName": "ObjectAssertionMember",
+                "typeName": "ObjectAssertionMember",
+                "name": "ObjectAssertionMember"
               },
               "name": "members"
             }
@@ -2598,7 +2692,9 @@
                 "max": null,
                 "repeated": {
                   "kind": "symlink",
-                  "symlinkTargetName": "AdditionalPropsMember"
+                  "symlinkTargetName": "AdditionalPropsMember",
+                  "typeName": "AdditionalPropsMember",
+                  "name": "AdditionalPropsMember"
                 }
               },
               "name": "additionalProps"
@@ -2617,11 +2713,15 @@
                   "oneOf": [
                     {
                       "kind": "symlink",
-                      "symlinkTargetName": "ObjectAssertion"
+                      "symlinkTargetName": "ObjectAssertion",
+                      "typeName": "ObjectAssertion",
+                      "name": "ObjectAssertion"
                     },
                     {
                       "kind": "symlink",
-                      "symlinkTargetName": "AssertionSymlink"
+                      "symlinkTargetName": "AssertionSymlink",
+                      "typeName": "AssertionSymlink",
+                      "name": "AssertionSymlink"
                     }
                   ]
                 }
@@ -2657,7 +2757,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2725,7 +2827,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "ObjectAssertion",
@@ -2778,7 +2882,9 @@
             "messages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "messages"
             },
             true
           ],
@@ -2846,7 +2952,9 @@
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "TypeAssertionBase"
+            "symlinkTargetName": "TypeAssertionBase",
+            "typeName": "TypeAssertionBase",
+            "name": "TypeAssertionBase"
           }
         ],
         "typeName": "AssertionSymlink",
@@ -2857,55 +2965,81 @@
         "oneOf": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "NeverTypeAssertion"
+            "symlinkTargetName": "NeverTypeAssertion",
+            "typeName": "NeverTypeAssertion",
+            "name": "NeverTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "AnyTypeAssertion"
+            "symlinkTargetName": "AnyTypeAssertion",
+            "typeName": "AnyTypeAssertion",
+            "name": "AnyTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "UnknownTypeAssertion"
+            "symlinkTargetName": "UnknownTypeAssertion",
+            "typeName": "UnknownTypeAssertion",
+            "name": "UnknownTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "PrimitiveTypeAssertion"
+            "symlinkTargetName": "PrimitiveTypeAssertion",
+            "typeName": "PrimitiveTypeAssertion",
+            "name": "PrimitiveTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "PrimitiveValueTypeAssertion"
+            "symlinkTargetName": "PrimitiveValueTypeAssertion",
+            "typeName": "PrimitiveValueTypeAssertion",
+            "name": "PrimitiveValueTypeAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "RepeatedAssertion"
+            "symlinkTargetName": "RepeatedAssertion",
+            "typeName": "RepeatedAssertion",
+            "name": "RepeatedAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "SpreadAssertion"
+            "symlinkTargetName": "SpreadAssertion",
+            "typeName": "SpreadAssertion",
+            "name": "SpreadAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "SequenceAssertion"
+            "symlinkTargetName": "SequenceAssertion",
+            "typeName": "SequenceAssertion",
+            "name": "SequenceAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "OneOfAssertion"
+            "symlinkTargetName": "OneOfAssertion",
+            "typeName": "OneOfAssertion",
+            "name": "OneOfAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "OptionalAssertion"
+            "symlinkTargetName": "OptionalAssertion",
+            "typeName": "OptionalAssertion",
+            "name": "OptionalAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "EnumAssertion"
+            "symlinkTargetName": "EnumAssertion",
+            "typeName": "EnumAssertion",
+            "name": "EnumAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "ObjectAssertion"
+            "symlinkTargetName": "ObjectAssertion",
+            "typeName": "ObjectAssertion",
+            "name": "ObjectAssertion"
           },
           {
             "kind": "symlink",
-            "symlinkTargetName": "AssertionSymlink"
+            "symlinkTargetName": "AssertionSymlink",
+            "typeName": "AssertionSymlink",
+            "name": "AssertionSymlink"
           }
         ],
         "typeName": "TypeAssertion",
@@ -2940,7 +3074,9 @@
             "errorMessages",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages"
+              "symlinkTargetName": "ErrorMessages",
+              "typeName": "ErrorMessages",
+              "name": "errorMessages"
             }
           ],
           [
@@ -2951,7 +3087,9 @@
               "max": null,
               "repeated": {
                 "kind": "symlink",
-                "symlinkTargetName": "TypeAssertionErrorMessage"
+                "symlinkTargetName": "TypeAssertionErrorMessage",
+                "typeName": "TypeAssertionErrorMessage",
+                "name": "TypeAssertionErrorMessage"
               },
               "name": "errors"
             }
@@ -2967,62 +3105,90 @@
                 "oneOf": [
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "NeverTypeAssertion"
+                    "symlinkTargetName": "NeverTypeAssertion",
+                    "typeName": "NeverTypeAssertion",
+                    "name": "NeverTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "AnyTypeAssertion"
+                    "symlinkTargetName": "AnyTypeAssertion",
+                    "typeName": "AnyTypeAssertion",
+                    "name": "AnyTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "UnknownTypeAssertion"
+                    "symlinkTargetName": "UnknownTypeAssertion",
+                    "typeName": "UnknownTypeAssertion",
+                    "name": "UnknownTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "PrimitiveTypeAssertion"
+                    "symlinkTargetName": "PrimitiveTypeAssertion",
+                    "typeName": "PrimitiveTypeAssertion",
+                    "name": "PrimitiveTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "PrimitiveValueTypeAssertion"
+                    "symlinkTargetName": "PrimitiveValueTypeAssertion",
+                    "typeName": "PrimitiveValueTypeAssertion",
+                    "name": "PrimitiveValueTypeAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "RepeatedAssertion"
+                    "symlinkTargetName": "RepeatedAssertion",
+                    "typeName": "RepeatedAssertion",
+                    "name": "RepeatedAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "SpreadAssertion"
+                    "symlinkTargetName": "SpreadAssertion",
+                    "typeName": "SpreadAssertion",
+                    "name": "SpreadAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "SequenceAssertion"
+                    "symlinkTargetName": "SequenceAssertion",
+                    "typeName": "SequenceAssertion",
+                    "name": "SequenceAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "OneOfAssertion"
+                    "symlinkTargetName": "OneOfAssertion",
+                    "typeName": "OneOfAssertion",
+                    "name": "OneOfAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "OptionalAssertion"
+                    "symlinkTargetName": "OptionalAssertion",
+                    "typeName": "OptionalAssertion",
+                    "name": "OptionalAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "EnumAssertion"
+                    "symlinkTargetName": "EnumAssertion",
+                    "typeName": "EnumAssertion",
+                    "name": "EnumAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "ObjectAssertion"
+                    "symlinkTargetName": "ObjectAssertion",
+                    "typeName": "ObjectAssertion",
+                    "name": "ObjectAssertion"
                   },
                   {
                     "kind": "symlink",
-                    "symlinkTargetName": "AssertionSymlink"
+                    "symlinkTargetName": "AssertionSymlink",
+                    "typeName": "AssertionSymlink",
+                    "name": "AssertionSymlink"
                   },
                   {
                     "kind": "sequence",
                     "sequence": [
                       {
                         "kind": "symlink",
-                        "symlinkTargetName": "TypeAssertion"
+                        "symlinkTargetName": "TypeAssertion",
+                        "typeName": "TypeAssertion",
+                        "name": "TypeAssertion"
                       },
                       {
                         "kind": "one-of",
@@ -3052,7 +3218,9 @@
             "schema",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionMap"
+              "symlinkTargetName": "TypeAssertionMap",
+              "typeName": "TypeAssertionMap",
+              "name": "schema"
             }
           ]
         ],
@@ -3066,7 +3234,9 @@
             "ty",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertion"
+              "symlinkTargetName": "TypeAssertion",
+              "typeName": "TypeAssertion",
+              "name": "ty"
             }
           ],
           [
@@ -3138,7 +3308,9 @@
             "schema",
             {
               "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionMap"
+              "symlinkTargetName": "TypeAssertionMap",
+              "typeName": "TypeAssertionMap",
+              "name": "schema"
             }
           ]
         ],

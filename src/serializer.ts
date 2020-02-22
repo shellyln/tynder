@@ -15,13 +15,68 @@ import { resolveSchema }    from './lib/resolver';
 export const TynderSchemaVersion = 'tynder/1.0';
 
 
+function hasMetaInfo(ty: TypeAssertion) {
+    let hasInfo = false;
+
+    if (ty.messages) {
+        hasInfo = true;
+    }
+    if (ty.message) {
+        hasInfo = true;
+    }
+    if (ty.messageId) {
+        hasInfo = true;
+    }
+
+    switch (ty.kind) {
+    case 'repeated':
+        if (typeof ty.min === 'number') {
+            hasInfo = true;
+        }
+        if (typeof ty.max === 'number') {
+            hasInfo = true;
+        }
+        break;
+    case 'primitive':
+        if (typeof ty.minValue === 'number') {
+            hasInfo = true;
+        }
+        if (typeof ty.maxValue === 'number') {
+            hasInfo = true;
+        }
+        if (typeof ty.greaterThanValue === 'number') {
+            hasInfo = true;
+        }
+        if (typeof ty.lessThanValue === 'number') {
+            hasInfo = true;
+        }
+        if (typeof ty.minLength === 'number') {
+            hasInfo = true;
+        }
+        if (typeof ty.maxLength === 'number') {
+            hasInfo = true;
+        }
+        if (ty.pattern) {
+            hasInfo = true;
+        }
+        break;
+    }
+
+    return hasInfo;
+}
+
+
 function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
-    if (0 < nestLevel && ty.typeName) {
+    if (0 < nestLevel && ty.typeName && !hasMetaInfo(ty)) {
         return ({
-            kind: 'symlink',
-            symlinkTargetName: ty.typeName,
-            // TODO: preserve informations (doc comments, name, typeName, ...)
-        }); // TODO: BUG: constraints will lost (e.g.: @range, ...)
+            ...{
+                kind: 'symlink',
+                symlinkTargetName: ty.typeName,
+                typeName: ty.typeName,
+            },
+            ...(ty.name ? {name: ty.name} : {}),
+            ...(ty.docComment ? {docComment: ty.docComment} : {}),
+        });
     }
 
     const ret: TypeAssertion = {...ty};

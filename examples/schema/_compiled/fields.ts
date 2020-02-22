@@ -17,7 +17,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             }
           ],
           [
@@ -141,7 +143,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             }
           ],
           [
@@ -307,7 +311,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             },
             true
           ],
@@ -439,7 +445,9 @@ const schema = {
         "baseTypes": [
           {
             "kind": "symlink",
-            "symlinkTargetName": "A"
+            "symlinkTargetName": "A",
+            "typeName": "A",
+            "name": "A"
           }
         ],
         "typeName": "C",
@@ -452,7 +460,9 @@ const schema = {
             "numberTypeField",
             {
               "kind": "symlink",
-              "symlinkTargetName": "NumberType"
+              "symlinkTargetName": "NumberType",
+              "typeName": "NumberType",
+              "name": "numberTypeField"
             }
           ],
           [
@@ -636,21 +646,28 @@ const schema = {
             "foo",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ACL.target"
+              "symlinkTargetName": "ACL.target",
+              "typeName": "ACL.target",
+              "name": "foo"
             }
           ],
           [
             "bar",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ACL.value"
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minLength": 0,
+              "name": "bar",
+              "typeName": "ACL.value"
             }
           ],
           [
             "baz",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ACL.target"
+              "symlinkTargetName": "ACL.target",
+              "typeName": "ACL.target",
+              "name": "baz"
             }
           ]
         ],
@@ -688,21 +705,29 @@ const schema = {
             "foo",
             {
               "kind": "symlink",
-              "symlinkTargetName": "ACL.target"
+              "symlinkTargetName": "ACL.target",
+              "typeName": "ACL.target",
+              "name": "foo"
             }
           ],
           [
             "bar",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ACL.value"
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minLength": 0,
+              "name": "bar",
+              "typeName": "ACL.value"
             }
           ],
           [
             "baz",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ACL.target"
+              "kind": "primitive",
+              "primitiveName": "string",
+              "name": "baz",
+              "typeName": "ACL.target",
+              "maxLength": 10
             }
           ]
         ],
