@@ -20,7 +20,8 @@ import { ErrorTypes,
          ValidationContext,
          TypeAssertionMap }    from './types';
 import { ValidationError }     from './lib/errors';
-import { isUnsafeVarNames }    from './lib/util';
+import { NumberPattern,
+         isUnsafeVarNames }    from './lib/util';
 import { reportError,
          reportErrorWithPush } from './lib/reporter';
 import { resolveSymbols }      from './lib/resolver';
@@ -340,9 +341,6 @@ function validateEnumAssertion<T>(
     reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
     return null;
 }
-
-
-const NumberPattern = /^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/;
 
 
 function validateObjectAssertion<T>(

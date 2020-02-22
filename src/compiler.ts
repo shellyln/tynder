@@ -22,7 +22,8 @@ import { TypeAssertion,
          TypeAssertionMap }      from './types';
 import * as operators            from './operators';
 import { resolveSchema }         from './lib/resolver';
-import { dummyTargetObject,
+import { NumberPattern,
+         dummyTargetObject,
          isUnsafeVarNames }      from './lib/util';
 
 
@@ -373,13 +374,17 @@ const nullUndefinedTypeName =
     trans(tokens => [[{symbol: 'primitive'}, tokens[0]]])(
         first(seq('null'), seq('undefined'), seq('any'), seq('unknown'), seq('never')), );
 
-const simpleTypeName =
+const simpleOrDottedTypeName =
     first(primitiveTypeName,
           nullUndefinedTypeName,
           trans(tokens =>
-                [[{symbol: 'ref'}, tokens[0]]])(
+                [[{symbol: 'ref'}, ...tokens]])(
             ahead(notCls('Array', 'Partial', 'Pick', 'Omit')),
-            symbolName, ));
+            combine(
+                symbolName,
+                repeat(combine(
+                    erase(repeat(commentOrSpace), seq('.'), repeat(commentOrSpace)),
+                    symbolName, )))));
 
 
 const sequenceType =
@@ -490,7 +495,7 @@ const pickOrOmitType =
 
 const genericOrSimpleType =
     trans(tokens => [tokens[0]])(                     // remove generics parameters
-        simpleTypeName,                               // [0]
+        simpleOrDottedTypeName,                       // [0]
         erase(repeat(commentOrSpace)),
         qty(0, 1)(combine(
             erase(seq('<')),
@@ -1000,6 +1005,70 @@ const lisp = (() => {
 })();
 
 
+function resolveMemberNames(ty: TypeAssertion, memberSymbols: string[], menberPos: number): TypeAssertion {
+    const addTypeName = (mt: TypeAssertion, typeName: string | undefined, memberSym: string) => {
+        if (typeName) {
+            return ({
+                ...mt,
+                typeName: `${typeName}.${memberSym}`,
+            });
+        } else {
+            return mt;
+        }
+    };
+    for (let i = menberPos; i < memberSymbols.length; i++) {
+        const memberSym = memberSymbols[i];
+
+        switch (ty.kind) {
+        case 'optional':
+            return resolveMemberNames(ty.optional, memberSymbols, i + 1);
+        case 'object':
+            for (const m of ty.members) {
+                if (memberSym === m[0]) {
+                    return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                }
+            }
+            if (ty.additionalProps) {
+                for (const m of ty.additionalProps) {
+                    for (const k of m[0]) {
+                        switch (k) {
+                        case 'number':
+                            if (NumberPattern.test(memberSym)) {
+                                return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                            }
+                            break;
+                        case 'string':
+                            return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                        default:
+                            if (k.test(memberSym)) {
+                                return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            throw new Error(`Undefined member name is appeared: ${memberSym}`);
+        case 'symlink':
+            if (! ty.typeName) {
+                throw new Error(`Reference of anonymous type is appeared: ${memberSym}`);
+            }
+            return ({
+                kind: 'symlink',
+                symlinkTargetName: ty.typeName,
+                // TODO:
+                name: memberSym,
+                typeName: ty.typeName,
+            });
+        default:
+            // TODO: kind === 'operator'
+            throw new Error(`Unsupported type kind is appeared: (kind:${ty.kind}).${memberSym}`);
+        }
+    }
+    return ty;
+}
+
+
 // tslint:disable: object-literal-key-quotes
 export function compile(s: string) {
     const mapTyToTySet = new Map<TypeAssertion, TypeAssertionSetValue>();
@@ -1036,21 +1105,31 @@ export function compile(s: string) {
         return ret;
     };
 
-    const ref = (name: SxSymbol | string): TypeAssertion => {
+    const ref = (name: SxSymbol | string, ...memberNames: (SxSymbol | string)[]): TypeAssertion => {
         const sym = typeof name === 'string' ? name : name.symbol;
         if (isUnsafeVarNames(dummyTargetObject, sym)) {
             throw new Error(`Unsafe symbol name is appeared: ${sym}`);
         }
 
+        const memberSymbols = memberNames.map(x => {
+            const ms = typeof x === 'string' ? x : x.symbol;
+            if (isUnsafeVarNames(dummyTargetObject, ms)) {
+                throw new Error(`Unsafe symbol name is appeared: ${ms}`);
+            }
+            return ms;
+        });
+
         if (! schema.has(sym)) {
             return ({
                 kind: 'symlink',
                 symlinkTargetName: sym,
+                // TODO:
                 name: sym,
                 typeName: sym,
             });
         }
-        let ty = (schema.get(sym) as TypeAssertionSetValue).ty;
+
+        let ty = resolveMemberNames((schema.get(sym) as TypeAssertionSetValue).ty, memberSymbols, 0);
         if (ty.noOutput) {
             ty = {...ty};
             delete ty.noOutput;
