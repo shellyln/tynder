@@ -41,7 +41,9 @@ export function resolveMemberNames(
         if (typeName) {
             return ({
                 ...mt,
-                typeName: `${typeName}.${memberSym}`,
+                typeName: memberPos === 0 ?
+                    `${rootSym}.${memberTreeSymbols.join('.')}` :
+                    `${typeName}.${memberSym}`,
             });
         } else {
             return mt;

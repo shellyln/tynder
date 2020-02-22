@@ -95,3 +95,19 @@ type Z2 {
     baz: ACL.target!
 }
 
+type Foo {
+    name: String!
+    email: String!
+}
+
+type Bar {
+    foo: Foo!
+}
+
+type User {
+    userName: Foo.name!
+    primaryEmail: Foo.email!
+    primaryAliasName: Bar.foo.name!
+    aliasNames: [Bar.foo.name!]!
+}
+

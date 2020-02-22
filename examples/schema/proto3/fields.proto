@@ -98,3 +98,19 @@ message Z2 {
     ACL.target baz = 3;
 }
 
+message Foo {
+    string name = 1;
+    string email = 2;
+}
+
+message Bar {
+    Foo foo = 1;
+}
+
+message User {
+    Foo.name userName = 1;
+    Foo.email primaryEmail = 2;
+    Bar.foo.name primaryAliasName = 3;
+    repeated Bar.foo.name aliasNames = 4;
+}
+

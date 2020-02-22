@@ -75,3 +75,19 @@ interface Z2 {
     baz: (ACL['target']);
 }
 
+interface Foo {
+    name: string;
+    email: string;
+}
+
+interface Bar {
+    foo: Foo;
+}
+
+interface User {
+    userName: (Foo['name']);
+    primaryEmail: (Foo['email']);
+    primaryAliasName: (Bar['foo']['name']);
+    aliasNames: (Bar['foo']['name'])[];
+}
+

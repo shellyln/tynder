@@ -65,3 +65,21 @@ interface Z2 {
     @maxLength(10)
     baz: ACL.target;
 }
+
+interface Foo {
+    @match(/^[A-Za-z]+$/)
+    name: string;
+    @match(/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
+    email: string;
+}
+
+interface Bar {
+    foo: Foo
+}
+
+interface User {
+    userName: Foo.name;
+    primaryEmail: Foo.email;
+    primaryAliasName: Bar.foo.name;
+    aliasNames: Bar.foo.name[];
+}
