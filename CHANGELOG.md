@@ -2,6 +2,9 @@
 
 ## v0.2.1
 
+* A grammar for referencing other interface members has been added.
+* `[FIX]` Fix meta info lost during serialization.
+  * Occurs when serializing named non-primitive types.
 * Update dependencies.
 
 
