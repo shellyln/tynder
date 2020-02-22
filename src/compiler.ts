@@ -1034,14 +1034,14 @@ function resolveMemberNames(ty: TypeAssertion, memberSymbols: string[], menberPo
                         switch (k) {
                         case 'number':
                             if (NumberPattern.test(memberSym)) {
-                                return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                                return resolveMemberNames(m[1], memberSymbols, i + 1);
                             }
                             break;
                         case 'string':
-                            return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                            return resolveMemberNames(m[1], memberSymbols, i + 1);
                         default:
                             if (k.test(memberSym)) {
-                                return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
+                                return resolveMemberNames(m[1], memberSymbols, i + 1);
                             }
                             break;
                         }
