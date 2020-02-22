@@ -122,18 +122,20 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                 return ty;
             }
 
+            const ty2 = {...ty};
             let xTy = x.ty;
             if (ty.memberTree && 0 < ty.memberTree.length) {
                 xTy = {
                     ...resolveMemberNames(xTy, ty.symlinkTargetName, ty.memberTree, 0),
                 };
+                ty2.typeName = xTy.typeName;
             }
 
             return (
                 resolveSymbols(
                     schema,
-                    mergeTypeAndSymlink(xTy, ty), // TODO: BUG: if `ty.memberTree` exists, unexpected overwriting of `typeName` is occured!
-                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.symlinkTargetName]},
+                    mergeTypeAndSymlink(xTy, ty2),
+                    {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty2.symlinkTargetName]},
                 )
             );
         }

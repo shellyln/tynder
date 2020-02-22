@@ -78,3 +78,20 @@ type D {
 
 type E {}
 
+type Z1 {
+    foo: ACL.target!
+    bar: ACL.value!
+    baz: ACL.target!
+}
+
+type ACL {
+    target: String!
+    value: String!
+}
+
+type Z2 {
+    foo: ACL.target!
+    bar: ACL.value!
+    baz: ACL.target!
+}
+

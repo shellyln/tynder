@@ -400,6 +400,66 @@
         }
       },
       "additionalProperties": false
+    },
+    "Z1": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "$ref": "#/definitions/ACL/properties/target"
+        },
+        "bar": {
+          "type": "string",
+          "minLength": 0
+        },
+        "baz": {
+          "$ref": "#/definitions/ACL/properties/target"
+        }
+      },
+      "required": [
+        "foo",
+        "bar",
+        "baz"
+      ],
+      "additionalProperties": false
+    },
+    "ACL": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "target",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Z2": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "$ref": "#/definitions/ACL/properties/target"
+        },
+        "bar": {
+          "type": "string",
+          "minLength": 0
+        },
+        "baz": {
+          "type": "string",
+          "maxLength": 10
+        }
+      },
+      "required": [
+        "foo",
+        "bar",
+        "baz"
+      ],
+      "additionalProperties": false
     }
   }
 }

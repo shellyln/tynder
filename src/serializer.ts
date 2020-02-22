@@ -21,7 +21,7 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
             kind: 'symlink',
             symlinkTargetName: ty.typeName,
             // TODO: preserve informations (doc comments, name, typeName, ...)
-        });
+        }); // TODO: BUG: constraints will lost (e.g.: @range, ...)
     }
 
     const ret: TypeAssertion = {...ty};

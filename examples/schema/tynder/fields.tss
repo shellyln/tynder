@@ -44,3 +44,24 @@ interface E {
     /** additional props */
     [propNames: string]: any;
 }
+
+
+interface Z1 {
+    foo: ACL.target;
+    bar: ACL.value;
+    //@maxLength(10) // TODO: BUG: can't set to kind === symlink
+    baz: ACL.target;
+}
+
+interface ACL {
+    target: string;
+    @minLength(0)
+    value: string;
+}
+
+interface Z2 {
+    foo: ACL.target;
+    bar: ACL.value;
+    @maxLength(10)
+    baz: ACL.target;
+}

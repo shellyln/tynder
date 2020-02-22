@@ -81,3 +81,20 @@ message D {
 
 message E {}
 
+message Z1 {
+    ACL.target foo = 1;
+    ACL.value bar = 2;
+    ACL.target baz = 3;
+}
+
+message ACL {
+    string target = 1;
+    string value = 2;
+}
+
+message Z2 {
+    ACL.target foo = 1;
+    ACL.value bar = 2;
+    ACL.target baz = 3;
+}
+

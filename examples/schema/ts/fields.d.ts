@@ -58,3 +58,20 @@ interface D {
 
 interface E {}
 
+interface Z1 {
+    foo: (ACL['target']);
+    bar: (ACL['value']);
+    baz: (ACL['target']);
+}
+
+interface ACL {
+    target: string;
+    value: string;
+}
+
+interface Z2 {
+    foo: (ACL['target']);
+    bar: (ACL['value']);
+    baz: (ACL['target']);
+}
+

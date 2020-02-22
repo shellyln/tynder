@@ -626,6 +626,86 @@
         ],
         "typeName": "E",
         "name": "E"
+      },
+      "Z1": {
+        "kind": "object",
+        "members": [
+          [
+            "foo",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target"
+            }
+          ],
+          [
+            "bar",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.value"
+            }
+          ],
+          [
+            "baz",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target"
+            }
+          ]
+        ],
+        "typeName": "Z1",
+        "name": "Z1"
+      },
+      "ACL": {
+        "kind": "object",
+        "members": [
+          [
+            "target",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "name": "target"
+            }
+          ],
+          [
+            "value",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minLength": 0,
+              "name": "value"
+            }
+          ]
+        ],
+        "typeName": "ACL",
+        "name": "ACL"
+      },
+      "Z2": {
+        "kind": "object",
+        "members": [
+          [
+            "foo",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target"
+            }
+          ],
+          [
+            "bar",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.value"
+            }
+          ],
+          [
+            "baz",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ACL.target"
+            }
+          ]
+        ],
+        "typeName": "Z2",
+        "name": "Z2"
       }
     }
   }
