@@ -703,6 +703,27 @@ type C = [string, ...<number, 10..20>,
 ```
 
 
+### Referencing other interface members
+```ts
+interface Foo {
+    @match(/^[A-Za-z]+$/)
+    name: string;
+    @match(/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
+    email: string;
+}
+
+interface User {
+    userName: Foo.name;
+    primaryEmail: Foo.email;
+}
+```
+
+> NOTE:
+> * This syntax is incompatible with TypeScript.
+>   * Generated TypeScript type definition is `userName: Foo['name'];`.
+>   * Tynder compiler does not allow `userName: Foo['name'];`.
+
+
 ### Type operators
 
 * `P & Q`
