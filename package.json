@@ -1,7 +1,7 @@
 {
   "name": "tynder",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "TypeScript friendly Data validator for JavaScript.",
   "keywords": [
     "data validator",
@@ -40,9 +40,9 @@
     "@babel/preset-env": "^7.8.4",
     "@types/jasmine": "^3.5.6",
     "@types/node": "^13.7.4",
-    "@types/react": "^16.9.21",
+    "@types/react": "^16.9.22",
     "@types/react-dom": "^16.9.5",
-    "ajv": "^6.11.0",
+    "ajv": "^6.12.0",
     "babel-loader": "^8.0.6",
     "cross-env": "^7.0.0",
     "jasmine": "^3.5.0",
