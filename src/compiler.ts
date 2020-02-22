@@ -21,9 +21,9 @@ import { TypeAssertion,
          TypeAssertionSetValue,
          TypeAssertionMap }      from './types';
 import * as operators            from './operators';
-import { resolveSchema }         from './lib/resolver';
-import { NumberPattern,
-         dummyTargetObject,
+import { resolveMemberNames,
+         resolveSchema }         from './lib/resolver';
+import { dummyTargetObject,
          isUnsafeVarNames }      from './lib/util';
 
 
@@ -1005,70 +1005,6 @@ const lisp = (() => {
 })();
 
 
-function resolveMemberNames(ty: TypeAssertion, memberSymbols: string[], menberPos: number): TypeAssertion {
-    const addTypeName = (mt: TypeAssertion, typeName: string | undefined, memberSym: string) => {
-        if (typeName) {
-            return ({
-                ...mt,
-                typeName: `${typeName}.${memberSym}`,
-            });
-        } else {
-            return mt;
-        }
-    };
-    for (let i = menberPos; i < memberSymbols.length; i++) {
-        const memberSym = memberSymbols[i];
-
-        switch (ty.kind) {
-        case 'optional':
-            return resolveMemberNames(ty.optional, memberSymbols, i + 1);
-        case 'object':
-            for (const m of ty.members) {
-                if (memberSym === m[0]) {
-                    return addTypeName(resolveMemberNames(m[1], memberSymbols, i + 1), ty.typeName, memberSym);
-                }
-            }
-            if (ty.additionalProps) {
-                for (const m of ty.additionalProps) {
-                    for (const k of m[0]) {
-                        switch (k) {
-                        case 'number':
-                            if (NumberPattern.test(memberSym)) {
-                                return resolveMemberNames(m[1], memberSymbols, i + 1);
-                            }
-                            break;
-                        case 'string':
-                            return resolveMemberNames(m[1], memberSymbols, i + 1);
-                        default:
-                            if (k.test(memberSym)) {
-                                return resolveMemberNames(m[1], memberSymbols, i + 1);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            throw new Error(`Undefined member name is appeared: ${memberSym}`);
-        case 'symlink':
-            if (! ty.typeName) {
-                throw new Error(`Reference of anonymous type is appeared: ${memberSym}`);
-            }
-            return ({
-                kind: 'symlink',
-                symlinkTargetName: ty.typeName,
-                // TODO:
-                name: memberSym,
-                typeName: ty.typeName,
-            });
-        default:
-            // TODO: kind === 'operator'
-            throw new Error(`Unsupported type kind is appeared: (kind:${ty.kind}).${memberSym}`);
-        }
-    }
-    return ty;
-}
-
-
 // tslint:disable: object-literal-key-quotes
 export function compile(s: string) {
     const mapTyToTySet = new Map<TypeAssertion, TypeAssertionSetValue>();
@@ -1111,7 +1047,7 @@ export function compile(s: string) {
             throw new Error(`Unsafe symbol name is appeared: ${sym}`);
         }
 
-        const memberSymbols = memberNames.map(x => {
+        const memberTreeSymbols = memberNames.map(x => {
             const ms = typeof x === 'string' ? x : x.symbol;
             if (isUnsafeVarNames(dummyTargetObject, ms)) {
                 throw new Error(`Unsafe symbol name is appeared: ${ms}`);
@@ -1121,15 +1057,24 @@ export function compile(s: string) {
 
         if (! schema.has(sym)) {
             return ({
-                kind: 'symlink',
-                symlinkTargetName: sym,
-                // TODO:
-                name: sym,
-                typeName: sym,
+                ...{
+                    kind: 'symlink',
+                    symlinkTargetName: sym,
+                    name: sym,
+                    typeName: sym,
+                },
+                ...(0 < memberTreeSymbols.length ? {
+                    memberTree: memberTreeSymbols,
+                } : {}),
             });
         }
 
-        let ty = resolveMemberNames((schema.get(sym) as TypeAssertionSetValue).ty, memberSymbols, 0);
+        let ty = resolveMemberNames(
+            (schema.get(sym) as TypeAssertionSetValue).ty,
+            sym, memberTreeSymbols,
+            0,
+        );
+
         if (ty.noOutput) {
             ty = {...ty};
             delete ty.noOutput;
