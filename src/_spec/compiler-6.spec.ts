@@ -59,163 +59,173 @@ describe("compiler-6", function() {
             ]);
         }
         {
-            const ty = getType(schema, 'A');
-            expect(false).toEqual(schema.get('A')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'A',
-                typeName: 'A',
-                kind: 'object',
-                members: [
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        messageId: 'MSG_A.a1',
-                    }],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
-                            messageId: 'MSG_A.a2',
-                        },
-                        messageId: 'MSG_A.a2',
-                    }],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+            // const ty = getType(schema, 'A');
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                expect(false).toEqual(schema.get('A')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'A',
+                    typeName: 'A',
+                    kind: 'object',
+                    members: [
+                        ['a1', {
+                            name: 'a1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        messageId: 'MSG_A.a3',
-                    }, false, 'Comment A.a3'],
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        messageId: 'MSG_A.a4',
-                    }, false, 'Comment A.a4'],
-                ],
-                messageId: 'MSG_A',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'B');
-            expect(false).toEqual(schema.get('B')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'B',
-                typeName: 'B',
-                kind: 'object',
-                members: [
-                    ['b1', {
-                        name: 'b1',
-                        kind: 'primitive',
-                        primitiveName: 'boolean',
-                        messageId: 'MSG_B.b1',
-                    }],
-                    ['b2', {
-                        name: 'b2',
-                        typeName: 'A',
-                        kind: 'object',
-                        members: [...(getType(schema, 'A') as ObjectAssertion).members],
-                        additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                        messageId: 'MSG_B.b2',
-                    }, false, 'Comment B.b2'],
-                ],
-                messageId: 'MSG_B',
-                docComment: 'Comment B',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'C');
-            expect(false).toEqual(schema.get('C')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'C',
-                typeName: 'C',
-                kind: 'object',
-                members: [
-                    ['c1', {
-                        name: 'c1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        messageId: 'MSG_C.c1',
-                    }],
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        messageId: 'MSG_A.a1',
-                    }, true],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
+                            messageId: 'MSG_A.a1',
+                        }],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                messageId: 'MSG_A.a2',
+                            },
                             messageId: 'MSG_A.a2',
-                        },
-                        messageId: 'MSG_A.a2',
-                    }, true],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+                        }],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            messageId: 'MSG_A.a3',
+                        }, false, 'Comment A.a3'],
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            messageId: 'MSG_A.a4',
+                        }, false, 'Comment A.a4'],
+                    ],
+                    messageId: 'MSG_A',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'B');
+            for (const ty of [getType(deserialize(serialize(schema)), 'B'), getType(schema, 'B')]) {
+                expect(false).toEqual(schema.get('B')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'B',
+                    typeName: 'B',
+                    kind: 'object',
+                    members: [
+                        ['b1', {
+                            name: 'b1',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                            messageId: 'MSG_B.b1',
+                        }],
+                        ['b2', {
+                            name: 'b2',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            messageId: 'MSG_B.b2',
+                        }, false, 'Comment B.b2'],
+                    ],
+                    messageId: 'MSG_B',
+                    docComment: 'Comment B',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'C');
+            for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                expect(false).toEqual(schema.get('C')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [
+                        ['c1', {
+                            name: 'c1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        messageId: 'MSG_A.a3',
-                    }, true, 'Comment A.a3'],
-                ],
-                baseTypes: [
-                    getType(schema, 'A') as any,
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        messageId: 'MSG_A.a4',
-                    }, true, 'Comment A.a4']
-                ],
-                messageId: 'MSG_C',
-            };
-            expect(ty).toEqual(rhs);
+                            messageId: 'MSG_C.c1',
+                        }],
+                        ['a1', {
+                            name: 'a1',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            messageId: 'MSG_A.a1',
+                        }, true],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                messageId: 'MSG_A.a2',
+                            },
+                            messageId: 'MSG_A.a2',
+                        }, true],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            messageId: 'MSG_A.a3',
+                        }, true, 'Comment A.a3'],
+                    ],
+                    baseTypes: [
+                        getType(schema, 'A') as any,
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            messageId: 'MSG_A.a4',
+                        }, true, 'Comment A.a4']
+                    ],
+                    messageId: 'MSG_C',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'D');
-            expect(false).toEqual(schema.get('D')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'D',
-                typeName: 'D',
-                kind: 'primitive',
-                primitiveName: 'string',
-                messageId: 'MSG_D',
-                docComment: 'Comment D',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'D');
+            for (const ty of [getType(deserialize(serialize(schema)), 'D'), getType(schema, 'D')]) {
+                expect(false).toEqual(schema.get('D')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'D',
+                    typeName: 'D',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    messageId: 'MSG_D',
+                    docComment: 'Comment D',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'E');
-            expect(false).toEqual(schema.get('E')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'E',
-                typeName: 'E',
-                kind: 'enum',
-                values: [
-                    ['P', 0],
-                    ['Q', 1],
-                    ['R', 2],
-                ],
-                messageId: 'MSG_E',
-                docComment: 'Comment E',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'E');
+            for (const ty of [getType(deserialize(serialize(schema)), 'E'), getType(schema, 'E')]) {
+                expect(false).toEqual(schema.get('E')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'E',
+                    typeName: 'E',
+                    kind: 'enum',
+                    values: [
+                        ['P', 0],
+                        ['Q', 1],
+                        ['R', 2],
+                    ],
+                    messageId: 'MSG_E',
+                    docComment: 'Comment E',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
     });
     it("compiler-error-reporting-2", function() {
@@ -265,163 +275,173 @@ describe("compiler-6", function() {
             ]);
         }
         {
-            const ty = getType(schema, 'A');
-            expect(true).toEqual(schema.get('A')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'A',
-                typeName: 'A',
-                kind: 'object',
-                members: [
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        messageId: 'MSG_A.a1',
-                    }],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
-                            messageId: 'MSG_A.a2',
-                        },
-                        messageId: 'MSG_A.a2',
-                    }],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+            // const ty = getType(schema, 'A');
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                expect(true).toEqual(schema.get('A')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'A',
+                    typeName: 'A',
+                    kind: 'object',
+                    members: [
+                        ['a1', {
+                            name: 'a1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        messageId: 'MSG_A.a3',
-                    }, false, 'Comment A.a3'],
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        messageId: 'MSG_A.a4',
-                    }, false, 'Comment A.a4'],
-                ],
-                messageId: 'MSG_A',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'B');
-            expect(true).toEqual(schema.get('B')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'B',
-                typeName: 'B',
-                kind: 'object',
-                members: [
-                    ['b1', {
-                        name: 'b1',
-                        kind: 'primitive',
-                        primitiveName: 'boolean',
-                        messageId: 'MSG_B.b1',
-                    }],
-                    ['b2', {
-                        name: 'b2',
-                        typeName: 'A',
-                        kind: 'object',
-                        members: [...(getType(schema, 'A') as ObjectAssertion).members],
-                        additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                        messageId: 'MSG_B.b2',
-                    }, false, 'Comment B.b2'],
-                ],
-                messageId: 'MSG_B',
-                docComment: 'Comment B',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'C');
-            expect(true).toEqual(schema.get('C')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'C',
-                typeName: 'C',
-                kind: 'object',
-                members: [
-                    ['c1', {
-                        name: 'c1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        messageId: 'MSG_C.c1',
-                    }],
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        messageId: 'MSG_A.a1',
-                    }, true],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
+                            messageId: 'MSG_A.a1',
+                        }],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                messageId: 'MSG_A.a2',
+                            },
                             messageId: 'MSG_A.a2',
-                        },
-                        messageId: 'MSG_A.a2',
-                    }, true],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+                        }],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            messageId: 'MSG_A.a3',
+                        }, false, 'Comment A.a3'],
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            messageId: 'MSG_A.a4',
+                        }, false, 'Comment A.a4'],
+                    ],
+                    messageId: 'MSG_A',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'B');
+            for (const ty of [getType(deserialize(serialize(schema)), 'B'), getType(schema, 'B')]) {
+                expect(true).toEqual(schema.get('B')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'B',
+                    typeName: 'B',
+                    kind: 'object',
+                    members: [
+                        ['b1', {
+                            name: 'b1',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                            messageId: 'MSG_B.b1',
+                        }],
+                        ['b2', {
+                            name: 'b2',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            messageId: 'MSG_B.b2',
+                        }, false, 'Comment B.b2'],
+                    ],
+                    messageId: 'MSG_B',
+                    docComment: 'Comment B',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'C');
+            for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                expect(true).toEqual(schema.get('C')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [
+                        ['c1', {
+                            name: 'c1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        messageId: 'MSG_A.a3',
-                    }, true, 'Comment A.a3'],
-                ],
-                baseTypes: [
-                    getType(schema, 'A') as any,
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        messageId: 'MSG_A.a4',
-                    }, true, 'Comment A.a4']
-                ],
-                messageId: 'MSG_C',
-            };
-            expect(ty).toEqual(rhs);
+                            messageId: 'MSG_C.c1',
+                        }],
+                        ['a1', {
+                            name: 'a1',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            messageId: 'MSG_A.a1',
+                        }, true],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                messageId: 'MSG_A.a2',
+                            },
+                            messageId: 'MSG_A.a2',
+                        }, true],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            messageId: 'MSG_A.a3',
+                        }, true, 'Comment A.a3'],
+                    ],
+                    baseTypes: [
+                        getType(schema, 'A') as any,
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            messageId: 'MSG_A.a4',
+                        }, true, 'Comment A.a4']
+                    ],
+                    messageId: 'MSG_C',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'D');
-            expect(true).toEqual(schema.get('D')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'D',
-                typeName: 'D',
-                kind: 'primitive',
-                primitiveName: 'string',
-                messageId: 'MSG_D',
-                docComment: 'Comment D',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'D');
+            for (const ty of [getType(deserialize(serialize(schema)), 'D'), getType(schema, 'D')]) {
+                expect(true).toEqual(schema.get('D')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'D',
+                    typeName: 'D',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    messageId: 'MSG_D',
+                    docComment: 'Comment D',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'E');
-            expect(true).toEqual(schema.get('E')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'E',
-                typeName: 'E',
-                kind: 'enum',
-                values: [
-                    ['P', 0],
-                    ['Q', 1],
-                    ['R', 2],
-                ],
-                messageId: 'MSG_E',
-                docComment: 'Comment E',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'E');
+            for (const ty of [getType(deserialize(serialize(schema)), 'E'), getType(schema, 'E')]) {
+                expect(true).toEqual(schema.get('E')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'E',
+                    typeName: 'E',
+                    kind: 'enum',
+                    values: [
+                        ['P', 0],
+                        ['Q', 1],
+                        ['R', 2],
+                    ],
+                    messageId: 'MSG_E',
+                    docComment: 'Comment E',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
     });
     it("compiler-error-reporting-3", function() {
@@ -471,163 +491,173 @@ describe("compiler-6", function() {
             ]);
         }
         {
-            const ty = getType(schema, 'A');
-            expect(false).toEqual(schema.get('A')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'A',
-                typeName: 'A',
-                kind: 'object',
-                members: [
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        message: 'MSG_A.a1',
-                    }],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
-                            message: 'MSG_A.a2',
-                        },
-                        message: 'MSG_A.a2',
-                    }],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+            // const ty = getType(schema, 'A');
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                expect(false).toEqual(schema.get('A')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'A',
+                    typeName: 'A',
+                    kind: 'object',
+                    members: [
+                        ['a1', {
+                            name: 'a1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        message: 'MSG_A.a3',
-                    }, false, 'Comment A.a3'],
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        message: 'MSG_A.a4',
-                    }, false, 'Comment A.a4'],
-                ],
-                message: 'MSG_A',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'B');
-            expect(false).toEqual(schema.get('B')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'B',
-                typeName: 'B',
-                kind: 'object',
-                members: [
-                    ['b1', {
-                        name: 'b1',
-                        kind: 'primitive',
-                        primitiveName: 'boolean',
-                        message: 'MSG_B.b1',
-                    }],
-                    ['b2', {
-                        name: 'b2',
-                        typeName: 'A',
-                        kind: 'object',
-                        members: [...(getType(schema, 'A') as ObjectAssertion).members],
-                        additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                        message: 'MSG_B.b2',
-                    }, false, 'Comment B.b2'],
-                ],
-                message: 'MSG_B',
-                docComment: 'Comment B',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'C');
-            expect(false).toEqual(schema.get('C')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'C',
-                typeName: 'C',
-                kind: 'object',
-                members: [
-                    ['c1', {
-                        name: 'c1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        message: 'MSG_C.c1',
-                    }],
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        message: 'MSG_A.a1',
-                    }, true],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
+                            message: 'MSG_A.a1',
+                        }],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                message: 'MSG_A.a2',
+                            },
                             message: 'MSG_A.a2',
-                        },
-                        message: 'MSG_A.a2',
-                    }, true],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+                        }],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            message: 'MSG_A.a3',
+                        }, false, 'Comment A.a3'],
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            message: 'MSG_A.a4',
+                        }, false, 'Comment A.a4'],
+                    ],
+                    message: 'MSG_A',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'B');
+            for (const ty of [getType(deserialize(serialize(schema)), 'B'), getType(schema, 'B')]) {
+                expect(false).toEqual(schema.get('B')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'B',
+                    typeName: 'B',
+                    kind: 'object',
+                    members: [
+                        ['b1', {
+                            name: 'b1',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                            message: 'MSG_B.b1',
+                        }],
+                        ['b2', {
+                            name: 'b2',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            message: 'MSG_B.b2',
+                        }, false, 'Comment B.b2'],
+                    ],
+                    message: 'MSG_B',
+                    docComment: 'Comment B',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'C');
+            for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                expect(false).toEqual(schema.get('C')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [
+                        ['c1', {
+                            name: 'c1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        message: 'MSG_A.a3',
-                    }, true, 'Comment A.a3'],
-                ],
-                baseTypes: [
-                    getType(schema, 'A') as any,
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        message: 'MSG_A.a4',
-                    }, true, 'Comment A.a4']
-                ],
-                message: 'MSG_C',
-            };
-            expect(ty).toEqual(rhs);
+                            message: 'MSG_C.c1',
+                        }],
+                        ['a1', {
+                            name: 'a1',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            message: 'MSG_A.a1',
+                        }, true],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                message: 'MSG_A.a2',
+                            },
+                            message: 'MSG_A.a2',
+                        }, true],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            message: 'MSG_A.a3',
+                        }, true, 'Comment A.a3'],
+                    ],
+                    baseTypes: [
+                        getType(schema, 'A') as any,
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            message: 'MSG_A.a4',
+                        }, true, 'Comment A.a4']
+                    ],
+                    message: 'MSG_C',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'D');
-            expect(false).toEqual(schema.get('D')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'D',
-                typeName: 'D',
-                kind: 'primitive',
-                primitiveName: 'string',
-                message: 'MSG_D',
-                docComment: 'Comment D',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'D');
+            for (const ty of [getType(deserialize(serialize(schema)), 'D'), getType(schema, 'D')]) {
+                expect(false).toEqual(schema.get('D')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'D',
+                    typeName: 'D',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    message: 'MSG_D',
+                    docComment: 'Comment D',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'E');
-            expect(false).toEqual(schema.get('E')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'E',
-                typeName: 'E',
-                kind: 'enum',
-                values: [
-                    ['P', 0],
-                    ['Q', 1],
-                    ['R', 2],
-                ],
-                message: 'MSG_E',
-                docComment: 'Comment E',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'E');
+            for (const ty of [getType(deserialize(serialize(schema)), 'E'), getType(schema, 'E')]) {
+                expect(false).toEqual(schema.get('E')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'E',
+                    typeName: 'E',
+                    kind: 'enum',
+                    values: [
+                        ['P', 0],
+                        ['Q', 1],
+                        ['R', 2],
+                    ],
+                    message: 'MSG_E',
+                    docComment: 'Comment E',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
     });
     it("compiler-error-reporting-4", function() {
@@ -677,163 +707,173 @@ describe("compiler-6", function() {
             ]);
         }
         {
-            const ty = getType(schema, 'A');
-            expect(true).toEqual(schema.get('A')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'A',
-                typeName: 'A',
-                kind: 'object',
-                members: [
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        message: 'MSG_A.a1',
-                    }],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
-                            message: 'MSG_A.a2',
-                        },
-                        message: 'MSG_A.a2',
-                    }],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+            // const ty = getType(schema, 'A');
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                expect(true).toEqual(schema.get('A')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'A',
+                    typeName: 'A',
+                    kind: 'object',
+                    members: [
+                        ['a1', {
+                            name: 'a1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        message: 'MSG_A.a3',
-                    }, false, 'Comment A.a3'],
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        message: 'MSG_A.a4',
-                    }, false, 'Comment A.a4'],
-                ],
-                message: 'MSG_A',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'B');
-            expect(true).toEqual(schema.get('B')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'B',
-                typeName: 'B',
-                kind: 'object',
-                members: [
-                    ['b1', {
-                        name: 'b1',
-                        kind: 'primitive',
-                        primitiveName: 'boolean',
-                        message: 'MSG_B.b1',
-                    }],
-                    ['b2', {
-                        name: 'b2',
-                        typeName: 'A',
-                        kind: 'object',
-                        members: [...(getType(schema, 'A') as ObjectAssertion).members],
-                        additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
-                        message: 'MSG_B.b2',
-                    }, false, 'Comment B.b2'],
-                ],
-                message: 'MSG_B',
-                docComment: 'Comment B',
-            };
-            expect(ty).toEqual(rhs);
-        }
-        {
-            const ty = getType(schema, 'C');
-            expect(true).toEqual(schema.get('C')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'C',
-                typeName: 'C',
-                kind: 'object',
-                members: [
-                    ['c1', {
-                        name: 'c1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        message: 'MSG_C.c1',
-                    }],
-                    ['a1', {
-                        name: 'a1',
-                        kind: 'primitive',
-                        primitiveName: 'string',
-                        message: 'MSG_A.a1',
-                    }, true],
-                    ['a2', {
-                        name: 'a2',
-                        kind: 'optional',
-                        optional: {
-                            kind: 'primitive',
-                            primitiveName: 'number',
+                            message: 'MSG_A.a1',
+                        }],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                message: 'MSG_A.a2',
+                            },
                             message: 'MSG_A.a2',
-                        },
-                        message: 'MSG_A.a2',
-                    }, true],
-                    ['a3', {
-                        name: 'a3',
-                        kind: 'repeated',
-                        min: null,
-                        max: null,
-                        repeated: {
+                        }],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            message: 'MSG_A.a3',
+                        }, false, 'Comment A.a3'],
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            message: 'MSG_A.a4',
+                        }, false, 'Comment A.a4'],
+                    ],
+                    message: 'MSG_A',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'B');
+            for (const ty of [getType(deserialize(serialize(schema)), 'B'), getType(schema, 'B')]) {
+                expect(true).toEqual(schema.get('B')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'B',
+                    typeName: 'B',
+                    kind: 'object',
+                    members: [
+                        ['b1', {
+                            name: 'b1',
+                            kind: 'primitive',
+                            primitiveName: 'boolean',
+                            message: 'MSG_B.b1',
+                        }],
+                        ['b2', {
+                            name: 'b2',
+                            typeName: 'A',
+                            kind: 'object',
+                            members: [...(getType(schema, 'A') as ObjectAssertion).members],
+                            additionalProps: [...((getType(schema, 'A') as ObjectAssertion).additionalProps as AdditionalPropsMember[])],
+                            message: 'MSG_B.b2',
+                        }, false, 'Comment B.b2'],
+                    ],
+                    message: 'MSG_B',
+                    docComment: 'Comment B',
+                };
+                expect(ty).toEqual(rhs);
+            }
+        }
+        {
+            // const ty = getType(schema, 'C');
+            for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                expect(true).toEqual(schema.get('C')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'C',
+                    typeName: 'C',
+                    kind: 'object',
+                    members: [
+                        ['c1', {
+                            name: 'c1',
                             kind: 'primitive',
                             primitiveName: 'string',
-                        },
-                        message: 'MSG_A.a3',
-                    }, true, 'Comment A.a3'],
-                ],
-                baseTypes: [
-                    getType(schema, 'A') as any,
-                ],
-                additionalProps: [
-                    [['string'], {
-                        kind: 'any',
-                        message: 'MSG_A.a4',
-                    }, true, 'Comment A.a4']
-                ],
-                message: 'MSG_C',
-            };
-            expect(ty).toEqual(rhs);
+                            message: 'MSG_C.c1',
+                        }],
+                        ['a1', {
+                            name: 'a1',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                            message: 'MSG_A.a1',
+                        }, true],
+                        ['a2', {
+                            name: 'a2',
+                            kind: 'optional',
+                            optional: {
+                                kind: 'primitive',
+                                primitiveName: 'number',
+                                message: 'MSG_A.a2',
+                            },
+                            message: 'MSG_A.a2',
+                        }, true],
+                        ['a3', {
+                            name: 'a3',
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            message: 'MSG_A.a3',
+                        }, true, 'Comment A.a3'],
+                    ],
+                    baseTypes: [
+                        getType(schema, 'A') as any,
+                    ],
+                    additionalProps: [
+                        [['string'], {
+                            kind: 'any',
+                            message: 'MSG_A.a4',
+                        }, true, 'Comment A.a4']
+                    ],
+                    message: 'MSG_C',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'D');
-            expect(true).toEqual(schema.get('D')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'D',
-                typeName: 'D',
-                kind: 'primitive',
-                primitiveName: 'string',
-                message: 'MSG_D',
-                docComment: 'Comment D',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'D');
+            for (const ty of [getType(deserialize(serialize(schema)), 'D'), getType(schema, 'D')]) {
+                expect(true).toEqual(schema.get('D')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'D',
+                    typeName: 'D',
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    message: 'MSG_D',
+                    docComment: 'Comment D',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
         {
-            const ty = getType(schema, 'E');
-            expect(true).toEqual(schema.get('E')?.exported as any);
-            const rhs: TypeAssertion = {
-                name: 'E',
-                typeName: 'E',
-                kind: 'enum',
-                values: [
-                    ['P', 0],
-                    ['Q', 1],
-                    ['R', 2],
-                ],
-                message: 'MSG_E',
-                docComment: 'Comment E',
-            };
-            expect(ty).toEqual(rhs);
+            // const ty = getType(schema, 'E');
+            for (const ty of [getType(deserialize(serialize(schema)), 'E'), getType(schema, 'E')]) {
+                expect(true).toEqual(schema.get('E')?.exported as any);
+                const rhs: TypeAssertion = {
+                    name: 'E',
+                    typeName: 'E',
+                    kind: 'enum',
+                    values: [
+                        ['P', 0],
+                        ['Q', 1],
+                        ['R', 2],
+                    ],
+                    message: 'MSG_E',
+                    docComment: 'Comment E',
+                };
+                expect(ty).toEqual(rhs);
+            }
         }
     });
 });

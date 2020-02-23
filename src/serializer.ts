@@ -119,7 +119,15 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
         ret.values = ret.values.slice().map(x => x[2] === null || x[2] === void 0 ? x.slice(0, 2) : x) as any;
         break;
     case 'object':
-        ret.members = ret.members.map(x => [x[0], serializeInner(x[1], nestLevel + 1), ...x.slice(2)]) as any;
+        ret.members = ret.members
+            .map(x => [x[0], serializeInner(x[1], nestLevel + 1), ...x.slice(2)]) as any;
+        if (ret.additionalProps) {
+            ret.additionalProps = ret.additionalProps
+                .map(x => [x[0].map(
+                    p => typeof p === 'string' ?
+                        p : `/${p.source}/${p.flags}`),
+                    serializeInner(x[1], nestLevel + 1), ...x.slice(2)]) as any;
+        }
         if (ret.baseTypes) {
             // NOTE: convert 'baseTypes' to 'symlink'.
             ret.baseTypes = ret.baseTypes.map(x => serializeInner(x, nestLevel + 1)) as ObjectAssertion[];
@@ -165,6 +173,16 @@ export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
 }
 
 
+function deserializeRegExp(pat: string, errMsg: string) {
+    const m = (/^\/(.*)\/([gimsuy]*)$/s).exec(pat);
+    if (m) {
+        return new RegExp(m[1], m[2]);
+    } else {
+        throw new Error(errMsg);
+    }
+}
+
+
 function deserializeInner(ty: TypeAssertion) {
     const ret: TypeAssertion = {...ty};
     switch (ret.kind) {
@@ -180,12 +198,9 @@ function deserializeInner(ty: TypeAssertion) {
         break;
     case 'primitive':
         if (ret.pattern) {
-            const m = (/^\/(.*)\/([gimsuy]*)$/s).exec(ret.pattern as any);
-            if (m) {
-                ret.pattern = new RegExp(m[1], m[2]);
-            } else {
-                throw new Error(`Unknown pattern match assertion: ${ret.pattern as any}`);
-            }
+            ret.pattern = deserializeRegExp(
+                ret.pattern as any,
+                `Unknown pattern match assertion: ${ret.pattern as any}`);
         }
         break;
     case 'repeated':
@@ -204,7 +219,15 @@ function deserializeInner(ty: TypeAssertion) {
         ret.optional = deserializeInner(ret.optional);
         break;
     case 'object':
-        ret.members = ret.members.map(x => [x[0], deserializeInner(x[1]), ...x.slice(2)]) as any;
+        ret.members = ret.members
+            .map(x => [x[0], deserializeInner(x[1]), ...x.slice(2)]) as any;
+        if (ret.additionalProps) {
+            ret.additionalProps = ret.additionalProps
+                .map(x => [x[0].map(
+                    p => String(p).startsWith('/') ?
+                        deserializeRegExp(p as any, `Unknown additional props: ${p}`) : p),
+                    deserializeInner(x[1]), ...x.slice(2)]) as any;
+        }
         // NOTE: keep 'baseTypes' as 'symlink'.
         break;
     default:
