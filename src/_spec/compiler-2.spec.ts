@@ -78,228 +78,230 @@ describe("compiler-2", function() {
                     }],
                 ],
             };
-            const ty = getType(schema, 'Foo');
-            expect(ty).toEqual(rhs);
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual({value: v});
-            }
-            {
-                const v = {
-                    // a1
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    // a2
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    // a3
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    // a4
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    // a5
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    // a6
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    // a7
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    // a8
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: BigInt(99), // wrong
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: 99, // wrong
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 7, // wrong
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: '', // wrong
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: void 0, // wrong
-                    a6: void 0,
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: null, // wrong
-                    a7: '',
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: 99, // wrong
-                    a8: 5,
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
-            }
-            {
-                const v = {
-                    a1: 3,
-                    a2: BigInt(5),
-                    a3: 'C',
-                    a4: true,
-                    a5: null,
-                    a6: void 0,
-                    a7: '',
-                    a8: 5.5, // wrong
-                };
-                expect(validate<any>(v, ty)).toEqual(null);
+            // const ty = getType(schema, 'Foo');
+            for (const ty of [getType(deserialize(serialize(schema)), 'Foo'), getType(schema, 'Foo')]) {
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual({value: v});
+                }
+                {
+                    const v = {
+                        // a1
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        // a2
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        // a3
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        // a4
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        // a5
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        // a6
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        // a7
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        // a8
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: BigInt(99), // wrong
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: 99, // wrong
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 7, // wrong
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: '', // wrong
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: void 0, // wrong
+                        a6: void 0,
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: null, // wrong
+                        a7: '',
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: 99, // wrong
+                        a8: 5,
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
+                {
+                    const v = {
+                        a1: 3,
+                        a2: BigInt(5),
+                        a3: 'C',
+                        a4: true,
+                        a5: null,
+                        a6: void 0,
+                        a7: '',
+                        a8: 5.5, // wrong
+                    };
+                    expect(validate<any>(v, ty)).toEqual(null);
+                }
             }
         }
     });
@@ -460,24 +462,26 @@ describe("compiler-2", function() {
                         }],
                     ],
                 };
-                const ty = getType(schema, 'Foo');
-                expect(ty).toEqual(rhs);
-                {
-                    const v = {
-                        a1: 3,
-                        a2: BigInt(5),
-                        a3: 'C',
-                        a4: true,
-                        a5: null,
-                        a6: void 0,
-                        a7: '',
-                        a8: 5,
-                    };
-                    expect(validate<any>(v, ty)).toEqual({value: v});
-                }
-                {
-                    const v = {};
-                    expect(validate<any>(v, ty)).toEqual({value: v});
+                // const ty = getType(schema, 'Foo');
+                for (const ty of [getType(deserialize(serialize(schema)), 'Foo'), getType(schema, 'Foo')]) {
+                    expect(ty).toEqual(rhs);
+                    {
+                        const v = {
+                            a1: 3,
+                            a2: BigInt(5),
+                            a3: 'C',
+                            a4: true,
+                            a5: null,
+                            a6: void 0,
+                            a7: '',
+                            a8: 5,
+                        };
+                        expect(validate<any>(v, ty)).toEqual({value: v});
+                    }
+                    {
+                        const v = {};
+                        expect(validate<any>(v, ty)).toEqual({value: v});
+                    }
                 }
             }
         }
@@ -610,20 +614,22 @@ describe("compiler-2", function() {
                         ...tyR.members.map(x => [x[0], x[1], true]),
                     ],
                 };
-                const ty = getType(schema, 'Foo');
-                expect(ty).toEqual(rhs);
-                {
-                    const v = {
-                        a1: 3,
-                        a2: BigInt(5),
-                        a3: 'C',
-                        a4: true,
-                        a5: null,
-                        a6: void 0,
-                        a7: '',
-                        a8: 5,
-                    };
-                    expect(validate<any>(v, ty)).toEqual({value: v});
+                // const ty = getType(schema, 'Foo');
+                for (const ty of [/*getType(deserialize(serialize(schema)), 'Foo'),*/ getType(schema, 'Foo')]) {
+                    expect(ty).toEqual(rhs);
+                    {
+                        const v = {
+                            a1: 3,
+                            a2: BigInt(5),
+                            a3: 'C',
+                            a4: true,
+                            a5: null,
+                            a6: void 0,
+                            a7: '',
+                            a8: 5,
+                        };
+                        expect(validate<any>(v, ty)).toEqual({value: v});
+                    }
                 }
             }
         }
@@ -719,40 +725,44 @@ describe("compiler-2", function() {
                 ],
             };
             tyEntry.oneOf[1] = rhs;
-            const ty = getType(schema, 'Folder');
-            expect(ty).toEqual(rhs);
-            expect(getType(schema, 'Entry')).toEqual(tyEntry);
-            {
-                const v = {
-                    type: 'folder',
-                    name: '/',
-                    entries: [{
-                        type: 'file',
-                        name: 'a',
-                    }, {
+            for (const ty of [/*getType(deserialize(serialize(schema)), 'Entry'),*/ getType(schema, 'Entry')]) {
+                expect(ty).toEqual(tyEntry);
+            }
+            // const ty = getType(schema, 'Folder');
+            for (const ty of [/*getType(deserialize(serialize(schema)), 'Folder'),*/ getType(schema, 'Folder')]) {
+                expect(ty).toEqual(rhs);
+                {
+                    const v = {
                         type: 'folder',
-                        name: 'b',
+                        name: '/',
                         entries: [{
                             type: 'file',
-                            name: 'c',
+                            name: 'a',
+                        }, {
+                            type: 'folder',
+                            name: 'b',
+                            entries: [{
+                                type: 'file',
+                                name: 'c',
+                            }],
                         }],
-                    }],
-                };
-                try {
-                    validate<any>(v, ty);
-                    expect(0).toEqual(1);
-                } catch (e) {
-                    expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                    };
+                    try {
+                        validate<any>(v, ty);
+                        expect(0).toEqual(1);
+                    } catch (e) {
+                        expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                    }
+                    const ctx1: Partial<ValidationContext> = {};
+                    expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
+                    expect(ctx1.errors).toEqual([{
+                        code: 'InvalidDefinition',
+                        message: '"entries" of "Folder" type definition is invalid.',
+                        dataPath: 'Folder:entries.(0:repeated).Entry',
+                        constraints: {}
+                    }]);
+                    expect(validate<any>(v, ty, {schema})).toEqual({value: v});
                 }
-                const ctx1: Partial<ValidationContext> = {};
-                expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
-                expect(ctx1.errors).toEqual([{
-                    code: 'InvalidDefinition',
-                    message: '"entries" of "Folder" type definition is invalid.',
-                    dataPath: 'Folder:entries.(0:repeated).Entry',
-                    constraints: {}
-                }]);
-                expect(validate<any>(v, ty, {schema})).toEqual({value: v});
             }
         }
     });
