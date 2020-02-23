@@ -70,7 +70,6 @@ function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
     if (0 < nestLevel && ty.typeName && !hasMetaInfo(ty)) {
         switch (ty.kind) {
         case 'optional':
-        // case 'repeated': case 'sequence': case 'spread':
             // nothing to do.
             break;
         default:
