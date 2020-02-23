@@ -2,10 +2,10 @@
 
 ## v0.2.2
 
-* `[FIX]` Fix serializer bugs.
-  * Object member meta info format is wrong.
-  * Optional info is lost in named type case.
-  * Extended interface has unexpected duplicated member properties.
+* `[FIX]` Fix serializer & deserializer bugs.
+  * Object member meta info format is wrong. (serializer)
+  * Optional info is lost in named type case. (serializer)
+  * Extended interface has unexpected duplicated member properties. (deserializer)
 * Add spec codes.
 
 ## v0.2.1
