@@ -142,8 +142,13 @@ const schema = {
           [
             "numberTypeField",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "NumberType",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "NumberType",
+                "typeName": "NumberType",
+                "name": "NumberType"
+              },
               "typeName": "NumberType",
               "name": "numberTypeField"
             }
@@ -459,8 +464,13 @@ const schema = {
           [
             "numberTypeField",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "NumberType",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "NumberType",
+                "typeName": "NumberType",
+                "name": "NumberType"
+              },
               "typeName": "NumberType",
               "name": "numberTypeField"
             }

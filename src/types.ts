@@ -75,7 +75,12 @@ export interface SymbolResolverOperators {
     [propName: string]: (...args: Array<TypeAssertion | string>) => TypeAssertion;
 }
 
-export interface SymbolResolverContext {
+
+export interface ResolveSymbolOptions {
+    isDeserialization?: boolean;
+}
+
+export interface SymbolResolverContext extends ResolveSymbolOptions {
     nestLevel: number;
     symlinkStack: string[]; // For detecting recursive type
     operators?: SymbolResolverOperators; // TODO: Add it to resolve backref in type operator's operands

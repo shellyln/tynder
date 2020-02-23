@@ -68,15 +68,21 @@ function hasMetaInfo(ty: TypeAssertion) {
 
 function serializeInner(ty: TypeAssertion, nestLevel: number): TypeAssertion {
     if (0 < nestLevel && ty.typeName && !hasMetaInfo(ty)) {
-        return ({
-            ...{
-                kind: 'symlink',
-                symlinkTargetName: ty.typeName,
-                typeName: ty.typeName,
-            },
-            ...(ty.name ? {name: ty.name} : {}),
-            ...(ty.docComment ? {docComment: ty.docComment} : {}),
-        });
+        switch (ty.kind) {
+        case 'optional':
+            // nothing to do.
+            break;
+        default:
+            return ({
+                ...{
+                    kind: 'symlink',
+                    symlinkTargetName: ty.typeName as string, // NOTE: type inference failed if the switch statement is exists.
+                    typeName: ty.typeName,
+                },
+                ...(ty.name ? {name: ty.name} : {}),
+                ...(ty.docComment ? {docComment: ty.docComment} : {}),
+            });
+        }
     }
 
     const ret: TypeAssertion = {...ty};
@@ -198,7 +204,7 @@ function deserializeInner(ty: TypeAssertion) {
         ret.optional = deserializeInner(ret.optional);
         break;
     case 'object':
-        ret.members = ret.members.map(x => [x[0], deserializeInner(x[1]), x.slice(2)]) as any;
+        ret.members = ret.members.map(x => [x[0], deserializeInner(x[1]), ...x.slice(2)]) as any;
         // NOTE: keep 'baseTypes' as 'symlink'.
         break;
     default:
@@ -227,7 +233,7 @@ export function deserializeFromObject(obj: any) {
         });
     }
 
-    return resolveSchema(schema);
+    return resolveSchema(schema, {isDeserialization: true});
 }
 
 

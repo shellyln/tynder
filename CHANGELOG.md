@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.2
+
+* `[FIX]` Fix serializer bugs.
+  * Object member meta info format is wrong.
+  * Optional info is lost in named type case.
+  * Extended interface has unexpected duplicated member properties.
+* Add spec codes.
+
 ## v0.2.1
 
 * A grammar for referencing other interface members has been added.
