@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.3
+
+* `[FIX]` Fix serializer & deserializer bugs.
+  * RegExp pattern additonal props are not serialize/deserialize correctly.
+
+
 ## v0.2.2
 
 * `[FIX]` Fix serializer & deserializer bugs.
