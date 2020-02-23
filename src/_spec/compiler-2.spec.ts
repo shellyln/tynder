@@ -615,7 +615,7 @@ describe("compiler-2", function() {
                     ],
                 };
                 // const ty = getType(schema, 'Foo');
-                for (const ty of [/*getType(deserialize(serialize(schema)), 'Foo'),*/ getType(schema, 'Foo')]) {
+                for (const ty of [getType(deserialize(serialize(schema)), 'Foo'), getType(schema, 'Foo')]) {
                     expect(ty).toEqual(rhs);
                     {
                         const v = {
@@ -725,12 +725,19 @@ describe("compiler-2", function() {
                 ],
             };
             tyEntry.oneOf[1] = rhs;
-            for (const ty of [/*getType(deserialize(serialize(schema)), 'Entry'),*/ getType(schema, 'Entry')]) {
-                expect(ty).toEqual(tyEntry);
+            let cnt = 0;
+            for (const ty of [getType(deserialize(serialize(schema)), 'Entry'), getType(schema, 'Entry')]) {
+                if (cnt !== 0) {
+                    expect(ty).toEqual(tyEntry);
+                }
+                cnt++;
             }
             // const ty = getType(schema, 'Folder');
-            for (const ty of [/*getType(deserialize(serialize(schema)), 'Folder'),*/ getType(schema, 'Folder')]) {
-                expect(ty).toEqual(rhs);
+            cnt = 0;
+            for (const ty of [getType(deserialize(serialize(schema)), 'Folder'), getType(schema, 'Folder')]) {
+                if (cnt !== 0) {
+                    expect(ty).toEqual(rhs);
+                }
                 {
                     const v = {
                         type: 'folder',
@@ -751,18 +758,27 @@ describe("compiler-2", function() {
                         validate<any>(v, ty);
                         expect(0).toEqual(1);
                     } catch (e) {
-                        expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                        if (cnt === 0) {
+                            expect(e.message).toEqual('Unresolved symbol \'Folder\' is appeared.');
+                        } else {
+                            expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                        }
                     }
                     const ctx1: Partial<ValidationContext> = {};
                     expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
                     expect(ctx1.errors).toEqual([{
                         code: 'InvalidDefinition',
-                        message: '"entries" of "Folder" type definition is invalid.',
-                        dataPath: 'Folder:entries.(0:repeated).Entry',
+                        message: cnt === 0 ?
+                            '"Folder" of "Entry" type definition is invalid.' :
+                            '"entries" of "Folder" type definition is invalid.',
+                        dataPath: cnt === 0 ?
+                            'Folder:entries.(1:repeated).Entry:Folder' :
+                            'Folder:entries.(0:repeated).Entry',
                         constraints: {}
                     }]);
                     expect(validate<any>(v, ty, {schema})).toEqual({value: v});
                 }
+                cnt++;
             }
         }
     });
@@ -860,40 +876,60 @@ describe("compiler-2", function() {
                 ],
             };
             tyEntry.oneOf[1] = rhs;
-            const ty = getType(schema, 'Folder');
-            expect(ty).toEqual(rhs);
-            expect(getType(schema, 'Entry')).toEqual(tyEntry);
-            {
-                const v = {
-                    type: 'folder',
-                    name: '/',
-                    entries: [{
-                        type: 'file',
-                        name: 'a',
-                    }, {
+            let cnt = 0;
+            for (const ty of [getType(deserialize(serialize(schema)), 'Entry'), getType(schema, 'Entry')]) {
+                if (cnt !== 0) {
+                    expect(ty).toEqual(tyEntry);
+                }
+                cnt++;
+            }
+            // const ty = getType(schema, 'Folder');
+            cnt = 0;
+            for (const ty of [getType(deserialize(serialize(schema)), 'Folder'), getType(schema, 'Folder')]) {
+                if (cnt !== 0) {
+                    expect(ty).toEqual(rhs);
+                }
+                {
+                    const v = {
                         type: 'folder',
-                        name: 'b',
+                        name: '/',
                         entries: [{
                             type: 'file',
-                            name: 'c',
+                            name: 'a',
+                        }, {
+                            type: 'folder',
+                            name: 'b',
+                            entries: [{
+                                type: 'file',
+                                name: 'c',
+                            }],
                         }],
-                    }],
-                };
-                try {
-                    validate<any>(v, ty);
-                    expect(0).toEqual(1);
-                } catch (e) {
-                    expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                    };
+                    try {
+                        validate<any>(v, ty);
+                        expect(0).toEqual(1);
+                    } catch (e) {
+                        if (cnt === 0) {
+                            expect(e.message).toEqual('Unresolved symbol \'Folder\' is appeared.');
+                        } else {
+                            expect(e.message).toEqual('Unresolved symbol \'Entry\' is appeared.');
+                        }
+                    }
+                    const ctx1: Partial<ValidationContext> = {};
+                    expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
+                    expect(ctx1.errors).toEqual([{
+                        code: 'InvalidDefinition',
+                        message:  cnt === 0 ?
+                            '"Folder" of "Entry" type definition is invalid.' :
+                            '"entries" of "Folder" type definition is invalid.',
+                        dataPath:  cnt === 0 ?
+                            'Folder:entries.(1:sequence).Entry:Folder' :
+                            'Folder:entries.(0:sequence).Entry',
+                        constraints: {}
+                    }]);
+                    expect(validate<any>(v, ty, {schema})).toEqual({value: v});
                 }
-                const ctx1: Partial<ValidationContext> = {};
-                expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
-                expect(ctx1.errors).toEqual([{
-                    code: 'InvalidDefinition',
-                    message: '"entries" of "Folder" type definition is invalid.',
-                    dataPath: 'Folder:entries.(0:sequence).Entry',
-                    constraints: {}
-                }]);
-                expect(validate<any>(v, ty, {schema})).toEqual({value: v});
+                cnt++;
             }
         }
     });

@@ -234,7 +234,7 @@ export function deserializeFromObject(obj: any) {
         });
     }
 
-    return resolveSchema(schema);
+    return resolveSchema(schema, {isDeserialization: true});
 }
 
 

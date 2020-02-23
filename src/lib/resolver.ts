@@ -6,8 +6,10 @@
 import { TypeAssertion,
          TypeAssertionMap,
          TypeAssertionSetValue,
+         ObjectAssertion,
          AssertionSymlink,
          SymbolResolverOperators,
+         ResolveSymbolOptions,
          SymbolResolverContext } from '../types';
 import * as operators            from '../operators';
 import { NumberPattern }         from '../lib/util';
@@ -178,7 +180,7 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             }
 
             const baseSymlinks = ty.baseTypes?.filter(x => x.kind === 'symlink') as AssertionSymlink[];
-            if (baseSymlinks && baseSymlinks.length > 0) {
+            if (baseSymlinks && baseSymlinks.length > 0 && !ctx.isDeserialization) {
                 const exts = baseSymlinks
                     .map(x => resolveSymbols(schema, x, ctx2))
                     .filter(x => x.kind === 'object');
@@ -218,6 +220,13 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
                                     {...ctx2, symlinkStack: [...ctx2.symlinkStack, ty.typeName]} : ctx2),
                                 ...x.slice(2),
                             ] as any),
+                    } : {}),
+                    ...(ty.baseTypes && 0 < ty.baseTypes.length ? {
+                        baseTypes: ctx.isDeserialization ?
+                            ty.baseTypes
+                                .map(x => x.kind === 'symlink' ? resolveSymbols(schema, x, ctx2) : x)
+                                .filter(x => x.kind === 'object') as ObjectAssertion[] :
+                            ty.baseTypes,
                     } : {}),
                 }, ty.typeName);
             }
@@ -268,9 +277,9 @@ const resolverOps: SymbolResolverOperators = {
 };
 
 
-export function resolveSchema(schema: TypeAssertionMap): TypeAssertionMap {
+export function resolveSchema(schema: TypeAssertionMap, opts?: ResolveSymbolOptions): TypeAssertionMap {
     for (const ent of schema.entries()) {
-        const ty = resolveSymbols(schema, ent[1].ty, {nestLevel: 0, symlinkStack: [ent[0]], operators: resolverOps});
+        const ty = resolveSymbols(schema, ent[1].ty, {...opts, nestLevel: 0, symlinkStack: [ent[0]], operators: resolverOps});
         ent[1].ty = ty;
     }
 
