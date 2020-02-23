@@ -812,37 +812,39 @@ describe("compiler-3", function() {
                     kind: 'object',
                     members: [],
                 };
-                const ty = getType(schema, 'A');
-                expect(ty).toEqual(rhs);
-                {
-                    const ctx: Partial<ValidationContext> = {
-                        noAdditionalProps: true,
-                    };
-                    expect(validate<any>([], ty, ctx)).toEqual({value: []});
-                }
-                {
-                    const ctx: Partial<ValidationContext> = {
-                        noAdditionalProps: true,
-                    };
-                    expect(validate<any>([''], ty, ctx)).toEqual(null);
-                    expect(ctx.errors).toEqual([{
-                        code: 'AdditionalPropUnmatched',
-                        message: '"[number]" of "A" are not matched to additional property patterns.',
-                        dataPath: 'A',
-                        constraints: {},
-                    }]);
-                }
-                {
-                    const ctx: Partial<ValidationContext> = {
-                        noAdditionalProps: true,
-                    };
-                    expect(validate<any>([0], ty, ctx)).toEqual(null);
-                    expect(ctx.errors).toEqual([{
-                        code: 'AdditionalPropUnmatched',
-                        message: '"[number]" of "A" are not matched to additional property patterns.',
-                        dataPath: 'A',
-                        constraints: {},
-                    }]);
+                // const ty = getType(schema, 'A');
+                for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                    expect(ty).toEqual(rhs);
+                    {
+                        const ctx: Partial<ValidationContext> = {
+                            noAdditionalProps: true,
+                        };
+                        expect(validate<any>([], ty, ctx)).toEqual({value: []});
+                    }
+                    {
+                        const ctx: Partial<ValidationContext> = {
+                            noAdditionalProps: true,
+                        };
+                        expect(validate<any>([''], ty, ctx)).toEqual(null);
+                        expect(ctx.errors).toEqual([{
+                            code: 'AdditionalPropUnmatched',
+                            message: '"[number]" of "A" are not matched to additional property patterns.',
+                            dataPath: 'A',
+                            constraints: {},
+                        }]);
+                    }
+                    {
+                        const ctx: Partial<ValidationContext> = {
+                            noAdditionalProps: true,
+                        };
+                        expect(validate<any>([0], ty, ctx)).toEqual(null);
+                        expect(ctx.errors).toEqual([{
+                            code: 'AdditionalPropUnmatched',
+                            message: '"[number]" of "A" are not matched to additional property patterns.',
+                            dataPath: 'A',
+                            constraints: {},
+                        }]);
+                    }
                 }
             }
         }
@@ -900,24 +902,26 @@ describe("compiler-3", function() {
                         ],
                     }],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
-                expect(validate<any>({'A': 0}, ty)).toEqual(null);
-                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
-                expect(validate<any>({'B': 0}, ty)).toEqual(null);
-                expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
-                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({'D': ''}, ty)).toEqual(null);
-                expect(validate<any>({'D': 0}, ty)).toEqual(null);
-                expect(validate<any>({'E': ''}, ty)).toEqual(null);
-                expect(validate<any>({'E': 0}, ty)).toEqual(null);
-                expect(validate<any>({0: ''}, ty)).toEqual(null);
-                expect(validate<any>({0: 0}, ty)).toEqual(null);
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual(null);
-                expect(validate<any>([0], ty)).toEqual(null);
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                    expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                    expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
+                    expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                    expect(validate<any>({'D': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'D': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'E': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'E': 0}, ty)).toEqual(null);
+                    expect(validate<any>({0: ''}, ty)).toEqual(null);
+                    expect(validate<any>({0: 0}, ty)).toEqual(null);
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual(null);
+                    expect(validate<any>([0], ty)).toEqual(null);
+                }
             }
         }
     });
@@ -974,24 +978,26 @@ describe("compiler-3", function() {
                         ],
                     }],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
-                expect(validate<any>({'A': 0}, ty)).toEqual(null);
-                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
-                expect(validate<any>({'B': 0}, ty)).toEqual(null);
-                expect(validate<any>({'C': ''}, ty)).toEqual(null);
-                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({'D': ''}, ty)).toEqual(null);
-                expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
-                expect(validate<any>({'E': ''}, ty)).toEqual(null);
-                expect(validate<any>({'E': 0}, ty)).toEqual(null);
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
-                expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                expect(validate<any>([0], ty)).toEqual({value: [0]});
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                    expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                    expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'C': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                    expect(validate<any>({'D': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
+                    expect(validate<any>({'E': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'E': 0}, ty)).toEqual(null);
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
+                    expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    expect(validate<any>([0], ty)).toEqual({value: [0]});
+                }
             }
         }
     });
@@ -1048,24 +1054,26 @@ describe("compiler-3", function() {
                         ],
                     }],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
-                expect(validate<any>({'A': 0}, ty)).toEqual(null);
-                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
-                expect(validate<any>({'B': 0}, ty)).toEqual(null);
-                expect(validate<any>({'C': ''}, ty)).toEqual(null);
-                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({'D': ''}, ty)).toEqual(null);
-                expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
-                expect(validate<any>({'E': ''}, ty)).toEqual({value: {'E': ''}});
-                expect(validate<any>({'E': 0}, ty)).toEqual({value: {'E': 0}});
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
-                expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                expect(validate<any>([0], ty)).toEqual({value: [0]});
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                    expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                    expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'C': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                    expect(validate<any>({'D': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'D': 0}, ty)).toEqual({value: {'D': 0}});
+                    expect(validate<any>({'E': ''}, ty)).toEqual({value: {'E': ''}});
+                    expect(validate<any>({'E': 0}, ty)).toEqual({value: {'E': 0}});
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
+                    expect(validate<any>({0: 0}, ty)).toEqual({value: {'0': 0}});
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    expect(validate<any>([0], ty)).toEqual({value: [0]});
+                }
             }
         }
     });
@@ -1094,20 +1102,22 @@ describe("compiler-3", function() {
                         [['number'], {kind: 'primitive', primitiveName: 'string'}],
                     ],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual(null);
-                expect(validate<any>({'A': 0}, ty)).toEqual({value: {'A': 0}});
-                expect(validate<any>({'B': ''}, ty)).toEqual(null);
-                expect(validate<any>({'B': 0}, ty)).toEqual({value: {'B': 0}});
-                expect(validate<any>({'C': ''}, ty)).toEqual(null);
-                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
-                // expect(validate<any>({0: 0}, ty)).toEqual(null); // TODO:
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                // expect(validate<any>([0], ty)).toEqual(null);    // TODO:
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'A': 0}, ty)).toEqual({value: {'A': 0}});
+                    expect(validate<any>({'B': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'B': 0}, ty)).toEqual({value: {'B': 0}});
+                    expect(validate<any>({'C': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
+                    // expect(validate<any>({0: 0}, ty)).toEqual(null); // TODO:
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    // expect(validate<any>([0], ty)).toEqual(null);    // TODO:
+                }
             }
         }
     });
@@ -1136,20 +1146,22 @@ describe("compiler-3", function() {
                         [['string'], {kind: 'primitive', primitiveName: 'number'}],
                     ],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual(null);
-                expect(validate<any>({'A': 0}, ty)).toEqual({value: {'A': 0}});
-                expect(validate<any>({'B': ''}, ty)).toEqual(null);
-                expect(validate<any>({'B': 0}, ty)).toEqual({value: {'B': 0}});
-                expect(validate<any>({'C': ''}, ty)).toEqual(null);
-                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
-                // expect(validate<any>({0: 0}, ty)).toEqual(null); // TODO:
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                // expect(validate<any>([0], ty)).toEqual(null);    // TODO:
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'A': 0}, ty)).toEqual({value: {'A': 0}});
+                    expect(validate<any>({'B': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'B': 0}, ty)).toEqual({value: {'B': 0}});
+                    expect(validate<any>({'C': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {'0': ''}});
+                    // expect(validate<any>({0: 0}, ty)).toEqual(null); // TODO:
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    // expect(validate<any>([0], ty)).toEqual(null);    // TODO:
+                }
             }
         }
     });
@@ -1176,20 +1188,22 @@ describe("compiler-3", function() {
                         [['number'], {kind: 'primitive', primitiveName: 'string'}],
                     ],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual(null);
-                expect(validate<any>({'A': 0}, ty)).toEqual(null);
-                expect(validate<any>({'B': ''}, ty)).toEqual(null);
-                expect(validate<any>({'B': 0}, ty)).toEqual(null);
-                expect(validate<any>({'C': ''}, ty)).toEqual(null);
-                expect(validate<any>({'C': 0}, ty)).toEqual(null);
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {0: ''}});
-                expect(validate<any>({0: 0}, ty)).toEqual(null);
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                expect(validate<any>([0], ty)).toEqual(null);
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'B': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'C': ''}, ty)).toEqual(null);
+                    expect(validate<any>({'C': 0}, ty)).toEqual(null);
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {0: ''}});
+                    expect(validate<any>({0: 0}, ty)).toEqual(null);
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    expect(validate<any>([0], ty)).toEqual(null);
+                }
             }
         }
     });
@@ -1216,20 +1230,22 @@ describe("compiler-3", function() {
                         [['number', 'string'], {kind: 'primitive', primitiveName: 'string'}],
                     ],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
-                expect(validate<any>({'A': 0}, ty)).toEqual(null);
-                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
-                expect(validate<any>({'B': 0}, ty)).toEqual(null);
-                expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
-                expect(validate<any>({'C': 0}, ty)).toEqual(null);
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {0: ''}});
-                expect(validate<any>({0: 0}, ty)).toEqual(null);
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                expect(validate<any>([0], ty)).toEqual(null);
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                    expect(validate<any>({'A': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                    expect(validate<any>({'B': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
+                    expect(validate<any>({'C': 0}, ty)).toEqual(null);
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {0: ''}});
+                    expect(validate<any>({0: 0}, ty)).toEqual(null);
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    expect(validate<any>([0], ty)).toEqual(null);
+                }
             }
         }
     });
@@ -1262,22 +1278,24 @@ describe("compiler-3", function() {
                         }],
                     ],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty)).toEqual({value: {}});
-                expect(validate<any>({'a': ''}, ty)).toEqual({value: {'a': ''}});
-                expect(validate<any>({'a': 0}, ty)).toEqual(null);
-                expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
-                expect(validate<any>({'A': 0}, ty)).toEqual({value: {'A': 0}});
-                expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
-                expect(validate<any>({'B': 0}, ty)).toEqual({value: {'B': 0}});
-                expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
-                expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
-                expect(validate<any>({0: ''}, ty)).toEqual({value: {0: ''}});
-                expect(validate<any>({0: 0}, ty)).toEqual({value: {0: 0}});
-                expect(validate<any>([], ty)).toEqual({value: []});
-                expect(validate<any>([''], ty)).toEqual({value: ['']});
-                expect(validate<any>([0], ty)).toEqual({value: [0]});
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty)).toEqual({value: {}});
+                    expect(validate<any>({'a': ''}, ty)).toEqual({value: {'a': ''}});
+                    expect(validate<any>({'a': 0}, ty)).toEqual(null);
+                    expect(validate<any>({'A': ''}, ty)).toEqual({value: {'A': ''}});
+                    expect(validate<any>({'A': 0}, ty)).toEqual({value: {'A': 0}});
+                    expect(validate<any>({'B': ''}, ty)).toEqual({value: {'B': ''}});
+                    expect(validate<any>({'B': 0}, ty)).toEqual({value: {'B': 0}});
+                    expect(validate<any>({'C': ''}, ty)).toEqual({value: {'C': ''}});
+                    expect(validate<any>({'C': 0}, ty)).toEqual({value: {'C': 0}});
+                    expect(validate<any>({0: ''}, ty)).toEqual({value: {0: ''}});
+                    expect(validate<any>({0: 0}, ty)).toEqual({value: {0: 0}});
+                    expect(validate<any>([], ty)).toEqual({value: []});
+                    expect(validate<any>([''], ty)).toEqual({value: ['']});
+                    expect(validate<any>([0], ty)).toEqual({value: [0]});
+                }
             }
         }
     });
@@ -1310,22 +1328,24 @@ describe("compiler-3", function() {
                         }],
                     ],
                 };
-                const ty = getType(schema, 'C');
-                expect(ty).toEqual(rhs);
-                expect(validate<any>({}, ty, {noAdditionalProps: true})).toEqual({value: {}});
-                expect(validate<any>({'a': ''}, ty, {noAdditionalProps: true})).toEqual({value: {'a': ''}});
-                expect(validate<any>({'a': 0}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({'A': ''}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({'A': 0}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({'B': ''}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({'B': 0}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({'C': ''}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({'C': 0}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({0: ''}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>({0: 0}, ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>([], ty, {noAdditionalProps: true})).toEqual({value: []});
-                expect(validate<any>([''], ty, {noAdditionalProps: true})).toEqual(null);
-                expect(validate<any>([0], ty, {noAdditionalProps: true})).toEqual(null);
+                // const ty = getType(schema, 'C');
+                for (const ty of [getType(deserialize(serialize(schema)), 'C'), getType(schema, 'C')]) {
+                    expect(ty).toEqual(rhs);
+                    expect(validate<any>({}, ty, {noAdditionalProps: true})).toEqual({value: {}});
+                    expect(validate<any>({'a': ''}, ty, {noAdditionalProps: true})).toEqual({value: {'a': ''}});
+                    expect(validate<any>({'a': 0}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({'A': ''}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({'A': 0}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({'B': ''}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({'B': 0}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({'C': ''}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({'C': 0}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({0: ''}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>({0: 0}, ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>([], ty, {noAdditionalProps: true})).toEqual({value: []});
+                    expect(validate<any>([''], ty, {noAdditionalProps: true})).toEqual(null);
+                    expect(validate<any>([0], ty, {noAdditionalProps: true})).toEqual(null);
+                }
             }
         }
     });

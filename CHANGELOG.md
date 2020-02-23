@@ -4,6 +4,7 @@
 
 * `[FIX]` Fix serializer & deserializer bugs.
   * RegExp pattern additonal props are not serialize/deserialize correctly.
+* Add spec codes.
 
 
 ## v0.2.2
@@ -13,6 +14,7 @@
   * Optional info is lost in named type case. (serializer)
   * Extended interface has unexpected duplicated member properties. (deserializer)
 * Add spec codes.
+
 
 ## v0.2.1
 
