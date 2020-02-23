@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2
+
+* `[FIX]` Fix serializer.
+  * Object member meta info format is wrong.
+  * Optional, ~~repeated, sequence, and spread~~ info is lost in named type case.
+
 ## v0.2.1
 
 * A grammar for referencing other interface members has been added.

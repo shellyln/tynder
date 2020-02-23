@@ -572,8 +572,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             }
@@ -675,8 +680,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -792,8 +802,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -909,8 +924,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -1200,8 +1220,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -1497,8 +1522,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -1664,8 +1694,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -1832,8 +1867,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -2006,8 +2046,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -2138,8 +2183,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -2264,8 +2314,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -2419,8 +2474,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -2758,8 +2818,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -2883,8 +2948,13 @@ const schema = {
           [
             "messages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "messages"
             },
@@ -3075,8 +3145,13 @@ const schema = {
           [
             "errorMessages",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "ErrorMessages",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "ErrorMessages",
+                "typeName": "ErrorMessages",
+                "name": "ErrorMessages"
+              },
               "typeName": "ErrorMessages",
               "name": "errorMessages"
             }
@@ -3219,8 +3294,13 @@ const schema = {
           [
             "schema",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionMap",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "TypeAssertionMap",
+                "typeName": "TypeAssertionMap",
+                "name": "TypeAssertionMap"
+              },
               "typeName": "TypeAssertionMap",
               "name": "schema"
             }
@@ -3309,8 +3389,13 @@ const schema = {
           [
             "schema",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "TypeAssertionMap",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "TypeAssertionMap",
+                "typeName": "TypeAssertionMap",
+                "name": "TypeAssertionMap"
+              },
               "typeName": "TypeAssertionMap",
               "name": "schema"
             }

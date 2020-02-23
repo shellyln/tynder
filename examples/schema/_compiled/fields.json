@@ -140,8 +140,13 @@
           [
             "numberTypeField",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "NumberType",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "NumberType",
+                "typeName": "NumberType",
+                "name": "NumberType"
+              },
               "typeName": "NumberType",
               "name": "numberTypeField"
             }
@@ -457,8 +462,13 @@
           [
             "numberTypeField",
             {
-              "kind": "symlink",
-              "symlinkTargetName": "NumberType",
+              "kind": "optional",
+              "optional": {
+                "kind": "symlink",
+                "symlinkTargetName": "NumberType",
+                "typeName": "NumberType",
+                "name": "NumberType"
+              },
               "typeName": "NumberType",
               "name": "numberTypeField"
             }
