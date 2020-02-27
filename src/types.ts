@@ -36,6 +36,15 @@ export interface TypeAssertionErrorMessage {
 }
 
 
+
+export interface Stereotype {
+    tryParse: (value: any) => {value: any} | null; // for data
+    evaluateFormula: (valueOrFormula: any) => any; // for PrimitiveValue and decorator comparison values
+    compare: (a: any, b: any) => number;
+    forceCast: boolean;
+}
+
+
 export interface ValidationContext {
     checkAll?: boolean;
     noAdditionalProps?: boolean;
@@ -58,6 +67,8 @@ export interface ValidationContext {
                                       //   Push or pop items instead of reassign.
     schema?: TypeAssertionMap;        //   To resolve 'symlink' assertion,
                                       //   the context need to have a schema instance.
+
+    stereotypes?: Map<string, Stereotype>;
 }
 
 

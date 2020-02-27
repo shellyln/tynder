@@ -1166,6 +1166,8 @@ export function compile(s: string) {
             operators.withMaxLength(maxLength)(ty),
         '@match': (pattern: RegExp) => (ty: PrimitiveTypeAssertion) =>
             operators.withMatch(pattern)(ty),
+        '@stereotype': (stereotype: string) => (ty: TypeAssertion) =>
+            operators.withStereotype(stereotype)(ty),
         '@msg': (messages: string | ErrorMessages) => (ty: TypeAssertion) =>
             operators.withMsg(messages)(ty),
         '@msgId': (messageId: string) => (ty: TypeAssertion) =>

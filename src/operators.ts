@@ -841,6 +841,16 @@ export function withMatch(pattern: RegExp) {
 }
 
 
+export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty: T) => T {
+    return (ty: T) => {
+        const ret = ({
+            ...ty,
+        });
+        return ret;
+    };
+}
+
+
 export function withMsg<T extends TypeAssertion>(messages: string | ErrorMessages): (ty: T) => T {
     return (ty: T) => {
         if (ty.kind === 'optional') {
