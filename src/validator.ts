@@ -26,41 +26,8 @@ import { NumberPattern,
 import { reportError,
          reportErrorWithPush } from './lib/reporter';
 import { resolveSymbols }      from './lib/resolver';
+import noopStereotype          from './stereotypes/noop';
 
-
-
-const noopStereotype: Stereotype = {
-    tryParse: (value: any) => {
-        return value;
-    },
-    evaluateFormula: (valueOrFormula: any) => {
-        return valueOrFormula;
-    },
-    compare: (a: any, b: any) => {
-        const tyA = typeof a;
-        const tyB = typeof b;
-        if (tyA !== tyB) {
-            return NaN;
-        }
-        switch (tyA) {
-        case 'number':
-            return a - b;
-        case 'bigint':
-            return Number(a - b);
-        default:
-            if (a === b) {
-                return 0;
-            } else if (a > b) {
-                return 1;
-            } else if (a < b) {
-                return -1;
-            } else {
-                return NaN;
-            }
-        }
-    },
-    forceCast: false,
-};
 
 
 function checkStereotypes(

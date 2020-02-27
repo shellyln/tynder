@@ -3,21 +3,44 @@
 // https://github.com/shellyln
 
 
-import { Stereotype } from '../types';
+import { Stereotype }         from '../types';
+import { DatePattern,
+         DateTimePattern,
+         DateTimeNoTzPattern} from '../lib/util';
 
 
 
-const stereotypeDate: Stereotype = {
+const dateStereotype: Stereotype = {
     tryParse: (value: any) => {
-        return null;
+        return value;
     },
     evaluateFormula: (valueOrFormula: any) => {
-        return null;
+        return valueOrFormula;
     },
     compare: (a: any, b: any) => {
-        return 1;
+        const tyA = typeof a;
+        const tyB = typeof b;
+        if (tyA !== tyB) {
+            return NaN;
+        }
+        switch (tyA) {
+        case 'number':
+            return a - b;
+        case 'bigint':
+            return Number(a - b);
+        default:
+            if (a === b) {
+                return 0;
+            } else if (a > b) {
+                return 1;
+            } else if (a < b) {
+                return -1;
+            } else {
+                return NaN;
+            }
+        }
     },
     forceCast: false,
 };
 
-export default stereotypeDate;
+export default dateStereotype;

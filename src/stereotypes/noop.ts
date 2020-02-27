@@ -4,13 +4,10 @@
 
 
 import { Stereotype }         from '../types';
-import { DatePattern,
-         DateTimePattern,
-         DateTimeNoTzPattern} from '../lib/util';
 
 
 
-const datetimeStereotype: Stereotype = {
+const noopStereotype: Stereotype = {
     tryParse: (value: any) => {
         return value;
     },
@@ -43,4 +40,4 @@ const datetimeStereotype: Stereotype = {
     forceCast: false,
 };
 
-export default datetimeStereotype;
+export default noopStereotype;
