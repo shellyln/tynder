@@ -611,8 +611,10 @@ interface B {
     * pattern.test(data)
 * `@stereotype(stereotype: string)`
     * Perform custom validation.
+        * > **WARNING**: In the JSON schema output, this is stripped.
 * `@forceCast`
     * Validate after forcibly casting to the assertion's type.
+        * > **WARNING**: In the JSON schema output, this is stripped.
 * `@msg(messages: string | ErrorMessages)`
     * Set custom error message.
 * `@msgId(messageId: string)`
@@ -775,6 +777,7 @@ type C = [string, ...<number, 10..20>,
                   ...<string, ..20>];                       // With quantity assertion
 ```
 
+> **WARNING**: In the JSON schema output, this translates into a simplified array assertion.
 
 ### Referencing other interface members
 ```ts
