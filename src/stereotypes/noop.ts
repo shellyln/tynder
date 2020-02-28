@@ -9,7 +9,7 @@ import { Stereotype }         from '../types';
 
 const noopStereotype: Stereotype = {
     tryParse: (value: any) => {
-        return value;
+        return ({ value });
     },
     evaluateFormula: (valueOrFormula: any) => {
         return valueOrFormula;
@@ -23,8 +23,6 @@ const noopStereotype: Stereotype = {
         switch (tyA) {
         case 'number':
             return a - b;
-        case 'bigint':
-            return Number(a - b);
         default:
             if (a === b) {
                 return 0;

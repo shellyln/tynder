@@ -12,7 +12,7 @@ import { DatePattern,
 
 const datetimeStereotype: Stereotype = {
     tryParse: (value: any) => {
-        return value;
+        return ({ value });
     },
     evaluateFormula: (valueOrFormula: any) => {
         return valueOrFormula;

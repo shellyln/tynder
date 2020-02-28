@@ -9,6 +9,7 @@ import { compile }           from '../compiler';
 import { generateTypeScriptCode } from '../codegen';
 import { serialize,
          deserialize }       from '../serializer';
+import dateStereotype from '../stereotypes/date';
 
 
 
@@ -853,5 +854,26 @@ describe("fix-1", function() {
             const ty = getType(schema, 'Z2');
             expect(ty).toEqual(rhs);
         }
+    });
+    it("stereotype-1", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=today first-date-of-mo', '=today last-date-of-mo')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+            stereotypes: new Map([
+                ['date', dateStereotype],
+            ]),
+        };
+        const d = (new Date()).toISOString().slice(0, 10);
+        const z = validate<any>({
+            a: d,
+        }, ty, ctx);
+        expect(z).toEqual({value: {a: d}});
     });
 });

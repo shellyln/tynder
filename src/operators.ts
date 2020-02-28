@@ -842,9 +842,13 @@ export function withMatch(pattern: RegExp) {
 
 
 export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty: T) => T {
+    if (typeof stereotype !== 'string') {
+        throw new Error(`Decorator '@stereotype' parameter 'pattern' stereotype be string.`);
+    }
     return (ty: T) => {
         const ret = ({
             ...ty,
+            stereotype,
         });
         return ret;
     };
