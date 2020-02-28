@@ -661,9 +661,9 @@ const z = validate<any>({
 ###### Stereotypes
 
 * `date`
-  * data (UTC timezone)
+  * date (UTC timezone)
 * `lcdate`
-  * data (local timezone)
+  * date (local timezone)
 * `datetime`
   * datetime (UTC timezone)
 * `lcdatetime`
