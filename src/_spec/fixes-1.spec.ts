@@ -861,6 +861,14 @@ describe("fix-1", function() {
                 @stereotype('date')
                 @range('=today first-date-of-mo', '=today last-date-of-mo')
                 a: string;
+
+                @stereotype('date')
+                @range('2020-01-01', '2030-12-31')
+                b: string;
+
+                @stereotype('date')
+                @range('2020-01-01', '=today +2yr @12mo @31day')
+                c: string;
             }
         `);
         const ty = getType(schema, 'Foo');
@@ -873,8 +881,10 @@ describe("fix-1", function() {
         const d = (new Date()).toISOString().slice(0, 10);
         const z = validate<any>({
             a: d,
+            b: '2020-01-01',
+            c: d,
         }, ty, ctx);
-        expect(z).toEqual({value: {a: d}});
+        expect(z).toEqual({value: {a: d, b: '2020-01-01', c: d}});
     });
     it("forceCast-1", function() {
         const schema = compile(`

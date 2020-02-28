@@ -127,7 +127,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                     const m = FormulaPattern.exec(f);
                     if (m) {
                         let n = Number.parseInt(m[2], 10);
-                        switch (m[2]) {
+                        switch (m[3]) {
                         case 'yr':
                             switch (m[1]) {
                             case '@':
@@ -214,13 +214,13 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                                 d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
                             break;
                         default:
-                            if (!(DatePattern.test(m[1]) || DateTimePattern.test(m[1]) || DateTimeNoTzPattern.test(m[1]))) {
-                                throw new Error(errMsg);
-                            }
-                            d = new dateCtor(m[1]);
+                            throw new Error(errMsg);
                         }
                     } else {
-                        throw new Error(errMsg);
+                        if (!(DatePattern.test(f) || DateTimePattern.test(f) || DateTimeNoTzPattern.test(f))) {
+                            throw new Error(errMsg);
+                        }
+                        d = new dateCtor(f);
                     }
                 }
             }

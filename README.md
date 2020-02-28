@@ -609,10 +609,83 @@ interface B {
 * `@match(pattern: RegExp)`
     * Check value text pattern.
     * pattern.test(data)
+* `@stereotype(stereotype: string)`
+    * Perform custom validation.
+* `@forceCast`
+    * Validate after forcibly casting to the assertion's type.
 * `@msg(messages: string | ErrorMessages)`
     * Set custom error message.
 * `@msgId(messageId: string)`
     * Set custom error message id.
+
+
+##### Date / Datetime stereotypes
+
+```ts
+...
+import { stereotypes as dateStereotypes } from 'tynder/stereotypes/date';
+
+const schema = compile(`
+    interface Foo {
+        @stereotype('date')
+        @range('=today first-date-of-mo', '=today last-date-of-mo')
+        a: string;
+
+        @stereotype('date')
+        @range('2020-01-01', '2030-12-31')
+        b: string;
+
+        @stereotype('date')
+        @range('2020-01-01', '=today +2yr @12mo @31day')
+        c: string;
+    }
+`);
+
+const ty = getType(schema, 'Foo');
+const ctx: Partial<ValidationContext> = {
+    checkAll: true,
+    stereotypes: new Map([
+        ...dateStereotypes,
+    ]),
+};
+
+const d = (new Date()).toISOString().slice(0, 10);
+
+const z = validate<any>({
+    a: d,
+    b: '2020-01-01',
+    c: d,
+}, ty, ctx);
+```
+
+###### Stereotypes
+
+* `date`
+  * data (UTC timezone)
+* `lcdate`
+  * data (local timezone)
+* `datetime`
+  * datetime (UTC timezone)
+* `lcdatetime`
+  * datetime (local timezone)
+
+
+###### Formula syntax
+
+```
+Expression: ISODateAndDatetime | ("=" DateTimeFormula)
+
+DateTimeFormula:
+    (ISODateAndDatetime |
+     ("current" | "now") |
+     "today"
+     ("@" | "+" | "-") digit ("yr" | "mo" | "days" | "day" | "hr" | "min" | "sec") |
+     "first-date-of-yr" |
+     "last-date-of-yr" |
+     "first-date-of-mo" |
+     "last-date-of-mo" |
+    )
+```
 
 
 ### Enum
