@@ -3,10 +3,8 @@
 // https://github.com/shellyln
 
 
-import { dateStereotype,
-         dateLcStereotype,
-         datetimeStereotype,
-         datetimeLcStereotype } from './stereotypes/date';
+import { Stereotype } from './types';
+import { stereotypes as dateStereotypes } from './stereotypes/date';
 
 export * from './types';
 export * from './compiler';
@@ -16,9 +14,6 @@ export * from './serializer';
 export * from './validator';
 export * from './picker';
 
-export const stereotypes = [
-    ['date', dateStereotype],
-    ['lcdate', dateLcStereotype],
-    ['datetime', datetimeStereotype],
-    ['lcdatetime', datetimeLcStereotype],
+export const stereotypes: Array<[string, Stereotype]> = [
+    ...dateStereotypes,
 ];

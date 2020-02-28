@@ -35,7 +35,7 @@ export const noopStereotype: Stereotype = {
             }
         }
     },
-    forceCast: false,
+    doCast: false,
 };
 
 export function castStereotypeGen(castFn: (x: any) => any): Stereotype {
@@ -47,6 +47,6 @@ export function castStereotypeGen(castFn: (x: any) => any): Stereotype {
         evaluateFormula: (valueOrFormula: any) => {
             return castFn(valueOrFormula);
         },
-        forceCast: true,
+        doCast: true,
     });
 }

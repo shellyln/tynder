@@ -53,6 +53,31 @@ function checkStereotypes(
 }
 
 
+function forceCast(
+    targetType:
+        'number' | 'integer' | 'bigint' | 'string' | 'boolean' | 'undefined' | 'null' |
+        'symbol' | 'object' | 'function',
+    value: any) {
+
+    switch (targetType) {
+    case 'number': case 'integer':
+        return Number.parseInt(String(value), 10);
+    case 'bigint':
+        return BigInt(String(value));
+    case 'string':
+        return String(value);
+    case 'boolean':
+        return Boolean(value);
+    case 'undefined':
+        return void 0;
+    case 'null':
+        return null;
+    default:
+        return value;
+    }
+}
+
+
 function validateNeverTypeAssertion<T>(
     data: any, ty: NeverTypeAssertion, ctx: ValidationContext): null {
 
@@ -70,15 +95,15 @@ function validateAnyTypeAssertion<T>(
     } else if (chkSt === false) {
         chkSt = {
             value: data,
-            stereotype: ty.forceCast ? noopStereotype : noopStereotype,
+            stereotype: noopStereotype,
         };
     }
     const styp = chkSt.stereotype;
 
     // always matched
     return ({value: ctx.mapper
-        ? ctx.mapper(styp.forceCast ? chkSt.value : data, ty)
-        :            styp.forceCast ? chkSt.value : data});
+        ? ctx.mapper(styp.doCast ? chkSt.value : data, ty)
+        :            styp.doCast ? chkSt.value : data});
 }
 
 
@@ -91,22 +116,22 @@ function validateUnknownTypeAssertion<T>(
     } else if (chkSt === false) {
         chkSt = {
             value: data,
-            stereotype: ty.forceCast ? noopStereotype : noopStereotype,
+            stereotype: noopStereotype,
         };
     }
     const styp = chkSt.stereotype;
 
     // always matched
     return ({value: ctx.mapper
-        ? ctx.mapper(styp.forceCast ? chkSt.value : data, ty)
-        :            styp.forceCast ? chkSt.value : data});
+        ? ctx.mapper(styp.doCast ? chkSt.value : data, ty)
+        :            styp.doCast ? chkSt.value : data});
 }
 
 
 function validatePrimitiveTypeAssertion<T>(
     data: any, ty: PrimitiveTypeAssertion, ctx: ValidationContext): {value: T} | null {
 
-    const chkTarget = ty.forceCast ? data : data;
+    const chkTarget = ty.forceCast ? forceCast(ty.primitiveName, data) : data;
 
     if (ty.primitiveName === 'null') {
         if (chkTarget !== null) {
@@ -213,8 +238,8 @@ function validatePrimitiveTypeAssertion<T>(
     }
     const ret = !err
         ? {value: ctx.mapper
-            ? ctx.mapper(styp.forceCast ? chkSt.value : chkTarget, ty)
-            :            styp.forceCast ? chkSt.value : chkTarget}
+            ? ctx.mapper(styp.doCast ? chkSt.value : chkTarget, ty)
+            :            styp.doCast ? chkSt.value : chkTarget}
         : null;
     return ret;
 }
@@ -223,7 +248,7 @@ function validatePrimitiveTypeAssertion<T>(
 function validatePrimitiveValueTypeAssertion<T>(
     data: any, ty: PrimitiveValueTypeAssertion, ctx: ValidationContext): {value: T} | null {
 
-    const chkTarget = ty.forceCast ? data : data;
+    const chkTarget = ty.forceCast ? forceCast(typeof ty.value, data) : data;
 
     let chkSt = checkStereotypes(chkTarget, ty, ctx);
     if (chkSt === null) {
@@ -238,8 +263,8 @@ function validatePrimitiveValueTypeAssertion<T>(
 
     const ret = styp.compare(chkSt.value, styp.evaluateFormula(ty.value)) === 0
         ? {value: ctx.mapper
-            ? ctx.mapper(styp.forceCast ? chkSt.value : chkTarget, ty)
-            :            styp.forceCast ? chkSt.value : chkTarget}
+            ? ctx.mapper(styp.doCast ? chkSt.value : chkTarget, ty)
+            :            styp.doCast ? chkSt.value : chkTarget}
         : null;
     if (! ret) {
         reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});

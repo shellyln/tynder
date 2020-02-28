@@ -248,16 +248,18 @@ export const dateStereotype: Stereotype = {
         return (new Date(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
     },
     compare: (a: number, b: number) => a - b,
-    forceCast: false,
+    doCast: false,
 };
 
-export const dateLcStereotype: Stereotype = {
+
+export const lcDateStereotype: Stereotype = {
     ...dateStereotype,
     evaluateFormula: valueOrFormula => {
         const d = evaluateFormulaBase(Date, valueOrFormula);
         return (new Date(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
     },
 }
+
 
 export const datetimeStereotype: Stereotype = {
     tryParse: (value: unknown) => {
@@ -269,10 +271,19 @@ export const datetimeStereotype: Stereotype = {
     },
     evaluateFormula: valueOrFormula => evaluateFormulaBase(UtcDate, valueOrFormula).getTime(),
     compare: (a: number, b: number) => a - b,
-    forceCast: false,
+    doCast: false,
 };
 
-export const datetimeLcStereotype: Stereotype = {
+
+export const lcDatetimeStereotype: Stereotype = {
     ...datetimeStereotype,
     evaluateFormula: valueOrFormula => evaluateFormulaBase(Date, valueOrFormula).getTime(),
 }
+
+
+export const stereotypes: Array<[string, Stereotype]> = [
+    ['date', dateStereotype],
+    ['lcdate', lcDateStereotype],
+    ['datetime', datetimeStereotype],
+    ['lcdatetime', lcDatetimeStereotype],
+];
