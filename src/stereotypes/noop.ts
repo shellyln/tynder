@@ -7,7 +7,7 @@ import { Stereotype }         from '../types';
 
 
 
-const noopStereotype: Stereotype = {
+export const noopStereotype: Stereotype = {
     tryParse: (value: any) => {
         return ({ value });
     },
@@ -38,4 +38,15 @@ const noopStereotype: Stereotype = {
     forceCast: false,
 };
 
-export default noopStereotype;
+export function castStereotypeGen(castFn: (x: any) => any): Stereotype {
+    return ({
+        ...noopStereotype,
+        tryParse: (value: any) => {
+            return ({ value: castFn(value) });
+        },
+        evaluateFormula: (valueOrFormula: any) => {
+            return castFn(valueOrFormula);
+        },
+        forceCast: true,
+    });
+}

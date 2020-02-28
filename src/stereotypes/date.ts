@@ -235,7 +235,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
 }
 
 
-const dateStereotype: Stereotype = {
+export const dateStereotype: Stereotype = {
     tryParse: (value: unknown) => {
         return (
             typeof value === 'string' && DatePattern.test(value)
@@ -251,7 +251,15 @@ const dateStereotype: Stereotype = {
     forceCast: false,
 };
 
-const datetimeStereotype: Stereotype = {
+export const dateLcStereotype: Stereotype = {
+    ...dateStereotype,
+    evaluateFormula: valueOrFormula => {
+        const d = evaluateFormulaBase(Date, valueOrFormula);
+        return (new Date(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
+    },
+}
+
+export const datetimeStereotype: Stereotype = {
     tryParse: (value: unknown) => {
         return (
             typeof value === 'string' && (DateTimePattern.test(value) || DateTimeNoTzPattern.test(value))
@@ -264,4 +272,7 @@ const datetimeStereotype: Stereotype = {
     forceCast: false,
 };
 
-export default dateStereotype;
+export const datetimeLcStereotype: Stereotype = {
+    ...datetimeStereotype,
+    evaluateFormula: valueOrFormula => evaluateFormulaBase(Date, valueOrFormula).getTime(),
+}

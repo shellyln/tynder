@@ -9,7 +9,7 @@ import { compile }           from '../compiler';
 import { generateTypeScriptCode } from '../codegen';
 import { serialize,
          deserialize }       from '../serializer';
-import dateStereotype from '../stereotypes/date';
+import { dateStereotype }    from '../stereotypes/date';
 
 
 
