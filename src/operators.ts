@@ -846,9 +846,20 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
         throw new Error(`Decorator '@stereotype' parameter 'pattern' stereotype be string.`);
     }
     return (ty: T) => {
-        const ret = ({
+        const ret: T = ({
             ...ty,
             stereotype,
+        });
+        return ret;
+    };
+}
+
+
+export function withForceCast<T extends TypeAssertion>(): (ty: T) => T {
+    return (ty: T) => {
+        const ret: T = ({
+            ...ty,
+            forceCast: true,
         });
         return ret;
     };

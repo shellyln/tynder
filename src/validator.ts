@@ -26,8 +26,7 @@ import { NumberPattern,
 import { reportError,
          reportErrorWithPush } from './lib/reporter';
 import { resolveSymbols }      from './lib/resolver';
-import { noopStereotype,
-         castStereotypeGen }   from './stereotypes/noop';
+import { noopStereotype }      from './stereotypes/noop';
 
 
 

@@ -3,7 +3,7 @@
 // https://github.com/shellyln
 
 
-import { Stereotype }         from '../types';
+import { Stereotype } from '../types';
 
 
 
@@ -37,16 +37,3 @@ export const noopStereotype: Stereotype = {
     },
     doCast: false,
 };
-
-export function castStereotypeGen(castFn: (x: any) => any): Stereotype {
-    return ({
-        ...noopStereotype,
-        tryParse: (value: any) => {
-            return ({ value: castFn(value) });
-        },
-        evaluateFormula: (valueOrFormula: any) => {
-            return castFn(valueOrFormula);
-        },
-        doCast: true,
-    });
-}

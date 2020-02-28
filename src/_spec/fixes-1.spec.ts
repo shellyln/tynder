@@ -9,7 +9,7 @@ import { compile }           from '../compiler';
 import { generateTypeScriptCode } from '../codegen';
 import { serialize,
          deserialize }       from '../serializer';
-import { dateStereotype }    from '../stereotypes/date';
+import { stereotypes as dateStereotypes } from '../stereotypes/date';
 
 
 
@@ -867,7 +867,7 @@ describe("fix-1", function() {
         const ctx: Partial<ValidationContext> = {
             checkAll: true,
             stereotypes: new Map([
-                ['date', dateStereotype],
+                ...dateStereotypes,
             ]),
         };
         const d = (new Date()).toISOString().slice(0, 10);
@@ -875,5 +875,21 @@ describe("fix-1", function() {
             a: d,
         }, ty, ctx);
         expect(z).toEqual({value: {a: d}});
+    });
+    it("forceCast-1", function() {
+        const schema = compile(`
+            interface Foo {
+                @forceCast
+                a: number;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        const ctx: Partial<ValidationContext> = {
+            checkAll: true,
+        };
+        const z = validate<any>({
+            a: '33',
+        }, ty, ctx);
+        expect(z).toEqual({value: {a: 33}});
     });
 });
