@@ -26,14 +26,25 @@ class UtcDate extends Date {
 
         super();
         if (year === void 0) {
-            this.setTime(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate(),
-                this.getHours(), this.getMinutes(), this.getSeconds(), this.getMilliseconds()));
+            this.setTime(Date.UTC(super.getFullYear(), super.getMonth(), super.getDate(),
+                super.getHours(), super.getMinutes(), super.getSeconds(), super.getMilliseconds()));
+
+            // this.setUTCFullYear(super.getFullYear());
+            // this.setUTCMonth(super.getMonth());
+            // this.setUTCDate(super.getDate());
+            // this.setUTCHours(super.getHours());
+            // this.setUTCMinutes(super.getMinutes());
+            // this.setUTCSeconds(super.getSeconds());
+            // this.setUTCMilliseconds(super.getMilliseconds());
             return;
         }
         if (typeof year === 'string') {
             if (DateTimePattern.test(year)) {
                 this.setTime(Date.parse(year));
-            } else {
+            } else if (DatePattern.test(year)) {
+                const d = new Date(year);
+                this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            } else if (DateTimeNoTzPattern.test(year)) {
                 const d = new Date(year);
                 this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(),
                     d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
@@ -253,13 +264,13 @@ export const dateStereotype: Stereotype = {
     tryParse: (value: unknown) => {
         return (
             typeof value === 'string' && DatePattern.test(value)
-                ? { value: (new Date(value)).getTime() }
+                ? { value: (new UtcDate(value)).getTime() }
                 : null
         );
     },
     evaluateFormula: valueOrFormula => {
         const d = evaluateFormulaBase(UtcDate, valueOrFormula);
-        return (new Date(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
+        return (new UtcDate(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
     },
     compare: (a: number, b: number) => a - b,
     doCast: false,
@@ -268,6 +279,13 @@ export const dateStereotype: Stereotype = {
 
 export const lcDateStereotype: Stereotype = {
     ...dateStereotype,
+    tryParse: (value: unknown) => {
+        return (
+            typeof value === 'string' && DatePattern.test(value)
+                ? { value: (new Date(value)).getTime() }
+                : null
+        );
+    },
     evaluateFormula: valueOrFormula => {
         const d = evaluateFormulaBase(Date, valueOrFormula);
         return (new Date(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
@@ -279,7 +297,7 @@ export const datetimeStereotype: Stereotype = {
     tryParse: (value: unknown) => {
         return (
             typeof value === 'string' && (DateTimePattern.test(value) || DateTimeNoTzPattern.test(value))
-                ? { value: (new Date(value)).getTime() }
+                ? { value: (new UtcDate(value)).getTime() }
                 : null
         );
     },
@@ -291,6 +309,13 @@ export const datetimeStereotype: Stereotype = {
 
 export const lcDatetimeStereotype: Stereotype = {
     ...datetimeStereotype,
+    tryParse: (value: unknown) => {
+        return (
+            typeof value === 'string' && (DateTimePattern.test(value) || DateTimeNoTzPattern.test(value))
+                ? { value: (new Date(value)).getTime() }
+                : null
+        );
+    },
     evaluateFormula: valueOrFormula => evaluateFormulaBase(Date, valueOrFormula).getTime(),
 }
 

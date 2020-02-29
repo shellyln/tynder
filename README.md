@@ -675,20 +675,21 @@ const z = validate<any>({
 ###### Formula syntax
 
 ```
-Expression = ISODateAndDatetime | ("=" , DateTimeFormula , {DateTimeFormula});
+Expression =
+    ISODateAndDatetime |
+    ("=" , DateTimeFormula , {whitespace, DateTimeFormula}) ;
 
 DateTimeFormula =
-    (ISODateAndDatetime |
-     ("current" | "now") |
-     "today"
-     ("@" | "+" | "-") , NaturalNumber ,
+    ISODateAndDatetime |
+    ("current" | "now") |
+    "today"
+    ("@" | "+" | "-") , NaturalNumber ,
             ("yr" | "mo"  | ("days" | "day") |
              "hr" | "min" | "sec" | "ms") |
-     "first-date-of-yr" |
-     "last-date-of-yr" |
-     "first-date-of-mo" |
-     "last-date-of-mo" |
-    );
+    "first-date-of-yr" |
+    "last-date-of-yr" |
+    "first-date-of-mo" |
+    "last-date-of-mo" ;
 ```
 
 
