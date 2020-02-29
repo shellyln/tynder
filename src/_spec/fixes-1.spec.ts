@@ -994,5 +994,249 @@ describe("fix-1", function() {
                 i: '33',
             }});
         }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: 33,
+                b: 33,
+                c: 33,
+                d: 33,
+                e: 33,
+                f: 33,
+                g: 33,
+                h: 33,
+                i: 33,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 33,
+                b: BigInt(33),
+                c: 33,
+                d: '33',
+                e: true,
+                f: null,
+                g: void 0,
+                h: 33,
+                i: 33,
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: -33.33,
+                b: -33,
+                c: -33.33,
+                d: -33.33,
+                e: -33.33,
+                f: -33.33,
+                g: -33.33,
+                h: -33.33,
+                i: -33.33,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: -33.33,
+                b: BigInt(-33), // forceCast('bigint', -33.33) returns NaN
+                c: -33,
+                d: '-33.33',
+                e: true,
+                f: null,
+                g: void 0,
+                h: -33.33,
+                i: -33.33,
+            }});
+            console.log(ctx.errors);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: '-33.33',
+                b: '-33',
+                c: '-33.33',
+                d: '-33.33',
+                e: '-33.33',
+                f: '-33.33',
+                g: '-33.33',
+                h: '-33.33',
+                i: '-33.33',
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: -33.33,
+                b: BigInt(-33), // forceCast('bigint', -33.33) returns NaN
+                c: -33,
+                d: '-33.33',
+                e: true,
+                f: null,
+                g: void 0,
+                h: '-33.33',
+                i: '-33.33',
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: 0,
+                b: 0,
+                c: 0,
+                d: 0,
+                e: 0,
+                f: 0,
+                g: 0,
+                h: 0,
+                i: 0,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 0,
+                b: BigInt(0),
+                c: 0,
+                d: '0',
+                e: false,
+                f: null,
+                g: void 0,
+                h: 0,
+                i: 0,
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: BigInt(33),
+                b: BigInt(33),
+                c: BigInt(33),
+                d: BigInt(33),
+                e: BigInt(33),
+                f: BigInt(33),
+                g: BigInt(33),
+                h: BigInt(33),
+                i: BigInt(33),
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 33,
+                b: BigInt(33),
+                c: 33,
+                d: '33',
+                e: true,
+                f: null,
+                g: void 0,
+                h: BigInt(33),
+                i: BigInt(33),
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: BigInt(0),
+                b: BigInt(0),
+                c: BigInt(0),
+                d: BigInt(0),
+                e: BigInt(0),
+                f: BigInt(0),
+                g: BigInt(0),
+                h: BigInt(0),
+                i: BigInt(0),
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 0,
+                b: BigInt(0),
+                c: 0,
+                d: '0',
+                e: false,
+                f: null,
+                g: void 0,
+                h: BigInt(0),
+                i: BigInt(0),
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: true,
+                b: true,
+                c: true,
+                d: true,
+                e: true,
+                f: true,
+                g: true,
+                h: true,
+                i: true,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 1,
+                b: BigInt(1),
+                c: 1,
+                d: 'true',
+                e: true,
+                f: null,
+                g: void 0,
+                h: true,
+                i: true,
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: null,
+                b: null,
+                c: null,
+                d: null,
+                e: null,
+                f: null,
+                g: null,
+                h: null,
+                i: null,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 0,
+                b: BigInt(0),
+                c: 0,
+                d: 'null',
+                e: false,
+                f: null,
+                g: void 0,
+                h: null,
+                i: null,
+            }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: void 0,
+                b: void 0,
+                c: void 0,
+                d: void 0,
+                e: void 0,
+                f: void 0,
+                g: void 0,
+                h: void 0,
+                i: void 0,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 0,
+                b: BigInt(0),
+                c: 0,
+                d: 'undefined',
+                e: false,
+                f: null,
+                g: void 0,
+                h: void 0,
+                i: void 0,
+            }});
+        }
     });
 });

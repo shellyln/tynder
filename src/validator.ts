@@ -59,10 +59,33 @@ function forceCast(
     value: any) {
 
     switch (targetType) {
-    case 'number': case 'integer':
-        return Number.parseInt(String(value), 10);
+    case 'number':
+        if (typeof value === 'number') {
+            return value;
+        } else {
+            const a = Number.parseFloat(String(value));
+            if (Number.isNaN(a)) {
+                return Number(value ?? 0);
+            } else {
+                return a;
+            }
+        }
+    case 'integer':
+        if (typeof value === 'number' && Math.trunc(value) === value) {
+            return value;
+        } else {
+            let a = Number.parseFloat(String(value));
+            if (Number.isNaN(a)) {
+                a = Number(value ?? 0);
+            }
+            return Math.trunc(a);
+        }
     case 'bigint':
-        return BigInt(String(value));
+        try {
+            return BigInt(value ?? 0);
+        } catch {
+            return NaN;
+        }
     case 'string':
         return String(value);
     case 'boolean':
