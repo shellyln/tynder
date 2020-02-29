@@ -892,7 +892,7 @@ describe("fix-1", function() {
             }});
         }
     });
-    it("stereotype-2", function() {
+    it("stereotype-2a", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('date')
@@ -949,6 +949,186 @@ describe("fix-1", function() {
                 ]),
             };
             const z = validate<any>({ a: '2020-03-01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+    });
+    it("stereotype-2b", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-02-22 first-date-of-mo', '=today last-date-of-mo')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-14' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-01' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-01' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-29' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-31' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-03-01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+    });
+    it("stereotype-3a", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-02-22 first-date-of-yr', '=today last-date-of-yr')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-14' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-01' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-01-01' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-12-31' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-12-31' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2019-12-31' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-01-01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+    });
+    it("stereotype-3b", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-02-22 first-date-of-yr', '=today last-date-of-yr')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-14' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-01' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-01-01' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-12-31' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-12-31' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2019-12-31' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-01-01' }, ty, ctx);
             expect(z).toEqual(null);
         }
     });

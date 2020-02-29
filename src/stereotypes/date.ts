@@ -272,11 +272,12 @@ export const dateStereotype: Stereotype = {
 export const lcDateStereotype: Stereotype = {
     ...dateStereotype,
     tryParse: (value: unknown) => {
-        return (
-            typeof value === 'string' && DatePattern.test(value)
-                ? { value: (new Date(value)).getTime() }
-                : null
-        );
+        if (typeof value === 'string' && DatePattern.test(value)) {
+            const d = new Date(value); // d is 00:00 in UTC
+            return ({ value: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() });
+        } else {
+            return null;
+        }
     },
     evaluateFormula: valueOrFormula => {
         const d = evaluateFormulaBase(Date, valueOrFormula);
@@ -289,7 +290,7 @@ export const datetimeStereotype: Stereotype = {
     tryParse: (value: unknown) => {
         return (
             typeof value === 'string' && (DateTimePattern.test(value) || DateTimeNoTzPattern.test(value))
-                ? { value: (new UtcDate(value)).getTime() }
+                ? { value: (new UtcDate(value)).getTime() } // If timezone is not specified, it is local time
                 : null
         );
     },
