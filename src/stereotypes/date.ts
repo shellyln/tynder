@@ -28,14 +28,6 @@ class UtcDate extends Date {
         if (year === void 0) {
             this.setTime(Date.UTC(super.getFullYear(), super.getMonth(), super.getDate(),
                 super.getHours(), super.getMinutes(), super.getSeconds(), super.getMilliseconds()));
-
-            // this.setUTCFullYear(super.getFullYear());
-            // this.setUTCMonth(super.getMonth());
-            // this.setUTCDate(super.getDate());
-            // this.setUTCHours(super.getHours());
-            // this.setUTCMinutes(super.getMinutes());
-            // this.setUTCSeconds(super.getSeconds());
-            // this.setUTCMilliseconds(super.getMilliseconds());
             return;
         }
         if (typeof year === 'string') {
