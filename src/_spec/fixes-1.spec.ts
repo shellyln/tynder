@@ -872,34 +872,127 @@ describe("fix-1", function() {
             }
         `);
         const ty = getType(schema, 'Foo');
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-            stereotypes: new Map([
-                ...dateStereotypes,
-            ]),
-        };
-        const d = (new Date()).toISOString().slice(0, 10);
-        const z = validate<any>({
-            a: d,
-            b: '2020-01-01',
-            c: d,
-        }, ty, ctx);
-        expect(z).toEqual({value: {a: d, b: '2020-01-01', c: d}});
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const d = (new Date()).toISOString().slice(0, 10);
+            const z = validate<any>({
+                a: d,
+                b: '2020-01-01',
+                c: d,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: d,
+                b: '2020-01-01',
+                c: d,
+            }});
+        }
+    });
+    it("stereotype-2", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-02-22 first-date-of-mo', '=today last-date-of-mo')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-14' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-01' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-01' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-29' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-31' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-03-01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
     });
     it("forceCast-1", function() {
         const schema = compile(`
             interface Foo {
-                @forceCast
-                a: number;
+                @forceCast a: number;
+                @forceCast b: bigint;
+                @forceCast c: integer;
+                @forceCast d: string;
+                @forceCast e: boolean;
+                @forceCast f: null;
+                @forceCast g: undefined;
+                @forceCast h: any;
+                @forceCast i: unknown;
             }
         `);
         const ty = getType(schema, 'Foo');
-        const ctx: Partial<ValidationContext> = {
-            checkAll: true,
-        };
-        const z = validate<any>({
-            a: '33',
-        }, ty, ctx);
-        expect(z).toEqual({value: {a: 33}});
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: '33',
+                b: '33',
+                c: '33',
+                d: '33',
+                e: '33',
+                f: '33',
+                g: '33',
+                h: '33',
+                i: '33',
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: 33,
+                b: BigInt(33),
+                c: 33,
+                d: '33',
+                e: true,
+                f: null,
+                g: void 0,
+                h: '33',
+                i: '33',
+            }});
+        }
     });
 });
