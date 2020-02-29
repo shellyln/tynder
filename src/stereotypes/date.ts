@@ -26,18 +26,19 @@ class UtcDate extends Date {
 
         super();
         if (year === void 0) {
-            this.setTime(Date.UTC(super.getFullYear(), super.getMonth(), super.getDate(),
-                super.getHours(), super.getMinutes(), super.getSeconds(), super.getMilliseconds()));
             return;
         }
         if (typeof year === 'string') {
             if (DateTimePattern.test(year)) {
-                this.setTime(Date.parse(year));
+                // string parameter is expected to be treated as specified TZ
+                this.setTime(Date.parse(year)); // returns date in specified TZ
             } else if (DatePattern.test(year)) {
-                const d = new Date(year);
-                this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+                // string parameter is expected to be treated as UTC
+                const d = new Date(year);       // returns date in UTC TZ (getUTC??? returns string parameter's date & time digits)
+                this.setTime(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
             } else if (DateTimeNoTzPattern.test(year)) {
-                const d = new Date(year);
+                // string parameter is expected to be treated as UTC
+                const d = new Date(year);       // returns date in local TZ (get??? returns string parameter's date & time digits)
                 this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(),
                     d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
             }
@@ -85,6 +86,50 @@ class UtcDate extends Date {
 }
 
 
+class LcDate extends Date {
+    public constructor();
+    // tslint:disable-next-line: unified-signatures
+    public constructor(str: string);
+    public constructor(
+        year: number, month: number, date?: number,
+        hours?: number, minutes?: number, seconds?: number, ms?: number)
+    public constructor(
+        year?: number | string, month?: number, date?: number,
+        hours?: number, minutes?: number, seconds?: number, ms?: number) {
+
+        super();
+        if (year === void 0) {
+            return;
+        }
+        if (typeof year === 'string') {
+            if (DateTimePattern.test(year)) {
+                // string parameter is expected to be treated as specified TZ
+                this.setTime(Date.parse(year)); // returns date in specified TZ
+            } else if (DatePattern.test(year)) {
+                // string parameter is expected to be treated as local TZ
+                const d = new Date(year);       // returns date in UTC TZ (getUTC??? returns string parameter's date & time digits)
+                const l = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+                this.setTime(l.getTime());
+            } else if (DateTimeNoTzPattern.test(year)) {
+                // string parameter is expected to be treated as UTC
+                const d = new Date(year);       // returns date in local TZ (get??? returns string parameter's date & time digits)
+                this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(),
+                    d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
+            }
+            return;
+        }
+
+        this.setFullYear(year);
+        this.setMonth(typeof month === 'number' ? month : 0);
+        this.setDate(typeof date === 'number' ? date : 1);
+        this.setHours(typeof hours === 'number' ? hours : 0);
+        this.setMinutes(typeof minutes === 'number' ? minutes : 0);
+        this.setSeconds(typeof seconds === 'number' ? seconds : 0);
+        this.setMilliseconds(typeof ms === 'number' ? ms : 0);
+    }
+}
+
+
 interface DateConstructor {
     new (): Date;
     // tslint:disable-next-line: unified-signatures
@@ -103,7 +148,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
         const formula = valueOrFormula.slice(1).split(' ');
         let d = new dateCtor();
         const now = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes());
-        const today = new dateCtor(now.getFullYear(), now.getMonth(), now.getDate());
+        const today = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate());
         d = now;
         for (const f of formula) {
             switch (f) {
@@ -273,15 +318,14 @@ export const lcDateStereotype: Stereotype = {
     ...dateStereotype,
     tryParse: (value: unknown) => {
         if (typeof value === 'string' && DatePattern.test(value)) {
-            const d = new Date(value); // d is 00:00 in UTC
-            return ({ value: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() });
+            return ({ value: (new LcDate(value)).getTime() });
         } else {
             return null;
         }
     },
     evaluateFormula: valueOrFormula => {
-        const d = evaluateFormulaBase(Date, valueOrFormula);
-        return (new Date(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
+        const d = evaluateFormulaBase(LcDate, valueOrFormula);
+        return (new LcDate(d.getFullYear(), d.getMonth(), d.getDate())).getTime();
     },
 }
 
@@ -305,11 +349,11 @@ export const lcDatetimeStereotype: Stereotype = {
     tryParse: (value: unknown) => {
         return (
             typeof value === 'string' && (DateTimePattern.test(value) || DateTimeNoTzPattern.test(value))
-                ? { value: (new Date(value)).getTime() }
+                ? { value: (new LcDate(value)).getTime() }
                 : null
         );
     },
-    evaluateFormula: valueOrFormula => evaluateFormulaBase(Date, valueOrFormula).getTime(),
+    evaluateFormula: valueOrFormula => evaluateFormulaBase(LcDate, valueOrFormula).getTime(),
 }
 
 

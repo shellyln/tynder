@@ -855,7 +855,7 @@ describe("fix-1", function() {
             expect(ty).toEqual(rhs);
         }
     });
-    it("stereotype-1", function() {
+    it("stereotype-1a", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('date')
@@ -879,7 +879,47 @@ describe("fix-1", function() {
                     ...dateStereotypes,
                 ]),
             };
-            const d = (new Date()).toISOString().slice(0, 10);
+            const d = (new Date()).toISOString().slice(0, 10); // toISOString returns date in UTC
+            const z = validate<any>({
+                a: d,
+                b: '2020-01-01',
+                c: d,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: d,
+                b: '2020-01-01',
+                c: d,
+            }});
+        }
+    });
+    it("stereotype-1b", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=today first-date-of-mo', '=today last-date-of-mo')
+                a: string;
+
+                @stereotype('lcdate')
+                @range('2020-01-01', '2030-12-31')
+                b: string;
+
+                @stereotype('lcdate')
+                @range('2020-01-01', '=today +2yr @12mo @31day')
+                c: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const d = (new Date(
+                new Date().getTime() -
+                new Date().getTimezoneOffset() * 60 * 1000))
+                .toISOString().slice(0, 10); // toISOString returns date in UTC
             const z = validate<any>({
                 a: d,
                 b: '2020-01-01',
@@ -896,7 +936,7 @@ describe("fix-1", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('date')
-                @range('=2020-02-22 first-date-of-mo', '=today last-date-of-mo')
+                @range('=2020-02-22 first-date-of-mo', '=2020-02-22 last-date-of-mo')
                 a: string;
             }
         `);
@@ -956,7 +996,7 @@ describe("fix-1", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('lcdate')
-                @range('=2020-02-22 first-date-of-mo', '=today last-date-of-mo')
+                @range('=2020-02-22 first-date-of-mo', '=2020-02-22 last-date-of-mo')
                 a: string;
             }
         `);
@@ -1016,7 +1056,7 @@ describe("fix-1", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('date')
-                @range('=2020-02-22 first-date-of-yr', '=today last-date-of-yr')
+                @range('=2020-02-22 first-date-of-yr', '=2020-02-22 last-date-of-yr')
                 a: string;
             }
         `);
@@ -1076,7 +1116,7 @@ describe("fix-1", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('lcdate')
-                @range('=2020-02-22 first-date-of-yr', '=today last-date-of-yr')
+                @range('=2020-02-22 first-date-of-yr', '=2020-02-22 last-date-of-yr')
                 a: string;
             }
         `);
