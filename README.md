@@ -675,18 +675,20 @@ const z = validate<any>({
 ###### Formula syntax
 
 ```
-Expression: ISODateAndDatetime | ("=" DateTimeFormula)
+Expression = ISODateAndDatetime | ("=" , DateTimeFormula , {DateTimeFormula});
 
-DateTimeFormula:
+DateTimeFormula =
     (ISODateAndDatetime |
      ("current" | "now") |
      "today"
-     ("@" | "+" | "-") digit ("yr" | "mo" | "days" | "day" | "hr" | "min" | "sec") |
+     ("@" | "+" | "-") , NaturalNumber ,
+            ("yr" | "mo"  | ("days" | "day") |
+             "hr" | "min" | "sec" | "ms") |
      "first-date-of-yr" |
      "last-date-of-yr" |
      "first-date-of-mo" |
      "last-date-of-mo" |
-    )
+    );
 ```
 
 

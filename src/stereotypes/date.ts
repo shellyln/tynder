@@ -10,7 +10,7 @@ import { DatePattern,
 
 
 
-const FormulaPattern = /^([-+@])([0-9]+)(yr|mo|day|days|hr|min|sec)$/;
+const FormulaPattern = /^([-+@])([0-9]+)(yr|mo|day|days|hr|min|sec|ms)$/;
 
 
 class UtcDate extends Date {
@@ -168,7 +168,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                                 n = d.getDate() - n;
                                 break;
                             }
-                            d = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate(),
+                            d = new dateCtor(d.getFullYear(), d.getMonth(), n,
                                 d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
                             break;
                         case 'hr':
@@ -183,7 +183,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                                 break;
                             }
                             d = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate(),
-                                d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+                                n, d.getMinutes(), d.getSeconds(), d.getMilliseconds());
                             break;
                         case 'min':
                             switch (m[1]) {
@@ -197,7 +197,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                                 break;
                             }
                             d = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate(),
-                                d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+                                d.getHours(), n, d.getSeconds(), d.getMilliseconds());
                             break;
                         case 'sec':
                             switch (m[1]) {
@@ -211,7 +211,21 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                                 break;
                             }
                             d = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate(),
-                                d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+                                d.getHours(), d.getMinutes(), n, d.getMilliseconds());
+                            break;
+                        case 'ms':
+                            switch (m[1]) {
+                            case '@':
+                                break;
+                            case '+':
+                                n = d.getMilliseconds() + n;
+                                break;
+                            case '-':
+                                n = d.getMilliseconds() - n;
+                                break;
+                            }
+                            d = new dateCtor(d.getFullYear(), d.getMonth(), d.getDate(),
+                                d.getHours(), d.getMinutes(), d.getSeconds(), n);
                             break;
                         default:
                             throw new Error(errMsg);
