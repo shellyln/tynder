@@ -15,6 +15,7 @@ export const noopStereotype: Stereotype = {
         return valueOrFormula;
     },
     compare: (a: any, b: any) => {
+        // NOTE: You should pass assertion value (schema value) into 'a'.
         const tyA = typeof a;
         const tyB = typeof b;
         if (tyA !== tyB) {
@@ -22,7 +23,11 @@ export const noopStereotype: Stereotype = {
         }
         switch (tyA) {
         case 'number':
-            return a - b;
+            if (Number.isNaN(a) && Number.isNaN(b)) {
+                return 0;
+            } else {
+                return a - b;
+            }
         default:
             if (a === b) {
                 return 0;

@@ -1047,7 +1047,30 @@ describe("fix-1", function() {
                 h: -33.33,
                 i: -33.33,
             }});
-            console.log(ctx.errors);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: -33.33,
+                b: -33.33,
+                c: -33.33,
+                d: -33.33,
+                e: -33.33,
+                f: -33.33,
+                g: -33.33,
+                h: -33.33,
+                i: -33.33,
+            }, ty, ctx);
+            expect(z).toEqual(null);
+            expect(ctx.errors).toEqual([{
+                code: 'TypeUnmatched',
+                message: '"b" of "Foo" should be type "bigint".',
+                dataPath: 'Foo:b',
+                constraints: {},
+                value: -33.33,
+            }]);
         }
         {
             const ctx: Partial<ValidationContext> = {
@@ -1236,6 +1259,28 @@ describe("fix-1", function() {
                 g: void 0,
                 h: void 0,
                 i: void 0,
+            }});
+        }
+    });
+    it("compareNaN-1", function() {
+        const schema = compile(`
+            interface Foo {
+                a: number;
+                b: NaN;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+            };
+            const z = validate<any>({
+                a: NaN,
+                b: NaN,
+            }, ty, ctx);
+            expect(z).toEqual({value: {
+                a: NaN,
+                b: NaN,
             }});
         }
     });
