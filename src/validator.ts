@@ -447,16 +447,33 @@ function validateSequenceAssertion<T>(
 function validateOneOfAssertion<T>(
     data: any, ty: OneOfAssertion, ctx: ValidationContext): {value: T} | null {
 
+    let choosed = false;
+    const savedCtxRecordTypeFieldValidated = ctx.recordTypeFieldValidated;
+    ctx.recordTypeFieldValidated = false;
+
     const savedErrLen = ctx.errors.length;
     let count = 0;
     let firstErrLen = savedErrLen;
+
     for (const tyOne of ty.oneOf) {
         const r = validateRoot<T>(data, tyOne, ctx);
         if (r) {
             // rollback reported errors
             ctx.errors.length = savedErrLen;
+            ctx.recordTypeFieldValidated = savedCtxRecordTypeFieldValidated;
             return r;
         }
+
+        if (ctx.recordTypeFieldValidated) {
+            if (count !== 0) {
+                const e2 = ctx.errors.slice(firstErrLen);
+                ctx.errors.length = savedErrLen;
+                ctx.errors.push(...e2);
+            }
+            choosed = true;
+            break;
+        }
+
         if (count === 0) {
             firstErrLen = ctx.errors.length;
         } else {
@@ -464,11 +481,16 @@ function validateOneOfAssertion<T>(
         }
         count++;
     }
-    if (! ctx.checkAll) {
-        // rollback reported errors
-        ctx.errors.length = savedErrLen;
+
+    if (! choosed) {
+        if (! ctx.checkAll) {
+            // rollback reported errors
+            ctx.errors.length = savedErrLen;
+        }
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
     }
-    reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
+
+    ctx.recordTypeFieldValidated = savedCtxRecordTypeFieldValidated;
     return null;
 }
 
@@ -553,6 +575,9 @@ function validateObjectAssertion<T>(
                             continue;
                         }
                         retVal[x[0]] = ret.value;
+                        if (x[1].isRecordTypeField) {
+                            ctx.recordTypeFieldValidated = true;
+                        }
                     }
                 } else {
                     if (ctx && ctx.checkAll) {

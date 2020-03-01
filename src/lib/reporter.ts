@@ -298,7 +298,11 @@ export function reportError(
                 } else {
                     const len = dataPathEntryArray.length;
                     if (len && dataPathEntryArray[len - 1].kind === 'type') {
-                        dataPathEntryArray.push({kind: 'key', name: pt.name});
+                        if (pt.kind === 'object' && next && pt.typeName) {
+                            dataPathEntryArray.push({kind: 'type', name: pt.typeName});
+                        } else {
+                            dataPathEntryArray.push({kind: 'key', name: pt.name as string}); // NOTE: type inference failed
+                        }
                     } else {
                         if (pt.typeName) {
                             dataPathEntryArray.push({kind: 'type', name: pt.typeName});

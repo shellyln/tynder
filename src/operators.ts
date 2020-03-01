@@ -866,6 +866,17 @@ export function withForceCast<T extends TypeAssertion>(): (ty: T) => T {
 }
 
 
+export function withRecordType<T extends TypeAssertion>(): (ty: T) => T {
+    return (ty: T) => {
+        const ret: T = ({
+            ...ty,
+            isRecordTypeField: true,
+        });
+        return ret;
+    };
+}
+
+
 export function withMsg<T extends TypeAssertion>(messages: string | ErrorMessages): (ty: T) => T {
     return (ty: T) => {
         if (ty.kind === 'optional') {

@@ -615,6 +615,21 @@ interface B {
 * `@forceCast`
     * Validate after forcibly casting to the assertion's type.
         * > **WARNING**: In the JSON schema output, this is stripped.
+* `@recordType`
+    * If the decorated member field of object is validated, the union type is determined.
+    ```ts
+    interface Foo {
+        @recordType kind: 'foo';
+        ...
+    }
+    interface Bar {
+        @recordType kind: 'bar';
+        ...
+    }
+    type FooBar = Foo | Bar;
+    // If data {kind: 'foo', ...} is passed,
+    // the union type will be determined as `Foo`.
+    ```
 * `@msg(messages: string | ErrorMessages)`
     * Set custom error message.
 * `@msgId(messageId: string)`
