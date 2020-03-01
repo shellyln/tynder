@@ -771,6 +771,96 @@ describe("fix-2", function() {
             // expect(z).toEqual(null); // result will be chaged by your TZ
         }
     });
+    it("stereotype-5a", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-02-22 @2021yr @4mo @11day', '=2019-10-11 @2021yr @4mo @11day')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-04-11' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2021-04-11' }});
+        }
+    });
+    it("stereotype-5b", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-02-22 @2021yr @4mo @11day', '=2019-10-11 @2021yr @4mo @11day')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-04-11' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2021-04-11' }});
+        }
+    });
+    it("stereotype-6a", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('datetime')
+                @range('=2020-02-22 @2021yr @4mo @11day @20hr @32min @43sec @973ms', '=2019-10-11 @2021yr @4mo @11day @20hr @32min @43sec @973ms')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-04-11T20:32:43.973' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2021-04-11T20:32:43.973' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-04-11T20:32:43.973Z' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2021-04-11T20:32:43.973Z' }});
+        }
+    });
+    it("stereotype-6b", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('lcdatetime')
+                @range('=2020-02-22 @2021yr @4mo @11day @20hr @32min @43sec @973ms', '=2019-10-11 @2021yr @4mo @11day @20hr @32min @43sec @973ms')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2021-04-11T20:32:43.973' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2021-04-11T20:32:43.973' }});
+        }
+    });
     it("forceCast-1", function() {
         const schema = compile(`
             interface Foo {
