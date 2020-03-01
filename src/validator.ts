@@ -46,6 +46,8 @@ function checkStereotypes(
             } else {
                 return null;
             }
+        } else {
+            throw new Error(`Undefined stereotype is specified: ${ty.stereotype}`);
         }
     }
     return false;

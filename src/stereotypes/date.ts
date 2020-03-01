@@ -41,6 +41,8 @@ class UtcDate extends Date {
                 const d = new Date(year);       // returns date in local TZ (get??? returns string parameter's date & time digits)
                 this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(),
                     d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
+            } else {
+                this.setTime(NaN);
             }
             return;
         }
@@ -114,6 +116,8 @@ class LcDate extends Date {
                 // string parameter is expected to be treated as local TZ
                 const d = new Date(year);       // returns date in local TZ (get??? returns string parameter's date & time digits)
                 this.setTime(d.getTime());
+            } else {
+                this.setTime(NaN);
             }
             return;
         }
