@@ -24,6 +24,9 @@ interface EntryBase {
     name: string;
     /** ACL infos */
     acl: ACL[];
+    /** Timestamp */
+    @stereotype('datetime')
+    timestamp: string;
 }
 
 /** File entry */
@@ -239,6 +242,7 @@ class App extends React.Component {
             const ctx = {
                 checkAll: true,
                 schema,
+                stereotypes: new Map(tynder.stereotypes),
             };
             if (tynder.validate(JSON.parse(data), tynder.getType(schema, targetEntryName.value), ctx)) {
                 r = `Validation succeeded. (Tynder)`;
@@ -306,8 +310,26 @@ class App extends React.Component {
             targetEntryName.value = 'Folder';
         }
         {
+            const now = new Date();
             const editor = AppState.AceEditor['dataEditor'];
-            editor.setValue(`{}`);
+            editor.setValue(JSON.stringify({
+                type: 'folder',
+                name: 'foo',
+                entries: [{
+                    type: 'file',
+                    name: 'bar',
+                    acl: [{
+                        target: 'a',
+                        value: 'deny',
+                    }],
+                    timestamp: now.toISOString(),
+                }],
+                acl: [{
+                    target: 'a',
+                    value: 'deny',
+                }],
+                timestamp: now.toISOString(),
+            }, null, 2));
             editor.clearSelection();
         }
     }

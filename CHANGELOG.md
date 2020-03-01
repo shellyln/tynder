@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.1
+
+* `[FIX]` Fix error handling and reporting of stereotype.
+* Improve playground.
+
+
 ## v0.3.0
 
 * Add `@stereotype` decorator.

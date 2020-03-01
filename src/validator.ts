@@ -179,6 +179,7 @@ function validatePrimitiveTypeAssertion<T>(
 
     let chkSt = checkStereotypes(chkTarget, ty, ctx);
     if (chkSt === null) {
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     } else if (chkSt === false) {
         chkSt = {

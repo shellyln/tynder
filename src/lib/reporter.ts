@@ -172,6 +172,8 @@ export function formatErrorMessage(
 
     const dict = new Map<string, string>([
         ['expectedType',
+            ty.stereotype ?
+                ty.stereotype :
             escapeString(getExpectedType(ty))],
         ['type',
             escapeString(typeof data)],
