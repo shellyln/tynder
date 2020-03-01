@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.2 (planned)
+## v0.3.2
 
 * Improve one-of assertion validation error message.
 * Add `@recordType` decorator.
