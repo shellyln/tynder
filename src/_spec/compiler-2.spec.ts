@@ -766,7 +766,13 @@ describe("compiler-2", function() {
                     }
                     const ctx1: Partial<ValidationContext> = {};
                     expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
-                    expect(ctx1.errors).toEqual([{
+                    expect(ctx1.errors).toEqual([...(cnt === 0 ? [{
+                        code: 'ValueUnmatched',
+                        message: '"File" of "Entry" value should be "file".',
+                        dataPath: 'Folder:entries.(1:repeated).Entry:File.type',
+                        value: 'folder',
+                        constraints: {},
+                    }] : []), {
                         code: 'InvalidDefinition',
                         message: cnt === 0 ?
                             '"Folder" of "Entry" type definition is invalid.' :
@@ -917,7 +923,13 @@ describe("compiler-2", function() {
                     }
                     const ctx1: Partial<ValidationContext> = {};
                     expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
-                    expect(ctx1.errors).toEqual([{
+                    expect(ctx1.errors).toEqual([...(cnt === 0 ? [{
+                        code: 'ValueUnmatched',
+                        message: '"File" of "Entry" value should be "file".',
+                        dataPath: 'Folder:entries.(1:sequence).Entry:File.type',
+                        value: 'folder',
+                        constraints: {},
+                    }] : []), {
                         code: 'InvalidDefinition',
                         message:  cnt === 0 ?
                             '"Folder" of "Entry" type definition is invalid.' :

@@ -447,15 +447,26 @@ function validateSequenceAssertion<T>(
 function validateOneOfAssertion<T>(
     data: any, ty: OneOfAssertion, ctx: ValidationContext): {value: T} | null {
 
+    const savedErrLen = ctx.errors.length;
+    let count = 0;
+    let firstErrLen = savedErrLen;
     for (const tyOne of ty.oneOf) {
-        const savedErrLen = ctx.errors.length;
         const r = validateRoot<T>(data, tyOne, ctx);
-        if (! r) {
+        if (r) {
             // rollback reported errors
             ctx.errors.length = savedErrLen;
-            continue;
+            return r;
         }
-        return r;
+        if (count === 0) {
+            firstErrLen = ctx.errors.length;
+        } else {
+            ctx.errors.length = firstErrLen;
+        }
+        count++;
+    }
+    if (! ctx.checkAll) {
+        // rollback reported errors
+        ctx.errors.length = savedErrLen;
     }
     reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
     return null;
