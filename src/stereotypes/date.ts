@@ -195,10 +195,10 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                                 n -= 1;
                                 break;
                             case '+':
-                                n = d.getMonth() + n - 1;
+                                n = d.getMonth() + n;
                                 break;
                             case '-':
-                                n = d.getMonth() - n + 1;
+                                n = d.getMonth() - n;
                                 break;
                             }
                             d = new dateCtor(d.getFullYear(), n, d.getDate(),
