@@ -411,7 +411,7 @@ describe("fix-2", function() {
             expect(z).toEqual(null);
         }
     });
-    it("stereotype-4", function() {
+    it("stereotype-4a", function() {
         const schema = compile(`
             interface Foo {
                 @stereotype('datetime')
@@ -589,6 +589,186 @@ describe("fix-2", function() {
             };
             const z = validate<any>({ a: '2020-03-01T00:00Z' }, ty, ctx);
             expect(z).toEqual(null);
+        }
+    });
+    it("stereotype-4b", function() {
+        const schema = compile(`
+            interface Foo {
+                @stereotype('lcdatetime')
+                @range('=2020-02-22 first-date-of-mo', '=2020-02-22 last-date-of-mo')
+                a: string;
+            }
+        `);
+        const ty = getType(schema, 'Foo');
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14T00:00' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-14T00:00' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-14T00:00Z' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-14T00:00Z' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-01T00:00' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-01T00:00' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-01T00:00Z' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-01T00:00Z' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29T00:00' }, ty, ctx);
+            expect(z).toEqual({value: { a: '2020-02-29T00:00' }});
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29T00:00Z' }, ty, ctx);
+            // expect(z).toEqual({value: { a: '2020-02-29T00:00Z' }}); // result will be chaged by your TZ
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29T00:01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-02-29T00:01Z' }, ty, ctx);
+            // expect(z).toEqual(null); // result will be chaged by your TZ
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-31' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-31T23:59' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-01-31T23:59Z' }, ty, ctx);
+            // expect(z).toEqual(null); // result will be chaged by your TZ
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-03-01' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-03-01T00:00' }, ty, ctx);
+            expect(z).toEqual(null);
+        }
+        {
+            const ctx: Partial<ValidationContext> = {
+                checkAll: true,
+                stereotypes: new Map([
+                    ...dateStereotypes,
+                ]),
+            };
+            const z = validate<any>({ a: '2020-03-01T00:00Z' }, ty, ctx);
+            // expect(z).toEqual(null); // result will be chaged by your TZ
         }
     });
     it("forceCast-1", function() {

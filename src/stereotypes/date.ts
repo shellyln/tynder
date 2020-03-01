@@ -111,10 +111,9 @@ class LcDate extends Date {
                 const l = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
                 this.setTime(l.getTime());
             } else if (DateTimeNoTzPattern.test(year)) {
-                // string parameter is expected to be treated as UTC
+                // string parameter is expected to be treated as local TZ
                 const d = new Date(year);       // returns date in local TZ (get??? returns string parameter's date & time digits)
-                this.setTime(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(),
-                    d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
+                this.setTime(d.getTime());
             }
             return;
         }
