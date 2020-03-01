@@ -1170,6 +1170,8 @@ export function compile(s: string) {
             operators.withStereotype(stereotype)(ty),
         '@forceCast': () => (ty: TypeAssertion) =>
             operators.withForceCast()(ty),
+        '@recordType': () => (ty: TypeAssertion) =>
+            operators.withRecordType()(ty),
         '@msg': (messages: string | ErrorMessages) => (ty: TypeAssertion) =>
             operators.withMsg(messages)(ty),
         '@msgId': (messageId: string) => (ty: TypeAssertion) =>

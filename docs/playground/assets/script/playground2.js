@@ -32,12 +32,14 @@ interface EntryBase {
 /** File entry */
 interface File extends EntryBase {
     /** Entry type */
+    @recordType
     type: 'file';
 }
 
 /** Folder entry */
 interface Folder extends EntryBase {
     /** Entry type */
+    @recordType
     type: 'folder';
     /** Child entries */
     entries: Entry[];

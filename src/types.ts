@@ -62,9 +62,12 @@ export interface ValidationContext {
         TypeAssertion |
         [TypeAssertion,
          number | string | undefined] // [1]: data index
-        >;
-                                      // NOTE: DO NOT reassign!
+        >;                            // NOTE: DO NOT reassign!
                                       //   Push or pop items instead of reassign.
+
+    recordTypeFieldValidated?: boolean;
+
+    // === additional infos ===
     schema?: TypeAssertionMap;        //   To resolve 'symlink' assertion,
                                       //   the context need to have a schema instance.
 

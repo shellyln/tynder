@@ -3,6 +3,8 @@
 ## v0.3.2 (planned)
 
 * Improve one-of assertion validation error message.
+* Add `@recordType` decorator.
+  * If the decorated member field of object is validated, the union type is determined.
 
 
 ## v0.3.1

@@ -768,8 +768,8 @@ describe("compiler-2", function() {
                     expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
                     expect(ctx1.errors).toEqual([...(cnt === 0 ? [{
                         code: 'ValueUnmatched',
-                        message: '"File" of "Entry" value should be "file".',
-                        dataPath: 'Folder:entries.(1:repeated).Entry:File.type',
+                        message: '"type" of "File" value should be "file".',
+                        dataPath: 'Folder:entries.(1:repeated).Entry:File:type',
                         value: 'folder',
                         constraints: {},
                     }] : []), {
@@ -925,8 +925,8 @@ describe("compiler-2", function() {
                     expect(() => validate<any>(v, ty, ctx1)).toThrow(); // unresolved symlink 'Entry'
                     expect(ctx1.errors).toEqual([...(cnt === 0 ? [{
                         code: 'ValueUnmatched',
-                        message: '"File" of "Entry" value should be "file".',
-                        dataPath: 'Folder:entries.(1:sequence).Entry:File.type',
+                        message: '"type" of "File" value should be "file".',
+                        dataPath: 'Folder:entries.(1:sequence).Entry:File:type',
                         value: 'folder',
                         constraints: {},
                     }] : []), {
