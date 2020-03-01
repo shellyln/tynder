@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.2 (planned)
+
+* Improve one-of assertion validation error message.
+
+
 ## v0.3.1
 
 * `[FIX]` Fix error handling and reporting of stereotype.
