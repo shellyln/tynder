@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.3.0
+
+* Add `@stereotype` decorator.
+  * Perform custom validation.
+* Add standard stereotypes.
+  * `date`
+    * date (UTC timezone)
+  * `lcdate`
+    * date (local timezone)
+  * `datetime`
+    * datetime (UTC timezone)
+  * `lcdatetime`
+    * datetime (local timezone)
+* Add `@forceCast` decorator.
+  * Validate after forcibly casting to the assertion's type.
+* Add spec codes.
+
+
+----
+
+
 ## v0.2.3
 
 * `[FIX]` Fix serializer & deserializer bugs.
