@@ -46,6 +46,8 @@ export interface TypeAssertionBase {
     name?: string;              // Member name or 'typeName' below. For error reporting and codegen.
     typeName?: string;          // Named user defined 'type' or 'interface' name. For error reporting and codegen.
     originalTypeName?: string;  // To keep right hand side type name of `type Y = X;`.
+    stereotype?: string;
+    forceCast?: boolean;
     docComment?: string;        // Doc comment.
     passThruCodeBlock?: string; // Store a pass-thru code block (e.g. import statement). use it with kind===never
     noOutput?: boolean;         // If true, skip code generation.

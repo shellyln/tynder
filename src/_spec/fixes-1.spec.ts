@@ -9,6 +9,7 @@ import { compile }           from '../compiler';
 import { generateTypeScriptCode } from '../codegen';
 import { serialize,
          deserialize }       from '../serializer';
+import { stereotypes as dateStereotypes } from '../stereotypes/date';
 
 
 

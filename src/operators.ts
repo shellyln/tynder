@@ -841,6 +841,31 @@ export function withMatch(pattern: RegExp) {
 }
 
 
+export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty: T) => T {
+    if (typeof stereotype !== 'string') {
+        throw new Error(`Decorator '@stereotype' parameter 'pattern' stereotype be string.`);
+    }
+    return (ty: T) => {
+        const ret: T = ({
+            ...ty,
+            stereotype,
+        });
+        return ret;
+    };
+}
+
+
+export function withForceCast<T extends TypeAssertion>(): (ty: T) => T {
+    return (ty: T) => {
+        const ret: T = ({
+            ...ty,
+            forceCast: true,
+        });
+        return ret;
+    };
+}
+
+
 export function withMsg<T extends TypeAssertion>(messages: string | ErrorMessages): (ty: T) => T {
     return (ty: T) => {
         if (ty.kind === 'optional') {
