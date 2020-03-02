@@ -252,11 +252,16 @@ const regexpStringValue =
 
 const symbolName =
     trans(tokens => tokens)
-    (cat(combine(classes.alpha, repeat(classes.alnum))));
+    (cat(combine(
+        first(classes.alpha, cls('$', '_')),
+        repeat(first(classes.alnum, cls('$', '_'))), )));
 
 const decoratorSymbolName =
     trans(tokens => [{symbol: (tokens as string[])[0]}])
-    (cat(combine(seq('@'), classes.alpha, repeat(classes.alnum))));
+    (cat(combine(
+        seq('@'),
+        first(classes.alpha, cls('$', '_')),
+        repeat(first(classes.alnum, cls('$', '_'))), )));
 
 
 const simpleConstExpr =
