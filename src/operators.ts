@@ -678,7 +678,7 @@ export function withRange(minValue: number | string, maxValue: number | string) 
         if (typeof maxValue !== 'number' && typeof maxValue !== 'string') {
             throw new Error(`Decorator '@range' parameter 'maxValue' should be number or string.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@range' cannot be applied to anything other than 'primitive'.`);
@@ -699,7 +699,7 @@ export function withMinValue(minValue: number | string) {
         if (typeof minValue !== 'number' && typeof minValue !== 'string') {
             throw new Error(`Decorator '@minValue' parameter 'minValue' should be number or string.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@minValue' cannot be applied to anything other than 'primitive'.`);
@@ -720,7 +720,7 @@ export function withMaxValue(maxValue: number | string) {
         if (typeof maxValue !== 'number' && typeof maxValue !== 'string') {
             throw new Error(`Decorator '@maxValue' parameter 'maxValue' should be number or string.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@maxValue' cannot be applied to anything other than 'primitive'.`);
@@ -741,7 +741,7 @@ export function withGreaterThan(greaterThanValue: number | string) {
         if (typeof greaterThanValue !== 'number' && typeof greaterThanValue !== 'string') {
             throw new Error(`Decorator '@greaterThan' parameter 'greaterThan' should be number or string.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@greaterThan' cannot be applied to anything other than 'primitive'.`);
@@ -762,7 +762,7 @@ export function withLessThan(lessThanValue: number | string) {
         if (typeof lessThanValue !== 'number' && typeof lessThanValue !== 'string') {
             throw new Error(`Decorator '@lessThan' parameter 'lessThan' should be number or string.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@lessThan' cannot be applied to anything other than 'primitive'.`);
@@ -783,7 +783,7 @@ export function withMinLength(minLength: number) {
         if (typeof minLength !== 'number') {
             throw new Error(`Decorator '@minLength' parameter 'minLength' should be number.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@minLength' cannot be applied to anything other than 'primitive'.`);
@@ -804,7 +804,7 @@ export function withMaxLength(maxLength: number) {
         if (typeof maxLength !== 'number') {
             throw new Error(`Decorator '@maxLength' parameter 'maxLength' should be number.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@maxLength' cannot be applied to anything other than 'primitive'.`);
@@ -825,7 +825,7 @@ export function withMatch(pattern: RegExp) {
         if (typeof pattern !== 'object') {
             throw new Error(`Decorator '@match' parameter 'pattern' should be RegExp.`);
         }
-        if ((ty as TypeAssertion)?.kind === 'optional') {
+        if ((ty as TypeAssertion).kind === 'optional') {
             const opt = (ty as any as OptionalAssertion).optional;
             if (opt.kind !== 'primitive') {
                 throw new Error(`Decorator '@match' cannot be applied to anything other than 'primitive'.`);
@@ -847,7 +847,7 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
     }
     return (ty: T) => {
         const ret: T = ({
-            ...ty,
+            ...(ty.kind === 'optional' ? ((ty as OptionalAssertion).optional as T) : ty),
             stereotype,
         });
         return ret;
@@ -858,7 +858,7 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
 export function withForceCast<T extends TypeAssertion>(): (ty: T) => T {
     return (ty: T) => {
         const ret: T = ({
-            ...ty,
+            ...(ty.kind === 'optional' ? ((ty as OptionalAssertion).optional as T) : ty),
             forceCast: true,
         });
         return ret;
@@ -869,7 +869,7 @@ export function withForceCast<T extends TypeAssertion>(): (ty: T) => T {
 export function withRecordType<T extends TypeAssertion>(): (ty: T) => T {
     return (ty: T) => {
         const ret: T = ({
-            ...ty,
+            ...(ty.kind === 'optional' ? ((ty as OptionalAssertion).optional as T) : ty),
             isRecordTypeField: true,
         });
         return ret;

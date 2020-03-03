@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.4
+
+* `[FIX]` Fix stereotype, forceCast, and recordType decorators:
+  when optional type, it should be decorated with ty.optional.
+
+
 ## v0.3.3
 
 * `[FIX]` Fix compiler: Fix character class that can be used in symbols.
