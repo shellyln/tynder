@@ -416,6 +416,10 @@ import { picked,
          withMinLength,
          withMaxLength,
          withMatch,
+         withStereotype,
+         withStereotype,
+         withForceCast,
+         withRecordType,
          withMsg   as $$,
          withMsgId as $ } from 'tynder/modules/operators';
 
@@ -617,6 +621,7 @@ interface B {
         * > **WARNING**: In the JSON schema output, this is stripped.
 * `@recordType`
     * If the decorated member field of object is validated, the union type is determined.
+      * Use to receive reasonable validation error messages.
     ```ts
     interface Foo {
         @recordType kind: 'foo';

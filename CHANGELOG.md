@@ -2,7 +2,7 @@
 
 ## v0.3.3
 
-* [FIX] Fix compiler: Fix character class that can be used in symbols.
+* `[FIX]` Fix compiler: Fix character class that can be used in symbols.
 
 
 ## v0.3.2
