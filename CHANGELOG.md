@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.3
+
+* [FIX] Fix compiler: Fix character class that can be used in symbols.
+
+
 ## v0.3.2
 
 * Improve one-of assertion validation error message.
