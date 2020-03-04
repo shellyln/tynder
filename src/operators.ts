@@ -846,33 +846,66 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
         throw new Error(`Decorator '@stereotype' parameter 'pattern' stereotype be string.`);
     }
     return (ty: T) => {
-        const ret: T = ({
-            ...(ty.kind === 'optional' ? ((ty as OptionalAssertion).optional as T) : ty),
-            stereotype,
-        });
-        return ret;
+        if (ty.kind === 'optional') {
+            const ret: T = ({
+                ...ty,
+                optional: {
+                    ...(ty as OptionalAssertion).optional,
+                    stereotype,
+                },
+            });
+            return ret;
+        } else {
+            const ret: T = ({
+                ...ty,
+                stereotype,
+            });
+            return ret;
+        }
     };
 }
 
 
 export function withForceCast<T extends TypeAssertion>(): (ty: T) => T {
     return (ty: T) => {
-        const ret: T = ({
-            ...(ty.kind === 'optional' ? ((ty as OptionalAssertion).optional as T) : ty),
-            forceCast: true,
-        });
-        return ret;
+        if (ty.kind === 'optional') {
+            const ret: T = ({
+                ...ty,
+                optional: {
+                    ...(ty as OptionalAssertion).optional,
+                    forceCast: true,
+                },
+            });
+            return ret;
+        } else {
+            const ret: T = ({
+                ...ty,
+                forceCast: true,
+            });
+            return ret;
+        }
     };
 }
 
 
 export function withRecordType<T extends TypeAssertion>(): (ty: T) => T {
     return (ty: T) => {
-        const ret: T = ({
-            ...(ty.kind === 'optional' ? ((ty as OptionalAssertion).optional as T) : ty),
-            isRecordTypeField: true,
-        });
-        return ret;
+        if (ty.kind === 'optional') {
+            const ret: T = ({
+                ...ty,
+                optional: {
+                    ...(ty as OptionalAssertion).optional,
+                    isRecordTypeField: true,
+                },
+            });
+            return ret;
+        } else {
+            const ret: T = ({
+                ...ty,
+                isRecordTypeField: true,
+            });
+            return ret;
+        }
     };
 }
 

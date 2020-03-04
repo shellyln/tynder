@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.5
+
+* `[FIX]` Fix stereotype, forceCast, and recordType decorators:
+  when optional type, it should be decorated with ty.optional.
+  * `v0.3.4` fix is broken.
+
+
 ## v0.3.4
 
 * `[FIX]` Fix stereotype, forceCast, and recordType decorators:

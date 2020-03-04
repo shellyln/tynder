@@ -557,17 +557,15 @@ function validateObjectAssertion<T>(
         for (const x of ty.members) {
             dataMembers.delete(x[0]);
             if (Object.prototype.hasOwnProperty.call(data, x[0])) {
-                const ret = validateRoot<T>(
-                    data[x[0]],
-                    x[1].kind === 'optional' ?  // TODO: set name at compile time
-                        {
-                            ...x[1].optional,
-                            name: x[0],
-                            message: x[1].message,
-                            messages: x[1].messages,
-                            messageId: x[1].messageId,
-                        } : x[1],
-                    ctx);
+                const mt = x[1].kind === 'optional' ?  // TODO: set name at compile time
+                    {
+                        ...x[1].optional,
+                        name: x[0],
+                        message: x[1].message,
+                        messages: x[1].messages,
+                        messageId: x[1].messageId,
+                    } : x[1];
+                const ret = validateRoot<T>(data[x[0]], mt, ctx);
 
                 if (ret) {
                     if (retVal) {
@@ -575,7 +573,7 @@ function validateObjectAssertion<T>(
                             continue;
                         }
                         retVal[x[0]] = ret.value;
-                        if (x[1].isRecordTypeField) {
+                        if (mt.isRecordTypeField) {
                             ctx.recordTypeFieldValidated = true;
                         }
                     }
