@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.6
+
+* Add `first-date-of-fy(mo)` operator to `data` and `datetime` stereotype formula.
+  * fiscal year operator.
+* Add spec codes.
+
+
 ## v0.3.5
 
 * `[FIX]` Fix stereotype, forceCast, and recordType decorators:

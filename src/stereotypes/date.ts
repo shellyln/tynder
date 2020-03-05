@@ -10,6 +10,7 @@ import { DatePattern,
 
 
 
+const FyPattern = /^first-date-of-fy\(([0-9]+)\)$/;
 const FormulaPattern = /^([-+@])([0-9]+)(yr|mo|day|days|hr|min|sec|ms)$/;
 
 
@@ -161,7 +162,7 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
             case 'today':
                 d = today;
                 break;
-            case 'first-date-of-yr':
+            case 'first-date-of-yr': case 'first-date-of-fy(1)':
                 d = new dateCtor(d.getFullYear(), 0, 1);
                 break;
             case 'last-date-of-yr':
@@ -174,7 +175,24 @@ function evaluateFormulaBase(dateCtor: DateConstructor, valueOrFormula: string):
                 d = new dateCtor(d.getFullYear(), d.getMonth() + 1, 0);
                 break;
             default:
-                {
+                if (f.startsWith('first-date-of-fy(')) {
+                    const m = FyPattern.exec(f);
+                    if (m) {
+                        const n = Number.parseInt(m[1], 10);
+                        if (0 < n && n <= 12) {
+                            const mo = d.getMonth() + 1;
+                            let yr = d.getFullYear();
+                            if (mo < n) {
+                                yr--;
+                            }
+                            d = new dateCtor(yr, n - 1, 1);
+                        } else {
+                            throw new Error(errMsg);
+                        }
+                    } else {
+                        throw new Error(errMsg);
+                    }
+                } else {
                     const m = FormulaPattern.exec(f);
                     if (m) {
                         let n = Number.parseInt(m[2], 10);

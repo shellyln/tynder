@@ -1480,4 +1480,244 @@ describe("fix-2", function() {
             }] as any);
         }
     });
+    it("stereotype-date-fy-1", function() {
+        const schemas = [compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-08-31 first-date-of-fy(9)', '=2020-08-31 first-date-of-fy(9)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-08-31 first-date-of-fy(9)', '=2020-08-31 first-date-of-fy(9)')
+                a?: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-08-31 first-date-of-fy(9)', '=2020-08-31 first-date-of-fy(9)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-08-31 first-date-of-fy(9)', '=2020-08-31 first-date-of-fy(9)')
+                a?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    stereotypes: new Map([
+                        ...dateStereotypes,
+                    ]),
+                };
+                const z = validate<any>({ a: '2019-09-01' }, ty, ctx);
+                expect(z).toEqual({value: { a: '2019-09-01' }});
+            }
+        }
+    });
+    it("stereotype-date-fy-2", function() {
+        const schemas = [compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-09-01 first-date-of-fy(9)', '=2020-09-01 first-date-of-fy(9)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-09-01 first-date-of-fy(9)', '=2020-09-01 first-date-of-fy(9)')
+                a?: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-09-01 first-date-of-fy(9)', '=2020-09-01 first-date-of-fy(9)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-09-01 first-date-of-fy(9)', '=2020-09-01 first-date-of-fy(9)')
+                a?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    stereotypes: new Map([
+                        ...dateStereotypes,
+                    ]),
+                };
+                const z = validate<any>({ a: '2020-09-01' }, ty, ctx);
+                expect(z).toEqual({value: { a: '2020-09-01' }});
+            }
+        }
+    });
+    it("stereotype-date-fy-3", function() {
+        const schemas = [compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-01-31 first-date-of-fy(2)', '=2020-01-31 first-date-of-fy(2)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-01-31 first-date-of-fy(2)', '=2020-01-31 first-date-of-fy(2)')
+                a?: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-01-31 first-date-of-fy(2)', '=2020-01-31 first-date-of-fy(2)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-01-31 first-date-of-fy(2)', '=2020-01-31 first-date-of-fy(2)')
+                a?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    stereotypes: new Map([
+                        ...dateStereotypes,
+                    ]),
+                };
+                const z = validate<any>({ a: '2019-02-01' }, ty, ctx);
+                expect(z).toEqual({value: { a: '2019-02-01' }});
+            }
+        }
+    });
+    it("stereotype-date-fy-4", function() {
+        const schemas = [compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-02-01 first-date-of-fy(2)', '=2020-02-01 first-date-of-fy(2)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-02-01 first-date-of-fy(2)', '=2020-02-01 first-date-of-fy(2)')
+                a?: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-02-01 first-date-of-fy(2)', '=2020-02-01 first-date-of-fy(2)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-02-01 first-date-of-fy(2)', '=2020-02-01 first-date-of-fy(2)')
+                a?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    stereotypes: new Map([
+                        ...dateStereotypes,
+                    ]),
+                };
+                const z = validate<any>({ a: '2020-02-01' }, ty, ctx);
+                expect(z).toEqual({value: { a: '2020-02-01' }});
+            }
+        }
+    });
+    it("stereotype-date-fy-5", function() {
+        const schemas = [compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-11-30 first-date-of-fy(12)', '=2020-11-30 first-date-of-fy(12)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-11-30 first-date-of-fy(12)', '=2020-11-30 first-date-of-fy(12)')
+                a?: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-11-30 first-date-of-fy(12)', '=2020-11-30 first-date-of-fy(12)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-11-30 first-date-of-fy(12)', '=2020-11-30 first-date-of-fy(12)')
+                a?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    stereotypes: new Map([
+                        ...dateStereotypes,
+                    ]),
+                };
+                const z = validate<any>({ a: '2019-12-01' }, ty, ctx);
+                expect(z).toEqual({value: { a: '2019-12-01' }});
+            }
+        }
+    });
+    it("stereotype-date-fy-6", function() {
+        const schemas = [compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-12-01 first-date-of-fy(12)', '=2020-12-01 first-date-of-fy(12)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('date')
+                @range('=2020-12-01 first-date-of-fy(12)', '=2020-12-01 first-date-of-fy(12)')
+                a?: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-12-01 first-date-of-fy(12)', '=2020-12-01 first-date-of-fy(12)')
+                a: string;
+            }
+        `), compile(`
+            interface Foo {
+                @stereotype('lcdate')
+                @range('=2020-12-01 first-date-of-fy(12)', '=2020-12-01 first-date-of-fy(12)')
+                a?: string;
+            }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                const ctx: Partial<ValidationContext> = {
+                    checkAll: true,
+                    stereotypes: new Map([
+                        ...dateStereotypes,
+                    ]),
+                };
+                const z = validate<any>({ a: '2020-12-01' }, ty, ctx);
+                expect(z).toEqual({value: { a: '2020-12-01' }});
+            }
+        }
+    });
 });

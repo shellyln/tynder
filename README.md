@@ -709,7 +709,8 @@ DateTimeFormula =
     "first-date-of-yr" |
     "last-date-of-yr" |
     "first-date-of-mo" |
-    "last-date-of-mo" ;
+    "last-date-of-mo" |
+    "first-date-of-fy", "(", NaturalNumber1To12, ")" ;
 ```
 
 
