@@ -713,6 +713,37 @@ DateTimeFormula =
     "first-date-of-fy", "(", NaturalNumber1To12, ")" ;
 ```
 
+###### Formula examples
+
+* This month (date)
+  * `@range('=today first-date-of-mo', '=today last-date-of-mo')`
+* This month (datetime)
+  * `@minValue('=today first-date-of-mo') @lessThan('=today last-date-of-mo +1day')`
+* Next month (date)
+  * `@range('=today first-date-of-mo +1mo', '=today @1day +1mo last-date-of-mo')`
+* Next month (datetime)
+  * `@minValue('=today first-date-of-mo +1mo') @lessThan('=today @1day +1mo last-date-of-mo +1day')`
+* This year (date)
+  * `@range('=today first-date-of-yr', '=today last-date-of-yr')`
+* This year (datetime)
+  * `@minValue('=today first-date-of-yr') @lessThan('=today last-date-of-yr +1day')`
+* Next year (date)
+  * `@range('=today first-date-of-yr +1yr', '=today @1day +1yr last-date-of-yr')`
+* Next year (datetime)
+  * `@minValue('=today first-date-of-yr +1yr') @lessThan('=today @1day +1yr last-date-of-yr +1day')`
+* This fiscal year (date)
+  * `@range('=today first-date-of-fy(9)', '=today first-date-of-fy(9) +1yr -1day')`
+    * Fiscal year beginning in September
+* This fiscal year (datetime)
+  * `@minValue('=today first-date-of-fy(9)') @lessThan('=today first-date-of-fy(9) +1yr')`
+    * Fiscal year beginning in September
+* Next fiscal year (date)
+  * `@range('=today first-date-of-fy(9) +1yr', '=today first-date-of-fy(9) +2yr -1day')`
+    * Fiscal year beginning in September
+* Next fiscal year (datetime)
+  * `@minValue('=today first-date-of-fy(9) +1yr') @lessThan('=today first-date-of-fy(9) +2yr')`
+    * Fiscal year beginning in September
+
 
 ### Enum
 
