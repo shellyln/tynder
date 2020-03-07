@@ -23,7 +23,7 @@
         "paths": {
         },
         // "traceResolution": true,
-        "types": ["node", "jasmine"],
+        "types": ["node"],
         "jsx": "react",
         "jsxFactory": "FooBar.dom"
     },
@@ -34,6 +34,7 @@
         "bin",
         "modules",
         "node_modules",
-        "spec"
+        "spec",
+        "src/_spec/**/*"
     ]
 }
