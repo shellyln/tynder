@@ -8,6 +8,7 @@
 * Add spec codes.
 * Update dev dependencies.
 * Add eslint configurations.
+* Edit github actions CI configuration.
 
 
 ## v0.3.6
