@@ -28,6 +28,7 @@
         "jsxFactory": "FooBar.dom"
     },
     "include": [
+        "src/_spec/index.ts",
         "src/_spec/**/*.spec.ts"
     ],
     "exclude": [

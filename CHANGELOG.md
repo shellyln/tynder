@@ -7,6 +7,7 @@
     * Output to the compiled schema.
 * Add spec codes.
 * Update dev dependencies.
+* Add eslint configurations.
 
 
 ## v0.3.6
