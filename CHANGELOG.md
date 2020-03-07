@@ -6,6 +6,7 @@
   * User defined custom properties (meta informations).
     * Output to the compiled schema.
 * Add spec codes.
+* Update dev dependencies.
 
 
 ## v0.3.6
