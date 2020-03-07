@@ -420,6 +420,7 @@ import { picked,
          withStereotype,
          withForceCast,
          withRecordType,
+         withMeta,
          withMsg   as $$,
          withMsgId as $ } from 'tynder/modules/operators';
 
@@ -503,7 +504,7 @@ type Bar = string[] | 10 | {a: boolean} | [number, string];
 #### Named interface
 ```ts
 interface Foo {
-    a: string;
+    a: string;   // Separators `;` and `,` are both allowed.
     b?: number;
 }
 
@@ -519,7 +520,7 @@ interface Baz extends Foo, Bar {
 #### Unnamed literal interface
 ```ts
 type A = {
-    a: string,
+    a: string,   // Separators `;` and `,` are both allowed.
     b?: number,
 };
 ```
@@ -612,6 +613,8 @@ interface B {
     * data.length <= maxLength
 * `@match(pattern: RegExp)`
     * Check value text pattern.
+      * RegExp flags are allowed.
+        * e.g.: `/^[\u{3000}-\u{301C}]+$/u`
     * pattern.test(data)
 * `@stereotype(stereotype: string)`
     * Perform custom validation.
