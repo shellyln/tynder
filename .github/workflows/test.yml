@@ -45,6 +45,7 @@ jobs:
       run: |
         npm install -g npm
         npm ci
+        npm run build:dist:dev
         npm run build:dist:prod
     - uses: actions/upload-artifact@master
       with:
