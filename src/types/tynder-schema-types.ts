@@ -41,17 +41,18 @@ export type ErrorMessages = Partial<{
 
 export interface TypeAssertionBase {
     messageId?: string;
-    message?: string;           // Only one of 'message' or 'messages' can be set.
-    messages?: ErrorMessages;   // Only one of 'message' or 'messages' can be set.
-    name?: string;              // Member name or 'typeName' below. For error reporting and codegen.
-    typeName?: string;          // Named user defined 'type' or 'interface' name. For error reporting and codegen.
-    originalTypeName?: string;  // To keep right hand side type name of `type Y = X;`.
-    stereotype?: string;
-    forceCast?: boolean;
-    isRecordTypeField?: boolean;
-    docComment?: string;        // Doc comment.
-    passThruCodeBlock?: string; // Store a pass-thru code block (e.g. import statement). use it with kind===never
-    noOutput?: boolean;         // If true, skip code generation.
+    message?: string;            // Only one of 'message' or 'messages' can be set.
+    messages?: ErrorMessages;    // Only one of 'message' or 'messages' can be set.
+    name?: string;               // Member name or 'typeName' below. For error reporting and codegen.
+    typeName?: string;           // Named user defined 'type' or 'interface' name. For error reporting and codegen.
+    originalTypeName?: string;   // To keep right hand side type name of `type Y = X;`.
+    stereotype?: string;         // `stereotype` decorator value.
+    forceCast?: boolean;         // `forceCast` decorator value.
+    isRecordTypeField?: boolean; // true if `recordType` decorator is set.
+    meta?: any;                  // `meta` decorator value; user defined custom properties (meta informations).
+    docComment?: string;         // Doc comment.
+    passThruCodeBlock?: string;  // Store a pass-thru code block (e.g. import statement). use it with kind===never
+    noOutput?: boolean;          // If true, skip code generation.
 }
 
 

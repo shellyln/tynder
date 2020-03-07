@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.7
+
+* Add `@meta` decorator.
+  * User defined custom properties (meta informations).
+    * Output to the compiled schema.
+* Add spec codes.
+
+
 ## v0.3.6
 
 * Add `first-date-of-fy(mo)` operator to `data` and `datetime` stereotype formula.

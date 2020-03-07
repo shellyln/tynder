@@ -1177,6 +1177,8 @@ export function compile(s: string) {
             operators.withForceCast()(ty),
         '@recordType': () => (ty: TypeAssertion) =>
             operators.withRecordType()(ty),
+        '@meta': (meta: any) => (ty: TypeAssertion) =>
+            operators.withMeta(meta)(ty),
         '@msg': (messages: string | ErrorMessages) => (ty: TypeAssertion) =>
             operators.withMsg(messages)(ty),
         '@msgId': (messageId: string) => (ty: TypeAssertion) =>

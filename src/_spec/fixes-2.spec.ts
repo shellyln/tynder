@@ -1720,4 +1720,43 @@ describe("fix-2", function() {
             }
         }
     });
+    it("meta-1", function() {
+        const schema = compile(`
+            @meta({ objectId: '0ffc31e6-f534-4e49-b6d7-a3ec21f49637' })
+            interface A {
+                @meta({
+                    fieldId: '82bd5832-c399-4d4c-8bc4-b76a95823ebf',
+                    fieldType: 'checkbox',
+                })
+                a: ('foo' | 'bar' | 'baz')[];
+            }
+        `);
+        const ty = getType(schema, 'A');
+        expect(ty).toEqual({
+            kind: 'object',
+            members: [['a', {
+                kind: 'repeated',
+                repeated: {
+                    kind: 'one-of',
+                    oneOf: [{
+                        kind: 'primitive-value',
+                        value: 'foo',
+                    }, {
+                        kind: 'primitive-value',
+                        value: 'bar',
+                    }, {
+                        kind: 'primitive-value',
+                        value: 'baz',
+                    }],
+                },
+                name: 'a',
+                min: null,
+                max: null,
+                meta: { fieldId: '82bd5832-c399-4d4c-8bc4-b76a95823ebf', fieldType: 'checkbox' },
+            }]],
+            typeName: 'A',
+            name: 'A',
+            meta: { objectId: '0ffc31e6-f534-4e49-b6d7-a3ec21f49637' },
+        } as any);
+    });
 });
