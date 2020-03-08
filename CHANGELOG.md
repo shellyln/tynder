@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.9
+
+* Add `unique-non-null` constraint.
+* `[FIX]` Fix `unique` and `unique-non-null` constraint bug.
+
+
 ## v0.3.8
 
 * Add `@constraint` decorator and `unique` constraint implementation.
