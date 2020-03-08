@@ -845,6 +845,9 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
     if (typeof stereotype !== 'string') {
         throw new Error(`Decorator '@stereotype' parameter 'stereotype' should be string.`);
     }
+    if (isUnsafeVarNames(dummyTargetObject, stereotype)) {
+        throw new Error(`Unsafe symbol name is appeared in stereotype assertion: ${stereotype}`);
+    }
     return (ty: T) => {
         if (ty.kind === 'optional') {
             const ret: T = ({
@@ -869,6 +872,9 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
 export function withConstraint<T extends TypeAssertion>(name: string, args?: any): (ty: T) => T {
     if (typeof name !== 'string') {
         throw new Error(`Decorator '@constraint' parameter 'name' should be string.`);
+    }
+    if (isUnsafeVarNames(dummyTargetObject, name)) {
+        throw new Error(`Unsafe symbol name is appeared in constraint assertion: ${name}`);
     }
     return (ty: T) => {
         const ret: T = ({
