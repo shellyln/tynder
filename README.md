@@ -796,9 +796,6 @@ const schema = compile(`
     const ty = getType(schema, 'A');
     const ctx: Partial<ValidationContext> = {
         checkAll: true,
-        stereotypes: new Map([
-            ...dateStereotypes,
-        ]),
         customConstraints: new Map([
             ...uniqueConstraints,
         ]),
@@ -813,9 +810,6 @@ const schema = compile(`
     const ty = getType(schema, 'B');
     const ctx: Partial<ValidationContext> = {
         checkAll: true,
-        stereotypes: new Map([
-            ...dateStereotypes,
-        ]),
         customConstraints: new Map([
             ...uniqueConstraints,
         ]),
