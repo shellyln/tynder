@@ -45,6 +45,15 @@ export interface Stereotype {
 }
 
 
+export type CustomConstraint = (data: any, args: any) => boolean;
+
+
+export interface CustomConstraintInfo {
+    kinds?: Array<TypeAssertion['kind']>; // If undefined, all the kinds are allowed.
+    check: CustomConstraint;
+}
+
+
 export interface ValidationContext {
     checkAll?: boolean;
     noAdditionalProps?: boolean;
@@ -72,6 +81,7 @@ export interface ValidationContext {
                                       //   the context need to have a schema instance.
 
     stereotypes?: Map<string, Stereotype>;
+    customConstraints?: Map<string, CustomConstraintInfo>;
 }
 
 
