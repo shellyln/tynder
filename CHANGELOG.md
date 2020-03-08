@@ -2,7 +2,7 @@
 
 ## v0.3.8
 
-* Add `@constraint` decorator.
+* Add `@constraint` decorator and `unique` constraint implementation.
 * Add spec codes.
 
 

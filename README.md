@@ -775,6 +775,61 @@ DateTimeFormula =
     * Fiscal year beginning in September
 
 
+##### Unique constraint
+
+```ts
+...
+import { constraints as uniqueConstraints } from '../constraints/unique';
+
+const schema = compile(`
+    interface A {
+        @constraint('unique')
+        a: string[];
+    }
+    interface B {
+        @constraint('unique', ['p', 'r'])
+        b: {p: string, q: string, r: string}[];
+    }
+`);
+
+{
+    const ty = getType(schema, 'A');
+    const ctx: Partial<ValidationContext> = {
+        checkAll: true,
+        stereotypes: new Map([
+            ...dateStereotypes,
+        ]),
+        customConstraints: new Map([
+            ...uniqueConstraints,
+        ]),
+    };
+    const z = validate<any>({a: [
+        'x',
+        'y',
+        'x', // duplicated
+    ]}, ty, ctx);
+}
+{
+    const ty = getType(schema, 'B');
+    const ctx: Partial<ValidationContext> = {
+        checkAll: true,
+        stereotypes: new Map([
+            ...dateStereotypes,
+        ]),
+        customConstraints: new Map([
+            ...uniqueConstraints,
+        ]),
+    };
+    const z = validate<any>({a: [
+        {p: '1', q: '2', r: '3'},
+        {p: '2', q: '3', r: '4'},
+        {p: '1', q: '4', r: '3'}, // duplicated
+    ]}, ty, ctx);
+}
+```
+
+
+
 ### Enum
 
 ```ts
