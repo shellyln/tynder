@@ -619,6 +619,20 @@ interface B {
 * `@stereotype(stereotype: string)`
     * Perform custom validation.
         * > **WARNING**: In the JSON schema output, this is stripped.
+* `@constraint(constraintName: string, args: any)`
+    * Perform custom constraint.
+        * > **WARNING**: In the JSON schema output, this is stripped.
+        * `@constraint('unique', fields?: string[])`
+        ```ts
+        interface A {
+            @constraint('unique')
+            a: string[];
+        }
+        interface B {
+            @constraint('unique', ['p', 'r'])
+            b: {p: string, q: string, r: string}[];
+        }
+        ```
 * `@forceCast`
     * Validate after forcibly casting to the assertion's type.
         * > **WARNING**: In the JSON schema output, this is stripped.

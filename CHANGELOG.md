@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.8
+
+* Add `@constraint` decorator.
+* Add spec codes.
+
+
 ## v0.3.7
 
 * Add `@meta` decorator.
