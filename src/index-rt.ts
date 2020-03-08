@@ -3,8 +3,10 @@
 // https://github.com/shellyln
 
 
-import { Stereotype } from './types';
-import { stereotypes as dateStereotypes } from './stereotypes/date';
+import { Stereotype,
+         CustomConstraintInfo }             from './types';
+import { stereotypes as dateStereotypes }   from './stereotypes/date';
+import { constraints as uniqueConstraints } from './constraints/unique';
 
 export * from './types';
 export * from './operators';
@@ -13,4 +15,8 @@ export * from './picker';
 
 export const stereotypes: Array<[string, Stereotype]> = [
     ...dateStereotypes,
+];
+
+export const customConstraints: Array<[string, CustomConstraintInfo]> = [
+    ...uniqueConstraints,
 ];

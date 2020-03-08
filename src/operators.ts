@@ -843,7 +843,7 @@ export function withMatch(pattern: RegExp) {
 
 export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty: T) => T {
     if (typeof stereotype !== 'string') {
-        throw new Error(`Decorator '@stereotype' parameter 'pattern' stereotype be string.`);
+        throw new Error(`Decorator '@stereotype' parameter 'stereotype' should be string.`);
     }
     return (ty: T) => {
         if (ty.kind === 'optional') {
@@ -862,6 +862,25 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
             });
             return ret;
         }
+    };
+}
+
+
+export function withConstraint<T extends TypeAssertion>(name: string, args?: any): (ty: T) => T {
+    if (typeof name !== 'string') {
+        throw new Error(`Decorator '@constraint' parameter 'name' should be string.`);
+    }
+    return (ty: T) => {
+        const ret: T = ({
+            ...ty,
+            customConstraints: ty.customConstraints
+                ? ty.customConstraints.slice().push(name)
+                : [name],
+            customConstraintsArgs: ty.customConstraintsArgs
+                ? {...ty.customConstraintsArgs, [name]: args}
+                : {[name]: args},
+        });
+        return ret;
     };
 }
 

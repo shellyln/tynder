@@ -1173,6 +1173,8 @@ export function compile(s: string) {
             operators.withMatch(pattern)(ty),
         '@stereotype': (stereotype: string) => (ty: TypeAssertion) =>
             operators.withStereotype(stereotype)(ty),
+        '@constraint': (name: string, args?: any) => (ty: TypeAssertion) =>
+            operators.withConstraint(name, args)(ty),
         '@forceCast': () => (ty: TypeAssertion) =>
             operators.withForceCast()(ty),
         '@recordType': () => (ty: TypeAssertion) =>
