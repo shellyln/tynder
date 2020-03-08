@@ -74,7 +74,7 @@ const checkerGen = (mapper: MapperFn) => {
                 const b = mapped[j];
                 for (let k = 0; k < a.length; k++) {
                     if (a[k] !== b[k]) {
-                        break CMP;
+                        continue CMP;
                     }
                 }
                 return false;
