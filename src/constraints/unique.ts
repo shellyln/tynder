@@ -72,7 +72,7 @@ const checkerGen = (mapper: MapperFn) => {
                 }
                 const a = mapped[i];
                 const b = mapped[j];
-                for (let k = 0; k < a.length; k++) {
+                for (let k = 0; k < a.length; k++) { // TODO: this is slow! more better checking
                     if (a[k] !== b[k]) {
                         continue CMP;
                     }

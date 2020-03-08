@@ -623,6 +623,9 @@ interface B {
     * Perform custom constraint.
         * > **WARNING**: In the JSON schema output, this is stripped.
         * `@constraint('unique', fields?: string[])`
+          * Check unique.
+        * `@constraint('unique-non-null', fields?: string[])`
+          * Check unique (null field is always unique).
         ```ts
         interface A {
             @constraint('unique')
