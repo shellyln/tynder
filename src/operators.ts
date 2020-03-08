@@ -843,7 +843,10 @@ export function withMatch(pattern: RegExp) {
 
 export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty: T) => T {
     if (typeof stereotype !== 'string') {
-        throw new Error(`Decorator '@stereotype' parameter 'pattern' stereotype be string.`);
+        throw new Error(`Decorator '@stereotype' parameter 'stereotype' should be string.`);
+    }
+    if (isUnsafeVarNames(dummyTargetObject, stereotype)) {
+        throw new Error(`Unsafe symbol name is appeared in stereotype assertion: ${stereotype}`);
     }
     return (ty: T) => {
         if (ty.kind === 'optional') {
@@ -859,6 +862,45 @@ export function withStereotype<T extends TypeAssertion>(stereotype: string): (ty
             const ret: T = ({
                 ...ty,
                 stereotype,
+            });
+            return ret;
+        }
+    };
+}
+
+
+export function withConstraint<T extends TypeAssertion>(name: string, args?: any): (ty: T) => T {
+    if (typeof name !== 'string') {
+        throw new Error(`Decorator '@constraint' parameter 'name' should be string.`);
+    }
+    if (isUnsafeVarNames(dummyTargetObject, name)) {
+        throw new Error(`Unsafe symbol name is appeared in constraint assertion: ${name}`);
+    }
+    return (ty: T) => {
+        if (ty.kind === 'optional') {
+            const opt = (ty as OptionalAssertion).optional;
+            const ret: T = ({
+                ...ty,
+                optional: {
+                    ...opt,
+                    customConstraints: opt.customConstraints
+                        ? opt.customConstraints.slice().push(name)
+                        : [name],
+                    customConstraintsArgs: opt.customConstraintsArgs
+                        ? {...opt.customConstraintsArgs, [name]: args}
+                        : {[name]: args},
+                },
+            });
+            return ret;
+        } else {
+            const ret: T = ({
+                ...ty,
+                customConstraints: ty.customConstraints
+                    ? ty.customConstraints.slice().push(name)
+                    : [name],
+                customConstraintsArgs: ty.customConstraintsArgs
+                    ? {...ty.customConstraintsArgs, [name]: args}
+                    : {[name]: args},
             });
             return ret;
         }

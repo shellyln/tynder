@@ -19,14 +19,15 @@ import { ErrorTypes,
          TypeAssertion,
          ValidationContext,
          TypeAssertionMap,
-         Stereotype }          from './types';
-import { ValidationError }     from './lib/errors';
+         Stereotype,
+         CustomConstraintInfo } from './types';
+import { ValidationError }      from './lib/errors';
 import { NumberPattern,
-         isUnsafeVarNames }    from './lib/util';
+         isUnsafeVarNames }     from './lib/util';
 import { reportError,
-         reportErrorWithPush } from './lib/reporter';
-import { resolveSymbols }      from './lib/resolver';
-import { noopStereotype }      from './stereotypes/noop';
+         reportErrorWithPush }  from './lib/reporter';
+import { resolveSymbols }       from './lib/resolver';
+import { noopStereotype }       from './stereotypes/noop';
 
 
 
@@ -102,6 +103,29 @@ function forceCast(
 }
 
 
+function checkCustomConstraints(
+    data: any, ty: TypeAssertion, ctx: ValidationContext): boolean | null {
+
+    if (ty.customConstraints && ctx.customConstraints) {
+        for (const ccName of ty.customConstraints) {
+            if (ctx.customConstraints.has(ccName)) {
+                const cc = ctx.customConstraints.get(ccName) as CustomConstraintInfo;
+                if (cc.kinds && !cc.kinds.includes(ty.kind)) {
+                    return null;
+                }
+                if (! cc.check(data, ty.customConstraintsArgs && ty.customConstraintsArgs[ccName])) {
+                    return null;
+                }
+            } else {
+                throw new Error(`Undefined constraint is specified: ${ccName}`);
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+
 function validateNeverTypeAssertion<T>(
     data: any, ty: NeverTypeAssertion, ctx: ValidationContext): null {
 
@@ -115,6 +139,7 @@ function validateAnyTypeAssertion<T>(
 
     let chkSt = checkStereotypes(data, ty, ctx);
     if (chkSt === null) {
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     } else if (chkSt === false) {
         chkSt = {
@@ -123,6 +148,11 @@ function validateAnyTypeAssertion<T>(
         };
     }
     const styp = chkSt.stereotype;
+
+    if (checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        return null;
+    }
 
     // always matched
     return ({value: ctx.mapper
@@ -136,6 +166,7 @@ function validateUnknownTypeAssertion<T>(
 
     let chkSt = checkStereotypes(data, ty, ctx);
     if (chkSt === null) {
+        reportError(ErrorTypes.TypeUnmatched, data, ty, {ctx});
         return null;
     } else if (chkSt === false) {
         chkSt = {
@@ -144,6 +175,11 @@ function validateUnknownTypeAssertion<T>(
         };
     }
     const styp = chkSt.stereotype;
+
+    if (checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        return null;
+    }
 
     // always matched
     return ({value: ctx.mapper
@@ -187,10 +223,11 @@ function validatePrimitiveTypeAssertion<T>(
             stereotype: ty.forceCast ? noopStereotype : noopStereotype,
         };
     }
+
     const styVal = chkSt.value;
     const styp = chkSt.stereotype;
-
     let err = false;
+
     let valueRangeErr = false;
     switch (typeof ty.minValue) {
     case 'number': case 'string': // TODO: bigint
@@ -261,6 +298,12 @@ function validatePrimitiveTypeAssertion<T>(
             err = true;
         }
     }
+
+    if (checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        err = true;
+    }
+
     const ret = !err
         ? {value: ctx.mapper
             ? ctx.mapper(styp.doCast ? chkSt.value : chkTarget, ty)
@@ -277,6 +320,7 @@ function validatePrimitiveValueTypeAssertion<T>(
 
     let chkSt = checkStereotypes(chkTarget, ty, ctx);
     if (chkSt === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
         return null;
     } else if (chkSt === false) {
         chkSt = {
@@ -286,7 +330,7 @@ function validatePrimitiveValueTypeAssertion<T>(
     }
     const styp = chkSt.stereotype;
 
-    const ret = styp.compare(chkSt.value, styp.evaluateFormula(ty.value)) === 0
+    let ret = styp.compare(chkSt.value, styp.evaluateFormula(ty.value)) === 0
         ? {value: ctx.mapper
             ? ctx.mapper(styp.doCast ? chkSt.value : chkTarget, ty)
             :            styp.doCast ? chkSt.value : chkTarget}
@@ -294,6 +338,12 @@ function validatePrimitiveValueTypeAssertion<T>(
     if (! ret) {
         reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
     }
+
+    if (ret && checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        ret = null;
+    }
+
     return ret;
 }
 
@@ -323,6 +373,12 @@ function validateRepeatedAssertion<T>(
         }
         retVals.push(r.value);
     }
+
+    if (checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        return null;
+    }
+
     return {value: retVals as any};
 }
 
@@ -440,6 +496,12 @@ function validateSequenceAssertion<T>(
     if (! ret) {
         reportError(ErrorTypes.SequenceUnmatched, data, ty, {ctx});
     }
+
+    if (ret && checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        return null;
+    }
+
     return ret;
 }
 
@@ -702,6 +764,12 @@ function validateObjectAssertion<T>(
         // TODO: Child is unmatched. reportError?
         // TODO: report object's custom error message
     }
+
+    if (retVal && checkCustomConstraints(data, ty, ctx) === null) {
+        reportError(ErrorTypes.ValueUnmatched, data, ty, {ctx});
+        return null;
+    }
+
     return retVal ? {value: (ctx && ctx.mapper) ? ctx.mapper(retVal, ty) : retVal} : null;
 }
 
