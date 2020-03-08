@@ -42,6 +42,7 @@ interface Folder extends EntryBase {
     @recordType
     type: 'folder';
     /** Child entries */
+    @constraint('unique', ['name'])
     entries: Entry[];
 }
 
@@ -245,6 +246,7 @@ class App extends React.Component {
                 checkAll: true,
                 schema,
                 stereotypes: new Map(tynder.stereotypes),
+                customConstraints: new Map(tynder.customConstraints),
             };
             if (tynder.validate(JSON.parse(data), tynder.getType(schema, targetEntryName.value), ctx)) {
                 r = `Validation succeeded. (Tynder)`;
