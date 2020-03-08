@@ -877,16 +877,33 @@ export function withConstraint<T extends TypeAssertion>(name: string, args?: any
         throw new Error(`Unsafe symbol name is appeared in constraint assertion: ${name}`);
     }
     return (ty: T) => {
-        const ret: T = ({
-            ...ty,
-            customConstraints: ty.customConstraints
-                ? ty.customConstraints.slice().push(name)
-                : [name],
-            customConstraintsArgs: ty.customConstraintsArgs
-                ? {...ty.customConstraintsArgs, [name]: args}
-                : {[name]: args},
-        });
-        return ret;
+        if (ty.kind === 'optional') {
+            const opt = (ty as OptionalAssertion).optional;
+            const ret: T = ({
+                ...ty,
+                optional: {
+                    ...opt,
+                    customConstraints: opt.customConstraints
+                        ? opt.customConstraints.slice().push(name)
+                        : [name],
+                    customConstraintsArgs: opt.customConstraintsArgs
+                        ? {...opt.customConstraintsArgs, [name]: args}
+                        : {[name]: args},
+                },
+            });
+            return ret;
+        } else {
+            const ret: T = ({
+                ...ty,
+                customConstraints: ty.customConstraints
+                    ? ty.customConstraints.slice().push(name)
+                    : [name],
+                customConstraintsArgs: ty.customConstraintsArgs
+                    ? {...ty.customConstraintsArgs, [name]: args}
+                    : {[name]: args},
+            });
+            return ret;
+        }
     };
 }
 
