@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.10
+
+* `[FIX]` Fix d.ts code generation: additional-props entry is not output when other member entries are not exist.
+
+
 ## v0.3.9
 
 * Add `unique-non-null` constraint.
