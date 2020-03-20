@@ -206,4 +206,108 @@ describe("fix-3", function() {
             }
         }
     });
+    it("gen-d.ts-addtional-props-1", function() {
+        let src = `
+        export interface MetaViewsIndex {
+            [viewResourceName: string]: {
+                [profileName: string]: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export interface MetaViewsIndex {
+            [propName0: string]: {
+                [propName0: string]: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-addtional-props-2", function() {
+        let src = `
+        export interface MetaViewsIndex {
+            [viewResourceName: string]?: {
+                [profileName: string]?: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export interface MetaViewsIndex {
+            [propName0: string]?: {
+                [propName0: string]?: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-addtional-props-3", function() {
+        let src = `
+        export interface MetaViewsIndex {
+            foo: string;
+            [viewResourceName: string]?: {
+                [profileName: string]?: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export interface MetaViewsIndex {
+            foo: string;
+            [propName0: string]?: {
+                [propName0: string]?: {
+                    id: string;
+                    name: string;
+                };
+            };
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-addtional-props-4", function() {
+        let src = `
+        export interface MetaViewsIndex {
+            foo?: string;
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export interface MetaViewsIndex {
+            foo?: string;
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
 });
