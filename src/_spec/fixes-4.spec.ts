@@ -310,4 +310,36 @@ describe("fix-3", function() {
 
         expect(dts).toEqual(exp);
     });
+    it("gen-dts-empty-object-1", function() {
+        let src = `
+        export interface MetaFields {
+            properties: {
+                [fieldName: string]: {};
+            };
+            revision?: number;
+        }
+        export interface MetaLayout {
+            layout: {}[];
+            revision?: number;
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export interface MetaFields {
+            properties: {
+                [propName0: string]: {};
+            };
+            revision?: number;
+        }
+        export interface MetaLayout {
+            layout: {}[];
+            revision?: number;
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    })
 });
