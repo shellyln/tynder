@@ -167,8 +167,12 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
                     formatTypeName(x[1].typeName) :
                     generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`) || [];
 
+    const propsLines = memberLines.concat(additionalPropsLines);
+    if (propsLines.length === 0) {
+        return '{}';
+    }
     return (
-        `{\n${memberLines.concat(additionalPropsLines).join(sep)}${sep}${'    '.repeat(ctx.nestLevel)}}`
+        `{\n${propsLines.join(sep)}${sep}${'    '.repeat(ctx.nestLevel)}}`
     );
 }
 
