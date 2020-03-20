@@ -139,7 +139,8 @@ function formatAdditionalPropsName(ak: AdditionalPropsKey, i: number) {
 
 
 function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
-    if (ty.members.filter(x => !(x[2])).length === 0) {
+    if (ty.members.filter(x => !(x[2])).length === 0 &&
+        ty.additionalProps?.filter(x => !(x[2])).length === 0) {
         return '{}';
     }
     // NOTE: Semicolon is always preferred.
