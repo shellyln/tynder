@@ -278,6 +278,7 @@ try {
 
 ### From object (import)
 ```ts
+...
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
 import { Foo, A }                from './path/to/schema-types/my-schema';    // type definitions (.d.ts)
 import mySchema_                 from './path/to/schema-compiled/my-schema'; // pre-compiled schema (.ts)
@@ -296,6 +297,7 @@ if (validated) {
 
 ### From object (require JSON file)
 ```ts
+...
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
 import { Foo, A }                from './path/to/schema-types/my-schema'; // type definitions (.d.ts)
 
@@ -316,6 +318,7 @@ if (validated) {
 ```
 or
 ```ts
+...
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
 import { Foo, A }                from './path/to/schema-types/my-schema';         // type definitions (.d.ts)
 import mySchemaJson              from './path/to/schema-compiled/my-schema.json'; // pre-compiled schema (.json)
@@ -334,6 +337,7 @@ if (validated) {
 
 ### From text
 ```ts
+...
 import { deserialize } from 'tynder/modules/lib/serializer';
 import { Foo, A }      from './path/to/schema-types/my-schema'; // type definitions (.d.ts)
 import * as fs         from 'fs';
@@ -381,6 +385,39 @@ try {
 } catch (e) {
     console.log(e.message);
     console.log(e.ctx?.errors);
+}
+```
+
+
+### Type guards
+
+```ts
+import { isType,
+         getType } from 'tynder/modules/validator';
+
+...
+
+const unknownInput: unknown = {a: 'x'};
+if (isType<A>(unknownInput, getType(mySchema, 'A'), ctx) && unknownInput.a.length > 0) {
+    console.log(`ok: ${unknownInput.a.length}`);
+} else {
+    console.log('ng');
+}
+```
+
+```ts
+import { shouldBeType,
+         getType } from 'tynder/modules/validator';
+
+...
+
+try {
+    const unknownInput: unknown = {a: 'x'};
+    if (shouldBeType<A>(unknownInput, getType(mySchema, 'A'), ctx)) {
+        console.log(`ok: ${unknownInput.a.length}`);
+    } // If the type do not match, an error is thrown.
+} catch (e) {
+    console.log('ng');
 }
 ```
 
