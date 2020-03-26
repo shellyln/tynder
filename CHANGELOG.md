@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4.0
+
+* Add type guard functions `isType` and `shouldBeType`.
+
+### _Breaking changes_
+* Type of `ValidationError::ctx` is changed to `Partial<ValidationContext>`.
+
+
+
 ## v0.3.11
 
 * `[FIX]` Fix d.ts code generation: empty objects generate invalid code.

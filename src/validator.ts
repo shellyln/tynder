@@ -848,16 +848,14 @@ export function validate<T>(
 export function isType<T>(
     data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): data is T {
 
-    const z = validate<T>(data, ty, ctx);
-    return (!!z);
+    return (!! validate<T>(data, ty, ctx));
 }
 
 
 export function shouldBeType<T>(
     data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): data is T {
 
-    const z = validate<T>(data, ty, ctx);
-    if (z) {
+    if (validate<T>(data, ty, ctx)) {
         return true;
     } else {
         throw new ValidationError('Validation failed.', ty, ctx);
