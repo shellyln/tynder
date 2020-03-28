@@ -845,6 +845,13 @@ export function validate<T>(
 }
 
 
+export function isType<T>(
+    data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): data is T {
+
+    return (!! validate<T>(data, ty, ctx));
+}
+
+
 export function getType(schema: TypeAssertionMap, name: string): TypeAssertion {
     if (schema.has(name)) {
         return schema.get(name)?.ty as TypeAssertion;

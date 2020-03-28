@@ -48,6 +48,8 @@ class UtcDate extends Date {
             return;
         }
 
+        this.setUTCDate(1);
+
         this.setUTCFullYear(year);
         this.setUTCMonth(typeof month === 'number' ? month : 0);
         this.setUTCDate(typeof date === 'number' ? date : 1);
@@ -122,6 +124,8 @@ class LcDate extends Date {
             }
             return;
         }
+
+        this.setDate(1);
 
         this.setFullYear(year);
         this.setMonth(typeof month === 'number' ? month : 0);

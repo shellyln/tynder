@@ -2,6 +2,7 @@
 import { TypeAssertion,
          ValidationContext } from '../types';
 import { validate,
+         isType,
          getType }           from '../validator';
 import { pick,
          patch }             from '../picker';
@@ -341,5 +342,38 @@ describe("fix-3", function() {
         exp = exp.replace(/\s+/g, ' ').trim();
 
         expect(dts).toEqual(exp);
-    })
+    });
+    it("type-guard-1", function() {
+        const schemas = [compile(`
+            interface O {
+                a: string;
+                b: number;
+            }
+        `)];
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    name: 'O',
+                    typeName: 'O',
+                    kind: 'object',
+                    members: [
+                        ['a', {
+                            name: 'a',
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }],
+                        ['b', {
+                            name: 'b',
+                            kind: 'primitive',
+                            primitiveName: 'number',
+                        }],
+                    ],
+                };
+                const ty = getType(schema, 'O');
+                expect(ty).toEqual(rhs);
+                const unk = {a: 'qwerty', b: 0};
+                expect(isType<{a: string, b: number}>(unk, ty) && unk.a === 'qwerty').toEqual(true);
+            }
+        }
+    });
 });

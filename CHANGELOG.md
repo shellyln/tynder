@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.4.0
+
+* Add type guard functions `isType`.
+* `[FIX]` Fix `date`, `lcdate`, `datetime`, `lcdatetime` stereotypes.
+  * Constructor returns wrong month if passed month's day of month is shorted than current month.
+
+### _Breaking changes_
+* Type of `ValidationError::ctx` is changed to `Partial<ValidationContext>`.
+
+
+
 ## v0.3.11
 
 * `[FIX]` Fix d.ts code generation: empty objects generate invalid code.
