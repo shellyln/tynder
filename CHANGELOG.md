@@ -2,7 +2,7 @@
 
 ## v0.4.0
 
-* Add type guard functions `isType` and `shouldBeType`.
+* Add type guard functions `isType`.
 
 ### _Breaking changes_
 * Type of `ValidationError::ctx` is changed to `Partial<ValidationContext>`.

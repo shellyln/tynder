@@ -405,22 +405,6 @@ if (isType<A>(unknownInput, getType(mySchema, 'A'), ctx) && unknownInput.a.lengt
 }
 ```
 
-```ts
-import { shouldBeType,
-         getType } from 'tynder/modules/validator';
-
-...
-
-try {
-    const unknownInput: unknown = {a: 'x'};
-    if (shouldBeType<A>(unknownInput, getType(mySchema, 'A'), ctx)) {
-        console.log(`ok: ${unknownInput.a.length}`);
-    } // If the type do not match, an error is thrown.
-} catch (e) {
-    console.log('ng');
-}
-```
-
 
 ## Define schema with functional API
 
