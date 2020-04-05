@@ -10,6 +10,7 @@ const objConstructor = ({}).constructor; // NOTE: objConstructor            === 
 const funConstructor = Function;         // NOTE: ({}).toString.constructor === Function
 
 
+export const SymbolPattern = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 export const NumberPattern = /^([\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?)$/;
 export const DatePattern = /^(\d{4}-[01]\d-[0-3]\d)$/;
 export const DateTimePattern =

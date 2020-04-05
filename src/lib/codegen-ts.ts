@@ -17,6 +17,7 @@ import { TypeAssertion,
          TypeAssertionMap,
          CodegenContext } from '../types';
 import { escapeString }   from '../lib/escape';
+import { SymbolPattern }  from '../lib/util';
 
 
 
@@ -152,7 +153,8 @@ function generateTypeScriptCodeObject(ty: ObjectAssertion, isInterface: boolean,
         .map(x =>
             `${formatTypeScriptCodeDocComment(x[3] || '', ctx.nestLevel + 1)}${
                 '    '.repeat(ctx.nestLevel + 1)}${
-                x[0]}${x[1].kind === 'optional' ? '?' : ''}: ${
+                SymbolPattern.test(x[0]) ? x[0] : `'${escapeString(x[0])}'`}${
+                    x[1].kind === 'optional' ? '?' : ''}: ${
                 x[1].typeName ?
                     formatTypeName(x[1].typeName) :
                     generateTypeScriptCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}`);
