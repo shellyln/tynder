@@ -376,4 +376,22 @@ describe("fix-3", function() {
             }
         }
     });
+    it("gen-d.ts-non-ascii-symbol-1", function() {
+        let src = `
+        export interface MetaViewsIndex {
+            '1foo'?: string;
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export interface MetaViewsIndex {
+            '1foo'?: string;
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
 });
