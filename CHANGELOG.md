@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.1
+
+* `[FIX]` Fix TypeScript code generation: object member non-ascii symbol name should be enclose with quotation.
+
+
 ## v0.4.0
 
 * Add type guard functions `isType`.
@@ -9,6 +14,8 @@
 ### _Breaking changes_
 * Type of `ValidationError::ctx` is changed to `Partial<ValidationContext>`.
 
+
+----
 
 
 ## v0.3.11
