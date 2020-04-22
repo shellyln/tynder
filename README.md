@@ -34,7 +34,7 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 
 * [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart)
     * A boilerplate for React client + Express server project using Tynder data validation library.
-
+* [Tynder Schema Converter Chrome Extension](https://github.com/shellyln/tynder-chrome-extension)
 
 ## Playground
 * [TypeScript (Tynder DSL) → JSON Schema | GraphQL | Protobuf Converter](https://shellyln.github.io/tynder/playground.html)
