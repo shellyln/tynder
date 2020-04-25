@@ -121,12 +121,12 @@ type Baz {
     ccc3: Float!
     /** comment */
     ccc4: Float!
-    ddd1: [Any!]!
-    ddd2: [Any!]!
-    ddd3: [Any!]!
-    ddd4: [Any!]!
-    ddd5: [Any!]!
-    ddd6: [Any!]!
+    ddd1: [Any]!
+    ddd2: [Any]!
+    ddd3: [Any]!
+    ddd4: [Any]!
+    ddd5: [Any]!
+    ddd6: [Any]!
     eee1: [String!]!
     eee2: [String!]!
     eee3: [String!]!

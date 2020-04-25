@@ -100,7 +100,7 @@ function generateGraphQlCodeSpread(ty: SpreadAssertion, ctx: CodegenContext) {
 
 
 function generateGraphQlCodeSequence(ty: SequenceAssertion, ctx: CodegenContext) {
-    return '[Any!]'; // TODO: Any is invalid type.
+    return '[Any]'; // TODO: Any is invalid type.
 }
 
 
@@ -109,7 +109,9 @@ function generateGraphQlCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
         x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
         x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
     if (filtered.length === 1 && ty.oneOf.length !== 1) {
-        return generateGraphQlCodeInner(filtered[0], false, ctx);
+        return filtered[0].typeName ?
+            filtered[0].typeName :
+            generateGraphQlCodeInner(filtered[0], false, ctx);
     } else {
         return `${ty.oneOf
             .map(x => x.typeName ?
