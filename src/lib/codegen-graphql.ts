@@ -19,7 +19,7 @@ import { TypeAssertion,
 
 function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
     if (typeName.includes('.')) {
-        return generateGraphQlCodeInner(ty, false, ctx);
+        return generateGraphQlCodeInner(ty, false, ctx, false);
     }
     return typeName;
 }
@@ -88,7 +88,7 @@ function generateGraphQlCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx:
 function generateGraphQlCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
     return (`[${ty.repeated.typeName ?
             formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
-            generateGraphQlCodeInner(ty.repeated, false, ctx)}${
+            generateGraphQlCodeInner(ty.repeated, false, ctx, false)}${
                 ty.repeated.kind === 'optional' ? '' : '!'}]`
     );
 }
@@ -104,19 +104,23 @@ function generateGraphQlCodeSequence(ty: SequenceAssertion, ctx: CodegenContext)
 }
 
 
-function generateGraphQlCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
+function generateGraphQlCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext, isUnion: boolean) {
     const filtered = ty.oneOf.filter(x => !(
         x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
         x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
     if (filtered.length === 1 && ty.oneOf.length !== 1) {
         return filtered[0].typeName ?
             filtered[0].typeName :
-            generateGraphQlCodeInner(filtered[0], false, ctx);
+            generateGraphQlCodeInner(filtered[0], false, ctx, false);
     } else {
-        return `${ty.oneOf
-            .map(x => x.typeName ?
-                x.typeName :
-                generateGraphQlCodeInner(x, false, ctx)).join(' | ')}`;
+        if (isUnion) {
+            return `${ty.oneOf
+                .map(x => x.typeName ?
+                    x.typeName :
+                    generateGraphQlCodeInner(x, false, ctx, false)).join(' | ')}`;
+        } else {
+            return 'Any'; // TODO: Any is invalid type.
+        }
     }
 }
 
@@ -140,7 +144,7 @@ function generateGraphQlCodeObject(ty: ObjectAssertion, isInterface: boolean, ct
                 x[0]}: ${
                 x[1].typeName ?
                     formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
-                    generateGraphQlCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}${
+                    generateGraphQlCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1}, false)}${
                 x[1].kind === 'optional' ? '' : '!'}`);
 
     return (
@@ -149,14 +153,14 @@ function generateGraphQlCodeObject(ty: ObjectAssertion, isInterface: boolean, ct
 }
 
 
-function generateGraphQlCodeInner(ty: TypeAssertion, isInterface: boolean, ctx: CodegenContext): string {
+function generateGraphQlCodeInner(ty: TypeAssertion, isInterface: boolean, ctx: CodegenContext, isUnion: boolean): string {
     let ret = '';
 
     switch (ty.kind) {
     case 'optional':
-        return generateGraphQlCodeInner(ty.optional, isInterface, ctx);
+        return generateGraphQlCodeInner(ty.optional, isInterface, ctx, false);
     case 'one-of':
-        return generateGraphQlCodeOneOf(ty, ctx); // TODO: inline union is invalid.
+        return generateGraphQlCodeOneOf(ty, ctx, isUnion); // TODO: inline union is invalid.
     case 'spread':
         return generateGraphQlCodeSpread(ty, ctx);
     case 'sequence':
@@ -209,7 +213,7 @@ export function generateGraphQlCode(types: TypeAssertionMap): string {
         code += formatGraphQlCodeDocComment(ty[1].ty, ctx.nestLevel);
         if (ty[1].ty.kind === 'object') {
             code += `type ${ty[0]} ${
-                generateGraphQlCodeInner(ty[1].ty, true, ctx)}\n\n`;
+                generateGraphQlCodeInner(ty[1].ty, true, ctx, false)}\n\n`;
         } else if (ty[1].ty.kind === 'enum') {
             const indent0 = '    '.repeat(ctx.nestLevel);
             const indent1 = '    '.repeat(ctx.nestLevel + 1);
@@ -222,7 +226,7 @@ export function generateGraphQlCode(types: TypeAssertionMap): string {
         } else if (ty[1].ty.kind === 'never' && ty[1].ty.passThruCodeBlock) {
             // nothing to do
         } else {
-            code += `union ${ty[0]} = ${generateGraphQlCodeInner(ty[1].ty, false, ctx)}\n\n`;
+            code += `union ${ty[0]} = ${generateGraphQlCodeInner(ty[1].ty, false, ctx, true)}\n\n`;
         }
     }
     return code;

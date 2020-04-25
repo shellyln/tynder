@@ -45,10 +45,10 @@ type ErrorMessages {
 }
 
 type TypeAssertionErrorMessageConstraints {
-    minValue: Float | String | Any
-    maxValue: Float | String | Any
-    greaterThanValue: Float | String | Any
-    lessThanValue: Float | String | Any
+    minValue: Any
+    maxValue: Any
+    greaterThanValue: Any
+    lessThanValue: Any
     minLength: Float
     maxLength: Float
     min: Float
@@ -112,10 +112,10 @@ type UnknownTypeAssertion {
 }
 
 type PrimitiveTypeAssertionConstraints {
-    minValue: Float | String | Any
-    maxValue: Float | String | Any
-    greaterThanValue: Float | String | Any
-    lessThanValue: Float | String | Any
+    minValue: Any
+    maxValue: Any
+    greaterThanValue: Any
+    lessThanValue: Any
     minLength: Float
     maxLength: Float
     pattern: RegExp
@@ -132,10 +132,10 @@ type PrimitiveTypeAssertion {
     docComment: String
     passThruCodeBlock: String
     noOutput: Boolean
-    minValue: Float | String | Any
-    maxValue: Float | String | Any
-    greaterThanValue: Float | String | Any
-    lessThanValue: Float | String | Any
+    minValue: Any
+    maxValue: Any
+    greaterThanValue: Any
+    lessThanValue: Any
     minLength: Float
     maxLength: Float
     pattern: RegExp
@@ -243,7 +243,7 @@ type EnumAssertion {
 
 union ObjectAssertionMember = [Any] | [Any] | [Any]
 
-union AdditionalPropsKey = [String | String | RegExp!]
+union AdditionalPropsKey = [Any!]
 
 union AdditionalPropsMember = [Any] | [Any] | [Any]
 
@@ -251,7 +251,7 @@ type ObjectAssertion {
     kind: String!
     members: [ObjectAssertionMember!]!
     additionalProps: [AdditionalPropsMember!]
-    baseTypes: [ObjectAssertion | AssertionSymlink!]
+    baseTypes: [Any!]
     messageId: String
     message: String
     messages: ErrorMessages
@@ -282,7 +282,7 @@ type ValidationContext {
     noAdditionalProps: Boolean
     errorMessages: ErrorMessages
     errors: [TypeAssertionErrorMessage!]!
-    typeStack: [NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion | AssertionSymlink | [Any]!]!
+    typeStack: [Any!]!
     schema: TypeAssertionMap
 }
 
