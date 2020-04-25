@@ -124,6 +124,16 @@ message Baz {
     double ccc3 = 11;
     /** comment */
     double ccc4 = 12;
+    repeated google.protobuf.Any ddd1 = 13;
+    repeated google.protobuf.Any ddd2 = 14;
+    repeated google.protobuf.Any ddd3 = 15;
+    repeated google.protobuf.Any ddd4 = 16;
+    repeated google.protobuf.Any ddd5 = 17;
+    repeated google.protobuf.Any ddd6 = 18;
+    repeated string eee1 = 19;
+    repeated string eee2 = 20;
+    repeated string eee3 = 21;
+    repeated string eee4 = 22;
 }
 
 message User {

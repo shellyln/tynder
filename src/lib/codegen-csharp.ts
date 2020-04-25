@@ -91,7 +91,10 @@ function generateCSharpCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) 
     return (
         `${ty.repeated.typeName ?
             formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
-            'object'}[]`
+            ty.repeated.kind === 'primitive' ?
+                generateCSharpCodePrimitive(ty.repeated, ctx) :
+                ty.repeated.kind === 'primitive-value' ?
+                    generateCSharpCodePrimitiveValue(ty.repeated, ctx) : 'object'}[]`
     );
 }
 

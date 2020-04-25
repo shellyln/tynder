@@ -220,6 +220,36 @@ namespace Tynder.UserSchema
         /** comment */
         [Range(5, Double.MaxValue)]
         public double ccc4 { get; set; }
+
+        [Required]
+        public object[] ddd1 { get; set; }
+
+        [Required]
+        public object[] ddd2 { get; set; }
+
+        [Required]
+        public object[] ddd3 { get; set; }
+
+        [Required]
+        public object[] ddd4 { get; set; }
+
+        [Required]
+        public object[] ddd5 { get; set; }
+
+        [Required]
+        public object[] ddd6 { get; set; }
+
+        [Required]
+        public string[] eee1 { get; set; }
+
+        [Required, MinLength(10)]
+        public string[] eee2 { get; set; }
+
+        [Required, MaxLength(20)]
+        public string[] eee3 { get; set; }
+
+        [Required, MinLength(10), MaxLength(20)]
+        public string[] eee4 { get; set; }
     }
 
 

@@ -110,6 +110,18 @@ interface Baz {
     /** comment */
     @minValue(5)
     ccc4: number;
+
+    ddd1: [number, string];
+    ddd2: [...<number>, string];
+    ddd3: [...<number, 10..>, string];
+    ddd4: [...<number, ..20>, string];
+    ddd5: [...<number, 10..20>, string];
+    ddd6: [number?, string];
+
+    eee1: string[];
+    eee2: string[10..];
+    eee3: string[..20];
+    eee4: string[10..20];
 }
 
 interface User {

@@ -101,18 +101,12 @@ function generateProto3CodeSpread(ty: SpreadAssertion, ctx: CodegenContext) {
 
 
 function generateProto3CodeSequence(ty: SequenceAssertion, ctx: CodegenContext) {
-    return 'google.protobuf.Any';
+    return 'repeated google.protobuf.Any';
 }
 
 
-function generateProto3CodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
-    return 'google.protobuf.Any';
-}
-
-
-function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) {
-    const r = generateProto3CodeInner(ty.optional, false, ctx);
-    switch (r) {
+function appendOptionalModifier(name: string) {
+    switch (name) {
     case 'double':
         return 'google.protobuf.DoubleValue';
     case 'int64':
@@ -124,8 +118,25 @@ function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) 
     case 'bool':
         return 'google.protobuf.BoolValue';
     default:
+        return name;
+    }
+}
+
+
+function generateProto3CodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
+    const filtered = ty.oneOf.filter(x => !(
+        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
+        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
+    if (filtered.length === 1 && ty.oneOf.length !== 1) {
+        return appendOptionalModifier(generateProto3CodeInner(filtered[0], false, ctx));
+    } else {
         return 'google.protobuf.Any';
     }
+}
+
+
+function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) {
+    return appendOptionalModifier(generateProto3CodeInner(ty.optional, false, ctx));
 }
 
 

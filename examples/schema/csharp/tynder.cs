@@ -318,7 +318,7 @@ namespace Tynder.UserSchema
         public double nestLevel { get; set; }
 
         [Required]
-        public object[] symlinkStack { get; set; }
+        public string[] symlinkStack { get; set; }
     }
 
 

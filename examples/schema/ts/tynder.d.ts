@@ -133,7 +133,7 @@ export interface OptionalAssertion extends TypeAssertionBase {
 
 export interface EnumAssertion extends TypeAssertionBase {
     kind: 'enum';
-    values: Array<[string, (number | string), string]>;
+    values: Array<any[]>;
 }
 
 export type ObjectAssertionMember = ([string, TypeAssertion] | [string, TypeAssertion, boolean] | [string, TypeAssertion, boolean, string]);

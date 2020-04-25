@@ -104,6 +104,16 @@ interface Baz {
     ccc3: number;
     /** comment */
     ccc4: number;
+    ddd1: [number, string];
+    ddd2: any[];
+    ddd3: any[];
+    ddd4: any[];
+    ddd5: any[];
+    ddd6: any[];
+    eee1: string[];
+    eee2: string[];
+    eee3: string[];
+    eee4: string[];
 }
 
 interface User {

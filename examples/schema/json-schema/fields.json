@@ -545,6 +545,119 @@
           "type": "number",
           "minimum": 5,
           "description": "comment"
+        },
+        "ddd1": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd2": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd3": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd4": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd5": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd6": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "eee1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "eee2": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 10
+        },
+        "eee3": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20
+        },
+        "eee4": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 10,
+          "maxItems": 20
         }
       },
       "required": [
@@ -559,7 +672,17 @@
         "ccc1",
         "ccc2",
         "ccc3",
-        "ccc4"
+        "ccc4",
+        "ddd1",
+        "ddd2",
+        "ddd3",
+        "ddd4",
+        "ddd5",
+        "ddd6",
+        "eee1",
+        "eee2",
+        "eee3",
+        "eee4"
       ],
       "additionalProperties": false
     },

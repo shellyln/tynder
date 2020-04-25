@@ -909,6 +909,183 @@ const schema = {
             },
             false,
             "comment"
+          ],
+          [
+            "ddd1",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "primitive",
+                  "primitiveName": "number"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd1"
+            }
+          ],
+          [
+            "ddd2",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": null,
+                  "max": null,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd2"
+            }
+          ],
+          [
+            "ddd3",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": 10,
+                  "max": null,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd3"
+            }
+          ],
+          [
+            "ddd4",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": null,
+                  "max": 20,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd4"
+            }
+          ],
+          [
+            "ddd5",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": 10,
+                  "max": 20,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd5"
+            }
+          ],
+          [
+            "ddd6",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "optional",
+                  "optional": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd6"
+            }
+          ],
+          [
+            "eee1",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee1"
+            }
+          ],
+          [
+            "eee2",
+            {
+              "kind": "repeated",
+              "min": 10,
+              "max": null,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee2"
+            }
+          ],
+          [
+            "eee3",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": 20,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee3"
+            }
+          ],
+          [
+            "eee4",
+            {
+              "kind": "repeated",
+              "min": 10,
+              "max": 20,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee4"
+            }
           ]
         ],
         "typeName": "Baz",

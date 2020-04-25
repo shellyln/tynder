@@ -3,7 +3,7 @@
 ## v0.5.0
 
 * Add `C#` type definition code generation.
-* Improve code generation (Protobuf, GraphQL).
+* Improve code generation (TypeScript, Protobuf, GraphQL).
 
 
 ----

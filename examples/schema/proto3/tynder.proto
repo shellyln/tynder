@@ -64,10 +64,10 @@ message TypeAssertionErrorMessageConstraints {
     google.protobuf.Any maxValue = 2;
     google.protobuf.Any greaterThanValue = 3;
     google.protobuf.Any lessThanValue = 4;
-    google.protobuf.Any minLength = 5;
-    google.protobuf.Any maxLength = 6;
-    google.protobuf.Any min = 7;
-    google.protobuf.Any max = 8;
+    google.protobuf.DoubleValue minLength = 5;
+    google.protobuf.DoubleValue maxLength = 6;
+    google.protobuf.DoubleValue min = 7;
+    google.protobuf.DoubleValue max = 8;
     google.protobuf.StringValue pattern = 9;
 }
 
@@ -131,8 +131,8 @@ message PrimitiveTypeAssertionConstraints {
     google.protobuf.Any maxValue = 2;
     google.protobuf.Any greaterThanValue = 3;
     google.protobuf.Any lessThanValue = 4;
-    google.protobuf.Any minLength = 5;
-    google.protobuf.Any maxLength = 6;
+    google.protobuf.DoubleValue minLength = 5;
+    google.protobuf.DoubleValue maxLength = 6;
     google.protobuf.Any pattern = 7;
 }
 
@@ -151,8 +151,8 @@ message PrimitiveTypeAssertion {
     google.protobuf.Any maxValue = 12;
     google.protobuf.Any greaterThanValue = 13;
     google.protobuf.Any lessThanValue = 14;
-    google.protobuf.Any minLength = 15;
-    google.protobuf.Any maxLength = 16;
+    google.protobuf.DoubleValue minLength = 15;
+    google.protobuf.DoubleValue maxLength = 16;
     google.protobuf.Any pattern = 17;
 }
 
@@ -170,8 +170,8 @@ message PrimitiveValueTypeAssertion {
 }
 
 message RepeatedAssertionConstraints {
-    google.protobuf.Any min = 1;
-    google.protobuf.Any max = 2;
+    google.protobuf.DoubleValue min = 1;
+    google.protobuf.DoubleValue max = 2;
 }
 
 message RepeatedAssertion {
@@ -185,8 +185,8 @@ message RepeatedAssertion {
     google.protobuf.StringValue docComment = 8;
     google.protobuf.StringValue passThruCodeBlock = 9;
     google.protobuf.BoolValue noOutput = 10;
-    google.protobuf.Any min = 11;
-    google.protobuf.Any max = 12;
+    google.protobuf.DoubleValue min = 11;
+    google.protobuf.DoubleValue max = 12;
 }
 
 message SpreadAssertion {
@@ -200,8 +200,8 @@ message SpreadAssertion {
     google.protobuf.StringValue docComment = 8;
     google.protobuf.StringValue passThruCodeBlock = 9;
     google.protobuf.BoolValue noOutput = 10;
-    google.protobuf.Any min = 11;
-    google.protobuf.Any max = 12;
+    google.protobuf.DoubleValue min = 11;
+    google.protobuf.DoubleValue max = 12;
 }
 
 message SequenceAssertion {
@@ -245,7 +245,7 @@ message OptionalAssertion {
 
 message EnumAssertion {
     string kind = 1;
-    repeated google.protobuf.Any values = 2;
+    repeated repeated google.protobuf.Any values = 2;
     google.protobuf.StringValue messageId = 3;
     google.protobuf.StringValue message = 4;
     ErrorMessages messages = 5;
@@ -271,8 +271,8 @@ message AdditionalPropsMember {
 message ObjectAssertion {
     string kind = 1;
     repeated ObjectAssertionMember members = 2;
-    google.protobuf.Any additionalProps = 3;
-    google.protobuf.Any baseTypes = 4;
+    repeated AdditionalPropsMember additionalProps = 3;
+    repeated google.protobuf.Any baseTypes = 4;
     google.protobuf.StringValue messageId = 5;
     google.protobuf.StringValue message = 6;
     ErrorMessages messages = 7;
