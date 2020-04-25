@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tynder.UserSchema {
+namespace Tynder.UserSchema
+{
     public static class ErrorTypes
     {
         public static double InvalidDefinition { get { return 1; } }

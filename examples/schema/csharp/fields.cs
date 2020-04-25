@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tynder.UserSchema {
+namespace Tynder.UserSchema
+{
     public class A 
     {
         [Required]
@@ -78,36 +79,36 @@ namespace Tynder.UserSchema {
     public class Z1 
     {
         [Required]
-        public object foo { get; set; }
+        public string foo { get; set; }
+        [Required, MinLength(0)]
+        public string bar { get; set; }
         [Required]
-        public object bar { get; set; }
-        [Required]
-        public object baz { get; set; }
+        public string baz { get; set; }
     }
 
     public class ACL 
     {
         [Required]
         public string target { get; set; }
-        [Required]
+        [Required, MinLength(0)]
         public string value { get; set; }
     }
 
     public class Z2 
     {
         [Required]
-        public object foo { get; set; }
-        [Required]
-        public object bar { get; set; }
-        [Required]
-        public object baz { get; set; }
+        public string foo { get; set; }
+        [Required, MinLength(0)]
+        public string bar { get; set; }
+        [Required, MaxLength(10)]
+        public string baz { get; set; }
     }
 
     public class Foo 
     {
-        [Required]
+        [Required, RegularExpression(@"^[A-Za-z]+$")]
         public string name { get; set; }
-        [Required]
+        [Required, RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")]
         public string email { get; set; }
     }
 
@@ -119,14 +120,14 @@ namespace Tynder.UserSchema {
 
     public class User 
     {
+        [Required, RegularExpression(@"^[A-Za-z]+$")]
+        public string userName { get; set; }
+        [Required, RegularExpression(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")]
+        public string primaryEmail { get; set; }
+        [Required, RegularExpression(@"^[A-Za-z]+$")]
+        public string primaryAliasName { get; set; }
         [Required]
-        public object userName { get; set; }
-        [Required]
-        public object primaryEmail { get; set; }
-        [Required]
-        public object primaryAliasName { get; set; }
-        [Required]
-        public object[] aliasNames { get; set; }
+        public string[] aliasNames { get; set; }
     }
 
 }

@@ -12,24 +12,17 @@ import { TypeAssertion,
          OneOfAssertion,
          OptionalAssertion,
          EnumAssertion,
-         AdditionalPropsKey,
          ObjectAssertion,
          TypeAssertionMap,
          CodegenContext } from '../types';
 import { escapeString }   from '../lib/escape';
-import { SymbolPattern }  from '../lib/util';
+import { nvl }            from '../lib/util';
 
 
 
-function formatTypeName(typeName: string) {
+function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
     if (typeName.includes('.')) {
-        // const z = typeName.split('.');
-        // let s = z[0];
-        // for (let i = 1; i < z.length; i++) {
-        //     s += `['${escapeString(z[i])}']`
-        // }
-        // return `(${s})`;
-        return 'object';
+        return generateCSharpCodeInner(ty, false, {...ctx, nestLevel: ctx.nestLevel + 1});
     }
     return typeName;
 }
@@ -98,7 +91,7 @@ function generateCSharpCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx: 
 function generateCSharpCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
     return (
         `${ty.repeated.typeName ?
-            formatTypeName(ty.repeated.typeName) :
+            formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             'object'}[]`
     );
 }
@@ -110,13 +103,6 @@ function generateCSharpCodeSpread(ty: SpreadAssertion, ctx: CodegenContext) {
 
 
 function generateCSharpCodeSequence(ty: SequenceAssertion, ctx: CodegenContext) {
-    // return `[${
-    //     ty.sequence
-    //         .filter(x => x.kind !== 'spread')
-    //         .map(x => x.typeName ?
-    //             formatTypeName(x.typeName) :
-    //             generateCSharpCodeInner(x, false, {...ctx, nestLevel: ctx.nestLevel + 1}))
-    //         .join(', ')}]`;
     return 'object[]';
 }
 
@@ -153,9 +139,18 @@ function generateCSharpCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 }
 
 
+export function nvl2(v: any, f: (x: any) => any, alt: any) {
+    return (
+        v !== null && v !== void 0 ? v : alt
+    );
+}
+
+
 function addAttributes(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
     const attrs: string[] = [];
-    if (ty.kind !== 'optional') {
+    let ty2: TypeAssertion = ty;
+
+    if (ty2.kind !== 'optional') {
         switch (typeName) {
         case 'decimal': case 'int': case 'double': case 'bool':
             break;
@@ -163,7 +158,59 @@ function addAttributes(ty: TypeAssertion, ctx: CodegenContext, typeName: string)
             attrs.push('Required');
             break;
         }
+        ty2 = ty;
     }
+
+    switch (ty2.kind) {
+    case 'primitive':
+        {
+            if (typeof ty2.minLength === 'number') {
+                attrs.push(`MinLength(${ty2.minLength})`);
+            }
+            if (typeof ty2.maxLength === 'number') {
+                attrs.push(`MaxLength(${ty2.maxLength})`);
+            }
+            if (ty2.minValue !== null && ty2.minValue !== void 0 ||
+                ty2.maxValue !== null && ty2.maxValue !== void 0) {
+                switch (ty2.primitiveName) {
+                case 'string':
+                    attrs.push(`Range(typeof(string),
+                        ${nvl(ty2.minValue, '')}, ${nvl(ty2.maxValue, '')})`);
+                    break;
+                case 'bigint':
+                    attrs.push(`Range(typeof(decimal),
+                        ${nvl2(ty2.minValue, x => `new decimal(@"${String(x)}").ToString()`, 'Decimal.MinValue')},
+                        ${nvl2(ty2.maxValue, x => `new decimal(@"${String(x)}").ToString()`, 'Decimal.MaxValue')})`);
+                    break;
+                case 'integer':
+                    attrs.push(`Range(
+                        ${nvl2(ty2.minValue, x => `(int)${String(x)}`, 'Int32.MinValue')},
+                        ${nvl2(ty2.maxValue, x => `(int)${String(x)}`, 'Int32.MaxValue')})`);
+                    break;
+                case 'number':
+                    attrs.push(`Range(
+                        ${nvl2(ty2.minValue, x => `(double)${String(x)}`, 'Double.MinValue')},
+                        ${nvl2(ty2.maxValue, x => `(double)${String(x)}`, 'Double.MaxValue')})`);
+                    break;
+                }
+            }
+            if (ty2.pattern) {
+                attrs.push(`RegularExpression(@"${ty2.pattern.source.replace(/"/g, '""')}")`);
+            }
+        }
+        break;
+    case 'repeated':
+        {
+            if (typeof ty2.min === 'number') {
+                attrs.push(`MinLength(${ty2.min})`);
+            }
+            if (typeof ty2.max === 'number') {
+                attrs.push(`MaxLength(${ty2.max})`);
+            }
+        }
+        break;
+    }
+
     if (0 < attrs.length) {
         return `[${attrs.join(', ')}]\n${'    '.repeat(ctx.nestLevel + 1)}`;
     } else{
@@ -180,7 +227,7 @@ function generateCSharpCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx
         .map(x => {
             const typeName =
                 x[1].typeName ?
-                    formatTypeName(x[1].typeName) :
+                    formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
                     generateCSharpCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1});
 
             return (
@@ -191,10 +238,14 @@ function generateCSharpCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx
         });
 
     if (memberLines.length === 0) {
-        return `\n${'    '.repeat(ctx.nestLevel)}{\n${'    '.repeat(ctx.nestLevel)}}`;
+        return (`\n${
+            '    '.repeat(ctx.nestLevel)}{\n${
+            '    '.repeat(ctx.nestLevel)}}`
+        );
     }
-    return (
-        `\n${'    '.repeat(ctx.nestLevel)}{\n${memberLines.join(sep)}${sep}${'    '.repeat(ctx.nestLevel)}}`
+    return (`\n${
+        '    '.repeat(ctx.nestLevel)}{\n${memberLines.join(sep)}${sep}${
+        '    '.repeat(ctx.nestLevel)}}`
     );
 }
 
@@ -235,7 +286,8 @@ export function generateCSharpCode(types: TypeAssertionMap): string {
     let code =
 `using System.ComponentModel.DataAnnotations;
 
-namespace Tynder.UserSchema {
+namespace Tynder.UserSchema
+{
 `;
 
     const ctx = {nestLevel: 1};
@@ -252,7 +304,7 @@ namespace Tynder.UserSchema {
                 ty[1].ty.baseTypes && ty[1].ty.baseTypes.length ? ` : ${
                     ty[1].ty.baseTypes
                         .filter(x => x.typeName)
-                        .map(x => formatTypeName(x.typeName as string))
+                        .map(x => formatTypeName(x, {...ctx, nestLevel: ctx.nestLevel + 1}, x.typeName as string))
                         .join(', ')}` : ''} ${
                 generateCSharpCodeInner(ty[1].ty, true, ctx)}\n\n`;
         } else if (ty[1].ty.kind === 'enum') {
@@ -280,6 +332,8 @@ namespace Tynder.UserSchema {
         } else if (ty[1].ty.kind === 'never' && ty[1].ty.passThruCodeBlock) {
             // nothing to do
         } else {
+            // nothing to do
+
             // code += `type ${ty[0]} = ${
             //     (ty[1].ty.originalTypeName ?
             //         formatTypeName(ty[1].ty.originalTypeName) :

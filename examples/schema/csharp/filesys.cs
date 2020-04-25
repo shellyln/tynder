@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tynder.UserSchema {
+namespace Tynder.UserSchema
+{
     public class ACL 
     {
         [Required]
