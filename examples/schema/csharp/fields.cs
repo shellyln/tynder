@@ -162,6 +162,32 @@ namespace Tynder.UserSchema
     }
 
 
+    public static class ErrorTypes
+    {
+        /** comment */
+        public static double InvalidDefinition { get { return 1; } }
+
+        /** comment */
+        public static double Required { get { return 2; } }
+
+        /** comment */
+        public static double TypeUnmatched { get { return 3; } }
+
+        /** comment */
+        public static double RepeatQtyUnmatched { get { return 4; } }
+
+        public static double SequenceUnmatched { get { return 5; } }
+
+        public static double ValueRangeUnmatched { get { return 6; } }
+
+        public static double ValuePatternUnmatched { get { return 7; } }
+
+        public static double ValueLengthUnmatched { get { return 8; } }
+
+        public static double ValueUnmatched { get { return 9; } }
+    }
+
+
     public class Foo 
     {
         [Required, RegularExpression(@"^[A-Za-z]+$")]
@@ -250,6 +276,9 @@ namespace Tynder.UserSchema
 
         [Required, MinLength(10), MaxLength(20)]
         public string[] eee4 { get; set; }
+
+        [Required]
+        public object fff { get; set; }
     }
 
 

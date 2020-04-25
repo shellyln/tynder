@@ -68,6 +68,22 @@ interface Z2 {
     baz: ACL.target;
 }
 
+export enum ErrorTypes {
+    /** comment */
+    InvalidDefinition = 1,
+    /** comment */
+    Required,              // (all)
+    /** comment */
+    TypeUnmatched,         // Never/Unknown/Primitive/Object
+    /** comment */
+    RepeatQtyUnmatched,    // Repeated/Spread
+    SequenceUnmatched,     // Sequence
+    ValueRangeUnmatched,   // Primitive: minValue, maxValue, greaterThanValue, lessThanValue
+    ValuePatternUnmatched, // Primitive: pattern
+    ValueLengthUnmatched,  // Primitive: minLength, maxLength
+    ValueUnmatched,        // PrimitiveValue
+}
+
 interface Foo {
     @match(/^[A-Za-z]+$/)
     name: string;
@@ -122,6 +138,8 @@ interface Baz {
     eee2: string[10..];
     eee3: string[..20];
     eee4: string[10..20];
+
+    fff: ErrorTypes;
 }
 
 interface User {

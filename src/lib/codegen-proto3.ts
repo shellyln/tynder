@@ -141,7 +141,10 @@ function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) 
 
 
 function generateProto3CodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
-    return `(${ty.values.map(x => `${x[1]}`).join(' | ')})`;
+    return (ty.typeName ?
+        formatTypeName(ty, ctx, ty.typeName) :
+        'google.protobuf.Any'
+    );
 }
 
 

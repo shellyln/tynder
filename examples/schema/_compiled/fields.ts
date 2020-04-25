@@ -744,6 +744,53 @@ const schema = {
         "typeName": "Z2",
         "name": "Z2"
       },
+      "ErrorTypes": {
+        "kind": "enum",
+        "values": [
+          [
+            "InvalidDefinition",
+            1,
+            "comment"
+          ],
+          [
+            "Required",
+            2,
+            "comment"
+          ],
+          [
+            "TypeUnmatched",
+            3,
+            "comment"
+          ],
+          [
+            "RepeatQtyUnmatched",
+            4,
+            "comment"
+          ],
+          [
+            "SequenceUnmatched",
+            5
+          ],
+          [
+            "ValueRangeUnmatched",
+            6
+          ],
+          [
+            "ValuePatternUnmatched",
+            7
+          ],
+          [
+            "ValueLengthUnmatched",
+            8
+          ],
+          [
+            "ValueUnmatched",
+            9
+          ]
+        ],
+        "typeName": "ErrorTypes",
+        "name": "ErrorTypes"
+      },
       "Foo": {
         "kind": "object",
         "members": [
@@ -1085,6 +1132,15 @@ const schema = {
                 "primitiveName": "string"
               },
               "name": "eee4"
+            }
+          ],
+          [
+            "fff",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ErrorTypes",
+              "typeName": "ErrorTypes",
+              "name": "fff"
             }
           ]
         ],

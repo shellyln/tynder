@@ -95,6 +95,22 @@ type Z2 {
     baz: String!
 }
 
+enum ErrorTypes {
+    /** comment */
+    InvalidDefinition
+    /** comment */
+    Required
+    /** comment */
+    TypeUnmatched
+    /** comment */
+    RepeatQtyUnmatched
+    SequenceUnmatched
+    ValueRangeUnmatched
+    ValuePatternUnmatched
+    ValueLengthUnmatched
+    ValueUnmatched
+}
+
 type Foo {
     name: String!
     email: String!
@@ -131,6 +147,7 @@ type Baz {
     eee2: [String!]!
     eee3: [String!]!
     eee4: [String!]!
+    fff: ErrorTypes!
 }
 
 type User {

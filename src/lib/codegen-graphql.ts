@@ -126,7 +126,10 @@ function generateGraphQlCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext, isUni
 
 
 function generateGraphQlCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
-    return `${ty.values.map(x => `${x[1]}`).join(' | ')}`; // TODO: invalid syntax
+    return (ty.typeName ?
+        formatTypeName(ty, ctx, ty.typeName) :
+        'Any'
+    );
 }
 
 

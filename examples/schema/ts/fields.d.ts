@@ -78,6 +78,22 @@ interface Z2 {
     baz: (ACL['target']);
 }
 
+export enum ErrorTypes {
+    /** comment */
+    InvalidDefinition = 1,
+    /** comment */
+    Required,
+    /** comment */
+    TypeUnmatched,
+    /** comment */
+    RepeatQtyUnmatched,
+    SequenceUnmatched,
+    ValueRangeUnmatched,
+    ValuePatternUnmatched,
+    ValueLengthUnmatched,
+    ValueUnmatched,
+}
+
 interface Foo {
     name: string;
     email: string;
@@ -114,6 +130,7 @@ interface Baz {
     eee2: string[];
     eee3: string[];
     eee4: string[];
+    fff: ErrorTypes;
 }
 
 interface User {

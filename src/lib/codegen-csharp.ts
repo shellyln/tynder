@@ -20,7 +20,7 @@ import { escapeString }   from '../lib/escape';
 
 
 function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
-    if (typeName.includes('.')) {
+    if (typeName.includes('.') || ty.kind === 'symlink' || ty.kind === 'enum') {
         return generateCSharpCodeInner(ty, false, ctx);
     }
     return typeName;
@@ -137,7 +137,7 @@ function generateCSharpCodeOptional(ty: OptionalAssertion, ctx: CodegenContext) 
 
 
 function generateCSharpCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
-    return `(${ty.values.map(x => `${x[1]}`).join(' | ')})`;
+    return 'object';
 }
 
 
@@ -271,11 +271,18 @@ function generateCSharpCodeInner(ty: TypeAssertion, isInterface: boolean, ctx: C
         return generateCSharpCodeOneOf(ty, ctx);
     case 'optional':
         return generateCSharpCodeOptional(ty, ctx);
-    // case 'enum':
-    //     return generateCSharpCodeEnum(ty, ctx);
+    case 'enum':
+        return generateCSharpCodeEnum(ty, ctx);
     case 'object':
         return generateCSharpCodeObject(ty, isInterface, ctx);
     case 'symlink':
+        if (ctx.schema?.has(ty.symlinkTargetName)) {
+            const target = ctx.schema.get(ty.symlinkTargetName);
+            switch (target?.ty.kind) {
+            case 'enum':
+                return 'object';
+            }
+        }
         return ty.symlinkTargetName;
     case 'operator':
         throw new Error(`Unexpected type assertion: ${(ty as any).kind}`);
@@ -285,7 +292,7 @@ function generateCSharpCodeInner(ty: TypeAssertion, isInterface: boolean, ctx: C
 }
 
 
-export function generateCSharpCode(types: TypeAssertionMap): string {
+export function generateCSharpCode(schema: TypeAssertionMap): string {
     let code =
 `using System.ComponentModel.DataAnnotations;
 
@@ -293,9 +300,12 @@ namespace Tynder.UserSchema
 {
 `;
 
-    const ctx = {nestLevel: 1};
+    const ctx: CodegenContext = {
+        nestLevel: 1,
+        schema,
+    };
 
-    for (const ty of types.entries()) {
+    for (const ty of schema.entries()) {
         if (ty[1].ty.noOutput) {
             continue;
         }
@@ -315,7 +325,7 @@ namespace Tynder.UserSchema
     }
 
     let isFirst = true;
-    for (const ty of types.entries()) {
+    for (const ty of schema.entries()) {
         if (ty[1].ty.noOutput) {
             continue;
         }

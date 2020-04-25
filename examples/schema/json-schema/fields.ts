@@ -463,6 +463,23 @@ const schema = {
       ],
       "additionalProperties": false
     },
+    "ErrorTypes": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
     "Foo": {
       "type": "object",
       "properties": {
@@ -660,6 +677,9 @@ const schema = {
           },
           "minItems": 10,
           "maxItems": 20
+        },
+        "fff": {
+          "$ref": "#/definitions/ErrorTypes"
         }
       },
       "required": [
@@ -684,7 +704,8 @@ const schema = {
         "eee1",
         "eee2",
         "eee3",
-        "eee4"
+        "eee4",
+        "fff"
       ],
       "additionalProperties": false
     },

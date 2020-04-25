@@ -98,6 +98,22 @@ message Z2 {
     string baz = 3;
 }
 
+enum ErrorTypes {
+    /** comment */
+    InvalidDefinition = 1;
+    /** comment */
+    Required = 2;
+    /** comment */
+    TypeUnmatched = 3;
+    /** comment */
+    RepeatQtyUnmatched = 4;
+    SequenceUnmatched = 5;
+    ValueRangeUnmatched = 6;
+    ValuePatternUnmatched = 7;
+    ValueLengthUnmatched = 8;
+    ValueUnmatched = 9;
+}
+
 message Foo {
     string name = 1;
     string email = 2;
@@ -134,6 +150,7 @@ message Baz {
     repeated string eee2 = 20;
     repeated string eee3 = 21;
     repeated string eee4 = 22;
+    ErrorTypes fff = 23;
 }
 
 message User {
