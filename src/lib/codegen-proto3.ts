@@ -19,6 +19,14 @@ import { escapeString }   from '../lib/escape';
 
 
 
+function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
+    if (typeName.includes('.')) {
+        return generateProto3CodeInner(ty, false, ctx);
+    }
+    return typeName;
+}
+
+
 function formatProto3CodeDocComment(ty: TypeAssertion | string, nestLevel: number) {
     let code = '';
     const indent = '    '.repeat(nestLevel);
@@ -81,7 +89,7 @@ function generateProto3CodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx: 
 
 function generateProto3CodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
     return (`repeated ${ty.repeated.typeName ?
-            ty.repeated.typeName :
+            formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             generateProto3CodeInner(ty.repeated, false, ctx)}`
     );
 }
@@ -139,7 +147,7 @@ function generateProto3CodeObject(ty: ObjectAssertion, isInterface: boolean, ctx
             `${formatProto3CodeDocComment(x[3] || '', ctx.nestLevel + 1)}${
                 '    '.repeat(ctx.nestLevel + 1)}${
                 x[1].typeName ?
-                    x[1].typeName :
+                    formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
                     generateProto3CodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})} ${
                 x[0]} = ${count++}`);
 

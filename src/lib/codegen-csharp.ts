@@ -21,7 +21,7 @@ import { escapeString }   from '../lib/escape';
 
 function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
     if (typeName.includes('.')) {
-        return generateCSharpCodeInner(ty, false, {...ctx, nestLevel: ctx.nestLevel + 1});
+        return generateCSharpCodeInner(ty, false, ctx);
     }
     return typeName;
 }

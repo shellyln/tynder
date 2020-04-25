@@ -79,9 +79,9 @@ type D {
 type E {}
 
 type Z1 {
-    foo: ACL.target!
-    bar: ACL.value!
-    baz: ACL.target!
+    foo: String!
+    bar: String!
+    baz: String!
 }
 
 type ACL {
@@ -90,9 +90,9 @@ type ACL {
 }
 
 type Z2 {
-    foo: ACL.target!
-    bar: ACL.value!
-    baz: ACL.target!
+    foo: String!
+    bar: String!
+    baz: String!
 }
 
 type Foo {
@@ -124,9 +124,9 @@ type Baz {
 }
 
 type User {
-    userName: Foo.name!
-    primaryEmail: Foo.email!
-    primaryAliasName: Bar.foo.name!
-    aliasNames: [Bar.foo.name!]!
+    userName: String!
+    primaryEmail: String!
+    primaryAliasName: String!
+    aliasNames: [String!]!
 }
 

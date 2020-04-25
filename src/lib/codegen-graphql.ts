@@ -17,6 +17,14 @@ import { TypeAssertion,
 
 
 
+function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
+    if (typeName.includes('.')) {
+        return generateGraphQlCodeInner(ty, false, ctx);
+    }
+    return typeName;
+}
+
+
 function formatGraphQlCodeDocComment(ty: TypeAssertion | string, nestLevel: number) {
     let code = '';
     const indent = '    '.repeat(nestLevel);
@@ -79,7 +87,7 @@ function generateGraphQlCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx:
 
 function generateGraphQlCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
     return (`[${ty.repeated.typeName ?
-            ty.repeated.typeName :
+            formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             generateGraphQlCodeInner(ty.repeated, false, ctx)}${
                 ty.repeated.kind === 'optional' ? '' : '!'}]`
     );
@@ -122,7 +130,7 @@ function generateGraphQlCodeObject(ty: ObjectAssertion, isInterface: boolean, ct
                 '    '.repeat(ctx.nestLevel + 1)}${
                 x[0]}: ${
                 x[1].typeName ?
-                    `${x[1].typeName}` :
+                    formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
                     generateGraphQlCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})}${
                 x[1].kind === 'optional' ? '' : '!'}`);
 
