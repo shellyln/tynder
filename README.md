@@ -36,6 +36,7 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 ## Table of contents
 
 * [Get started](#get-started)
+* [Playground](#playground)
 * [Install](#install)
 * [Define schema with TypeScript-like DSL](#define-schema-with-typescript-like-dsl)
 * [Load pre-compiled schema and type definitions](#load-pre-compiled-schema-and-type-definitions)
