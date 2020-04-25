@@ -24,10 +24,11 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 * Generate type definition or schema files using CLI / API.
     * TypeScript
     * JSON Schema
+    * C# (experimental)
     * Protocol Buffers 3 (experimental)
     * GraphQL (experimental)
 
-![write-once-use-anywhere](https://shellyln.github.io/tynder/assets/image/write-once-v2.svg)
+![write-once-use-anywhere](https://shellyln.github.io/tynder/assets/image/write-once-v3.svg)
 
 
 ## Get started
@@ -1260,6 +1261,10 @@ Subcommands:
       Generated code is:
           const schema = {...};
           export default schema;
+  gen-csharp
+      Compile schema and generate 'C#' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.cs
   gen-proto3
       Compile schema and generate 'Protocol Buffers 3' type definition files.
           * default input file extension is *.tss

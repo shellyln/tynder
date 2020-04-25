@@ -172,6 +172,10 @@ Subcommands:
       Generated code is:
           const schema = {...};
           export default schema;
+  gen-csharp
+      Compile schema and generate 'C#' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.cs
   gen-proto3
       Compile schema and generate 'Protocol Buffers 3' type definition files.
           * default input file extension is *.tss
@@ -180,10 +184,6 @@ Subcommands:
       Compile schema and generate 'GraphQL' type definition files.
           * default input file extension is *.tss
           * default output file extension is *.graphql
-  gen-csharp
-      Compile schema and generate 'CSharp' type definition files.
-          * default input file extension is *.tss
-          * default output file extension is *.cs
 
 Options:
   --indir dirname
