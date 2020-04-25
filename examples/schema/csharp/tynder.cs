@@ -2,6 +2,26 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tynder.UserSchema
 {
+    using PrimitiveValueTypes = System.Object;
+
+    using PrimitiveValueTypeNames = System.Object;
+
+    using OptionalPrimitiveValueTypeNames = System.Object;
+
+    using PlaceholderTypeNames = System.Object;
+
+    using OptionalPlaceholderTypeNames = System.Object;
+
+    using ObjectAssertionMember = System.Object;
+
+    using AdditionalPropsKey = System.Object;
+
+    using AdditionalPropsMember = System.Object;
+
+    using TypeAssertion = System.Object;
+
+    using TypeAssertionMap = System.Object;
+
     public static class ErrorTypes
     {
         public static double InvalidDefinition { get { return 1; } }

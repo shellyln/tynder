@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tynder.UserSchema
 {
+    using NumberType = System.Object;
+
     public class A 
     {
         [Required]

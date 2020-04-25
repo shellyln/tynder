@@ -291,16 +291,38 @@ namespace Tynder.UserSchema
 `;
 
     const ctx = {nestLevel: 1};
+
     for (const ty of types.entries()) {
         if (ty[1].ty.noOutput) {
             continue;
         }
 
-        code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
-        const accessModifier = ty[1].exported ? 'public' : 'public';
+        const indent0 = '    '.repeat(ctx.nestLevel);
 
         if (ty[1].ty.kind === 'object') {
-            code += `    ${accessModifier} class ${ty[0]}${
+            // nothing to do
+        } else if (ty[1].ty.kind === 'enum') {
+            // nothing to do
+        } else if (ty[1].ty.kind === 'never' && ty[1].ty.passThruCodeBlock) {
+            // nothing to do
+        } else {
+            code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
+            code += `${indent0}using ${ty[0]} = System.Object;\n\n`;
+        }
+    }
+
+    for (const ty of types.entries()) {
+        if (ty[1].ty.noOutput) {
+            continue;
+        }
+
+        const accessModifier = ty[1].exported ? 'public' : 'public';
+        const indent0 = '    '.repeat(ctx.nestLevel);
+        const indent1 = '    '.repeat(ctx.nestLevel + 1);
+
+        if (ty[1].ty.kind === 'object') {
+            code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
+            code += `${indent0}${accessModifier} class ${ty[0]}${
                 ty[1].ty.baseTypes && ty[1].ty.baseTypes.length ? ` : ${
                     ty[1].ty.baseTypes
                         .filter(x => x.typeName)
@@ -308,10 +330,9 @@ namespace Tynder.UserSchema
                         .join(', ')}` : ''} ${
                 generateCSharpCodeInner(ty[1].ty, true, ctx)}\n\n`;
         } else if (ty[1].ty.kind === 'enum') {
-            const indent0 = '    '.repeat(ctx.nestLevel);
-            const indent1 = '    '.repeat(ctx.nestLevel + 1);
+            code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
             let value: number | null = 0;
-            code += `    ${accessModifier} static class ${ty[0]}\n${indent0}{\n${
+            code += `${indent0}${accessModifier} static class ${ty[0]}\n${indent0}{\n${
                 ty[1].ty.values
                     .map(x => `${
                         formatCSharpCodeDocComment(x[2] || '', ctx.nestLevel + 1)}${
@@ -333,12 +354,6 @@ namespace Tynder.UserSchema
             // nothing to do
         } else {
             // nothing to do
-
-            // code += `type ${ty[0]} = ${
-            //     (ty[1].ty.originalTypeName ?
-            //         formatTypeName(ty[1].ty.originalTypeName) :
-            //         void 0) ||
-            //     generateCSharpCodeInner(ty[1].ty, false, ctx)};\n\n`;
         }
     }
     return code + '}\n';

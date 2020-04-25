@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tynder.UserSchema
 {
+    /** Entry (union type) */
+    using Entry = System.Object;
+
     public class ACL 
     {
         [Required]
@@ -40,5 +43,4 @@ namespace Tynder.UserSchema
         public Entry[] entries { get; set; }
     }
 
-    /** Entry (union type) */
 }
