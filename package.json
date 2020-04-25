@@ -85,7 +85,7 @@
     "lint:es": "eslint ./src/** -c ./.eslintrc.build.json --ext .js,.ts --ignore-pattern src/_spec/**",
     "lint:es:spec": "eslint ./src/_spec/** -c ./.eslintrc.spec.json --ext .js,.ts",
     "test": "jasmine",
-    "example": "run-s example:0 example:1 example:2 example:3 example:4 example:5 example:6 example:7",
+    "example": "run-s example:0 example:1 example:2 example:3 example:4 example:5 example:6 example:7 example:8",
     "example:0": "node ./bin.cli/tynder.js",
     "example:1": "node ./bin.cli/tynder.js compile               --indir ./examples/schema/tynder --outdir ./examples/schema/_compiled",
     "example:2": "node ./bin.cli/tynder.js compile-as-ts         --indir ./examples/schema/tynder --outdir ./examples/schema/_compiled",
@@ -94,6 +94,7 @@
     "example:5": "node ./bin.cli/tynder.js gen-json-schema-as-ts --indir ./examples/schema/tynder --outdir ./examples/schema/json-schema",
     "example:6": "node ./bin.cli/tynder.js gen-proto3            --indir ./examples/schema/tynder --outdir ./examples/schema/proto3",
     "example:7": "node ./bin.cli/tynder.js gen-graphql           --indir ./examples/schema/tynder --outdir ./examples/schema/graphql",
+    "example:8": "node ./bin.cli/tynder.js gen-csharp            --indir ./examples/schema/tynder --outdir ./examples/schema/csharp",
     "prepublishOnly": "run-s clean build test lint"
   },
   "repository": {

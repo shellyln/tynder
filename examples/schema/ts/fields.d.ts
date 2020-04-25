@@ -56,7 +56,10 @@ interface D {
     booleanValueTypeField?: true;
 }
 
-interface E {}
+interface E {
+    /** additional props */
+    [propName0: string]: any;
+}
 
 interface Z1 {
     foo: (ACL['target']);
