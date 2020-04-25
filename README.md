@@ -31,6 +31,23 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 ![write-once-use-anywhere](https://shellyln.github.io/tynder/assets/image/write-once-v3.svg)
 
 
+
+------------
+## Table of contents
+
+* [Get started](#get-started)
+* [Install](#install)
+* [Define schema with TypeScript-like DSL](#define-schema-with-typescript-like-dsl)
+* [Load pre-compiled schema and type definitions](#load-pre-compiled-schema-and-type-definitions)
+* [Define schema with functional API](#define-schema-with-functional-api)
+* [DSL syntax](#dsl-syntax)
+* [Customize error messages](#customize-error-messages)
+* [CLI subcommands and options](#cli-subcommands-and-options)
+* [Limitations](#limitations)
+* [License](#license)
+------------
+
+
 ## Get started
 
 * [tynder-express-react-ts-esm-quickstart](https://github.com/shellyln/tynder-express-react-ts-esm-quickstart)
