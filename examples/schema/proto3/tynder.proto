@@ -32,9 +32,13 @@ message OptionalPlaceholderTypeNames {
 }
 
 enum ErrorTypes {
+    /** comment */
     InvalidDefinition = 1;
+    /** comment */
     Required = 2;
+    /** comment */
     TypeUnmatched = 3;
+    /** comment */
     RepeatQtyUnmatched = 4;
     SequenceUnmatched = 5;
     ValueRangeUnmatched = 6;

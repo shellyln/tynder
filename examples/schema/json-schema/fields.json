@@ -491,6 +491,78 @@
       ],
       "additionalProperties": false
     },
+    "Baz": {
+      "type": "object",
+      "properties": {
+        "aaa1": {
+          "type": "string"
+        },
+        "aaa2": {
+          "type": "string"
+        },
+        "aaa3": {
+          "type": "string"
+        },
+        "aaa4": {
+          "type": "string"
+        },
+        "bbb1": {
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 5
+        },
+        "bbb2": {
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 5
+        },
+        "bbb3": {
+          "type": "integer",
+          "maximum": -3
+        },
+        "bbb4": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "ccc1": {
+          "type": "number",
+          "minimum": -3,
+          "maximum": 5,
+          "description": "comment"
+        },
+        "ccc2": {
+          "type": "number",
+          "minimum": -3,
+          "maximum": 5,
+          "description": "comment"
+        },
+        "ccc3": {
+          "type": "number",
+          "maximum": -3,
+          "description": "comment"
+        },
+        "ccc4": {
+          "type": "number",
+          "minimum": 5,
+          "description": "comment"
+        }
+      },
+      "required": [
+        "aaa1",
+        "aaa2",
+        "aaa3",
+        "aaa4",
+        "bbb1",
+        "bbb2",
+        "bbb3",
+        "bbb4",
+        "ccc1",
+        "ccc2",
+        "ccc3",
+        "ccc4"
+      ],
+      "additionalProperties": false
+    },
     "User": {
       "type": "object",
       "properties": {

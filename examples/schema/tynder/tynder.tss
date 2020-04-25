@@ -17,9 +17,13 @@ export type OptionalPlaceholderTypeNames = 'never?' | 'any?' | 'unknown?';
 
 
 export enum ErrorTypes {
+    /** comment */
     InvalidDefinition = 1,
+    /** comment */
     Required,              // (all)
+    /** comment */
     TypeUnmatched,         // Never/Unknown/Primitive/Object
+    /** comment */
     RepeatQtyUnmatched,    // Repeated/Spread
     SequenceUnmatched,     // Sequence
     ValueRangeUnmatched,   // Primitive: minValue, maxValue, greaterThanValue, lessThanValue

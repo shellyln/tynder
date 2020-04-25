@@ -104,6 +104,25 @@ type Bar {
     foo: Foo!
 }
 
+type Baz {
+    aaa1: String!
+    aaa2: String!
+    aaa3: String!
+    aaa4: String!
+    bbb1: Int!
+    bbb2: Int!
+    bbb3: Int!
+    bbb4: Int!
+    /** comment */
+    ccc1: Float!
+    /** comment */
+    ccc2: Float!
+    /** comment */
+    ccc3: Float!
+    /** comment */
+    ccc4: Float!
+}
+
 type User {
     userName: Foo.name!
     primaryEmail: Foo.email!

@@ -107,6 +107,25 @@ message Bar {
     Foo foo = 1;
 }
 
+message Baz {
+    string aaa1 = 1;
+    string aaa2 = 2;
+    string aaa3 = 3;
+    string aaa4 = 4;
+    int32 bbb1 = 5;
+    int32 bbb2 = 6;
+    int32 bbb3 = 7;
+    int32 bbb4 = 8;
+    /** comment */
+    double ccc1 = 9;
+    /** comment */
+    double ccc2 = 10;
+    /** comment */
+    double ccc3 = 11;
+    /** comment */
+    double ccc4 = 12;
+}
+
 message User {
     Foo.name userName = 1;
     Foo.email primaryEmail = 2;

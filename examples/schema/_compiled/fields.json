@@ -783,6 +783,135 @@
         "typeName": "Bar",
         "name": "Bar"
       },
+      "Baz": {
+        "kind": "object",
+        "members": [
+          [
+            "aaa1",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minValue": "a",
+              "maxValue": "z",
+              "name": "aaa1"
+            }
+          ],
+          [
+            "aaa2",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minValue": "a",
+              "maxValue": "z",
+              "name": "aaa2"
+            }
+          ],
+          [
+            "aaa3",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "maxValue": "z",
+              "name": "aaa3"
+            }
+          ],
+          [
+            "aaa4",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minValue": "a",
+              "name": "aaa4"
+            }
+          ],
+          [
+            "bbb1",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "bbb1"
+            }
+          ],
+          [
+            "bbb2",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "bbb2"
+            }
+          ],
+          [
+            "bbb3",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "maxValue": -3,
+              "name": "bbb3"
+            }
+          ],
+          [
+            "bbb4",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "minValue": 5,
+              "name": "bbb4"
+            }
+          ],
+          [
+            "ccc1",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "ccc1"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ccc2",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "ccc2"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ccc3",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "maxValue": -3,
+              "name": "ccc3"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ccc4",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "minValue": 5,
+              "name": "ccc4"
+            },
+            false,
+            "comment"
+          ]
+        ],
+        "typeName": "Baz",
+        "name": "Baz"
+      },
       "User": {
         "kind": "object",
         "members": [

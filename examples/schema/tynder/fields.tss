@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 type NumberType = number;
 
 interface A {
@@ -75,6 +77,39 @@ interface Foo {
 
 interface Bar {
     foo: Foo
+}
+
+interface Baz {
+    @minValue('a') @maxValue('z')
+    aaa1: string;
+    @range('a', 'z')
+    aaa2: string;
+    @maxValue('z')
+    aaa3: string;
+    @minValue('a')
+    aaa4: string;
+
+    @minValue(-3) @maxValue(5)
+    bbb1: integer;
+    @range(-3, 5)
+    bbb2: integer;
+    @maxValue(-3)
+    bbb3: integer;
+    @minValue(5)
+    bbb4: integer;
+
+    /** comment */
+    @minValue(-3) @maxValue(5)
+    ccc1: number;
+    /** comment */
+    @range(-3, 5)
+    ccc2: number;
+    /** comment */
+    @maxValue(-3)
+    ccc3: number;
+    /** comment */
+    @minValue(5)
+    ccc4: number;
 }
 
 interface User {

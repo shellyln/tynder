@@ -17,9 +17,13 @@ union PlaceholderTypeNames = String | String | String
 union OptionalPlaceholderTypeNames = String | String | String
 
 enum ErrorTypes {
+    /** comment */
     InvalidDefinition
+    /** comment */
     Required
+    /** comment */
     TypeUnmatched
+    /** comment */
     RepeatQtyUnmatched
     SequenceUnmatched
     ValueRangeUnmatched

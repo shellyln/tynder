@@ -16,7 +16,6 @@ import { TypeAssertion,
          TypeAssertionMap,
          CodegenContext } from '../types';
 import { escapeString }   from '../lib/escape';
-import { nvl }            from '../lib/util';
 
 
 
@@ -139,7 +138,7 @@ function generateCSharpCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
 }
 
 
-export function nvl2(v: any, f: (x: any) => any, alt: any) {
+function nvl2(v: any, f: (x: any) => any, alt: any) {
     return (
         v !== null && v !== void 0 ? v : alt
     );
@@ -174,23 +173,24 @@ function addAttributes(ty: TypeAssertion, ctx: CodegenContext, typeName: string)
                 ty2.maxValue !== null && ty2.maxValue !== void 0) {
                 switch (ty2.primitiveName) {
                 case 'string':
-                    attrs.push(`Range(typeof(string),
-                        ${nvl(ty2.minValue, '')}, ${nvl(ty2.maxValue, '')})`);
+                    attrs.push(`Range(typeof(string), "${
+                        nvl2(ty2.minValue, x => escapeString(x), '')}", "${
+                        nvl2(ty2.maxValue, x => escapeString(x), '\\U00010FFFF')}")`);
                     break;
                 case 'bigint':
-                    attrs.push(`Range(typeof(decimal),
-                        ${nvl2(ty2.minValue, x => `new decimal(@"${String(x)}").ToString()`, 'Decimal.MinValue')},
-                        ${nvl2(ty2.maxValue, x => `new decimal(@"${String(x)}").ToString()`, 'Decimal.MaxValue')})`);
+                    attrs.push(`Range(typeof(decimal), ${
+                        nvl2(ty2.minValue, x => `new decimal(@"${String(x)}").ToString()`, 'Decimal.MinValue')}, ${
+                        nvl2(ty2.maxValue, x => `new decimal(@"${String(x)}").ToString()`, 'Decimal.MaxValue')})`);
                     break;
                 case 'integer':
-                    attrs.push(`Range(
-                        ${nvl2(ty2.minValue, x => `(int)${String(x)}`, 'Int32.MinValue')},
-                        ${nvl2(ty2.maxValue, x => `(int)${String(x)}`, 'Int32.MaxValue')})`);
+                    attrs.push(`Range(${
+                        nvl2(ty2.minValue, x => `(int)${String(x)}`, 'Int32.MinValue')}, ${
+                        nvl2(ty2.maxValue, x => `(int)${String(x)}`, 'Int32.MaxValue')})`);
                     break;
                 case 'number':
-                    attrs.push(`Range(
-                        ${nvl2(ty2.minValue, x => `(double)${String(x)}`, 'Double.MinValue')},
-                        ${nvl2(ty2.maxValue, x => `(double)${String(x)}`, 'Double.MaxValue')})`);
+                    attrs.push(`Range(${
+                        nvl2(ty2.minValue, x => `(double)${String(x)}`, 'Double.MinValue')}, ${
+                        nvl2(ty2.maxValue, x => `(double)${String(x)}`, 'Double.MaxValue')})`);
                     break;
                 }
             }
@@ -220,7 +220,7 @@ function addAttributes(ty: TypeAssertion, ctx: CodegenContext, typeName: string)
 
 
 function generateCSharpCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx: CodegenContext) {
-    const sep = '\n';
+    const sep = '\n\n';
 
     const memberLines =
         ty.members.filter(x => !(x[2]))
@@ -244,7 +244,7 @@ function generateCSharpCodeObject(ty: ObjectAssertion, isInterface: boolean, ctx
         );
     }
     return (`\n${
-        '    '.repeat(ctx.nestLevel)}{\n${memberLines.join(sep)}${sep}${
+        '    '.repeat(ctx.nestLevel)}{\n${memberLines.join(sep)}\n${
         '    '.repeat(ctx.nestLevel)}}`
     );
 }
@@ -311,6 +311,7 @@ namespace Tynder.UserSchema
         }
     }
 
+    let isFirst = true;
     for (const ty of types.entries()) {
         if (ty[1].ty.noOutput) {
             continue;
@@ -320,17 +321,25 @@ namespace Tynder.UserSchema
         const indent0 = '    '.repeat(ctx.nestLevel);
         const indent1 = '    '.repeat(ctx.nestLevel + 1);
 
-        if (ty[1].ty.kind === 'object') {
+        if (ty[1].ty.kind === 'object' || ty[1].ty.kind === 'enum') {
+            if (isFirst) {
+                isFirst = false;
+                code += '\n';
+            } else {
+                code += '\n\n';
+            }
             code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
+        }
+
+        if (ty[1].ty.kind === 'object') {
             code += `${indent0}${accessModifier} class ${ty[0]}${
                 ty[1].ty.baseTypes && ty[1].ty.baseTypes.length ? ` : ${
                     ty[1].ty.baseTypes
                         .filter(x => x.typeName)
                         .map(x => formatTypeName(x, {...ctx, nestLevel: ctx.nestLevel + 1}, x.typeName as string))
                         .join(', ')}` : ''} ${
-                generateCSharpCodeInner(ty[1].ty, true, ctx)}\n\n`;
+                generateCSharpCodeInner(ty[1].ty, true, ctx)}\n`;
         } else if (ty[1].ty.kind === 'enum') {
-            code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
             let value: number | null = 0;
             code += `${indent0}${accessModifier} static class ${ty[0]}\n${indent0}{\n${
                 ty[1].ty.values
@@ -348,8 +357,8 @@ namespace Tynder.UserSchema
                                     return `public static string ${x[0]} { get { return "${escapeString(x[1])}" } }`;
                                 }
                             }
-                        })()}\n`)
-                    .join('')}${indent0}}\n\n`;
+                        })()}`)
+                    .join('\n\n')}\n${indent0}}\n`;
         } else if (ty[1].ty.kind === 'never' && ty[1].ty.passThruCodeBlock) {
             // nothing to do
         } else {

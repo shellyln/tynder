@@ -87,6 +87,25 @@ interface Bar {
     foo: Foo;
 }
 
+interface Baz {
+    aaa1: string;
+    aaa2: string;
+    aaa3: string;
+    aaa4: string;
+    bbb1: number;
+    bbb2: number;
+    bbb3: number;
+    bbb4: number;
+    /** comment */
+    ccc1: number;
+    /** comment */
+    ccc2: number;
+    /** comment */
+    ccc3: number;
+    /** comment */
+    ccc4: number;
+}
+
 interface User {
     userName: (Foo['name']);
     primaryEmail: (Foo['email']);

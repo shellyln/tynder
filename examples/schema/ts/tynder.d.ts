@@ -11,9 +11,13 @@ export type PlaceholderTypeNames = ('never' | 'any' | 'unknown');
 export type OptionalPlaceholderTypeNames = ('never?' | 'any?' | 'unknown?');
 
 export enum ErrorTypes {
+    /** comment */
     InvalidDefinition = 1,
+    /** comment */
     Required,
+    /** comment */
     TypeUnmatched,
+    /** comment */
     RepeatQtyUnmatched,
     SequenceUnmatched,
     ValueRangeUnmatched,
