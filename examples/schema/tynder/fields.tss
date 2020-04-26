@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 type NumberType = number;
 
 interface A {
@@ -66,6 +68,33 @@ interface Z2 {
     baz: ACL.target;
 }
 
+export enum ErrorTypes {
+    /** comment */
+    InvalidDefinition = 1,
+    /** comment */
+    Required,              // (all)
+    /** comment */
+    TypeUnmatched,         // Never/Unknown/Primitive/Object
+    /** comment */
+    RepeatQtyUnmatched,    // Repeated/Spread
+    SequenceUnmatched,     // Sequence
+    ValueRangeUnmatched,   // Primitive: minValue, maxValue, greaterThanValue, lessThanValue
+    ValuePatternUnmatched, // Primitive: pattern
+    ValueLengthUnmatched,  // Primitive: minLength, maxLength
+    ValueUnmatched,        // PrimitiveValue
+    Aaaaa = 99,
+    Bbbbb = 'string bbbbb',
+}
+
+export enum ErrorTypes2 {
+    Aaaaa = 99,
+}
+
+export enum ErrorTypes3 {
+    Zzzzz = 0,
+    Aaaaa = 99,
+}
+
 interface Foo {
     @match(/^[A-Za-z]+$/)
     name: string;
@@ -75,6 +104,53 @@ interface Foo {
 
 interface Bar {
     foo: Foo
+}
+
+interface Baz {
+    @minValue('a') @maxValue('z')
+    aaa1: string;
+    @range('a', 'z')
+    aaa2: string;
+    @maxValue('z')
+    aaa3: string;
+    @minValue('a')
+    aaa4: string;
+
+    @minValue(-3) @maxValue(5)
+    bbb1: integer;
+    @range(-3, 5)
+    bbb2: integer;
+    @maxValue(-3)
+    bbb3: integer;
+    @minValue(5)
+    bbb4: integer;
+
+    /** comment */
+    @minValue(-3) @maxValue(5)
+    ccc1: number;
+    /** comment */
+    @range(-3, 5)
+    ccc2: number;
+    /** comment */
+    @maxValue(-3)
+    ccc3: number;
+    /** comment */
+    @minValue(5)
+    ccc4: number;
+
+    ddd1: [number, string];
+    ddd2: [...<number>, string];
+    ddd3: [...<number, 10..>, string];
+    ddd4: [...<number, ..20>, string];
+    ddd5: [...<number, 10..20>, string];
+    ddd6: [number?, string];
+
+    eee1: string[];
+    eee2: string[10..];
+    eee3: string[..20];
+    eee4: string[10..20];
+
+    fff: ErrorTypes;
 }
 
 interface User {

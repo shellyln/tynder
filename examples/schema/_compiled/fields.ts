@@ -744,6 +744,87 @@ const schema = {
         "typeName": "Z2",
         "name": "Z2"
       },
+      "ErrorTypes": {
+        "kind": "enum",
+        "values": [
+          [
+            "InvalidDefinition",
+            1,
+            "comment"
+          ],
+          [
+            "Required",
+            2,
+            "comment"
+          ],
+          [
+            "TypeUnmatched",
+            3,
+            "comment"
+          ],
+          [
+            "RepeatQtyUnmatched",
+            4,
+            "comment"
+          ],
+          [
+            "SequenceUnmatched",
+            5
+          ],
+          [
+            "ValueRangeUnmatched",
+            6
+          ],
+          [
+            "ValuePatternUnmatched",
+            7
+          ],
+          [
+            "ValueLengthUnmatched",
+            8
+          ],
+          [
+            "ValueUnmatched",
+            9
+          ],
+          [
+            "Aaaaa",
+            99
+          ],
+          [
+            "Bbbbb",
+            "string bbbbb"
+          ]
+        ],
+        "typeName": "ErrorTypes",
+        "name": "ErrorTypes"
+      },
+      "ErrorTypes2": {
+        "kind": "enum",
+        "values": [
+          [
+            "Aaaaa",
+            99
+          ]
+        ],
+        "typeName": "ErrorTypes2",
+        "name": "ErrorTypes2"
+      },
+      "ErrorTypes3": {
+        "kind": "enum",
+        "values": [
+          [
+            "Zzzzz",
+            0
+          ],
+          [
+            "Aaaaa",
+            99
+          ]
+        ],
+        "typeName": "ErrorTypes3",
+        "name": "ErrorTypes3"
+      },
       "Foo": {
         "kind": "object",
         "members": [
@@ -784,6 +865,321 @@ const schema = {
         ],
         "typeName": "Bar",
         "name": "Bar"
+      },
+      "Baz": {
+        "kind": "object",
+        "members": [
+          [
+            "aaa1",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minValue": "a",
+              "maxValue": "z",
+              "name": "aaa1"
+            }
+          ],
+          [
+            "aaa2",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minValue": "a",
+              "maxValue": "z",
+              "name": "aaa2"
+            }
+          ],
+          [
+            "aaa3",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "maxValue": "z",
+              "name": "aaa3"
+            }
+          ],
+          [
+            "aaa4",
+            {
+              "kind": "primitive",
+              "primitiveName": "string",
+              "minValue": "a",
+              "name": "aaa4"
+            }
+          ],
+          [
+            "bbb1",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "bbb1"
+            }
+          ],
+          [
+            "bbb2",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "bbb2"
+            }
+          ],
+          [
+            "bbb3",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "maxValue": -3,
+              "name": "bbb3"
+            }
+          ],
+          [
+            "bbb4",
+            {
+              "kind": "primitive",
+              "primitiveName": "integer",
+              "minValue": 5,
+              "name": "bbb4"
+            }
+          ],
+          [
+            "ccc1",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "ccc1"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ccc2",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "minValue": -3,
+              "maxValue": 5,
+              "name": "ccc2"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ccc3",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "maxValue": -3,
+              "name": "ccc3"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ccc4",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "minValue": 5,
+              "name": "ccc4"
+            },
+            false,
+            "comment"
+          ],
+          [
+            "ddd1",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "primitive",
+                  "primitiveName": "number"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd1"
+            }
+          ],
+          [
+            "ddd2",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": null,
+                  "max": null,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd2"
+            }
+          ],
+          [
+            "ddd3",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": 10,
+                  "max": null,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd3"
+            }
+          ],
+          [
+            "ddd4",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": null,
+                  "max": 20,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd4"
+            }
+          ],
+          [
+            "ddd5",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "spread",
+                  "min": 10,
+                  "max": 20,
+                  "spread": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd5"
+            }
+          ],
+          [
+            "ddd6",
+            {
+              "kind": "sequence",
+              "sequence": [
+                {
+                  "kind": "optional",
+                  "optional": {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  }
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "string"
+                }
+              ],
+              "name": "ddd6"
+            }
+          ],
+          [
+            "eee1",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee1"
+            }
+          ],
+          [
+            "eee2",
+            {
+              "kind": "repeated",
+              "min": 10,
+              "max": null,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee2"
+            }
+          ],
+          [
+            "eee3",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": 20,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee3"
+            }
+          ],
+          [
+            "eee4",
+            {
+              "kind": "repeated",
+              "min": 10,
+              "max": 20,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "string"
+              },
+              "name": "eee4"
+            }
+          ],
+          [
+            "fff",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "ErrorTypes",
+              "typeName": "ErrorTypes",
+              "name": "fff"
+            }
+          ]
+        ],
+        "typeName": "Baz",
+        "name": "Baz"
       },
       "User": {
         "kind": "object",

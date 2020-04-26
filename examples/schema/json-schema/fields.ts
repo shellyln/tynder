@@ -463,6 +463,44 @@ const schema = {
       ],
       "additionalProperties": false
     },
+    "ErrorTypes": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        99,
+        "string bbbbb"
+      ]
+    },
+    "ErrorTypes2": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        99
+      ]
+    },
+    "ErrorTypes3": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        0,
+        99
+      ]
+    },
     "Foo": {
       "type": "object",
       "properties": {
@@ -490,6 +528,205 @@ const schema = {
       },
       "required": [
         "foo"
+      ],
+      "additionalProperties": false
+    },
+    "Baz": {
+      "type": "object",
+      "properties": {
+        "aaa1": {
+          "type": "string"
+        },
+        "aaa2": {
+          "type": "string"
+        },
+        "aaa3": {
+          "type": "string"
+        },
+        "aaa4": {
+          "type": "string"
+        },
+        "bbb1": {
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 5
+        },
+        "bbb2": {
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 5
+        },
+        "bbb3": {
+          "type": "integer",
+          "maximum": -3
+        },
+        "bbb4": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "ccc1": {
+          "type": "number",
+          "minimum": -3,
+          "maximum": 5,
+          "description": "comment"
+        },
+        "ccc2": {
+          "type": "number",
+          "minimum": -3,
+          "maximum": 5,
+          "description": "comment"
+        },
+        "ccc3": {
+          "type": "number",
+          "maximum": -3,
+          "description": "comment"
+        },
+        "ccc4": {
+          "type": "number",
+          "minimum": 5,
+          "description": "comment"
+        },
+        "ddd1": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd2": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd3": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd4": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd5": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "ddd6": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "eee1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "eee2": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 10
+        },
+        "eee3": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20
+        },
+        "eee4": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 10,
+          "maxItems": 20
+        },
+        "fff": {
+          "$ref": "#/definitions/ErrorTypes"
+        }
+      },
+      "required": [
+        "aaa1",
+        "aaa2",
+        "aaa3",
+        "aaa4",
+        "bbb1",
+        "bbb2",
+        "bbb3",
+        "bbb4",
+        "ccc1",
+        "ccc2",
+        "ccc3",
+        "ccc4",
+        "ddd1",
+        "ddd2",
+        "ddd3",
+        "ddd4",
+        "ddd5",
+        "ddd6",
+        "eee1",
+        "eee2",
+        "eee3",
+        "eee4",
+        "fff"
       ],
       "additionalProperties": false
     },

@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.5.0
+
+* Add `C#` type definition code generation.
+* Improve code generation (TypeScript, Protobuf, GraphQL).
+
+
+----
+
+
 ## v0.4.1
 
 * `[FIX]` Fix TypeScript code generation: object member non-ascii symbol name should be enclose with quotation.

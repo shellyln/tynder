@@ -106,9 +106,12 @@ function generateTypeScriptCodeSpread(ty: SpreadAssertion, ctx: CodegenContext) 
 
 
 function generateTypeScriptCodeSequence(ty: SequenceAssertion, ctx: CodegenContext) {
+    if (0 < ty.sequence.filter(x => x.kind === 'spread' || x.kind === 'optional').length) {
+        return 'any[]';
+    }
     return `[${
         ty.sequence
-            .filter(x => x.kind !== 'spread')
+            .filter(x => x.kind !== 'spread' && x.kind !== 'optional')
             .map(x => x.typeName ?
                 formatTypeName(x.typeName) :
                 generateTypeScriptCodeInner(x, false, {...ctx, nestLevel: ctx.nestLevel + 1}))

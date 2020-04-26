@@ -17,9 +17,13 @@ union PlaceholderTypeNames = String | String | String
 union OptionalPlaceholderTypeNames = String | String | String
 
 enum ErrorTypes {
+    /** comment */
     InvalidDefinition
+    /** comment */
     Required
+    /** comment */
     TypeUnmatched
+    /** comment */
     RepeatQtyUnmatched
     SequenceUnmatched
     ValueRangeUnmatched
@@ -41,14 +45,14 @@ type ErrorMessages {
 }
 
 type TypeAssertionErrorMessageConstraints {
-    minValue: Float | String | Any
-    maxValue: Float | String | Any
-    greaterThanValue: Float | String | Any
-    lessThanValue: Float | String | Any
-    minLength: Float | Any
-    maxLength: Float | Any
-    min: Float | Any
-    max: Float | Any
+    minValue: Any
+    maxValue: Any
+    greaterThanValue: Any
+    lessThanValue: Any
+    minLength: Float
+    maxLength: Float
+    min: Float
+    max: Float
     pattern: String
 }
 
@@ -108,13 +112,13 @@ type UnknownTypeAssertion {
 }
 
 type PrimitiveTypeAssertionConstraints {
-    minValue: Float | String | Any
-    maxValue: Float | String | Any
-    greaterThanValue: Float | String | Any
-    lessThanValue: Float | String | Any
-    minLength: Float | Any
-    maxLength: Float | Any
-    pattern: RegExp | Any
+    minValue: Any
+    maxValue: Any
+    greaterThanValue: Any
+    lessThanValue: Any
+    minLength: Float
+    maxLength: Float
+    pattern: RegExp
 }
 
 type PrimitiveTypeAssertion {
@@ -128,13 +132,13 @@ type PrimitiveTypeAssertion {
     docComment: String
     passThruCodeBlock: String
     noOutput: Boolean
-    minValue: Float | String | Any
-    maxValue: Float | String | Any
-    greaterThanValue: Float | String | Any
-    lessThanValue: Float | String | Any
-    minLength: Float | Any
-    maxLength: Float | Any
-    pattern: RegExp | Any
+    minValue: Any
+    maxValue: Any
+    greaterThanValue: Any
+    lessThanValue: Any
+    minLength: Float
+    maxLength: Float
+    pattern: RegExp
 }
 
 type PrimitiveValueTypeAssertion {
@@ -151,8 +155,8 @@ type PrimitiveValueTypeAssertion {
 }
 
 type RepeatedAssertionConstraints {
-    min: Float | Any!
-    max: Float | Any!
+    min: Float!
+    max: Float!
 }
 
 type RepeatedAssertion {
@@ -166,8 +170,8 @@ type RepeatedAssertion {
     docComment: String
     passThruCodeBlock: String
     noOutput: Boolean
-    min: Float | Any!
-    max: Float | Any!
+    min: Float!
+    max: Float!
 }
 
 type SpreadAssertion {
@@ -181,8 +185,8 @@ type SpreadAssertion {
     docComment: String
     passThruCodeBlock: String
     noOutput: Boolean
-    min: Float | Any!
-    max: Float | Any!
+    min: Float!
+    max: Float!
 }
 
 type SequenceAssertion {
@@ -226,7 +230,7 @@ type OptionalAssertion {
 
 type EnumAssertion {
     kind: String!
-    values: [Any!]!
+    values: [[Any]!]!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -237,17 +241,17 @@ type EnumAssertion {
     noOutput: Boolean
 }
 
-union ObjectAssertionMember = Any | Any | Any
+union ObjectAssertionMember = [Any] | [Any] | [Any]
 
-union AdditionalPropsKey = [String | String | RegExp!]
+union AdditionalPropsKey = [Any!]
 
-union AdditionalPropsMember = Any | Any | Any
+union AdditionalPropsMember = [Any] | [Any] | [Any]
 
 type ObjectAssertion {
     kind: String!
     members: [ObjectAssertionMember!]!
     additionalProps: [AdditionalPropsMember!]
-    baseTypes: [ObjectAssertion | AssertionSymlink!]
+    baseTypes: [Any!]
     messageId: String
     message: String
     messages: ErrorMessages
@@ -278,7 +282,7 @@ type ValidationContext {
     noAdditionalProps: Boolean
     errorMessages: ErrorMessages
     errors: [TypeAssertionErrorMessage!]!
-    typeStack: [NeverTypeAssertion | AnyTypeAssertion | UnknownTypeAssertion | PrimitiveTypeAssertion | PrimitiveValueTypeAssertion | RepeatedAssertion | SpreadAssertion | SequenceAssertion | OneOfAssertion | OptionalAssertion | EnumAssertion | ObjectAssertion | AssertionSymlink | Any!]!
+    typeStack: [Any!]!
     schema: TypeAssertionMap
 }
 

@@ -79,9 +79,9 @@ type D {
 type E {}
 
 type Z1 {
-    foo: ACL.target!
-    bar: ACL.value!
-    baz: ACL.target!
+    foo: String!
+    bar: String!
+    baz: String!
 }
 
 type ACL {
@@ -90,9 +90,36 @@ type ACL {
 }
 
 type Z2 {
-    foo: ACL.target!
-    bar: ACL.value!
-    baz: ACL.target!
+    foo: String!
+    bar: String!
+    baz: String!
+}
+
+enum ErrorTypes {
+    /** comment */
+    InvalidDefinition
+    /** comment */
+    Required
+    /** comment */
+    TypeUnmatched
+    /** comment */
+    RepeatQtyUnmatched
+    SequenceUnmatched
+    ValueRangeUnmatched
+    ValuePatternUnmatched
+    ValueLengthUnmatched
+    ValueUnmatched
+    Aaaaa
+    Bbbbb
+}
+
+enum ErrorTypes2 {
+    Aaaaa
+}
+
+enum ErrorTypes3 {
+    Zzzzz
+    Aaaaa
 }
 
 type Foo {
@@ -104,10 +131,40 @@ type Bar {
     foo: Foo!
 }
 
+type Baz {
+    aaa1: String!
+    aaa2: String!
+    aaa3: String!
+    aaa4: String!
+    bbb1: Int!
+    bbb2: Int!
+    bbb3: Int!
+    bbb4: Int!
+    /** comment */
+    ccc1: Float!
+    /** comment */
+    ccc2: Float!
+    /** comment */
+    ccc3: Float!
+    /** comment */
+    ccc4: Float!
+    ddd1: [Any]!
+    ddd2: [Any]!
+    ddd3: [Any]!
+    ddd4: [Any]!
+    ddd5: [Any]!
+    ddd6: [Any]!
+    eee1: [String!]!
+    eee2: [String!]!
+    eee3: [String!]!
+    eee4: [String!]!
+    fff: ErrorTypes!
+}
+
 type User {
-    userName: Foo.name!
-    primaryEmail: Foo.email!
-    primaryAliasName: Bar.foo.name!
-    aliasNames: [Bar.foo.name!]!
+    userName: String!
+    primaryEmail: String!
+    primaryAliasName: String!
+    aliasNames: [String!]!
 }
 

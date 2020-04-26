@@ -19,6 +19,14 @@ import { escapeString }   from '../lib/escape';
 
 
 
+function formatTypeName(ty: TypeAssertion, ctx: CodegenContext, typeName: string) {
+    if (typeName.includes('.')) {
+        return generateProto3CodeInner(ty, false, ctx);
+    }
+    return typeName;
+}
+
+
 function formatProto3CodeDocComment(ty: TypeAssertion | string, nestLevel: number) {
     let code = '';
     const indent = '    '.repeat(nestLevel);
@@ -81,7 +89,7 @@ function generateProto3CodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx: 
 
 function generateProto3CodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
     return (`repeated ${ty.repeated.typeName ?
-            ty.repeated.typeName :
+            formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             generateProto3CodeInner(ty.repeated, false, ctx)}`
     );
 }
@@ -93,18 +101,12 @@ function generateProto3CodeSpread(ty: SpreadAssertion, ctx: CodegenContext) {
 
 
 function generateProto3CodeSequence(ty: SequenceAssertion, ctx: CodegenContext) {
-    return 'google.protobuf.Any';
+    return 'repeated google.protobuf.Any';
 }
 
 
-function generateProto3CodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
-    return 'google.protobuf.Any';
-}
-
-
-function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) {
-    const r = generateProto3CodeInner(ty.optional, false, ctx);
-    switch (r) {
+function appendOptionalModifier(name: string) {
+    switch (name) {
     case 'double':
         return 'google.protobuf.DoubleValue';
     case 'int64':
@@ -116,13 +118,33 @@ function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) 
     case 'bool':
         return 'google.protobuf.BoolValue';
     default:
+        return name;
+    }
+}
+
+
+function generateProto3CodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
+    const filtered = ty.oneOf.filter(x => !(
+        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
+        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
+    if (filtered.length === 1 && ty.oneOf.length !== 1) {
+        return appendOptionalModifier(generateProto3CodeInner(filtered[0], false, ctx));
+    } else {
         return 'google.protobuf.Any';
     }
 }
 
 
+function generateProto3CodeOptional(ty: OptionalAssertion, ctx: CodegenContext) {
+    return appendOptionalModifier(generateProto3CodeInner(ty.optional, false, ctx));
+}
+
+
 function generateProto3CodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
-    return `(${ty.values.map(x => `${x[1]}`).join(' | ')})`;
+    return (ty.typeName ?
+        formatTypeName(ty, ctx, ty.typeName) :
+        'google.protobuf.Any'
+    );
 }
 
 
@@ -139,7 +161,7 @@ function generateProto3CodeObject(ty: ObjectAssertion, isInterface: boolean, ctx
             `${formatProto3CodeDocComment(x[3] || '', ctx.nestLevel + 1)}${
                 '    '.repeat(ctx.nestLevel + 1)}${
                 x[1].typeName ?
-                    x[1].typeName :
+                    formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
                     generateProto3CodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1})} ${
                 x[0]} = ${count++}`);
 
@@ -205,18 +227,22 @@ import "google/protobuf/any.proto";
         } else if (ty[1].ty.kind === 'enum') {
             const indent0 = '    '.repeat(ctx.nestLevel);
             const indent1 = '    '.repeat(ctx.nestLevel + 1);
-            if (0 < ty[1].ty.values.filter(x => typeof x[1] !== 'number').length) {
+            if (0 < ty[1].ty.values.filter(x => typeof x[1] !== 'number').length) {      // NOTE: string enum is not allowed
                 code += `message ${ty[0]} {\n${indent1}google.protobuf.Any value = 1;\n${indent0}}\n\n`;
             } else {
                 code += `enum ${ty[0]} {\n${
+                    indent1}option allow_alias = true;\n${
+                    ty[1].ty.values.filter(x => x[1] === 0).length === 0 ?
+                        `${indent1}${ty[0]}__UNKNOWN__ = 0;\n` :                        // NOTE: 0 value item is required
+                        ''}${
                     ty[1].ty.values
                         .map(x => `${
                             formatProto3CodeDocComment(x[2] || '', ctx.nestLevel + 1)}${
                             indent1}${(() => {
                                 if (typeof x[1] === 'number') {
-                                    return `${x[0]} = ${x[1]}`;
+                                    return `${ty[0]}_${x[0]} = ${x[1]}`;                 // NOTE: label namespace is shared by all top-level enum
                                 } else {
-                                    return `${x[0]} = '${escapeString(x[1])}'`;
+                                    return `${ty[0]}_${x[0]} = '${escapeString(x[1])}'`; // NOTE: string enum is not allowed
                                 }
                             })()};\n`)
                         .join('')}${indent0}}\n\n`;

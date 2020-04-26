@@ -11,7 +11,8 @@ import { serialize }              from '../serializer';
 import { generateTypeScriptCode,
          generateJsonSchema,
          generateProto3Code,
-         generateGraphQlCode }    from '../codegen';
+         generateGraphQlCode,
+         generateCSharpCode }     from '../codegen';
 
 
 
@@ -124,6 +125,16 @@ function compileToGraphQl(srcDir: string, destDir: string, options: Partial<CliO
 }
 
 
+function compileToCSharp(srcDir: string, destDir: string, options: Partial<CliOptions>) {
+    const opts: CliOptions = Object.assign({}, {
+        srcExt: '.tss',
+        destExt: '.cs',
+    }, options || {});
+
+    return compileTo(generateCSharpCode, srcDir, destDir, opts);
+}
+
+
 export function printHelp() {
     console.log(
 `tynder - TypeScript friendly Data validator for JavaScript.
@@ -161,6 +172,10 @@ Subcommands:
       Generated code is:
           const schema = {...};
           export default schema;
+  gen-csharp
+      Compile schema and generate 'C#' type definition files.
+          * default input file extension is *.tss
+          * default output file extension is *.cs
   gen-proto3
       Compile schema and generate 'Protocol Buffers 3' type definition files.
           * default input file extension is *.tss
@@ -268,6 +283,9 @@ export function run(argv: string[]) {
             break;
         case 'gen-graphql':
             compileToGraphQl(inDir, outDir, options);
+            break;
+        case 'gen-csharp':
+            compileToCSharp(inDir, outDir, options);
             break;
         case 'help':
             printHelp();

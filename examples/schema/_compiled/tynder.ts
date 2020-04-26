@@ -156,19 +156,23 @@ const schema = {
         "values": [
           [
             "InvalidDefinition",
-            1
+            1,
+            "comment"
           ],
           [
             "Required",
-            2
+            2,
+            "comment"
           ],
           [
             "TypeUnmatched",
-            3
+            3,
+            "comment"
           ],
           [
             "RepeatQtyUnmatched",
-            4
+            4,
+            "comment"
           ],
           [
             "SequenceUnmatched",

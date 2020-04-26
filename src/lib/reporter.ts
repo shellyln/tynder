@@ -10,9 +10,9 @@ import { ErrorTypes,
          RepeatedAssertion,
          SpreadAssertion,
          OptionalAssertion,
-         ObjectAssertion,
          ValidationContext } from '../types';
 import { escapeString }      from './escape';
+import { nvl }               from './util';
 
 
 export const errorTypeNames = [
@@ -109,13 +109,6 @@ function getErrorMessage(errType: ErrorTypes, ...messages: ErrorMessages[]) {
         }
     }
     return '';
-}
-
-
-function nvl(v: any, alt: any) {
-    return (
-        v !== null && v !== void 0 ? v : alt
-    );
 }
 
 
