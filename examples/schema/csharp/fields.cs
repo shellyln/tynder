@@ -219,32 +219,32 @@ namespace Tynder.UserSchema
         [Required, Range(typeof(string), "a", "\U00010FFFF")]
         public string aaa4 { get; set; }
 
-        [Range(-3, 5)]
+        [Range((int)-3, (int)5)]
         public int bbb1 { get; set; }
 
-        [Range(-3, 5)]
+        [Range((int)-3, (int)5)]
         public int bbb2 { get; set; }
 
-        [Range(Int32.MinValue, -3)]
+        [Range(Int32.MinValue, (int)-3)]
         public int bbb3 { get; set; }
 
-        [Range(5, Int32.MaxValue)]
+        [Range((int)5, Int32.MaxValue)]
         public int bbb4 { get; set; }
 
         /** comment */
-        [Range(-3, 5)]
+        [Range((double)-3, (double)5)]
         public double ccc1 { get; set; }
 
         /** comment */
-        [Range(-3, 5)]
+        [Range((double)-3, (double)5)]
         public double ccc2 { get; set; }
 
         /** comment */
-        [Range(Double.MinValue, -3)]
+        [Range(Double.MinValue, (double)-3)]
         public double ccc3 { get; set; }
 
         /** comment */
-        [Range(5, Double.MaxValue)]
+        [Range((double)5, Double.MaxValue)]
         public double ccc4 { get; set; }
 
         [Required]

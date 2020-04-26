@@ -16,6 +16,7 @@ import { TypeAssertion,
          TypeAssertionMap,
          CodegenContext } from '../types';
 import { escapeString }   from '../lib/escape';
+import { nvl2 }           from './util';
 
 
 
@@ -138,13 +139,6 @@ function generateCSharpCodeOptional(ty: OptionalAssertion, ctx: CodegenContext) 
 
 function generateCSharpCodeEnum(ty: EnumAssertion, ctx: CodegenContext) {
     return 'object';
-}
-
-
-function nvl2(v: any, f: (x: any) => any, alt: any) {
-    return (
-        v !== null && v !== void 0 ? v : alt
-    );
 }
 
 

@@ -64,3 +64,10 @@ export function nvl(v: any, alt: any) {
         v !== null && v !== void 0 ? v : alt
     );
 }
+
+
+export function nvl2(v: any, f: (x: any) => any, alt: any) {
+    return (
+        v !== null && v !== void 0 ? f(v) : alt
+    );
+}
