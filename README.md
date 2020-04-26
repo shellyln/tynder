@@ -56,8 +56,8 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 * [Tynder Schema Converter Chrome Extension](https://github.com/shellyln/tynder-chrome-extension)
 
 ## Playground
-* [TypeScript (Tynder DSL) → JSON Schema | GraphQL | Protobuf Converter](https://shellyln.github.io/tynder/playground.html)
-    * Convert schema from `Tynder DSL` to JSON Schema, GraphQL and Protobuf.
+* [TypeScript (Tynder DSL) → JSON Schema | C# | GraphQL | Protobuf Converter](https://shellyln.github.io/tynder/playground.html)
+    * Convert schema from `Tynder DSL` to JSON Schema, C#, GraphQL and Protobuf.
 * [TypeScript (Tynder DSL) Schema Validator](https://shellyln.github.io/tynder/playground2.html)
     * Validate data against the schema.
 
@@ -168,6 +168,8 @@ tynder gen-ts                --indir path/to/schema/tynder --outdir path/to/type
 tynder gen-json-schema       --indir path/to/schema/tynder --outdir path/to/schema/json-schema
 # Compile schema and generate JSON Schema as JavaScript|TypeScript files.
 tynder gen-json-schema-as-ts --indir path/to/schema/tynder --outdir path/to/schema/json-schema
+# Compile schema and generate C# type definition files.
+tynder gen-csharp            --indir path/to/schema/tynder --outdir path/to/schema/csharp
 # Compile schema and generate Protocol Buffers 3 type definition files.
 tynder gen-proto3            --indir path/to/schema/tynder --outdir path/to/schema/proto3
 # Compile schema and generate GraphQL type definition files.
