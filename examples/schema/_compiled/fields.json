@@ -784,10 +784,44 @@
           [
             "ValueUnmatched",
             9
+          ],
+          [
+            "Aaaaa",
+            99
+          ],
+          [
+            "Bbbbb",
+            "string bbbbb"
           ]
         ],
         "typeName": "ErrorTypes",
         "name": "ErrorTypes"
+      },
+      "ErrorTypes2": {
+        "kind": "enum",
+        "values": [
+          [
+            "Aaaaa",
+            99
+          ]
+        ],
+        "typeName": "ErrorTypes2",
+        "name": "ErrorTypes2"
+      },
+      "ErrorTypes3": {
+        "kind": "enum",
+        "values": [
+          [
+            "Zzzzz",
+            0
+          ],
+          [
+            "Aaaaa",
+            99
+          ]
+        ],
+        "typeName": "ErrorTypes3",
+        "name": "ErrorTypes3"
       },
       "Foo": {
         "kind": "object",

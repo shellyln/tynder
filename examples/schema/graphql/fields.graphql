@@ -109,6 +109,17 @@ enum ErrorTypes {
     ValuePatternUnmatched
     ValueLengthUnmatched
     ValueUnmatched
+    Aaaaa
+    Bbbbb
+}
+
+enum ErrorTypes2 {
+    Aaaaa
+}
+
+enum ErrorTypes3 {
+    Zzzzz
+    Aaaaa
 }
 
 type Foo {

@@ -32,19 +32,21 @@ message OptionalPlaceholderTypeNames {
 }
 
 enum ErrorTypes {
+    option allow_alias = true;
+    ErrorTypes__UNKNOWN__ = 0;
     /** comment */
-    InvalidDefinition = 1;
+    ErrorTypes_InvalidDefinition = 1;
     /** comment */
-    Required = 2;
+    ErrorTypes_Required = 2;
     /** comment */
-    TypeUnmatched = 3;
+    ErrorTypes_TypeUnmatched = 3;
     /** comment */
-    RepeatQtyUnmatched = 4;
-    SequenceUnmatched = 5;
-    ValueRangeUnmatched = 6;
-    ValuePatternUnmatched = 7;
-    ValueLengthUnmatched = 8;
-    ValueUnmatched = 9;
+    ErrorTypes_RepeatQtyUnmatched = 4;
+    ErrorTypes_SequenceUnmatched = 5;
+    ErrorTypes_ValueRangeUnmatched = 6;
+    ErrorTypes_ValuePatternUnmatched = 7;
+    ErrorTypes_ValueLengthUnmatched = 8;
+    ErrorTypes_ValueUnmatched = 9;
 }
 
 message ErrorMessages {

@@ -98,20 +98,20 @@ message Z2 {
     string baz = 3;
 }
 
-enum ErrorTypes {
-    /** comment */
-    InvalidDefinition = 1;
-    /** comment */
-    Required = 2;
-    /** comment */
-    TypeUnmatched = 3;
-    /** comment */
-    RepeatQtyUnmatched = 4;
-    SequenceUnmatched = 5;
-    ValueRangeUnmatched = 6;
-    ValuePatternUnmatched = 7;
-    ValueLengthUnmatched = 8;
-    ValueUnmatched = 9;
+message ErrorTypes {
+    google.protobuf.Any value = 1;
+}
+
+enum ErrorTypes2 {
+    option allow_alias = true;
+    ErrorTypes2__UNKNOWN__ = 0;
+    ErrorTypes2_Aaaaa = 99;
+}
+
+enum ErrorTypes3 {
+    option allow_alias = true;
+    ErrorTypes3_Zzzzz = 0;
+    ErrorTypes3_Aaaaa = 99;
 }
 
 message Foo {

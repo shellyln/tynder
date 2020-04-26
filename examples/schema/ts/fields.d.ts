@@ -92,6 +92,17 @@ export enum ErrorTypes {
     ValuePatternUnmatched,
     ValueLengthUnmatched,
     ValueUnmatched,
+    Aaaaa = 99,
+    Bbbbb = 'string bbbbb',
+}
+
+export enum ErrorTypes2 {
+    Aaaaa = 99,
+}
+
+export enum ErrorTypes3 {
+    Zzzzz,
+    Aaaaa = 99,
 }
 
 interface Foo {

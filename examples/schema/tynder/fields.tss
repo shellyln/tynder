@@ -82,6 +82,17 @@ export enum ErrorTypes {
     ValuePatternUnmatched, // Primitive: pattern
     ValueLengthUnmatched,  // Primitive: minLength, maxLength
     ValueUnmatched,        // PrimitiveValue
+    Aaaaa = 99,
+    Bbbbb = 'string bbbbb',
+}
+
+export enum ErrorTypes2 {
+    Aaaaa = 99,
+}
+
+export enum ErrorTypes3 {
+    Zzzzz = 0,
+    Aaaaa = 99,
 }
 
 interface Foo {

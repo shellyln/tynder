@@ -361,7 +361,7 @@ namespace Tynder.UserSchema
                                     value = x[1] + 1;
                                     return `public static double ${x[0]} { get { return ${x[1]}; } }`;
                                 } else {
-                                    return `public static string ${x[0]} { get { return "${escapeString(x[1])}" } }`;
+                                    return `public static string ${x[0]} { get { return "${escapeString(x[1])}"; } }`;
                                 }
                             }
                         })()}`)

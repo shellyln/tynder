@@ -477,7 +477,28 @@ const schema = {
         6,
         7,
         8,
-        9
+        9,
+        99,
+        "string bbbbb"
+      ]
+    },
+    "ErrorTypes2": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        99
+      ]
+    },
+    "ErrorTypes3": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        0,
+        99
       ]
     },
     "Foo": {

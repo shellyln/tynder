@@ -227,18 +227,22 @@ import "google/protobuf/any.proto";
         } else if (ty[1].ty.kind === 'enum') {
             const indent0 = '    '.repeat(ctx.nestLevel);
             const indent1 = '    '.repeat(ctx.nestLevel + 1);
-            if (0 < ty[1].ty.values.filter(x => typeof x[1] !== 'number').length) {
+            if (0 < ty[1].ty.values.filter(x => typeof x[1] !== 'number').length) {      // NOTE: string enum is not allowed
                 code += `message ${ty[0]} {\n${indent1}google.protobuf.Any value = 1;\n${indent0}}\n\n`;
             } else {
                 code += `enum ${ty[0]} {\n${
+                    indent1}option allow_alias = true;\n${
+                    ty[1].ty.values.filter(x => x[1] === 0).length === 0 ?
+                        `${indent1}${ty[0]}__UNKNOWN__ = 0;\n` :                        // NOTE: 0 value item is required
+                        ''}${
                     ty[1].ty.values
                         .map(x => `${
                             formatProto3CodeDocComment(x[2] || '', ctx.nestLevel + 1)}${
                             indent1}${(() => {
                                 if (typeof x[1] === 'number') {
-                                    return `${x[0]} = ${x[1]}`;
+                                    return `${ty[0]}_${x[0]} = ${x[1]}`;                 // NOTE: label namespace is shared by all top-level enum
                                 } else {
-                                    return `${x[0]} = '${escapeString(x[1])}'`;
+                                    return `${ty[0]}_${x[0]} = '${escapeString(x[1])}'`; // NOTE: string enum is not allowed
                                 }
                             })()};\n`)
                         .join('')}${indent0}}\n\n`;

@@ -185,6 +185,24 @@ namespace Tynder.UserSchema
         public static double ValueLengthUnmatched { get { return 8; } }
 
         public static double ValueUnmatched { get { return 9; } }
+
+        public static double Aaaaa { get { return 99; } }
+
+        public static string Bbbbb { get { return "string bbbbb"; } }
+    }
+
+
+    public static class ErrorTypes2
+    {
+        public static double Aaaaa { get { return 99; } }
+    }
+
+
+    public static class ErrorTypes3
+    {
+        public static double Zzzzz { get { return 0; } }
+
+        public static double Aaaaa { get { return 99; } }
     }
 
 
