@@ -44,6 +44,14 @@ function formatGraphQlCodeDocComment(ty: TypeAssertion | string, nestLevel: numb
 }
 
 
+function isNullableOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
+    const filtered = ty.oneOf.filter(x => !(
+        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
+        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
+    return (filtered.length === 1 && ty.oneOf.length !== 1 ? filtered[0] : null) ;
+}
+
+
 function generateGraphQlCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenContext) {
     switch (ty.primitiveName) {
     case 'number':
@@ -89,7 +97,9 @@ function generateGraphQlCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext)
     return (`[${ty.repeated.typeName ?
             formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             generateGraphQlCodeInner(ty.repeated, false, ctx, false)}${
-                ty.repeated.kind === 'optional' ? '' : '!'}]`
+                (ty.repeated.kind === 'optional' ||
+                 ty.repeated.kind === 'one-of') ?
+                    '' : '!'}]`
     );
 }
 
@@ -105,13 +115,11 @@ function generateGraphQlCodeSequence(ty: SequenceAssertion, ctx: CodegenContext)
 
 
 function generateGraphQlCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext, isUnion: boolean) {
-    const filtered = ty.oneOf.filter(x => !(
-        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
-        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
-    if (filtered.length === 1 && ty.oneOf.length !== 1) {
-        return filtered[0].typeName ?
-            filtered[0].typeName :
-            generateGraphQlCodeInner(filtered[0], false, ctx, false);
+    const z = isNullableOneOf(ty, ctx);
+    if (z) {
+        return z.typeName ?
+            z.typeName :
+            generateGraphQlCodeInner(z, false, ctx, false);
     } else {
         if (isUnion) {
             return `${ty.oneOf
@@ -148,7 +156,9 @@ function generateGraphQlCodeObject(ty: ObjectAssertion, isInterface: boolean, ct
                 x[1].typeName ?
                     formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
                     generateGraphQlCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1}, false)}${
-                x[1].kind === 'optional' ? '' : '!'}`);
+                (x[1].kind === 'optional' ||
+                 x[1].kind === 'one-of') ?
+                    '' : '!'}`);
 
     return (
         `{\n${memberLines.join(sep)}${sep}${'    '.repeat(ctx.nestLevel)}}`

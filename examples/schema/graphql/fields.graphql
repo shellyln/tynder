@@ -162,27 +162,27 @@ type Baz {
     ggg1: Bar!
     ggg2: [Bar!]!
     ggg3: [[Bar!]!]!
-    ggg4: Bar!
-    ggg5: [Bar!]!
-    ggg6: [[Bar!]!]!
-    ggg7: Bar!
-    ggg8: [Bar!]!
-    ggg9: [[Bar!]!]!
-    ggg10: Bar!
-    ggg11: [Bar!]!
-    ggg12: [[Bar!]!]!
+    ggg4: Bar
+    ggg5: [Bar]!
+    ggg6: [[Bar]!]!
+    ggg7: Bar
+    ggg8: [Bar]!
+    ggg9: [[Bar]!]!
+    ggg10: Bar
+    ggg11: [Bar]!
+    ggg12: [[Bar]!]!
     hhh1: Float!
     hhh2: [Float!]!
     hhh3: [[Float!]!]!
-    hhh4: Float!
-    hhh5: [Float!]!
-    hhh6: [[Float!]!]!
-    hhh7: Float!
-    hhh8: [Float!]!
-    hhh9: [[Float!]!]!
-    hhh10: Float!
-    hhh11: [Float!]!
-    hhh12: [[Float!]!]!
+    hhh4: Float
+    hhh5: [Float]!
+    hhh6: [[Float]!]!
+    hhh7: Float
+    hhh8: [Float]!
+    hhh9: [[Float]!]!
+    hhh10: Float
+    hhh11: [Float]!
+    hhh12: [[Float]!]!
 }
 
 type User {
