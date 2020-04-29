@@ -90,7 +90,9 @@ function generateProto3CodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx: 
 function generateProto3CodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
     return (`repeated ${ty.repeated.typeName ?
             formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
-            generateProto3CodeInner(ty.repeated, false, ctx)}`
+            ty.repeated.kind === 'repeated' ?
+                'google.protobuf.Any' :
+                generateProto3CodeInner(ty.repeated, false, ctx)}`
     );
 }
 

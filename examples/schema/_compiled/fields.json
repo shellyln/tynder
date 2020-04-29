@@ -1174,6 +1174,50 @@
               "typeName": "ErrorTypes",
               "name": "fff"
             }
+          ],
+          [
+            "ggg1",
+            {
+              "kind": "symlink",
+              "symlinkTargetName": "Bar",
+              "typeName": "Bar",
+              "name": "ggg1"
+            }
+          ],
+          [
+            "ggg2",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "symlink",
+                "symlinkTargetName": "Bar",
+                "typeName": "Bar",
+                "name": "Bar"
+              },
+              "name": "ggg2"
+            }
+          ],
+          [
+            "ggg3",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "symlink",
+                  "symlinkTargetName": "Bar",
+                  "typeName": "Bar",
+                  "name": "Bar"
+                }
+              },
+              "name": "ggg3"
+            }
           ]
         ],
         "typeName": "Baz",

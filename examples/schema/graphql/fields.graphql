@@ -159,6 +159,9 @@ type Baz {
     eee3: [String!]!
     eee4: [String!]!
     fff: ErrorTypes!
+    ggg1: Bar!
+    ggg2: [Bar!]!
+    ggg3: [[Bar!]!]!
 }
 
 type User {

@@ -151,6 +151,9 @@ message Baz {
     repeated string eee3 = 21;
     repeated string eee4 = 22;
     ErrorTypes fff = 23;
+    Bar ggg1 = 24;
+    repeated Bar ggg2 = 25;
+    repeated google.protobuf.Any ggg3 = 26;
 }
 
 message User {

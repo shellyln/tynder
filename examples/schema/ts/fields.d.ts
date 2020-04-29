@@ -142,6 +142,9 @@ interface Baz {
     eee3: string[];
     eee4: string[];
     fff: ErrorTypes;
+    ggg1: Bar;
+    ggg2: Bar[];
+    ggg3: Array<Bar[]>;
 }
 
 interface User {

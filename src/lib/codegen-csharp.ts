@@ -88,14 +88,16 @@ function generateCSharpCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx: 
 }
 
 
-function generateCSharpCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext) {
+function generateCSharpCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext): string {
     return (
         `${ty.repeated.typeName ?
             formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             ty.repeated.kind === 'primitive' ?
                 generateCSharpCodePrimitive(ty.repeated, ctx) :
                 ty.repeated.kind === 'primitive-value' ?
-                    generateCSharpCodePrimitiveValue(ty.repeated, ctx) : 'object'}[]`
+                    generateCSharpCodePrimitiveValue(ty.repeated, ctx) :
+                    ty.repeated.kind === 'repeated' ?
+                        generateCSharpCodeRepeated(ty.repeated, ctx) : 'object'}[]`
     );
 }
 

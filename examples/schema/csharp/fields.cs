@@ -297,6 +297,15 @@ namespace Tynder.UserSchema
 
         [Required]
         public object fff { get; set; }
+
+        [Required]
+        public Bar ggg1 { get; set; }
+
+        [Required]
+        public Bar[] ggg2 { get; set; }
+
+        [Required]
+        public Bar[][] ggg3 { get; set; }
     }
 
 

@@ -151,6 +151,10 @@ interface Baz {
     eee4: string[10..20];
 
     fff: ErrorTypes;
+
+    ggg1: Bar;
+    ggg2: Bar[];
+    ggg3: Bar[][];
 }
 
 interface User {

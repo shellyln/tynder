@@ -701,6 +701,24 @@ const schema = {
         },
         "fff": {
           "$ref": "#/definitions/ErrorTypes"
+        },
+        "ggg1": {
+          "$ref": "#/definitions/Bar"
+        },
+        "ggg2": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Bar"
+          }
+        },
+        "ggg3": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Bar"
+            }
+          }
         }
       },
       "required": [
@@ -726,7 +744,10 @@ const schema = {
         "eee2",
         "eee3",
         "eee4",
-        "fff"
+        "fff",
+        "ggg1",
+        "ggg2",
+        "ggg3"
       ],
       "additionalProperties": false
     },
