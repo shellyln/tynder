@@ -135,7 +135,7 @@ message PrimitiveTypeAssertionConstraints {
     google.protobuf.Any lessThanValue = 4;
     google.protobuf.DoubleValue minLength = 5;
     google.protobuf.DoubleValue maxLength = 6;
-    google.protobuf.Any pattern = 7;
+    RegExp pattern = 7;
 }
 
 message PrimitiveTypeAssertion {
@@ -155,7 +155,7 @@ message PrimitiveTypeAssertion {
     google.protobuf.Any lessThanValue = 14;
     google.protobuf.DoubleValue minLength = 15;
     google.protobuf.DoubleValue maxLength = 16;
-    google.protobuf.Any pattern = 17;
+    RegExp pattern = 17;
 }
 
 message PrimitiveValueTypeAssertion {

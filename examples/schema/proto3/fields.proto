@@ -154,26 +154,14 @@ message Baz {
     Bar ggg1 = 24;
     repeated Bar ggg2 = 25;
     repeated google.protobuf.Any ggg3 = 26;
-    {
-        Foo foo = 1,
-    } ggg4 = 27;
-    repeated {
-        Foo foo = 1,
-    } ggg5 = 28;
+    Bar ggg4 = 27;
+    repeated Bar ggg5 = 28;
     repeated google.protobuf.Any ggg6 = 29;
-    {
-        Foo foo = 1,
-    } ggg7 = 30;
-    repeated {
-        Foo foo = 1,
-    } ggg8 = 31;
+    Bar ggg7 = 30;
+    repeated Bar ggg8 = 31;
     repeated google.protobuf.Any ggg9 = 32;
-    {
-        Foo foo = 1,
-    } ggg10 = 33;
-    repeated {
-        Foo foo = 1,
-    } ggg11 = 34;
+    Bar ggg10 = 33;
+    repeated Bar ggg11 = 34;
     repeated google.protobuf.Any ggg12 = 35;
     double hhh1 = 36;
     repeated double hhh2 = 37;
