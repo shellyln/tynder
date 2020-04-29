@@ -98,7 +98,7 @@ function generateGraphQlCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext)
             formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
             generateGraphQlCodeInner(ty.repeated, false, ctx, false)}${
                 (ty.repeated.kind === 'optional' ||
-                 ty.repeated.kind === 'one-of') ?
+                 ty.repeated.kind === 'one-of' && isNullableOneOf(ty.repeated, ctx)) ?
                     '' : '!'}]`
     );
 }
@@ -157,7 +157,7 @@ function generateGraphQlCodeObject(ty: ObjectAssertion, isInterface: boolean, ct
                     formatTypeName(x[1], {...ctx, nestLevel: ctx.nestLevel + 1}, x[1].typeName) :
                     generateGraphQlCodeInner(x[1], false, {...ctx, nestLevel: ctx.nestLevel + 1}, false)}${
                 (x[1].kind === 'optional' ||
-                 x[1].kind === 'one-of') ?
+                 x[1].kind === 'one-of' && isNullableOneOf(x[1], ctx)) ?
                     '' : '!'}`);
 
     return (

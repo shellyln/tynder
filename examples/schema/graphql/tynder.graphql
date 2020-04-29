@@ -123,7 +123,7 @@ type PrimitiveTypeAssertionConstraints {
 
 type PrimitiveTypeAssertion {
     kind: String!
-    primitiveName: PrimitiveValueTypeNames
+    primitiveName: PrimitiveValueTypeNames!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -143,7 +143,7 @@ type PrimitiveTypeAssertion {
 
 type PrimitiveValueTypeAssertion {
     kind: String!
-    value: PrimitiveValueTypes
+    value: PrimitiveValueTypes!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -176,7 +176,7 @@ type RepeatedAssertion {
 
 type SpreadAssertion {
     kind: String!
-    spread: TypeAssertion
+    spread: TypeAssertion!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -191,7 +191,7 @@ type SpreadAssertion {
 
 type SequenceAssertion {
     kind: String!
-    sequence: [TypeAssertion]!
+    sequence: [TypeAssertion!]!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -204,7 +204,7 @@ type SequenceAssertion {
 
 type OneOfAssertion {
     kind: String!
-    oneOf: [TypeAssertion]!
+    oneOf: [TypeAssertion!]!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -217,7 +217,7 @@ type OneOfAssertion {
 
 type OptionalAssertion {
     kind: String!
-    optional: TypeAssertion
+    optional: TypeAssertion!
     messageId: String
     message: String
     messages: ErrorMessages
@@ -243,15 +243,15 @@ type EnumAssertion {
 
 union ObjectAssertionMember = [Any] | [Any] | [Any]
 
-union AdditionalPropsKey = [Any]
+union AdditionalPropsKey = [Any!]
 
 union AdditionalPropsMember = [Any] | [Any] | [Any]
 
 type ObjectAssertion {
     kind: String!
-    members: [ObjectAssertionMember]!
-    additionalProps: [AdditionalPropsMember]
-    baseTypes: [Any]
+    members: [ObjectAssertionMember!]!
+    additionalProps: [AdditionalPropsMember!]
+    baseTypes: [Any!]
     messageId: String
     message: String
     messages: ErrorMessages
@@ -282,12 +282,12 @@ type ValidationContext {
     noAdditionalProps: Boolean
     errorMessages: ErrorMessages
     errors: [TypeAssertionErrorMessage!]!
-    typeStack: [Any]!
+    typeStack: [Any!]!
     schema: TypeAssertionMap
 }
 
 type TypeAssertionSetValue {
-    ty: TypeAssertion
+    ty: TypeAssertion!
     exported: Boolean!
     resolved: Boolean!
 }
