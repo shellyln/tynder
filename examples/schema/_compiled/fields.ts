@@ -1220,6 +1220,483 @@ const schema = {
               },
               "name": "ggg3"
             }
+          ],
+          [
+            "ggg4",
+            {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "symlink",
+                  "symlinkTargetName": "Bar",
+                  "typeName": "Bar",
+                  "name": "Bar"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "null"
+                }
+              ],
+              "name": "ggg4"
+            }
+          ],
+          [
+            "ggg5",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "symlink",
+                    "symlinkTargetName": "Bar",
+                    "typeName": "Bar",
+                    "name": "Bar"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "ggg5"
+            }
+          ],
+          [
+            "ggg6",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "one-of",
+                  "oneOf": [
+                    {
+                      "kind": "symlink",
+                      "symlinkTargetName": "Bar",
+                      "typeName": "Bar",
+                      "name": "Bar"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "null"
+                    }
+                  ]
+                }
+              },
+              "name": "ggg6"
+            }
+          ],
+          [
+            "ggg7",
+            {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "symlink",
+                  "symlinkTargetName": "Bar",
+                  "typeName": "Bar",
+                  "name": "Bar"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "undefined"
+                }
+              ],
+              "name": "ggg7"
+            }
+          ],
+          [
+            "ggg8",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "symlink",
+                    "symlinkTargetName": "Bar",
+                    "typeName": "Bar",
+                    "name": "Bar"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "undefined"
+                  }
+                ]
+              },
+              "name": "ggg8"
+            }
+          ],
+          [
+            "ggg9",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "one-of",
+                  "oneOf": [
+                    {
+                      "kind": "symlink",
+                      "symlinkTargetName": "Bar",
+                      "typeName": "Bar",
+                      "name": "Bar"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "undefined"
+                    }
+                  ]
+                }
+              },
+              "name": "ggg9"
+            }
+          ],
+          [
+            "ggg10",
+            {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "symlink",
+                  "symlinkTargetName": "Bar",
+                  "typeName": "Bar",
+                  "name": "Bar"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "null"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "undefined"
+                }
+              ],
+              "name": "ggg10"
+            }
+          ],
+          [
+            "ggg11",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "symlink",
+                    "symlinkTargetName": "Bar",
+                    "typeName": "Bar",
+                    "name": "Bar"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "undefined"
+                  }
+                ]
+              },
+              "name": "ggg11"
+            }
+          ],
+          [
+            "ggg12",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "one-of",
+                  "oneOf": [
+                    {
+                      "kind": "symlink",
+                      "symlinkTargetName": "Bar",
+                      "typeName": "Bar",
+                      "name": "Bar"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "null"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "undefined"
+                    }
+                  ]
+                }
+              },
+              "name": "ggg12"
+            }
+          ],
+          [
+            "hhh1",
+            {
+              "kind": "primitive",
+              "primitiveName": "number",
+              "name": "hhh1"
+            }
+          ],
+          [
+            "hhh2",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "primitive",
+                "primitiveName": "number"
+              },
+              "name": "hhh2"
+            }
+          ],
+          [
+            "hhh3",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "primitive",
+                  "primitiveName": "number"
+                }
+              },
+              "name": "hhh3"
+            }
+          ],
+          [
+            "hhh4",
+            {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "primitive",
+                  "primitiveName": "number"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "null"
+                }
+              ],
+              "name": "hhh4"
+            }
+          ],
+          [
+            "hhh5",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  }
+                ]
+              },
+              "name": "hhh5"
+            }
+          ],
+          [
+            "hhh6",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "one-of",
+                  "oneOf": [
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "number"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "null"
+                    }
+                  ]
+                }
+              },
+              "name": "hhh6"
+            }
+          ],
+          [
+            "hhh7",
+            {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "primitive",
+                  "primitiveName": "number"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "undefined"
+                }
+              ],
+              "name": "hhh7"
+            }
+          ],
+          [
+            "hhh8",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "undefined"
+                  }
+                ]
+              },
+              "name": "hhh8"
+            }
+          ],
+          [
+            "hhh9",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "one-of",
+                  "oneOf": [
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "number"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "undefined"
+                    }
+                  ]
+                }
+              },
+              "name": "hhh9"
+            }
+          ],
+          [
+            "hhh10",
+            {
+              "kind": "one-of",
+              "oneOf": [
+                {
+                  "kind": "primitive",
+                  "primitiveName": "number"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "null"
+                },
+                {
+                  "kind": "primitive",
+                  "primitiveName": "undefined"
+                }
+              ],
+              "name": "hhh10"
+            }
+          ],
+          [
+            "hhh11",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "one-of",
+                "oneOf": [
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "number"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "null"
+                  },
+                  {
+                    "kind": "primitive",
+                    "primitiveName": "undefined"
+                  }
+                ]
+              },
+              "name": "hhh11"
+            }
+          ],
+          [
+            "hhh12",
+            {
+              "kind": "repeated",
+              "min": null,
+              "max": null,
+              "repeated": {
+                "kind": "repeated",
+                "min": null,
+                "max": null,
+                "repeated": {
+                  "kind": "one-of",
+                  "oneOf": [
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "number"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "null"
+                    },
+                    {
+                      "kind": "primitive",
+                      "primitiveName": "undefined"
+                    }
+                  ]
+                }
+              },
+              "name": "hhh12"
+            }
           ]
         ],
         "typeName": "Baz",

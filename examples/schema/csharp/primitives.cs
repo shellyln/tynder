@@ -2,15 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tynder.UserSchema
 {
-    using NumberType = System.Object;
+    using NumberType = System.Double;
 
-    using IntegerType = System.Object;
+    using IntegerType = System.Int32;
 
-    using BigIntType = System.Object;
+    using BigIntType = System.Decimal;
 
-    using StringType = System.Object;
+    using StringType = System.String;
 
-    using BooleanType = System.Object;
+    using BooleanType = System.Boolean;
 
     using NullType = System.Object;
 
@@ -22,14 +22,14 @@ namespace Tynder.UserSchema
 
     using NeverType = System.Object;
 
-    using NumberValueType = System.Object;
+    using NumberValueType = System.Double;
 
-    using IntegerValueType = System.Object;
+    using IntegerValueType = System.Int32;
 
     using BigIntValueType = System.Object;
 
-    using StringValueType = System.Object;
+    using StringValueType = System.String;
 
-    using BooleanValueType = System.Object;
+    using BooleanValueType = System.Boolean;
 
 }

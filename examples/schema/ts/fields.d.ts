@@ -145,6 +145,27 @@ interface Baz {
     ggg1: Bar;
     ggg2: Bar[];
     ggg3: Array<Bar[]>;
+    ggg4: (Bar | null);
+    ggg5: Array<(Bar | null)>;
+    ggg6: Array<Array<(Bar | null)>>;
+    ggg7: (Bar | undefined);
+    ggg8: Array<(Bar | undefined)>;
+    ggg9: Array<Array<(Bar | undefined)>>;
+    ggg10: (Bar | null | undefined);
+    ggg11: Array<(Bar | null | undefined)>;
+    ggg12: Array<Array<(Bar | null | undefined)>>;
+    hhh1: number;
+    hhh2: number[];
+    hhh3: Array<number[]>;
+    hhh4: (number | null);
+    hhh5: Array<(number | null)>;
+    hhh6: Array<Array<(number | null)>>;
+    hhh7: (number | undefined);
+    hhh8: Array<(number | undefined)>;
+    hhh9: Array<Array<(number | undefined)>>;
+    hhh10: (number | null | undefined);
+    hhh11: Array<(number | null | undefined)>;
+    hhh12: Array<Array<(number | null | undefined)>>;
 }
 
 interface User {
