@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.1
+
+* `[FIX]` Fix and improve codegen output (CSharp, Protobuf3).
+* Update CI configurations.
+
+
 ## v0.5.0
 
 * Add `C#` type definition code generation.
