@@ -11,6 +11,15 @@ test:lint:
   script:
     - npm run lint
 
+test:node:14:
+  image: node:14
+  script:
+    - npm run clean
+    - npm run build
+    - npm run build:dist:dev
+    - npm run build:dist:prod
+    - npm test
+
 test:node:13:
   image: node:13
   script:
