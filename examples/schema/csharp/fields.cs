@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tynder.UserSchema
 {
-    using NumberType = System.Object;
+    using NumberType = System.Double;
 
 
     public class A 
@@ -306,6 +306,62 @@ namespace Tynder.UserSchema
 
         [Required]
         public Bar[][] ggg3 { get; set; }
+
+        public Bar ggg4 { get; set; }
+
+        [Required]
+        public Bar[] ggg5 { get; set; }
+
+        [Required]
+        public Bar[][] ggg6 { get; set; }
+
+        public Bar ggg7 { get; set; }
+
+        [Required]
+        public Bar[] ggg8 { get; set; }
+
+        [Required]
+        public Bar[][] ggg9 { get; set; }
+
+        public Bar ggg10 { get; set; }
+
+        [Required]
+        public Bar[] ggg11 { get; set; }
+
+        [Required]
+        public Bar[][] ggg12 { get; set; }
+
+        public double hhh1 { get; set; }
+
+        [Required]
+        public double[] hhh2 { get; set; }
+
+        [Required]
+        public double[][] hhh3 { get; set; }
+
+        public double? hhh4 { get; set; }
+
+        [Required]
+        public double?[] hhh5 { get; set; }
+
+        [Required]
+        public double?[][] hhh6 { get; set; }
+
+        public double? hhh7 { get; set; }
+
+        [Required]
+        public double?[] hhh8 { get; set; }
+
+        [Required]
+        public double?[][] hhh9 { get; set; }
+
+        public double? hhh10 { get; set; }
+
+        [Required]
+        public double?[] hhh11 { get; set; }
+
+        [Required]
+        public double?[][] hhh12 { get; set; }
     }
 
 

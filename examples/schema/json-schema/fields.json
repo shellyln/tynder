@@ -717,6 +717,276 @@
               "$ref": "#/definitions/Bar"
             }
           }
+        },
+        "ggg4": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Bar"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ggg5": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Bar"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "ggg6": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Bar"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "ggg7": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Bar"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ggg8": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Bar"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "ggg9": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Bar"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "ggg10": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Bar"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ggg11": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Bar"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "ggg12": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Bar"
+                },
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "hhh1": {
+          "type": "number"
+        },
+        "hhh2": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "hhh3": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "hhh4": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hhh5": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "hhh6": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "hhh7": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hhh8": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "hhh9": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "hhh10": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hhh11": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "hhh12": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
         }
       },
       "required": [
@@ -745,7 +1015,28 @@
         "fff",
         "ggg1",
         "ggg2",
-        "ggg3"
+        "ggg3",
+        "ggg4",
+        "ggg5",
+        "ggg6",
+        "ggg7",
+        "ggg8",
+        "ggg9",
+        "ggg10",
+        "ggg11",
+        "ggg12",
+        "hhh1",
+        "hhh2",
+        "hhh3",
+        "hhh4",
+        "hhh5",
+        "hhh6",
+        "hhh7",
+        "hhh8",
+        "hhh9",
+        "hhh10",
+        "hhh11",
+        "hhh12"
       ],
       "additionalProperties": false
     },

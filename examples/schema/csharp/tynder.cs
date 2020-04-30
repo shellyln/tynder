@@ -2,6 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tynder.UserSchema
 {
+    using RegExp = System.Object;
+
+    using Map = System.Object;
+
     using PrimitiveValueTypes = System.Object;
 
     using PrimitiveValueTypeNames = System.Object;
@@ -166,7 +170,7 @@ namespace Tynder.UserSchema
 
         public double? maxLength { get; set; }
 
-        public object pattern { get; set; }
+        public RegExp pattern { get; set; }
     }
 
 
@@ -192,10 +196,8 @@ namespace Tynder.UserSchema
 
     public class RepeatedAssertionConstraints 
     {
-        [Required]
         public double? min { get; set; }
 
-        [Required]
         public double? max { get; set; }
     }
 

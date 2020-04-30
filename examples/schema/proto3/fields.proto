@@ -154,6 +154,27 @@ message Baz {
     Bar ggg1 = 24;
     repeated Bar ggg2 = 25;
     repeated google.protobuf.Any ggg3 = 26;
+    Bar ggg4 = 27;
+    repeated Bar ggg5 = 28;
+    repeated google.protobuf.Any ggg6 = 29;
+    Bar ggg7 = 30;
+    repeated Bar ggg8 = 31;
+    repeated google.protobuf.Any ggg9 = 32;
+    Bar ggg10 = 33;
+    repeated Bar ggg11 = 34;
+    repeated google.protobuf.Any ggg12 = 35;
+    double hhh1 = 36;
+    repeated double hhh2 = 37;
+    repeated google.protobuf.Any hhh3 = 38;
+    google.protobuf.DoubleValue hhh4 = 39;
+    repeated google.protobuf.DoubleValue hhh5 = 40;
+    repeated google.protobuf.Any hhh6 = 41;
+    google.protobuf.DoubleValue hhh7 = 42;
+    repeated google.protobuf.DoubleValue hhh8 = 43;
+    repeated google.protobuf.Any hhh9 = 44;
+    google.protobuf.DoubleValue hhh10 = 45;
+    repeated google.protobuf.DoubleValue hhh11 = 46;
+    repeated google.protobuf.Any hhh12 = 47;
 }
 
 message User {

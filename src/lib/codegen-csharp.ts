@@ -47,6 +47,44 @@ function formatCSharpCodeDocComment(ty: TypeAssertion | string, nestLevel: numbe
 }
 
 
+function formatMemberType(ty: TypeAssertion, ctx: CodegenContext): string {
+    if (ty.typeName) {
+        return formatTypeName(ty, ctx, ty.typeName);
+    } else {
+        switch (ty.kind) {
+        case 'primitive':
+            return generateCSharpCodePrimitive(ty, ctx);
+        case 'primitive-value':
+            return generateCSharpCodePrimitiveValue(ty, ctx);
+        case 'repeated':
+            return generateCSharpCodeRepeated(ty, ctx);
+        case 'one-of':
+            return generateCSharpCodeOneOf(ty, ctx);
+        default:
+            return 'object';
+        }
+    }
+}
+
+
+function appendOptionalModifier(name: string) {
+    switch (name) {
+    case 'decimal': case 'int': case 'double': case 'bool':
+        return `${name}?`;
+    default:
+        return name;
+    }
+}
+
+
+function isNullableOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
+    const filtered = ty.oneOf.filter(x => !(
+        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
+        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
+    return (filtered.length === 1 && ty.oneOf.length !== 1 ? filtered[0] : null) ;
+}
+
+
 function generateCSharpCodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenContext) {
     // TODO: Function, DateStr, DateTimeStr
     switch (ty.primitiveName) {
@@ -89,16 +127,7 @@ function generateCSharpCodePrimitiveValue(ty: PrimitiveValueTypeAssertion, ctx: 
 
 
 function generateCSharpCodeRepeated(ty: RepeatedAssertion, ctx: CodegenContext): string {
-    return (
-        `${ty.repeated.typeName ?
-            formatTypeName(ty.repeated, ctx, ty.repeated.typeName) :
-            ty.repeated.kind === 'primitive' ?
-                generateCSharpCodePrimitive(ty.repeated, ctx) :
-                ty.repeated.kind === 'primitive-value' ?
-                    generateCSharpCodePrimitiveValue(ty.repeated, ctx) :
-                    ty.repeated.kind === 'repeated' ?
-                        generateCSharpCodeRepeated(ty.repeated, ctx) : 'object'}[]`
-    );
+    return `${formatMemberType(ty.repeated, ctx)}[]`;
 }
 
 
@@ -112,22 +141,10 @@ function generateCSharpCodeSequence(ty: SequenceAssertion, ctx: CodegenContext) 
 }
 
 
-function appendOptionalModifier(name: string) {
-    switch (name) {
-    case 'decimal': case 'int': case 'double': case 'bool':
-        return `${name}?`;
-    default:
-        return name;
-    }
-}
-
-
 function generateCSharpCodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
-    const filtered = ty.oneOf.filter(x => !(
-        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
-        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
-    if (filtered.length === 1 && ty.oneOf.length !== 1) {
-        return appendOptionalModifier(generateCSharpCodeInner(filtered[0], false, ctx));
+    const z = isNullableOneOf(ty, ctx);
+    if (z) {
+        return appendOptionalModifier(formatMemberType(z, ctx));
     } else {
         return 'object';
     }
@@ -153,7 +170,13 @@ function addAttributes(ty: TypeAssertion, ctx: CodegenContext, typeName: string)
         case 'decimal': case 'int': case 'double': case 'bool':
             break;
         default:
-            attrs.push('Required');
+            if (ty2.kind === 'one-of') {
+                if (! isNullableOneOf(ty2, ctx)) {
+                    attrs.push('Required');
+                }
+            } else {
+                attrs.push('Required');
+            }
             break;
         }
         ty2 = ty;
@@ -302,10 +325,6 @@ namespace Tynder.UserSchema
     };
 
     for (const ty of schema.entries()) {
-        if (ty[1].ty.noOutput) {
-            continue;
-        }
-
         const indent0 = '    '.repeat(ctx.nestLevel);
 
         if (ty[1].ty.kind === 'object') {
@@ -316,16 +335,55 @@ namespace Tynder.UserSchema
             // nothing to do
         } else {
             code += formatCSharpCodeDocComment(ty[1].ty, ctx.nestLevel);
-            code += `${indent0}using ${ty[0]} = System.Object;\n\n`;
+            let tyName = 'System.Object';
+            switch (ty[1].ty.kind) {
+            case 'primitive':
+                switch (ty[1].ty.primitiveName) {
+                case 'integer':
+                    tyName =  'System.Int32';
+                    break;
+                case 'bigint':
+                    tyName =  'System.Decimal';
+                    break;
+                case 'number':
+                    tyName =  'System.Double';
+                    break;
+                case 'boolean':
+                    tyName =  'System.Boolean';
+                    break;
+                case 'string':
+                    tyName =  'System.String';
+                    break;
+                }
+                break;
+            case 'primitive-value':
+                if (ty[1].ty.value !== null && ty[1].ty.value !== void 0) {
+                    switch (typeof ty[1].ty.primitiveName) {
+                    case 'bigint':
+                        tyName =  'System.Decimal';
+                        break;
+                    default:
+                        switch (typeof ty[1].ty.value) {
+                        case 'number':
+                            tyName =  'System.Double';
+                            break;
+                        case 'boolean':
+                            tyName =  'System.Boolean';
+                            break;
+                        case 'string':
+                            tyName =  'System.String';
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+            code += `${indent0}using ${ty[0]} = ${tyName};\n\n`;
         }
     }
 
     let isFirst = true;
     for (const ty of schema.entries()) {
-        if (ty[1].ty.noOutput) {
-            continue;
-        }
-
         const accessModifier = ty[1].exported ? 'public' : 'public';
         const indent0 = '    '.repeat(ctx.nestLevel);
         const indent1 = '    '.repeat(ctx.nestLevel + 1);

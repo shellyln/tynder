@@ -46,6 +46,52 @@ function formatProto3CodeDocComment(ty: TypeAssertion | string, nestLevel: numbe
 }
 
 
+function formatMemberType(ty: TypeAssertion, ctx: CodegenContext): string {
+    if (ty.typeName) {
+        return formatTypeName(ty, ctx, ty.typeName);
+    } else {
+        switch (ty.kind) {
+        case 'primitive':
+            return generateProto3CodePrimitive(ty, ctx);
+        case 'primitive-value':
+            return generateProto3CodePrimitiveValue(ty, ctx);
+        case 'repeated':
+            return generateProto3CodeRepeated(ty, ctx);
+        case 'one-of':
+            return generateProto3CodeOneOf(ty, ctx);
+        default:
+            return 'object';
+        }
+    }
+}
+
+
+function appendOptionalModifier(name: string) {
+    switch (name) {
+    case 'double':
+        return 'google.protobuf.DoubleValue';
+    case 'int64':
+        return 'google.protobuf.Int64Value';
+    case 'int32':
+        return 'google.protobuf.Int32Value';
+    case 'string':
+        return 'google.protobuf.StringValue';
+    case 'bool':
+        return 'google.protobuf.BoolValue';
+    default:
+        return name;
+    }
+}
+
+
+function isNullableOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
+    const filtered = ty.oneOf.filter(x => !(
+        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
+        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
+    return (filtered.length === 1 && ty.oneOf.length !== 1 ? filtered[0] : null) ;
+}
+
+
 function generateProto3CodePrimitive(ty: PrimitiveTypeAssertion, ctx: CodegenContext) {
     switch (ty.primitiveName) {
     case 'number':
@@ -107,30 +153,10 @@ function generateProto3CodeSequence(ty: SequenceAssertion, ctx: CodegenContext) 
 }
 
 
-function appendOptionalModifier(name: string) {
-    switch (name) {
-    case 'double':
-        return 'google.protobuf.DoubleValue';
-    case 'int64':
-        return 'google.protobuf.Int64Value';
-    case 'int32':
-        return 'google.protobuf.Int32Value';
-    case 'string':
-        return 'google.protobuf.StringValue';
-    case 'bool':
-        return 'google.protobuf.BoolValue';
-    default:
-        return name;
-    }
-}
-
-
 function generateProto3CodeOneOf(ty: OneOfAssertion, ctx: CodegenContext) {
-    const filtered = ty.oneOf.filter(x => !(
-        x.kind === 'primitive' && (x.primitiveName === 'null' || x.primitiveName === 'undefined') ||
-        x.kind === 'primitive-value' && (x.value === null || x.value === void 0)));
-    if (filtered.length === 1 && ty.oneOf.length !== 1) {
-        return appendOptionalModifier(generateProto3CodeInner(filtered[0], false, ctx));
+    const z = isNullableOneOf(ty, ctx);
+    if (z) {
+        return appendOptionalModifier(formatMemberType(z, ctx));
     } else {
         return 'google.protobuf.Any';
     }

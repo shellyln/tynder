@@ -155,6 +155,28 @@ interface Baz {
     ggg1: Bar;
     ggg2: Bar[];
     ggg3: Bar[][];
+    ggg4: (Bar|null);
+    ggg5: (Bar|null)[];
+    ggg6: (Bar|null)[][];
+    ggg7: (Bar|undefined);
+    ggg8: (Bar|undefined)[];
+    ggg9: (Bar|undefined)[][];
+    ggg10: (Bar|null|undefined);
+    ggg11: (Bar|null|undefined)[];
+    ggg12: (Bar|null|undefined)[][];
+
+    hhh1: number;
+    hhh2: number[];
+    hhh3: number[][];
+    hhh4: (number|null);
+    hhh5: (number|null)[];
+    hhh6: (number|null)[][];
+    hhh7: (number|undefined);
+    hhh8: (number|undefined)[];
+    hhh9: (number|undefined)[][];
+    hhh10: (number|null|undefined);
+    hhh11: (number|null|undefined)[];
+    hhh12: (number|null|undefined)[][];
 }
 
 interface User {

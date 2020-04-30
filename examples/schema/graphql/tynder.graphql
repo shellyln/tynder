@@ -155,8 +155,8 @@ type PrimitiveValueTypeAssertion {
 }
 
 type RepeatedAssertionConstraints {
-    min: Float!
-    max: Float!
+    min: Float
+    max: Float
 }
 
 type RepeatedAssertion {
@@ -170,8 +170,8 @@ type RepeatedAssertion {
     docComment: String
     passThruCodeBlock: String
     noOutput: Boolean
-    min: Float!
-    max: Float!
+    min: Float
+    max: Float
 }
 
 type SpreadAssertion {
@@ -185,8 +185,8 @@ type SpreadAssertion {
     docComment: String
     passThruCodeBlock: String
     noOutput: Boolean
-    min: Float!
-    max: Float!
+    min: Float
+    max: Float
 }
 
 type SequenceAssertion {
