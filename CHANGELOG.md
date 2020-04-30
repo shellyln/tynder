@@ -2,7 +2,7 @@
 
 ## v0.5.2
 
-* `[FIX]` Fix codegen: Fix type alias and oneOf types (CSharp, Protobuf, GraphQL).
+* `[FIX]` Fix codegen: Fix type alias, repeated types and oneOf types (CSharp, Protobuf, GraphQL).
 
 
 ## v0.5.1
