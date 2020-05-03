@@ -1025,6 +1025,10 @@ export interface Bar {
 export enum Baz {
     A,
 }
+
+export const enum FooBar {
+    A,
+}
 ```
 
 
@@ -1087,6 +1091,7 @@ external PhoneNumberString;
 //  ↓↓↓ directive line comment ↓↓↓
 // @tynder-external P, Q, R
 /// @tynder-external S, T
+/* @tynder-external U, V */
 
 /** doc comment */
 type Foo = string | number;
