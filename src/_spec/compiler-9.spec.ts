@@ -61,6 +61,54 @@ describe("compiler-9", function() {
             }
         }
     });
+    it("compiler-declare-statement-1", function() {
+        const schemas = [compile(`
+            declare var x: number;
+            declare var y: number[];
+            declare var z: \nnumber[][];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                '__$$$gensym_0$$$__',
+                '__$$$gensym_1$$$__',
+                '__$$$gensym_2$$$__',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    kind: 'never',
+                    passThruCodeBlock: `declare var x: number;`,
+                };
+                const ty = getType(schema, '__$$$gensym_0$$$__');
+                expect(ty).toEqual(rhs);
+            }
+            {
+                const rhs: TypeAssertion = {
+                    kind: 'never',
+                    passThruCodeBlock: `declare var y: number[];`,
+                };
+                const ty = getType(schema, '__$$$gensym_1$$$__');
+                expect(ty).toEqual(rhs);
+            }
+            {
+                const rhs: TypeAssertion = {
+                    kind: 'never',
+                    passThruCodeBlock: `declare var z: \nnumber[][];`,
+                };
+                const ty = getType(schema, '__$$$gensym_2$$$__');
+                expect(ty).toEqual(rhs);
+            }
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare var x: number;\n\n` +
+                    `declare var y: number[];\n\n` +
+                    `declare var z: \nnumber[][];`
+                );
+            }
+        }
+    });
     it("compiler-directives-1", function() {
         const schemas = [compile(`
             /// @tynder-external P, Q, R

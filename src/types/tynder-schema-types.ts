@@ -142,6 +142,7 @@ export interface EnumAssertion extends TypeAssertionBase {
         number | string,  // enum value
         string?,          // doc comment
     ]>;
+    isConst?: boolean;    // If true, it is `const enum`
 }
 
 

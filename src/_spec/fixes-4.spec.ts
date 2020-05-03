@@ -394,4 +394,76 @@ describe("fix-3", function() {
 
         expect(dts).toEqual(exp);
     });
+    it("gen-d.ts-enum-1", function() {
+        let src = `
+        enum Foo {
+            A
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        enum Foo {
+            A,
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-enum-2", function() {
+        let src = `
+        export enum Foo {
+            A
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export enum Foo {
+            A,
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-enum-3", function() {
+        let src = `
+        const enum Foo {
+            A
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        const enum Foo {
+            A,
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-enum-4", function() {
+        let src = `
+        export const enum Foo {
+            A
+        }`;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        export const enum Foo {
+            A,
+        }`;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
 });

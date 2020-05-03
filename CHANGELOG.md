@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.0
+
+* Add pass-throught `declare` statement.
+* Add `const enum` definition.
+
+
+----
+
+
 ## v0.5.2
 
 * `[FIX]` Fix codegen: Fix type alias, repeated types and oneOf types (CSharp, Protobuf, GraphQL).

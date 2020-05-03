@@ -924,11 +924,20 @@ const internalDef =
           enumDef, );
 
 
+const constDef =
+    trans(tokens => [[{symbol: 'asConst'}, tokens[0]]])(
+        erase(seq('const'),
+              qty(1)(commentOrSpace), ),
+        first(enumDef,
+              err('constDef: Unexpected token has appeared.'), ));
+
+
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
               qty(1)(commentOrSpace), ),
-        first(internalDef,
+        first(constDef,
+              internalDef,
               err('exportedDef: Unexpected token has appeared.'), ));
 
 
@@ -944,6 +953,7 @@ const defStatement =
             decoratorsClause,
             zeroWidth(() => []), )),      // [0] decorators
         first(exportedDef,                // [1] body
+              constDef,
               internalDef), );
 
 
@@ -966,7 +976,8 @@ const externalTypeDef =
 
 const importStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
-        cat(seq('import'),
+        cat(first(seq('import'),
+                  seq('declare')),
             qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
             first(ahead(seq(';')), err('importStatement: Unexpected token has appeared. Expect ";".')),
@@ -1134,6 +1145,17 @@ export function compile(s: string) {
                 schema.set(ty.name, tySet);
             }
             return tySet.ty;
+        },
+        asConst: (ty: TypeAssertion) => {
+            switch (ty.kind) {
+            case 'enum':
+                // NOTE: `ty` may already `def`ed.
+                ty.isConst = true;
+                break;
+            default:
+                throw new Error(`It cannot set to const: ${ty.kind} ${ty.typeName || '(unnamed)'}`);
+            }
+            return ty;
         },
         external,
         passthru: (str: string) => {
