@@ -466,4 +466,156 @@ describe("fix-3", function() {
 
         expect(dts).toEqual(exp);
     });
+    it("gen-d.ts-pass-throught-1", function() {
+        let src = `
+        // @tynder-pass-throught function foo(x: string) { return x; }
+        `;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        function foo(x: string) {
+            return x;
+        }
+        `;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("gen-d.ts-pass-throught-2", function() {
+        let src = `
+        /* @tynder-pass-throught
+        function foo(x: string) {
+            return x;
+        }
+        */
+        `;
+        src = src.replace(/\s+/g, ' ').trim();
+
+        let dts = generateTypeScriptCode(compile(src));
+        dts = dts.replace(/\s+/g, ' ').trim();
+
+        let exp = `
+        function foo(x: string) {
+            return x;
+        }
+        `;
+        exp = exp.replace(/\s+/g, ' ').trim();
+
+        expect(dts).toEqual(exp);
+    });
+    it("compiler-comments", function() {
+        const schema = compile(`
+            /* comment1 */
+            /*
+            comment2
+            */
+            // comment3
+            # comment4
+            type FooA = any;
+            /* comment1 */
+            /*
+            comment2
+            */
+            // comment3
+            # comment4
+            type FooB = unknown;
+            /* comment1 */
+            /*
+            comment2
+            */
+            // comment3
+            # comment4
+            type FooC = never;
+            /* comment1 */
+            /*
+            comment2
+            */
+            // comment3
+            # comment4
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'FooA', 'FooB', 'FooC',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'FooA',
+                typeName: 'FooA',
+                kind: 'any',
+            };
+            const ty = getType(schema, 'FooA');
+            expect(ty).toEqual(rhs);
+            expect(validate<any>(0, ty)).toEqual({value: 0});
+            expect(validate<any>(1, ty)).toEqual({value: 1});
+            expect(validate<any>(BigInt(0), ty)).toEqual({value: BigInt(0)});
+            expect(validate<any>(BigInt(1), ty)).toEqual({value: BigInt(1)});
+            expect(validate<any>('', ty)).toEqual({value: ''});
+            expect(validate<any>('1', ty)).toEqual({value: '1'});
+            expect(validate<any>(false, ty)).toEqual({value: false});
+            expect(validate<any>(true, ty)).toEqual({value: true});
+            expect(validate<any>(null, ty)).toEqual({value: null});
+            expect(validate<any>(void 0, ty)).toEqual({value: void 0});
+            expect(validate<any>({}, ty)).toEqual({value: {}});
+            expect(validate<any>([], ty)).toEqual({value: []});
+            expect(validate<any>(3, ty)).toEqual({value: 3});
+            expect(validate<any>(BigInt(7), ty)).toEqual({value: BigInt(7)});
+            expect(validate<any>('XB', ty)).toEqual({value: 'XB'});
+            expect(validate<any>(true, ty)).toEqual({value: true});
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'FooB',
+                typeName: 'FooB',
+                kind: 'unknown',
+            };
+            const ty = getType(schema, 'FooB');
+            expect(ty).toEqual(rhs);
+            expect(validate<any>(0, ty)).toEqual({value: 0});
+            expect(validate<any>(1, ty)).toEqual({value: 1});
+            expect(validate<any>(BigInt(0), ty)).toEqual({value: BigInt(0)});
+            expect(validate<any>(BigInt(1), ty)).toEqual({value: BigInt(1)});
+            expect(validate<any>('', ty)).toEqual({value: ''});
+            expect(validate<any>('1', ty)).toEqual({value: '1'});
+            expect(validate<any>(false, ty)).toEqual({value: false});
+            expect(validate<any>(true, ty)).toEqual({value: true});
+            expect(validate<any>(null, ty)).toEqual({value: null});
+            expect(validate<any>(void 0, ty)).toEqual({value: void 0});
+            expect(validate<any>({}, ty)).toEqual({value: {}});
+            expect(validate<any>([], ty)).toEqual({value: []});
+            expect(validate<any>(3, ty)).toEqual({value: 3});
+            expect(validate<any>(BigInt(7), ty)).toEqual({value: BigInt(7)});
+            expect(validate<any>('XB', ty)).toEqual({value: 'XB'});
+            expect(validate<any>(true, ty)).toEqual({value: true});
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'FooC',
+                typeName: 'FooC',
+                kind: 'never',
+            };
+            const ty = getType(schema, 'FooC');
+            expect(ty).toEqual(rhs);
+            expect(validate<string>(0, ty)).toEqual(null);
+            expect(validate<string>(1, ty)).toEqual(null);
+            expect(validate<string>(BigInt(0), ty)).toEqual(null);
+            expect(validate<string>(BigInt(1), ty)).toEqual(null);
+            expect(validate<string>('', ty)).toEqual(null);
+            expect(validate<string>('1', ty)).toEqual(null);
+            expect(validate<string>(false, ty)).toEqual(null);
+            expect(validate<string>(true, ty)).toEqual(null);
+            expect(validate<string>(null, ty)).toEqual(null);
+            expect(validate<string>(void 0, ty)).toEqual(null);
+            expect(validate<string>({}, ty)).toEqual(null);
+            expect(validate<string>([], ty)).toEqual(null);
+            expect(validate<string>(3, ty)).toEqual(null);
+            expect(validate<string>(BigInt(7), ty)).toEqual(null);
+            expect(validate<string>('XB', ty)).toEqual(null);
+            expect(validate<string>(true, ty)).toEqual(null);
+        }
+    });
 });

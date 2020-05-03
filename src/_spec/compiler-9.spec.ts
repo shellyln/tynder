@@ -165,6 +165,14 @@ describe("compiler-9", function() {
             type X = Q;
             interface Y { a: R; }
         `), compile(`
+            /* @tynder-external P, Q, R */
+            /* @tynder-external
+            S
+            */
+
+            type X = Q;
+            interface Y { a: R; }
+        `), compile(`
             external P, Q, R;
             external S;
 

@@ -4,7 +4,7 @@
 
 * Add pass-throught `declare` statement.
 * Add `const enum` definition.
-
+* Add `/* @tynder-pass-throught ... */` directive.
 
 ----
 

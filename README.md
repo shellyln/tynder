@@ -1068,6 +1068,19 @@ or
 ```
 
 
+### Pass-throught code block
+
+This comment body is passed through to the generated codes.
+
+```ts
+declare const phoneNumberString: unique symbol;
+/* @tynder-pass-throught
+export type PhoneNumberString = string & { [phoneNumberString]: never };
+*/
+external PhoneNumberString;
+```
+
+
 ### Comments
 
 ```ts
@@ -1131,6 +1144,14 @@ type D = @msg({
 * `@tynder-external` _type_ [, ...]
     * Declare external types as `any`.
 
+```ts
+/* @tynder-pass-throught
+export type PhoneNumberString = string & { [phoneNumberString]: never };
+*/
+```
+
+* `@tynder-pass-throught` _body_
+    * This comment body is passed through to the generated codes.
 
 ### Generics
 Generics actual parameters are removed.

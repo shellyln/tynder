@@ -62,10 +62,20 @@ const directiveLineComment =
     trans(tokens => [[{symbol: 'directive'}, ...tokens]])(
         erase(qty(2)(cls('/'))),
         erase(repeat(classes.space)),
-        cat(seq('@tynder-'), repeat(classes.alnum)), // [0]
+        cat(seq('@tynder-'), repeat(first(classes.alnum, cls('-')))), // [0]
         erase(repeat(classes.space)),
-        cat(repeat(notCls('\r\n', '\n', '\r'))),     // [1]
+        cat(repeat(notCls('\r\n', '\n', '\r'))),                      // [1]
         erase(first(classes.newline, ahead(end()))), );
+
+const directiveBlockComment =
+    trans(tokens => [[{symbol: 'directive'}, ...tokens]])(
+        erase(seq('/*')),
+        erase(repeat(classes.space)),
+        cat(seq('@tynder-'), repeat(first(classes.alnum, cls('-')))), // [0]
+        erase(repeat(classes.space)),
+        cat(repeat(notCls('*/'))),                                    // [1]
+        erase(seq('*/')), );
+
 
 const lineComment =
     combine(
@@ -103,8 +113,10 @@ const docComment =
 const blockComment =
     combine(
         seq('/*'),
-        repeat(notCls('*/')),
-        seq('*/'), );
+            ahead(repeat(classes.space),
+                  notCls('@tynder-'), ),
+            repeat(notCls('*/')),
+            seq('*/'), );
 
 const commentOrSpace =
     first(classes.space, lineComment, hashLineComment, docComment, blockComment);
@@ -1003,6 +1015,7 @@ const importStatement =
 
 const definition =
     first(directiveLineComment,
+          directiveBlockComment,
           defStatement,
           externalTypeDef,
           declareVarStatement,
@@ -1123,6 +1136,15 @@ export function compile(s: string) {
         }
     };
 
+    const passthru = (str: string) => {
+        const ty: TypeAssertion = {
+            kind: 'never',
+            passThruCodeBlock: str || '',
+        };
+        schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
+        return ty;
+    };
+
     lisp.setGlobals({
         picked: operators.picked,
         omit: operators.omit,
@@ -1181,18 +1203,14 @@ export function compile(s: string) {
             return ty;
         },
         external,
-        passthru: (str: string) => {
-            const ty: TypeAssertion = {
-                kind: 'never',
-                passThruCodeBlock: str || '',
-            };
-            schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
-            return ty;
-        },
+        passthru,
         directive: (name: string, body: string) => {
             switch (name) {
             case '@tynder-external':
                 external(...body.split(',').map(x => x.trim()));
+                break;
+            case '@tynder-pass-throught':
+                passthru(body);
                 break;
             default:
                 throw new Error(`Unknown directive is appeared: ${name}`);
