@@ -565,7 +565,14 @@ describe("fix-1", function() {
             import
         `)).toThrowMatching(err =>
             err.message.includes(
-                'importStatement: Unexpected token has appeared. Expect ";".\n'));
+                'importOrDeclareStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24b", function() {
+        expect(() => compile(`
+            declare
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'importOrDeclareStatement: Unexpected token has appeared. Expect ";".\n'));
     });
     it("fix-improve-error-messages-25", function() {
         expect(() => compile(`

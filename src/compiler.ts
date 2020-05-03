@@ -974,13 +974,13 @@ const externalTypeDef =
         first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect ";".')),
         erase(cls(';')), );
 
-const importStatement =
+const importOrDeclareStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
         cat(first(seq('import'),
                   seq('declare')),
             qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
-            first(ahead(seq(';')), err('importStatement: Unexpected token has appeared. Expect ";".')),
+            first(ahead(seq(';')), err('importOrDeclareStatement: Unexpected token has appeared. Expect ";".')),
             cls(';'), ));
 
 
@@ -988,7 +988,7 @@ const definition =
     first(directiveLineComment,
           defStatement,
           externalTypeDef,
-          importStatement, );
+          importOrDeclareStatement, );
 
 const program =
     makeProgram(combine(
