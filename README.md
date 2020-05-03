@@ -1044,9 +1044,13 @@ import {a, b as bb} from 'foo';
 This statement is passed through to the generated codes.
 
 ```ts
-declare var x: number;
-declare let y: number;
-declare const z: number;
+declare var a: number;
+declare let b: number;
+declare const c: number;
+
+export declare var d: number;
+export declare let e: number;
+export declare const f: number;
 ```
 
 

@@ -938,6 +938,7 @@ const exportedDef =
               qty(1)(commentOrSpace), ),
         first(constDef,
               internalDef,
+              input => declareVarStatement(input),
               err('exportedDef: Unexpected token has appeared.'), ));
 
 
@@ -1141,12 +1142,17 @@ export function compile(s: string) {
         def,
         ref,
         export: (ty: TypeAssertion) => {
-            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
-            const tySet = mapTyToTySet.has(ty) ?
-                mapTyToTySet.get(ty) as TypeAssertionSetValue :
-                {ty, exported: false, resolved: false};
-            tySet.exported = true;
-            return ty;
+            if (ty.kind === 'never' && typeof ty.passThruCodeBlock === 'string') {
+                ty.passThruCodeBlock = `export ${ty.passThruCodeBlock}`;
+                return ty;
+            } else {
+                // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+                const tySet = mapTyToTySet.has(ty) ?
+                    mapTyToTySet.get(ty) as TypeAssertionSetValue :
+                    {ty, exported: false, resolved: false};
+                tySet.exported = true;
+                return ty;
+            }
         },
         redef: (original: TypeAssertion, ty: TypeAssertion) => {
             if (original === ty) {

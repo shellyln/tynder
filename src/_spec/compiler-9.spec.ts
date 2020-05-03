@@ -64,8 +64,8 @@ describe("compiler-9", function() {
     it("compiler-declare-statement-1", function() {
         const schemas = [compile(`
             declare var x: number;
-            declare var y: number[];
-            declare var z: \nnumber[][];
+            declare let y: number[];
+            declare const z: \nnumber[][];
         `)];
 
         {
@@ -87,7 +87,7 @@ describe("compiler-9", function() {
             {
                 const rhs: TypeAssertion = {
                     kind: 'never',
-                    passThruCodeBlock: `declare var y: number[];`,
+                    passThruCodeBlock: `declare let y: number[];`,
                 };
                 const ty = getType(schema, '__$$$gensym_1$$$__');
                 expect(ty).toEqual(rhs);
@@ -95,7 +95,7 @@ describe("compiler-9", function() {
             {
                 const rhs: TypeAssertion = {
                     kind: 'never',
-                    passThruCodeBlock: `declare var z: \nnumber[][];`,
+                    passThruCodeBlock: `declare const z: \nnumber[][];`,
                 };
                 const ty = getType(schema, '__$$$gensym_2$$$__');
                 expect(ty).toEqual(rhs);
@@ -103,8 +103,56 @@ describe("compiler-9", function() {
             {
                 expect(generateTypeScriptCode(schema).trim()).toEqual(
                     `declare var x: number;\n\n` +
-                    `declare var y: number[];\n\n` +
-                    `declare var z: \nnumber[][];`
+                    `declare let y: number[];\n\n` +
+                    `declare const z: \nnumber[][];`
+                );
+            }
+        }
+    });
+    it("compiler-declare-statement-2", function() {
+        const schemas = [compile(`
+            export declare var x: number;
+            export declare let y: number[];
+            export declare const z: \nnumber[][];
+        `)];
+
+        {
+            expect(Array.from(schemas[0].keys())).toEqual([
+                '__$$$gensym_0$$$__',
+                '__$$$gensym_1$$$__',
+                '__$$$gensym_2$$$__',
+            ]);
+        }
+        for (const schema of schemas) {
+            {
+                const rhs: TypeAssertion = {
+                    kind: 'never',
+                    passThruCodeBlock: `export declare var x: number;`,
+                };
+                const ty = getType(schema, '__$$$gensym_0$$$__');
+                expect(ty).toEqual(rhs);
+            }
+            {
+                const rhs: TypeAssertion = {
+                    kind: 'never',
+                    passThruCodeBlock: `export declare let y: number[];`,
+                };
+                const ty = getType(schema, '__$$$gensym_1$$$__');
+                expect(ty).toEqual(rhs);
+            }
+            {
+                const rhs: TypeAssertion = {
+                    kind: 'never',
+                    passThruCodeBlock: `export declare const z: \nnumber[][];`,
+                };
+                const ty = getType(schema, '__$$$gensym_2$$$__');
+                expect(ty).toEqual(rhs);
+            }
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `export declare var x: number;\n\n` +
+                    `export declare let y: number[];\n\n` +
+                    `export declare const z: \nnumber[][];`
                 );
             }
         }
