@@ -889,6 +889,10 @@ enum Baz {
     B = 'BBB',
     C = 'CCC',
 }
+
+const enum FooBar {
+    A,
+}
 ```
 
 
@@ -1032,6 +1036,17 @@ This statement is passed through to the generated codes.
 import from 'foo';
 import * as foo from 'foo';
 import {a, b as bb} from 'foo';
+```
+
+
+### Declared variables
+
+This statement is passed through to the generated codes.
+
+```ts
+declare var x: number;
+declare let y: number;
+declare const z: number;
 ```
 
 

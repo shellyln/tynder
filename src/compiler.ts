@@ -977,7 +977,9 @@ const externalTypeDef =
 const importOrDeclareStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
         cat(first(seq('import'),
-                  seq('declare')),
+                  seq('declare')), // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
+                                   //       [export] [declare] type typeName = ...         // <- NOT pass-thru
+                                   //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
             qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
             first(ahead(seq(';')), err('importOrDeclareStatement: Unexpected token has appeared. Expect ";".')),
