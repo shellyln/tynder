@@ -974,15 +974,29 @@ const externalTypeDef =
         first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect ";".')),
         erase(cls(';')), );
 
-const importOrDeclareStatement =
+
+const declareVarStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
-        cat(first(seq('import'),
-                  seq('declare')), // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
-                                   //       [export] [declare] type typeName = ...         // <- NOT pass-thru
-                                   //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
+        cat(seq('declare'),         // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
+                                    //       [export] [declare] type typeName = ...         // <- NOT pass-thru
+                                    //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
+            qty(1)(commentOrSpace),
+            first(seq('var'),
+                  seq('let'),
+                  seq('const'),
+                  err('declareVarStatement: Unexpected token has appeared. Expect "var|let|const".') ),
             qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
-            first(ahead(seq(';')), err('importOrDeclareStatement: Unexpected token has appeared. Expect ";".')),
+            first(ahead(seq(';')), err('declareVarStatement: Unexpected token has appeared. Expect ";".')),
+            cls(';'), ));
+
+
+const importStatement =
+    trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
+        cat(seq('import'),
+            qty(1)(commentOrSpace),
+            cat(repeat(notCls(';'))),
+            first(ahead(seq(';')), err('importStatement: Unexpected token has appeared. Expect ";".')),
             cls(';'), ));
 
 
@@ -990,7 +1004,8 @@ const definition =
     first(directiveLineComment,
           defStatement,
           externalTypeDef,
-          importOrDeclareStatement, );
+          declareVarStatement,
+          importStatement, );
 
 const program =
     makeProgram(combine(
