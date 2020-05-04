@@ -618,4 +618,139 @@ describe("fix-3", function() {
             expect(validate<string>(true, ty)).toEqual(null);
         }
     });
+    it("external-0", function() {
+        const schemas = [compile(`
+            external Foo;
+        `), compile(`
+            // @tynder-external Foo
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'any',
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    noOutput: true,
+                } as any);
+            }
+        }
+    });
+    it("external-1", function() {
+        const schemas = [compile(`
+            external Foo, Bar, Baz;
+        `), compile(`
+            // @tynder-external Foo, Bar, Baz
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'any',
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    noOutput: true,
+                } as any);
+            }
+        }
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Bar');
+            {
+                expect(ty).toEqual({
+                    kind: 'any',
+                    typeName: 'Bar',
+                    name: 'Bar',
+                    noOutput: true,
+                } as any);
+            }
+        }
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Baz');
+            {
+                expect(ty).toEqual({
+                    kind: 'any',
+                    typeName: 'Baz',
+                    name: 'Baz',
+                    noOutput: true,
+                } as any);
+            }
+        }
+    });
+    it("external-2", function() {
+        const schemas = [compile(`
+            external Foo: string[], Bar: Foo | string, Baz: {a: string}[];
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'repeated',
+                    min: null,
+                    max: null,
+                    repeated: {
+                        kind: 'primitive',
+                        primitiveName: 'string',
+                    },
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    noOutput: true,
+                } as any);
+            }
+        }
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Bar');
+            {
+                expect(ty).toEqual({
+                    kind: 'one-of',
+                    oneOf: [
+                        {
+                            kind: 'repeated',
+                            min: null,
+                            max: null,
+                            repeated: {
+                                kind: 'primitive',
+                                primitiveName: 'string',
+                            },
+                            typeName: 'Foo',
+                            name: 'Foo',
+                            noOutput: true,
+                        },
+                        {
+                            kind: 'primitive',
+                            primitiveName: 'string',
+                        }
+                    ],
+                    typeName: 'Bar',
+                    name: 'Bar',
+                    noOutput: true,
+                } as any);
+            }
+        }
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Baz');
+            {
+                expect(ty).toEqual({
+                    kind: 'repeated',
+                    min: null,
+                    max: null,
+                    repeated: {
+                        kind: 'object',
+                        members: [
+                            [
+                                'a',
+                                {
+                                    kind: 'primitive',
+                                    primitiveName: 'string',
+                                    name: 'a',
+                                }
+                            ]
+                        ]
+                    },
+                    typeName: 'Baz',
+                    name: 'Baz',
+                    noOutput: true,
+                } as any);
+            }
+        }
+    });
 });

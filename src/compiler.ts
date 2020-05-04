@@ -970,16 +970,26 @@ const defStatement =
               internalDef), );
 
 
+const externalSymbolAndType =
+    trans(tokens => [[{symbol: '$list'}, ...tokens]])(
+        symbolName,
+        erase(repeat(commentOrSpace)),
+        qty(0, 1)(
+            combine(erase(seq(':')),
+                    erase(repeat(commentOrSpace)),
+                    input => complexType(first(seq(';'), seq(',')))(input), )));
+
+
 const externalTypeDef =
     trans(tokens => [[{symbol: 'external'}, ...tokens]])(
         erase(seq('external')),
             erase(qty(1)(commentOrSpace)),
-            symbolName,
+            externalSymbolAndType,
             repeat(combine(
                 erase(repeat(commentOrSpace)),
                 erase(cls(',')),
                 erase(repeat(commentOrSpace)),
-                first(symbolName,
+                first(externalSymbolAndType,
                       err('externalTypeDef: Unexpected token has appeared. Expect symbol name.'), ),
                 erase(repeat(commentOrSpace)),
             )),
@@ -1129,9 +1139,14 @@ export function compile(s: string) {
         return ty;
     };
 
-    const external = (...names: string[]) => {
+    const external = (...names: (string | [string, TypeAssertion?])[]) => {
         for (const name of names) {
-            const ty = def(name, operators.primitive('any'));
+            let ty: TypeAssertion = null as any;
+            if (typeof name === 'string') {
+                ty = def(name, operators.primitive('any'));
+            } else {
+                ty = def(name[0], name[1] ? name[1] : operators.primitive('any'));
+            }
             ty.noOutput = true;
         }
     };
