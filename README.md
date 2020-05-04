@@ -1060,8 +1060,10 @@ export declare const f: number;
 
 ### External
 
-Define the external symbols as `any` type.  
 This statement is removed from the generated code.
+
+#### Untyped external statement
+Define the external symbols as `any` type.
 
 ```ts
 external P, Q, R;
@@ -1069,6 +1071,30 @@ external P, Q, R;
 or
 ```ts
 /// @tynder-external P, Q, R
+```
+or
+```ts
+/* @tynder-external P, Q, R */
+```
+
+#### Typed external statement
+
+```ts
+external P: string[],
+         Q: P | string,
+         R: {a: string}[];
+```
+or
+```ts
+/// @tynder-external P: string[], Q: P | string, R: {a: string}[]
+```
+or
+```ts
+/* @tynder-external
+    P: string[],
+    Q: P | string,
+    R: {a: string}[]
+*/
 ```
 
 
@@ -1081,7 +1107,7 @@ declare const phoneNumberString: unique symbol;
 /* @tynder-pass-throught
 export type PhoneNumberString = string & { [phoneNumberString]: never };
 */
-external PhoneNumberString;
+external PhoneNumberString: string;
 ```
 
 
