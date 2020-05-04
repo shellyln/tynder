@@ -1139,6 +1139,36 @@ export function compile(s: string) {
         return ty;
     };
 
+    const redef = (original: TypeAssertion, ty: TypeAssertion) => {
+        if (original === ty) {
+            return ty;
+        }
+        // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+        const tySet = mapTyToTySet.has(original) ?
+            mapTyToTySet.get(original) as TypeAssertionSetValue :
+            {ty: original, exported: false, resolved: false};
+        tySet.ty = ty;
+        mapTyToTySet.set(tySet.ty, tySet);
+        if (ty.name) {
+            schema.set(ty.name, tySet);
+        }
+        return tySet.ty;
+    };
+
+    const exported = (ty: TypeAssertion) => {
+        if (ty.kind === 'never' && typeof ty.passThruCodeBlock === 'string') {
+            ty.passThruCodeBlock = `export ${ty.passThruCodeBlock}`;
+            return ty;
+        } else {
+            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+            const tySet = mapTyToTySet.has(ty) ?
+                mapTyToTySet.get(ty) as TypeAssertionSetValue :
+                {ty, exported: false, resolved: false};
+            tySet.exported = true;
+            return ty;
+        }
+    };
+
     const external = (...names: (string | [string, TypeAssertion?])[]) => {
         for (const name of names) {
             let ty: TypeAssertion = null as any;
@@ -1151,6 +1181,18 @@ export function compile(s: string) {
         }
     };
 
+    const asConst = (ty: TypeAssertion) => {
+        switch (ty.kind) {
+        case 'enum':
+            // NOTE: `ty` may already `def`ed.
+            ty.isConst = true;
+            break;
+        default:
+            throw new Error(`It cannot set to const: ${ty.kind} ${ty.typeName || '(unnamed)'}`);
+        }
+        return ty;
+    };
+
     const passthru = (str: string) => {
         const ty: TypeAssertion = {
             kind: 'never',
@@ -1158,6 +1200,20 @@ export function compile(s: string) {
         };
         schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
         return ty;
+    };
+
+    const directive = (name: string, body: string) => {
+        switch (name) {
+        case '@tynder-external':
+            external(...body.split(',').map(x => x.trim()));
+            break;
+        case '@tynder-pass-throught':
+            passthru(body);
+            break;
+        default:
+            throw new Error(`Unknown directive is appeared: ${name}`);
+        }
+        return [];
     };
 
     lisp.setGlobals({
@@ -1178,60 +1234,12 @@ export function compile(s: string) {
         derived: operators.derived,
         def,
         ref,
-        export: (ty: TypeAssertion) => {
-            if (ty.kind === 'never' && typeof ty.passThruCodeBlock === 'string') {
-                ty.passThruCodeBlock = `export ${ty.passThruCodeBlock}`;
-                return ty;
-            } else {
-                // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
-                const tySet = mapTyToTySet.has(ty) ?
-                    mapTyToTySet.get(ty) as TypeAssertionSetValue :
-                    {ty, exported: false, resolved: false};
-                tySet.exported = true;
-                return ty;
-            }
-        },
-        redef: (original: TypeAssertion, ty: TypeAssertion) => {
-            if (original === ty) {
-                return ty;
-            }
-            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
-            const tySet = mapTyToTySet.has(original) ?
-                mapTyToTySet.get(original) as TypeAssertionSetValue :
-                {ty: original, exported: false, resolved: false};
-            tySet.ty = ty;
-            mapTyToTySet.set(tySet.ty, tySet);
-            if (ty.name) {
-                schema.set(ty.name, tySet);
-            }
-            return tySet.ty;
-        },
-        asConst: (ty: TypeAssertion) => {
-            switch (ty.kind) {
-            case 'enum':
-                // NOTE: `ty` may already `def`ed.
-                ty.isConst = true;
-                break;
-            default:
-                throw new Error(`It cannot set to const: ${ty.kind} ${ty.typeName || '(unnamed)'}`);
-            }
-            return ty;
-        },
+        redef,
+        export: exported,
+        asConst,
         external,
         passthru,
-        directive: (name: string, body: string) => {
-            switch (name) {
-            case '@tynder-external':
-                external(...body.split(',').map(x => x.trim()));
-                break;
-            case '@tynder-pass-throught':
-                passthru(body);
-                break;
-            default:
-                throw new Error(`Unknown directive is appeared: ${name}`);
-            }
-            return [];
-        },
+        directive,
         docComment: operators.withDocComment,
         '@range': (minValue: number | string, maxValue: number | string) => (ty: PrimitiveTypeAssertion) =>
             operators.withRange(minValue, maxValue)(ty),
