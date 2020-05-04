@@ -1051,6 +1051,15 @@ export function parse(s: string) {
 }
 
 
+function parseExternalDirective(s: string) {
+    const z = externalTypeDef(parserInput(s, {/* TODO: set initial state to the context */}));
+    if (! z.succeeded) {
+        throw new Error('Invalid external directive.');
+    }
+    return z.tokens;
+}
+
+
 const lisp = (() => {
     let config: SxParserConfig = Object.assign({}, defaultConfig);
     config.reservedNames = Object.assign({}, config.reservedNames, {
@@ -1205,7 +1214,7 @@ export function compile(s: string) {
     const directive = (name: string, body: string) => {
         switch (name) {
         case '@tynder-external':
-            external(...body.split(',').map(x => x.trim()));
+            lisp.evaluateAST(parseExternalDirective(`external ${body} ;`) as SxToken[]);
             break;
         case '@tynder-pass-throught':
             passthru(body);

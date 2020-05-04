@@ -623,6 +623,10 @@ describe("fix-3", function() {
             external Foo;
         `), compile(`
             // @tynder-external Foo
+        `), compile(`
+            /* @tynder-external
+            Foo
+            */
         `)];
         for (const schema of schemas) {
             const ty = getType(schema, 'Foo');
@@ -641,6 +645,15 @@ describe("fix-3", function() {
             external Foo, Bar, Baz;
         `), compile(`
             // @tynder-external Foo, Bar, Baz
+        `), compile(`
+            /* @tynder-external
+            Foo, Bar, Baz
+            */
+        `), compile(`
+            /* @tynder-external
+            Foo,
+            Bar, Baz
+            */
         `)];
         for (const schema of schemas) {
             const ty = getType(schema, 'Foo');
@@ -679,6 +692,17 @@ describe("fix-3", function() {
     it("external-2", function() {
         const schemas = [compile(`
             external Foo: string[], Bar: Foo | string, Baz: {a: string}[];
+        `), compile(`
+            // @tynder-external Foo: string[], Bar: Foo | string, Baz: {a: string}[]
+        `), compile(`
+            /* @tynder-external
+            Foo: string[], Bar: Foo | string, Baz: {a: string}[]
+            */
+        `), compile(`
+            /* @tynder-external
+            Foo: string[],
+            Bar: Foo | string, Baz: {a: string}[]
+            */
         `)];
         for (const schema of schemas) {
             const ty = getType(schema, 'Foo');
