@@ -1107,7 +1107,7 @@ declare const phoneNumberString: unique symbol;
 /* @tynder-pass-throught
 export type PhoneNumberString = string & { [phoneNumberString]: never };
 */
-external PhoneNumberString: string;
+external PhoneNumberString: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string;
 ```
 
 

@@ -777,4 +777,32 @@ describe("fix-3", function() {
             }
         }
     });
+    it("external-3", function() {
+        const schemas = [compile(`
+            external Foo: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string;
+        `), compile(`
+            // @tynder-external Foo: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string
+        `), compile(`
+            /* @tynder-external
+            Foo: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string
+            */
+        `), compile(`
+            /* @tynder-external
+            Foo: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string
+            */
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    pattern: /^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/,
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    noOutput: true,
+                } as any);
+            }
+        }
+    });
 });
