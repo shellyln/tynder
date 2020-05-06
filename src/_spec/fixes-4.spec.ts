@@ -466,9 +466,9 @@ describe("fix-3", function() {
 
         expect(dts).toEqual(exp);
     });
-    it("gen-d.ts-pass-throught-1", function() {
+    it("gen-d.ts-pass-through-1", function() {
         let src = `
-        // @tynder-pass-throught function foo(x: string) { return x; }
+        // @tynder-pass-through function foo(x: string) { return x; }
         `;
         src = src.replace(/\s+/g, ' ').trim();
 
@@ -484,9 +484,9 @@ describe("fix-3", function() {
 
         expect(dts).toEqual(exp);
     });
-    it("gen-d.ts-pass-throught-2", function() {
+    it("gen-d.ts-pass-through-2", function() {
         let src = `
-        /* @tynder-pass-throught
+        /* @tynder-pass-through
         function foo(x: string) {
             return x;
         }

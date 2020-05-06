@@ -1098,13 +1098,13 @@ or
 ```
 
 
-### Pass-throught code block
+### Pass-through code block
 
 This comment body is passed through to the generated codes.
 
 ```ts
 declare const phoneNumberString: unique symbol;
-/* @tynder-pass-throught
+/* @tynder-pass-through
 export type PhoneNumberString = string & { [phoneNumberString]: never };
 */
 external PhoneNumberString: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string;
@@ -1176,12 +1176,12 @@ type D = @msg({
     * Declare external types as `any`.
 
 ```ts
-/* @tynder-pass-throught
+/* @tynder-pass-through
 export type PhoneNumberString = string & { [phoneNumberString]: never };
 */
 ```
 
-* `@tynder-pass-throught` _body_
+* `@tynder-pass-through` _body_
     * This comment body is passed through to the generated codes.
 
 ### Generics

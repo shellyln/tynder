@@ -1216,7 +1216,7 @@ export function compile(s: string) {
         case '@tynder-external':
             lisp.evaluateAST(parseExternalDirective(`external ${body} ;`) as SxToken[]);
             break;
-        case '@tynder-pass-throught':
+        case '@tynder-pass-through':
             passthru(body);
             break;
         default:
