@@ -1063,7 +1063,7 @@ export declare const f: number;
 This statement is removed from the generated code.
 
 #### Untyped external statement
-Define the external symbols as `any` type.
+Define the external (ambient) symbols as `any` type.
 
 ```ts
 external P, Q, R;
