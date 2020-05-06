@@ -541,6 +541,61 @@ describe("compiler-3", function() {
             }
         }
     });
+    it("compiler-enum-4b", function() {
+        const schema = compile(`
+            const enum Foo {
+                AAA = 'XA',
+                BBB,
+                CCC,
+                DDD = 10,
+                EEE,
+                FFF = 'XF',
+            }
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'enum',
+                values: [
+                    ['AAA', 'XA'],
+                    ['BBB', 0],
+                    ['CCC', 1],
+                    ['DDD', 10],
+                    ['EEE', 11],
+                    ['FFF', 'XF'],
+                ],
+                isConst: true,
+            };
+            // const ty = getType(schema, 'Foo');
+            for (const ty of [getType(deserialize(serialize(schema)), 'Foo'), getType(schema, 'Foo')]) {
+                expect(ty).toEqual(rhs);
+                expect(validate<number>(-1, ty)).toEqual(null);
+                expect(validate<number>(0, ty)).toEqual({value: 0});
+                expect(validate<number>(1, ty)).toEqual({value: 1});
+                expect(validate<number>(2, ty)).toEqual(null);
+                expect(validate<number>(9, ty)).toEqual(null);
+                expect(validate<number>(10, ty)).toEqual({value: 10});
+                expect(validate<number>(11, ty)).toEqual({value: 11});
+                expect(validate<number>(12, ty)).toEqual(null);
+                expect(validate<string>('XA', ty)).toEqual({value: 'XA'});
+                expect(validate<number>('XB', ty)).toEqual(null);
+                expect(validate<number>('XC', ty)).toEqual(null);
+                expect(validate<number>('XD', ty)).toEqual(null);
+                expect(validate<number>('XE', ty)).toEqual(null);
+                expect(validate<string>('XF', ty)).toEqual({value: 'XF'});
+                expect(validate<number>('AAA', ty)).toEqual(null);
+                expect(validate<number>('AA', ty)).toEqual(null);
+                expect(validate<number>('', ty)).toEqual(null);
+            }
+        }
+    });
     it("compiler-enum-5", function() {
         const schema = compile(`
             enum Foo {
@@ -571,6 +626,58 @@ describe("compiler-3", function() {
                     ['EEE', 2],
                     ['FFF', 'XF'],
                 ],
+            };
+            // const ty = getType(schema, 'Foo');
+            for (const ty of [getType(deserialize(serialize(schema)), 'Foo'), getType(schema, 'Foo')]) {
+                expect(ty).toEqual(rhs);
+                expect(validate<number>(-1, ty)).toEqual(null);
+                expect(validate<number>(0, ty)).toEqual({value: 0});
+                expect(validate<number>(1, ty)).toEqual({value: 1});
+                expect(validate<number>(2, ty)).toEqual({value: 2});
+                expect(validate<number>(3, ty)).toEqual(null);
+                expect(validate<string>('XA', ty)).toEqual({value: 'XA'});
+                expect(validate<number>('XB', ty)).toEqual(null);
+                expect(validate<number>('XC', ty)).toEqual(null);
+                expect(validate<string>('XD', ty)).toEqual({value: 'XD'});
+                expect(validate<number>('XE', ty)).toEqual(null);
+                expect(validate<string>('XF', ty)).toEqual({value: 'XF'});
+                expect(validate<number>('AAA', ty)).toEqual(null);
+                expect(validate<number>('AA', ty)).toEqual(null);
+                expect(validate<number>('', ty)).toEqual(null);
+            }
+        }
+    });
+    it("compiler-enum-5b", function() {
+        const schema = compile(`
+            export const enum Foo {
+                AAA = 'XA',
+                BBB,
+                CCC,
+                DDD = 'XD',
+                EEE,
+                FFF = 'XF',
+            }
+        `);
+
+        {
+            expect(Array.from(schema.keys())).toEqual([
+                'Foo',
+            ]);
+        }
+        {
+            const rhs: TypeAssertion = {
+                name: 'Foo',
+                typeName: 'Foo',
+                kind: 'enum',
+                values: [
+                    ['AAA', 'XA'],
+                    ['BBB', 0],
+                    ['CCC', 1],
+                    ['DDD', 'XD'],
+                    ['EEE', 2],
+                    ['FFF', 'XF'],
+                ],
+                isConst: true,
             };
             // const ty = getType(schema, 'Foo');
             for (const ty of [getType(deserialize(serialize(schema)), 'Foo'), getType(schema, 'Foo')]) {

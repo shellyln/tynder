@@ -889,6 +889,10 @@ enum Baz {
     B = 'BBB',
     C = 'CCC',
 }
+
+const enum FooBar {
+    A,
+}
 ```
 
 
@@ -1021,6 +1025,10 @@ export interface Bar {
 export enum Baz {
     A,
 }
+
+export const enum FooBar {
+    A,
+}
 ```
 
 
@@ -1035,10 +1043,27 @@ import {a, b as bb} from 'foo';
 ```
 
 
+### Declared variables
+
+This statement is passed through to the generated codes.
+
+```ts
+declare var a: number;
+declare let b: number;
+declare const c: number;
+
+export declare var d: number;
+export declare let e: number;
+export declare const f: number;
+```
+
+
 ### External
 
-Define the external symbols as `any` type.  
 This statement is removed from the generated code.
+
+#### Untyped external statement
+Define the external symbols as `any` type.
 
 ```ts
 external P, Q, R;
@@ -1046,6 +1071,43 @@ external P, Q, R;
 or
 ```ts
 /// @tynder-external P, Q, R
+```
+or
+```ts
+/* @tynder-external P, Q, R */
+```
+
+#### Typed external statement
+
+```ts
+external P: string[],
+         Q: P | string,
+         R: {a: string}[];
+```
+or
+```ts
+/// @tynder-external P: string[], Q: P | string, R: {a: string}[]
+```
+or
+```ts
+/* @tynder-external
+    P: string[],
+    Q: P | string,
+    R: {a: string}[]
+*/
+```
+
+
+### Pass-throught code block
+
+This comment body is passed through to the generated codes.
+
+```ts
+declare const phoneNumberString: unique symbol;
+/* @tynder-pass-throught
+export type PhoneNumberString = string & { [phoneNumberString]: never };
+*/
+external PhoneNumberString: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string;
 ```
 
 
@@ -1055,6 +1117,7 @@ or
 //  ↓↓↓ directive line comment ↓↓↓
 // @tynder-external P, Q, R
 /// @tynder-external S, T
+/* @tynder-external U, V */
 
 /** doc comment */
 type Foo = string | number;
@@ -1112,6 +1175,14 @@ type D = @msg({
 * `@tynder-external` _type_ [, ...]
     * Declare external types as `any`.
 
+```ts
+/* @tynder-pass-throught
+export type PhoneNumberString = string & { [phoneNumberString]: never };
+*/
+```
+
+* `@tynder-pass-throught` _body_
+    * This comment body is passed through to the generated codes.
 
 ### Generics
 Generics actual parameters are removed.

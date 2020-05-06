@@ -89,6 +89,7 @@ export interface TypeAssertionSetValue {
     ty: TypeAssertion;
     exported: boolean;
     resolved: boolean;
+    // isDeclare: boolean // TODO: for non-pass-thru declare statements
 }
 
 

@@ -62,10 +62,20 @@ const directiveLineComment =
     trans(tokens => [[{symbol: 'directive'}, ...tokens]])(
         erase(qty(2)(cls('/'))),
         erase(repeat(classes.space)),
-        cat(seq('@tynder-'), repeat(classes.alnum)), // [0]
+        cat(seq('@tynder-'), repeat(first(classes.alnum, cls('-')))), // [0]
         erase(repeat(classes.space)),
-        cat(repeat(notCls('\r\n', '\n', '\r'))),     // [1]
+        cat(repeat(notCls('\r\n', '\n', '\r'))),                      // [1]
         erase(first(classes.newline, ahead(end()))), );
+
+const directiveBlockComment =
+    trans(tokens => [[{symbol: 'directive'}, ...tokens]])(
+        erase(seq('/*')),
+        erase(repeat(classes.space)),
+        cat(seq('@tynder-'), repeat(first(classes.alnum, cls('-')))), // [0]
+        erase(repeat(classes.space)),
+        cat(repeat(notCls('*/'))),                                    // [1]
+        erase(seq('*/')), );
+
 
 const lineComment =
     combine(
@@ -103,8 +113,10 @@ const docComment =
 const blockComment =
     combine(
         seq('/*'),
-        repeat(notCls('*/')),
-        seq('*/'), );
+            ahead(repeat(classes.space),
+                  notCls('@tynder-'), ),
+            repeat(notCls('*/')),
+            seq('*/'), );
 
 const commentOrSpace =
     first(classes.space, lineComment, hashLineComment, docComment, blockComment);
@@ -924,11 +936,21 @@ const internalDef =
           enumDef, );
 
 
+const constDef =
+    trans(tokens => [[{symbol: 'asConst'}, tokens[0]]])(
+        erase(seq('const'),
+              qty(1)(commentOrSpace), ),
+        first(enumDef,
+              err('constDef: Unexpected token has appeared.'), ));
+
+
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
         erase(seq('export'),
               qty(1)(commentOrSpace), ),
-        first(internalDef,
+        first(constDef,
+              internalDef,
+              input => declareVarStatement(input),
               err('exportedDef: Unexpected token has appeared.'), ));
 
 
@@ -944,25 +966,53 @@ const defStatement =
             decoratorsClause,
             zeroWidth(() => []), )),      // [0] decorators
         first(exportedDef,                // [1] body
+              constDef,
               internalDef), );
+
+
+const externalSymbolAndType =
+    trans(tokens => [[{symbol: '$list'}, ...tokens]])(
+        symbolName,
+        erase(repeat(commentOrSpace)),
+        qty(0, 1)(
+            combine(erase(seq(':')),
+                    erase(repeat(commentOrSpace)),
+                    input => complexType(first(seq(';'), seq(',')))(input), )));
 
 
 const externalTypeDef =
     trans(tokens => [[{symbol: 'external'}, ...tokens]])(
         erase(seq('external')),
             erase(qty(1)(commentOrSpace)),
-            symbolName,
+            externalSymbolAndType,
             repeat(combine(
                 erase(repeat(commentOrSpace)),
                 erase(cls(',')),
                 erase(repeat(commentOrSpace)),
-                first(symbolName,
+                first(externalSymbolAndType,
                       err('externalTypeDef: Unexpected token has appeared. Expect symbol name.'), ),
                 erase(repeat(commentOrSpace)),
             )),
             erase(repeat(commentOrSpace)),
         first(ahead(cls(';')), err('externalTypeDef: Unexpected token has appeared. Expect ";".')),
         erase(cls(';')), );
+
+
+const declareVarStatement =
+    trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
+        cat(seq('declare'),         // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
+                                    //       [export] [declare] type typeName = ...         // <- NOT pass-thru
+                                    //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
+            qty(1)(commentOrSpace),
+            first(seq('var'),
+                  seq('let'),
+                  seq('const'),
+                  err('declareVarStatement: Unexpected token has appeared. Expect "var|let|const".') ),
+            qty(1)(commentOrSpace),
+            cat(repeat(notCls(';'))),
+            first(ahead(seq(';')), err('declareVarStatement: Unexpected token has appeared. Expect ";".')),
+            cls(';'), ));
+
 
 const importStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
@@ -975,8 +1025,10 @@ const importStatement =
 
 const definition =
     first(directiveLineComment,
+          directiveBlockComment,
           defStatement,
           externalTypeDef,
+          declareVarStatement,
           importStatement, );
 
 const program =
@@ -994,6 +1046,15 @@ export function parse(s: string) {
     const z = program(parserInput(s, {/* TODO: set initial state to the context */}));
     if (! z.succeeded) {
         throw new Error(formatErrorMessage(z));
+    }
+    return z.tokens;
+}
+
+
+function parseExternalDirective(s: string) {
+    const z = externalTypeDef(parserInput(s, {/* TODO: set initial state to the context */}));
+    if (! z.succeeded) {
+        throw new Error('Invalid external directive.');
     }
     return z.tokens;
 }
@@ -1087,11 +1148,81 @@ export function compile(s: string) {
         return ty;
     };
 
-    const external = (...names: string[]) => {
+    const redef = (original: TypeAssertion, ty: TypeAssertion) => {
+        if (original === ty) {
+            return ty;
+        }
+        // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+        const tySet = mapTyToTySet.has(original) ?
+            mapTyToTySet.get(original) as TypeAssertionSetValue :
+            {ty: original, exported: false, resolved: false};
+        tySet.ty = ty;
+        mapTyToTySet.set(tySet.ty, tySet);
+        if (ty.name) {
+            schema.set(ty.name, tySet);
+        }
+        return tySet.ty;
+    };
+
+    const exported = (ty: TypeAssertion) => {
+        if (ty.kind === 'never' && typeof ty.passThruCodeBlock === 'string') {
+            ty.passThruCodeBlock = `export ${ty.passThruCodeBlock}`;
+            return ty;
+        } else {
+            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+            const tySet = mapTyToTySet.has(ty) ?
+                mapTyToTySet.get(ty) as TypeAssertionSetValue :
+                {ty, exported: false, resolved: false};
+            tySet.exported = true;
+            return ty;
+        }
+    };
+
+    const external = (...names: (string | [string, TypeAssertion?])[]) => {
         for (const name of names) {
-            const ty = def(name, operators.primitive('any'));
+            let ty: TypeAssertion = null as any;
+            if (typeof name === 'string') {
+                ty = def(name, operators.primitive('any'));
+            } else {
+                ty = def(name[0], name[1] ? name[1] : operators.primitive('any'));
+            }
             ty.noOutput = true;
         }
+    };
+
+    const asConst = (ty: TypeAssertion) => {
+        switch (ty.kind) {
+        case 'enum':
+            // NOTE: `ty` may already `def`ed.
+            ty.isConst = true;
+            break;
+        default:
+            throw new Error(`It cannot set to const: ${ty.kind} ${ty.typeName || '(unnamed)'}`);
+        }
+        return ty;
+    };
+
+    const passthru = (str: string) => {
+        const ty: TypeAssertion = {
+            kind: 'never',
+            passThruCodeBlock: str || '',
+        };
+        schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
+        return ty;
+    };
+
+    const directive = (name: string, body: string) => {
+        switch (name) {
+        case '@tynder-external':
+            lisp.evaluateAST(parseExternalDirective(`external ${body} ;`) as SxToken[]);
+            break;
+        case '@tynder-pass-throught':
+            passthru(body);
+            break;
+        default:
+            throw new Error(`Unknown directive is appeared: ${name}`);
+        }
+        return [];
     };
 
     lisp.setGlobals({
@@ -1112,48 +1243,12 @@ export function compile(s: string) {
         derived: operators.derived,
         def,
         ref,
-        export: (ty: TypeAssertion) => {
-            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
-            const tySet = mapTyToTySet.has(ty) ?
-                mapTyToTySet.get(ty) as TypeAssertionSetValue :
-                {ty, exported: false, resolved: false};
-            tySet.exported = true;
-            return ty;
-        },
-        redef: (original: TypeAssertion, ty: TypeAssertion) => {
-            if (original === ty) {
-                return ty;
-            }
-            // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
-            const tySet = mapTyToTySet.has(original) ?
-                mapTyToTySet.get(original) as TypeAssertionSetValue :
-                {ty: original, exported: false, resolved: false};
-            tySet.ty = ty;
-            mapTyToTySet.set(tySet.ty, tySet);
-            if (ty.name) {
-                schema.set(ty.name, tySet);
-            }
-            return tySet.ty;
-        },
+        redef,
+        export: exported,
+        asConst,
         external,
-        passthru: (str: string) => {
-            const ty: TypeAssertion = {
-                kind: 'never',
-                passThruCodeBlock: str || '',
-            };
-            schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
-            return ty;
-        },
-        directive: (name: string, body: string) => {
-            switch (name) {
-            case '@tynder-external':
-                external(...body.split(',').map(x => x.trim()));
-                break;
-            default:
-                throw new Error(`Unknown directive is appeared: ${name}`);
-            }
-            return [];
-        },
+        passthru,
+        directive,
         docComment: operators.withDocComment,
         '@range': (minValue: number | string, maxValue: number | string) => (ty: PrimitiveTypeAssertion) =>
             operators.withRange(minValue, maxValue)(ty),

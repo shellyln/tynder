@@ -567,6 +567,62 @@ describe("fix-1", function() {
             err.message.includes(
                 'importStatement: Unexpected token has appeared. Expect ";".\n'));
     });
+    it("fix-improve-error-messages-24b", function() {
+        expect(() => compile(`
+            declare var
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24c", function() {
+        expect(() => compile(`
+            declare let
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24d", function() {
+        expect(() => compile(`
+            declare const
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24e", function() {
+        expect(() => compile(`
+            declare
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect "var|let|const".\n'));
+    });
+    it("fix-improve-error-messages-24f", function() {
+        expect(() => compile(`
+            export declare var
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24g", function() {
+        expect(() => compile(`
+            export declare let
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24e", function() {
+        expect(() => compile(`
+            export declare const
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect ";".\n'));
+    });
+    it("fix-improve-error-messages-24f", function() {
+        expect(() => compile(`
+            export declare
+        `)).toThrowMatching(err =>
+            err.message.includes(
+                'declareVarStatement: Unexpected token has appeared. Expect "var|let|const".\n'));
+    });
     it("fix-improve-error-messages-25", function() {
         expect(() => compile(`
             //@tynder-

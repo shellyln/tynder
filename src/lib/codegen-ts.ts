@@ -241,7 +241,7 @@ export function generateTypeScriptCode(types: TypeAssertionMap): string {
             const indent0 = '    '.repeat(ctx.nestLevel);
             const indent1 = '    '.repeat(ctx.nestLevel + 1);
             let value: number | null = 0;
-            code += `enum ${ty[0]} {\n${
+            code += `${ty[1].ty.isConst ? 'const ' : ''}enum ${ty[0]} {\n${
                 ty[1].ty.values
                     .map(x => `${
                         formatTypeScriptCodeDocComment(x[2] || '', ctx.nestLevel + 1)}${
