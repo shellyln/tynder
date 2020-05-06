@@ -2,7 +2,7 @@
 
 ## v0.6.0
 
-* Add pass-throught `declare` statement.
+* Add pass-throught `declare var|let|const` statement.
 * Add `const enum` definition.
 * Add `/* @tynder-pass-throught ... */` directive.
 * Typed `external` statement and `/* @tynder-external ... */` directive.
