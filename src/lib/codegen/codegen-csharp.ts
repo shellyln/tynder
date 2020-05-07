@@ -14,9 +14,9 @@ import { TypeAssertion,
          EnumAssertion,
          ObjectAssertion,
          TypeAssertionMap,
-         CodegenContext } from '../types';
-import { escapeString }   from '../lib/escape';
-import { nvl2 }           from './util';
+         CodegenContext } from '../../types';
+import { escapeString }   from '../../lib/escape';
+import { nvl2 }           from './../util';
 
 
 

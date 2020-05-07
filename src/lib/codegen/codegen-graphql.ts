@@ -13,7 +13,7 @@ import { TypeAssertion,
          EnumAssertion,
          ObjectAssertion,
          TypeAssertionMap,
-         CodegenContext } from '../types';
+         CodegenContext } from '../../types';
 
 
 

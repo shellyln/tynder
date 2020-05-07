@@ -3,8 +3,8 @@
 // https://github.com/shellyln
 
 
-export * from './lib/codegen-ts';
-export * from './lib/codegen-json-schema';
-export * from './lib/codegen-proto3';
-export * from './lib/codegen-graphql';
-export * from './lib/codegen-csharp';
+export * from './lib/codegen/codegen-ts';
+export * from './lib/codegen/codegen-json-schema';
+export * from './lib/codegen/codegen-proto3';
+export * from './lib/codegen/codegen-graphql';
+export * from './lib/codegen/codegen-csharp';

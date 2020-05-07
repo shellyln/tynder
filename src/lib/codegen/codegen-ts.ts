@@ -15,9 +15,9 @@ import { TypeAssertion,
          AdditionalPropsKey,
          ObjectAssertion,
          TypeAssertionMap,
-         CodegenContext } from '../types';
-import { escapeString }   from '../lib/escape';
-import { SymbolPattern }  from '../lib/util';
+         CodegenContext } from '../../types';
+import { escapeString }   from '../../lib/escape';
+import { SymbolPattern }  from '../../lib/util';
 
 
 

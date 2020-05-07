@@ -4,8 +4,8 @@
 
 
 import { TypeAssertion,
-         TypeAssertionMap } from '../types';
-import * as JsonSchema      from '../types/json-schema-types';
+         TypeAssertionMap } from '../../types';
+import * as JsonSchema      from '../../types/json-schema-types';
 
 
 
