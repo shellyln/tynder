@@ -950,6 +950,7 @@ const exportedDef =
               qty(1)(commentOrSpace), ),
         first(constDef,
               internalDef,
+              input => declareTypeAndEnumStatement(input),
               input => declareVarStatement(input),
               err('exportedDef: Unexpected token has appeared.'), ));
 
@@ -966,8 +967,9 @@ const defStatement =
             decoratorsClause,
             zeroWidth(() => []), )),      // [0] decorators
         first(exportedDef,                // [1] body
+              input => declareTypeAndEnumStatement(input),
               constDef,
-              internalDef), );
+              internalDef, ));
 
 
 const externalSymbolAndType =
@@ -998,10 +1000,18 @@ const externalTypeDef =
         erase(cls(';')), );
 
 
+const declareTypeAndEnumStatement =
+    trans(tokens => tokens)(
+        erase(seq('declare')),
+        first(constDef,
+              internalDef), );
+
+
 const declareVarStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
         cat(seq('declare'),         // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
                                     //       [export] [declare] type typeName = ...         // <- NOT pass-thru
+                                    //       [export] [declare] interface ...               // <- NOT pass-thru
                                     //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
             qty(1)(commentOrSpace),
             first(seq('var'),
