@@ -867,6 +867,69 @@ describe("fix-3", function() {
             }
         }
     });
+    it("compiler-type-output-1", function() {
+        const schemas = [compile(`
+            type A1 = string;
+            export type A2 = string;
+            /** comment1 */
+            type B1 = string;
+            /** comment2 */
+            export type B2 = string;
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `type A1 = string;\n\n` +
+                    `export type A2 = string;\n\n` +
+                    `/** comment1 */\ntype B1 = string;\n\n` +
+                    `/** comment2 */\nexport type B2 = string;`
+                );
+            }
+        }
+    });
+    it("compiler-type-output-2", function() {
+        const schemas = [compile(`
+            declare type A1 = string;
+            export declare type A2 = string;
+            /** comment1 */
+            declare type B1 = string;
+            /** comment2 */
+            export declare type B2 = string;
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare type A1 = string;\n\n` +
+                    `export declare type A2 = string;\n\n` +
+                    `/** comment1 */\ndeclare type B1 = string;\n\n` +
+                    `/** comment2 */\nexport declare type B2 = string;`
+                );
+            }
+        }
+    });
+    it("compiler-interface-output-1", function() {
+        const schemas = [compile(`
+            interface A1 {}
+            export interface A2 {}
+            /** comment1 */
+            interface B1 {}
+            /** comment2 */
+            export interface B2 {}
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `interface A1 {}\n\n` +
+                    `export interface A2 {}\n\n` +
+                    `/** comment1 */\ninterface B1 {}\n\n` +
+                    `/** comment2 */\nexport interface B2 {}`
+                );
+            }
+        }
+    });
     it("declare-type-1", function() {
         const schemas = [compile(`
             /** comment */
