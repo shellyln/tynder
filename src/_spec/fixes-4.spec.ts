@@ -805,4 +805,57 @@ describe("fix-3", function() {
             }
         }
     });
+    it("compiler-const-enum-output-1", function() {
+        const schemas = [compile(`
+            enum A1 { X }
+            export enum A2 { X }
+            const enum A3 { X }
+            export const enum A4 { X }
+            /** comment1 */
+            enum B1 { X }
+            /** comment2 */
+            export enum B2 { X }
+            /** comment3 */
+            const enum B3 { X }
+            /** comment4 */
+            export const enum B4 { X }
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `enum A1 {\n    X,\n}\n\n` +
+                    `export enum A2 {\n    X,\n}\n\n` +
+                    `const enum A3 {\n    X,\n}\n\n` +
+                    `export const enum A4 {\n    X,\n}\n\n` +
+                    `/** comment1 */\nenum B1 {\n    X,\n}\n\n` +
+                    `/** comment2 */\nexport enum B2 {\n    X,\n}\n\n` +
+                    `/** comment3 */\nconst enum B3 {\n    X,\n}\n\n` +
+                    `/** comment4 */\nexport const enum B4 {\n    X,\n}`
+                );
+            }
+        }
+    });
+    /*
+    it("declare-type-1", function() {
+        const schemas = [compile(`
+            / ** comment * /
+            @minLength(3)
+            export declare type Foo = string;
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    minLength: 3,
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                } as any);
+            }
+        }
+    });
+    */
 });

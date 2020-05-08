@@ -1003,12 +1003,13 @@ const externalTypeDef =
 const declareTypeAndEnumStatement =
     trans(tokens => tokens)(
         erase(seq('declare')),
+        // erase(qty(1)(commentOrSpace)),
         first(constDef,
               internalDef), );
 
 
 const declareVarStatement =
-    trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
+    trans(tokens => [[{symbol: 'passthru'}, tokens[0], tokens[1]]])(
         cat(seq('declare'),         // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
                                     //       [export] [declare] type typeName = ...         // <- NOT pass-thru
                                     //       [export] [declare] interface ...               // <- NOT pass-thru
@@ -1021,7 +1022,18 @@ const declareVarStatement =
             qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
             first(ahead(seq(';')), err('declareVarStatement: Unexpected token has appeared. Expect ";".')),
-            cls(';'), ));
+            cls(';'), ),
+        input => {                  // TODO: extract function
+            const ret = zeroWidth(() => [])(input);
+            if (ret.succeeded) {
+                const text = ret.next.context.docComment;
+                ret.next.context = {...ret.next.context};
+                delete ret.next.context.docComment;
+                ret.tokens.length = 0;
+                ret.tokens.push(text ? text : null);
+            }
+            return ret;
+        }, );                      // [1]
 
 
 const importStatement =
@@ -1212,11 +1224,14 @@ export function compile(s: string) {
         return ty;
     };
 
-    const passthru = (str: string) => {
+    const passthru = (str: string, docCommentText?: string) => {
         const ty: TypeAssertion = {
             kind: 'never',
             passThruCodeBlock: str || '',
         };
+        if (docCommentText) {
+            ty.docComment = docCommentText;
+        }
         schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
         return ty;
     };
