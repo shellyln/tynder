@@ -943,6 +943,12 @@ const constDef =
         first(enumDef,
               err('constDef: Unexpected token has appeared.'), ));
 
+const constDefNoErr =
+    trans(tokens => [[{symbol: 'asConst'}, tokens[0]]])(
+        erase(seq('const'),
+              qty(1)(commentOrSpace), ),
+        first(enumDef), );
+
 
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
@@ -1003,8 +1009,8 @@ const externalTypeDef =
 const declareTypeAndEnumStatement =
     trans(tokens => tokens)(
         erase(seq('declare')),
-        // erase(qty(1)(commentOrSpace)),
-        first(constDef,
+        erase(qty(1)(commentOrSpace)),
+        first(constDefNoErr,
               internalDef), );
 
 

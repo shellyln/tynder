@@ -836,12 +836,10 @@ describe("fix-3", function() {
             }
         }
     });
-    /*
     it("declare-type-1", function() {
         const schemas = [compile(`
-            / ** comment * /
-            @minLength(3)
-            export declare type Foo = string;
+            /** comment */
+            export declare type Foo = @minLength(3) string;
         `)];
         for (const schema of schemas) {
             const ty = getType(schema, 'Foo');
@@ -857,5 +855,4 @@ describe("fix-3", function() {
             }
         }
     });
-    */
 });
