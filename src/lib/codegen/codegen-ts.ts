@@ -229,6 +229,9 @@ export function generateTypeScriptCode(types: TypeAssertionMap): string {
         if (ty[1].exported) {
             code += 'export ';
         }
+        if (ty[1].isDeclare) {
+            code += 'declare ';
+        }
         if (ty[1].ty.kind === 'object') {
             code += `interface ${ty[0]}${
                 ty[1].ty.baseTypes && ty[1].ty.baseTypes.length ? ` extends ${

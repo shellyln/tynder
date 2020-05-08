@@ -1007,7 +1007,7 @@ const externalTypeDef =
 
 
 const declareTypeAndEnumStatement =
-    trans(tokens => tokens)(
+    trans(tokens => [[{symbol: 'asDeclare'}, ...tokens]])(
         erase(seq('declare')),
         erase(qty(1)(commentOrSpace)),
         first(constDefNoErr,  // NOTE: There is still the possibility of "const varName". -> `declareVarStatement` will be called.
@@ -1124,7 +1124,7 @@ export function compile(s: string) {
 
         const tySet = mapTyToTySet.has(ret) ?
             mapTyToTySet.get(ret) as TypeAssertionSetValue :
-            {ty: ret, exported: false, resolved: false};
+            {ty: ret, exported: false, isDeclare: false, resolved: false};
 
         schema.set(sym, tySet);
 
@@ -1183,7 +1183,7 @@ export function compile(s: string) {
         // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
         const tySet = mapTyToTySet.has(original) ?
             mapTyToTySet.get(original) as TypeAssertionSetValue :
-            {ty: original, exported: false, resolved: false};
+            {ty: original, exported: false, isDeclare: false, resolved: false};
         tySet.ty = ty;
         mapTyToTySet.set(tySet.ty, tySet);
         if (ty.name) {
@@ -1200,7 +1200,7 @@ export function compile(s: string) {
             // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
             const tySet = mapTyToTySet.has(ty) ?
                 mapTyToTySet.get(ty) as TypeAssertionSetValue :
-                {ty, exported: false, resolved: false};
+                {ty, exported: false, isDeclare: false, resolved: false};
             tySet.exported = true;
             return ty;
         }
@@ -1230,6 +1230,15 @@ export function compile(s: string) {
         return ty;
     };
 
+    const asDeclare = (ty: TypeAssertion) => {
+        // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+        const tySet = mapTyToTySet.has(ty) ?
+            mapTyToTySet.get(ty) as TypeAssertionSetValue :
+            {ty, exported: false, isDeclare: false, resolved: false};
+        tySet.isDeclare = true;
+        return ty;
+    };
+
     const passthru = (str: string, docCommentText?: string) => {
         const ty: TypeAssertion = {
             kind: 'never',
@@ -1238,7 +1247,7 @@ export function compile(s: string) {
         if (docCommentText) {
             ty.docComment = docCommentText;
         }
-        schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
+        schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, isDeclare: false, resolved: false});
         return ty;
     };
 
@@ -1276,8 +1285,9 @@ export function compile(s: string) {
         ref,
         redef,
         export: exported,
-        asConst,
         external,
+        asConst,
+        asDeclare,
         passthru,
         directive,
         docComment: operators.withDocComment,

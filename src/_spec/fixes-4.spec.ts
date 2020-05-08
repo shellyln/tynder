@@ -836,6 +836,37 @@ describe("fix-3", function() {
             }
         }
     });
+    it("compiler-const-enum-output-2", function() {
+        const schemas = [compile(`
+            declare enum A1 { X }
+            export declare enum A2 { X }
+            declare const enum A3 { X }
+            export declare const enum A4 { X }
+            /** comment1 */
+            declare enum B1 { X }
+            /** comment2 */
+            export declare enum B2 { X }
+            /** comment3 */
+            declare const enum B3 { X }
+            /** comment4 */
+            export declare const enum B4 { X }
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare enum A1 {\n    X,\n}\n\n` +
+                    `export declare enum A2 {\n    X,\n}\n\n` +
+                    `declare const enum A3 {\n    X,\n}\n\n` +
+                    `export declare const enum A4 {\n    X,\n}\n\n` +
+                    `/** comment1 */\ndeclare enum B1 {\n    X,\n}\n\n` +
+                    `/** comment2 */\nexport declare enum B2 {\n    X,\n}\n\n` +
+                    `/** comment3 */\ndeclare const enum B3 {\n    X,\n}\n\n` +
+                    `/** comment4 */\nexport declare const enum B4 {\n    X,\n}`
+                );
+            }
+        }
+    });
     it("declare-type-1", function() {
         const schemas = [compile(`
             /** comment */
