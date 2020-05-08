@@ -1010,7 +1010,7 @@ const declareTypeAndEnumStatement =
     trans(tokens => tokens)(
         erase(seq('declare')),
         erase(qty(1)(commentOrSpace)),
-        first(constDefNoErr,
+        first(constDefNoErr,  // NOTE: There is still the possibility of "const varName". -> `declareVarStatement` will be called.
               internalDef), );
 
 
