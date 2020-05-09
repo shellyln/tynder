@@ -954,6 +954,13 @@ describe("fix-3", function() {
     it("declare-type-1", function() {
         const schemas = [compile(`
             /** comment */
+            type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            type Foo = string;
+        `), compile(`
+            /** comment */
             declare type Foo = @minLength(3) string;
         `), compile(`
             /** comment */
@@ -984,6 +991,103 @@ describe("fix-3", function() {
                     typeName: 'Foo',
                     name: 'Foo',
                     docComment: 'comment',
+                } as any);
+            }
+        }
+    });
+    it("declare-interface-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            @msgId('a')
+            interface Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            declare interface Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export interface Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export declare interface Foo {}
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'object',
+                    members: [],
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                    messageId: 'a',
+                } as any);
+            }
+        }
+    });
+    it("declare-enum-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            @msgId('a')
+            enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            declare enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export declare enum Foo {}
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'enum',
+                    values: [],
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                    messageId: 'a',
+                } as any);
+            }
+        }
+    });
+    it("declare-const-enum-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            @msgId('a')
+            const enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            declare const enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export const enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export declare const enum Foo {}
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'enum',
+                    values: [],
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                    messageId: 'a',
+                    isConst: true,
                 } as any);
             }
         }
