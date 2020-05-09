@@ -930,10 +930,49 @@ describe("fix-3", function() {
             }
         }
     });
+    it("compiler-interface-output-2", function() {
+        const schemas = [compile(`
+            declare interface A1 {}
+            export declare interface A2 {}
+            /** comment1 */
+            declare interface B1 {}
+            /** comment2 */
+            export declare interface B2 {}
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare interface A1 {}\n\n` +
+                    `export declare interface A2 {}\n\n` +
+                    `/** comment1 */\ndeclare interface B1 {}\n\n` +
+                    `/** comment2 */\nexport declare interface B2 {}`
+                );
+            }
+        }
+    });
     it("declare-type-1", function() {
         const schemas = [compile(`
             /** comment */
+            declare type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            declare type Foo = string;
+        `), compile(`
+            /** comment */
+            export type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            export type Foo = string;
+        `), compile(`
+            /** comment */
             export declare type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            export declare type Foo = string;
         `)];
         for (const schema of schemas) {
             const ty = getType(schema, 'Foo');
