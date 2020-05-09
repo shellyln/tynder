@@ -3,7 +3,8 @@
 // https://github.com/shellyln
 
 
-import { ParserFnWithCtx }       from 'fruitsconfits/modules/lib/types';
+import { ParserInputWithCtx,
+         ParserFnWithCtx }       from 'fruitsconfits/modules/lib/types';
 import { getStringParsers }      from 'fruitsconfits/modules/lib/string-parser';
 import { getObjectParsers }      from 'fruitsconfits/modules/lib/object-parser';
 import { SxTokenChild,
@@ -680,20 +681,23 @@ const spreadOrComplexType: (separator: ParserFnWithCtx<string, Ctx, Ast>) => Par
     first(spreadType, complexType(edge));
 
 
+const setDocComment = (input: ParserInputWithCtx<string, Ctx>) => {
+    const ret = zeroWidth(() => [])(input);
+    if (ret.succeeded) {
+        const text = ret.next.context.docComment;
+        ret.next.context = {...ret.next.context};
+        delete ret.next.context.docComment;
+        ret.tokens.length = 0;
+        ret.tokens.push(text ? text : null);
+    }
+    return ret;
+};
+
+
 const typeDef =
     trans(tokens => [[{symbol: 'def'}, tokens[1], [{symbol: 'docComment'}, tokens[2], tokens[0] ] ]])(
         erase(seq('type')),
-            input => {                                               // TODO: extract function
-                const ret = zeroWidth(() => [])(input);
-                if (ret.succeeded) {
-                    const text = ret.next.context.docComment;
-                    ret.next.context = {...ret.next.context};
-                    delete ret.next.context.docComment;
-                    ret.tokens.length = 0;
-                    ret.tokens.push(text ? text : null);
-                }
-                return ret;
-            },                                                       // [0]
+            setDocComment,                                           // [0]
             erase(qty(1)(commentOrSpace)),
             first(symbolName,                                        // [1]
                   err('typeDef: Unexpected token has appeared. Expect symbol name.'), ),
@@ -761,17 +765,7 @@ const interfaceKeyTypePair = (separator: ParserFnWithCtx<string, Ctx, Ast>) =>
         trans(tokens => [tokens])(first(
             decoratorsClause,
             zeroWidth(() => []), )),                // [0] decorators
-        input => {
-            const ret = zeroWidth(() => [])(input);
-            if (ret.succeeded) {
-                const text = ret.next.context.docComment;
-                ret.next.context = {...ret.next.context};
-                delete ret.next.context.docComment;
-                ret.tokens.length = 0;
-                ret.tokens.push(text ? text : null);
-            }
-            return ret;
-        },                                          // [1]
+        setDocComment,                              // [1]
         interfaceKey,                               // [2] key
         first(                                      // [3] '?' | ''
             combine(
@@ -819,17 +813,7 @@ const interfaceDef =
                 [{symbol: 'derived'}, tokens[3], [{symbol: '$spread'}, tokens[2]]],
                 tokens[0], ]]])(
     erase(seq('interface')),
-        input => {                               // TODO: extract function
-            const ret = zeroWidth(() => [])(input);
-            if (ret.succeeded) {
-                const text = ret.next.context.docComment;
-                ret.next.context = {...ret.next.context};
-                delete ret.next.context.docComment;
-                ret.tokens.length = 0;
-                ret.tokens.push(text ? text : null);
-            }
-            return ret;
-        },                                       // [0] base types
+        setDocComment,                           // [0] base types
         erase(qty(1)(commentOrSpace)),
         first(symbolName,                        // [1] symbol
               err('interfaceDef: Unexpected token has appeared. Expect symbol name.'), ),
@@ -846,17 +830,7 @@ const interfaceDef =
 
 const enumKeyValue =
     trans(tokens => [[{symbol: '$list'}, tokens[1], tokens[2], tokens[0]]])(
-        input => {
-            const ret = zeroWidth(() => [])(input);
-            if (ret.succeeded) {
-                const text = ret.next.context.docComment;
-                ret.next.context = {...ret.next.context};
-                delete ret.next.context.docComment;
-                ret.tokens.length = 0;
-                ret.tokens.push(text ? text : null);
-            }
-            return ret;
-        },                                       // [0]
+        setDocComment,                           // [0]
         symbolName,
         erase(repeat(commentOrSpace)),
         first(
@@ -877,17 +851,7 @@ const enumDef =
                 [{symbol: 'enumType'}, ...tokens.slice(2)],
                 tokens[0], ]]])(
     erase(seq('enum')),
-        input => {                               // TODO: extract function
-            const ret = zeroWidth(() => [])(input);
-            if (ret.succeeded) {
-                const text = ret.next.context.docComment;
-                ret.next.context = {...ret.next.context};
-                delete ret.next.context.docComment;
-                ret.tokens.length = 0;
-                ret.tokens.push(text ? text : null);
-            }
-            return ret;
-        },                                       // [0]
+        setDocComment,                           // [0]
         erase(qty(1)(commentOrSpace)),
         first(symbolName,
               err('enumDef: Unexpected token has appeared. Expect symbol name.'), ),
@@ -1012,17 +976,7 @@ const declareVarStatement =
             cat(repeat(notCls(';'))),
             first(ahead(seq(';')), err('declareVarStatement: Unexpected token has appeared. Expect ";".')),
             cls(';'), ),
-        input => {                  // TODO: extract function
-            const ret = zeroWidth(() => [])(input);
-            if (ret.succeeded) {
-                const text = ret.next.context.docComment;
-                ret.next.context = {...ret.next.context};
-                delete ret.next.context.docComment;
-                ret.tokens.length = 0;
-                ret.tokens.push(text ? text : null);
-            }
-            return ret;
-        }, );                      // [1]
+        setDocComment, );       // [1]
 
 
 const importStatement =
