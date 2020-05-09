@@ -1043,7 +1043,7 @@ import {a, b as bb} from 'foo';
 ```
 
 
-### Declare types
+### Declared types
 ```ts
 declare type A = string;
 declare interface B {}
