@@ -720,7 +720,7 @@ interface B {
 
 ```ts
 ...
-import { stereotypes as dateStereotypes } from 'tynder/stereotypes/date';
+import { stereotypes as dateStereotypes } from 'tynder/modules/stereotypes/date';
 
 const schema = compile(`
     interface Foo {
@@ -824,7 +824,7 @@ DateTimeFormula =
 
 ```ts
 ...
-import { constraints as uniqueConstraints } from '../constraints/unique';
+import { constraints as uniqueConstraints } from 'tynder/modules/constraints/unique';
 
 const schema = compile(`
     interface A {
