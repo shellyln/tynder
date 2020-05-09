@@ -88,8 +88,8 @@ export interface ValidationContext {
 export interface TypeAssertionSetValue {
     ty: TypeAssertion;
     exported: boolean;
+    isDeclare: boolean; // for non-pass-thru declare statements
     resolved: boolean;
-    // isDeclare: boolean // TODO: for non-pass-thru declare statements
 }
 
 

@@ -252,6 +252,7 @@ export function deserializeFromObject(obj: any) {
         schema.set(k, {
             ty: deserializeInner(current[k]),
             exported: false,
+            isDeclare: false,
             resolved: false,
         });
     }

@@ -943,6 +943,12 @@ const constDef =
         first(enumDef,
               err('constDef: Unexpected token has appeared.'), ));
 
+const constDefNoErr =
+    trans(tokens => [[{symbol: 'asConst'}, tokens[0]]])(
+        erase(seq('const'),
+              qty(1)(commentOrSpace), ),
+        first(enumDef), );
+
 
 const exportedDef =
     trans(tokens => [[{symbol: 'export'}, tokens[0]]])(
@@ -950,6 +956,7 @@ const exportedDef =
               qty(1)(commentOrSpace), ),
         first(constDef,
               internalDef,
+              input => declareTypeAndEnumStatement(input),
               input => declareVarStatement(input),
               err('exportedDef: Unexpected token has appeared.'), ));
 
@@ -966,8 +973,9 @@ const defStatement =
             decoratorsClause,
             zeroWidth(() => []), )),      // [0] decorators
         first(exportedDef,                // [1] body
+              input => declareTypeAndEnumStatement(input),
               constDef,
-              internalDef), );
+              internalDef, ));
 
 
 const externalSymbolAndType =
@@ -998,11 +1006,17 @@ const externalTypeDef =
         erase(cls(';')), );
 
 
+const declareTypeAndEnumStatement =
+    trans(tokens => [[{symbol: 'asDeclare'}, ...tokens]])(
+        erase(seq('declare')),
+        erase(qty(1)(commentOrSpace)),
+        first(constDefNoErr,  // NOTE: There is still the possibility of "const varName". -> `declareVarStatement` will be called.
+              internalDef), );
+
+
 const declareVarStatement =
-    trans(tokens => [[{symbol: 'passthru'}, tokens[0]]])(
-        cat(seq('declare'),         // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
-                                    //       [export] [declare] type typeName = ...         // <- NOT pass-thru
-                                    //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
+    trans(tokens => [[{symbol: 'passthru'}, tokens[0], tokens[1]]])(
+        cat(seq('declare'),
             qty(1)(commentOrSpace),
             first(seq('var'),
                   seq('let'),
@@ -1011,7 +1025,18 @@ const declareVarStatement =
             qty(1)(commentOrSpace),
             cat(repeat(notCls(';'))),
             first(ahead(seq(';')), err('declareVarStatement: Unexpected token has appeared. Expect ";".')),
-            cls(';'), ));
+            cls(';'), ),
+        input => {                  // TODO: extract function
+            const ret = zeroWidth(() => [])(input);
+            if (ret.succeeded) {
+                const text = ret.next.context.docComment;
+                ret.next.context = {...ret.next.context};
+                delete ret.next.context.docComment;
+                ret.tokens.length = 0;
+                ret.tokens.push(text ? text : null);
+            }
+            return ret;
+        }, );                      // [1]
 
 
 const importStatement =
@@ -1096,7 +1121,7 @@ export function compile(s: string) {
 
         const tySet = mapTyToTySet.has(ret) ?
             mapTyToTySet.get(ret) as TypeAssertionSetValue :
-            {ty: ret, exported: false, resolved: false};
+            {ty: ret, exported: false, isDeclare: false, resolved: false};
 
         schema.set(sym, tySet);
 
@@ -1155,7 +1180,7 @@ export function compile(s: string) {
         // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
         const tySet = mapTyToTySet.has(original) ?
             mapTyToTySet.get(original) as TypeAssertionSetValue :
-            {ty: original, exported: false, resolved: false};
+            {ty: original, exported: false, isDeclare: false, resolved: false};
         tySet.ty = ty;
         mapTyToTySet.set(tySet.ty, tySet);
         if (ty.name) {
@@ -1172,7 +1197,7 @@ export function compile(s: string) {
             // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
             const tySet = mapTyToTySet.has(ty) ?
                 mapTyToTySet.get(ty) as TypeAssertionSetValue :
-                {ty, exported: false, resolved: false};
+                {ty, exported: false, isDeclare: false, resolved: false};
             tySet.exported = true;
             return ty;
         }
@@ -1202,12 +1227,24 @@ export function compile(s: string) {
         return ty;
     };
 
-    const passthru = (str: string) => {
+    const asDeclare = (ty: TypeAssertion) => {
+        // NOTE: 'ty' should already be registered to 'mapTyToTySet' and 'schema'
+        const tySet = mapTyToTySet.has(ty) ?
+            mapTyToTySet.get(ty) as TypeAssertionSetValue :
+            {ty, exported: false, isDeclare: false, resolved: false};
+        tySet.isDeclare = true;
+        return ty;
+    };
+
+    const passthru = (str: string, docCommentText?: string) => {
         const ty: TypeAssertion = {
             kind: 'never',
             passThruCodeBlock: str || '',
         };
-        schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, resolved: false});
+        if (docCommentText) {
+            ty.docComment = docCommentText;
+        }
+        schema.set(`__$$$gensym_${gensymCount++}$$$__`, {ty, exported: false, isDeclare: false, resolved: false});
         return ty;
     };
 
@@ -1245,8 +1282,9 @@ export function compile(s: string) {
         ref,
         redef,
         export: exported,
-        asConst,
         external,
+        asConst,
+        asDeclare,
         passthru,
         directive,
         docComment: operators.withDocComment,

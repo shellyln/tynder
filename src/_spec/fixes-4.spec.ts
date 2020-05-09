@@ -805,4 +805,291 @@ describe("fix-3", function() {
             }
         }
     });
+    it("compiler-const-enum-output-1", function() {
+        const schemas = [compile(`
+            enum A1 { X }
+            export enum A2 { X }
+            const enum A3 { X }
+            export const enum A4 { X }
+            /** comment1 */
+            enum B1 { X }
+            /** comment2 */
+            export enum B2 { X }
+            /** comment3 */
+            const enum B3 { X }
+            /** comment4 */
+            export const enum B4 { X }
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `enum A1 {\n    X,\n}\n\n` +
+                    `export enum A2 {\n    X,\n}\n\n` +
+                    `const enum A3 {\n    X,\n}\n\n` +
+                    `export const enum A4 {\n    X,\n}\n\n` +
+                    `/** comment1 */\nenum B1 {\n    X,\n}\n\n` +
+                    `/** comment2 */\nexport enum B2 {\n    X,\n}\n\n` +
+                    `/** comment3 */\nconst enum B3 {\n    X,\n}\n\n` +
+                    `/** comment4 */\nexport const enum B4 {\n    X,\n}`
+                );
+            }
+        }
+    });
+    it("compiler-const-enum-output-2", function() {
+        const schemas = [compile(`
+            declare enum A1 { X }
+            export declare enum A2 { X }
+            declare const enum A3 { X }
+            export declare const enum A4 { X }
+            /** comment1 */
+            declare enum B1 { X }
+            /** comment2 */
+            export declare enum B2 { X }
+            /** comment3 */
+            declare const enum B3 { X }
+            /** comment4 */
+            export declare const enum B4 { X }
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare enum A1 {\n    X,\n}\n\n` +
+                    `export declare enum A2 {\n    X,\n}\n\n` +
+                    `declare const enum A3 {\n    X,\n}\n\n` +
+                    `export declare const enum A4 {\n    X,\n}\n\n` +
+                    `/** comment1 */\ndeclare enum B1 {\n    X,\n}\n\n` +
+                    `/** comment2 */\nexport declare enum B2 {\n    X,\n}\n\n` +
+                    `/** comment3 */\ndeclare const enum B3 {\n    X,\n}\n\n` +
+                    `/** comment4 */\nexport declare const enum B4 {\n    X,\n}`
+                );
+            }
+        }
+    });
+    it("compiler-type-output-1", function() {
+        const schemas = [compile(`
+            type A1 = string;
+            export type A2 = string;
+            /** comment1 */
+            type B1 = string;
+            /** comment2 */
+            export type B2 = string;
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `type A1 = string;\n\n` +
+                    `export type A2 = string;\n\n` +
+                    `/** comment1 */\ntype B1 = string;\n\n` +
+                    `/** comment2 */\nexport type B2 = string;`
+                );
+            }
+        }
+    });
+    it("compiler-type-output-2", function() {
+        const schemas = [compile(`
+            declare type A1 = string;
+            export declare type A2 = string;
+            /** comment1 */
+            declare type B1 = string;
+            /** comment2 */
+            export declare type B2 = string;
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare type A1 = string;\n\n` +
+                    `export declare type A2 = string;\n\n` +
+                    `/** comment1 */\ndeclare type B1 = string;\n\n` +
+                    `/** comment2 */\nexport declare type B2 = string;`
+                );
+            }
+        }
+    });
+    it("compiler-interface-output-1", function() {
+        const schemas = [compile(`
+            interface A1 {}
+            export interface A2 {}
+            /** comment1 */
+            interface B1 {}
+            /** comment2 */
+            export interface B2 {}
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `interface A1 {}\n\n` +
+                    `export interface A2 {}\n\n` +
+                    `/** comment1 */\ninterface B1 {}\n\n` +
+                    `/** comment2 */\nexport interface B2 {}`
+                );
+            }
+        }
+    });
+    it("compiler-interface-output-2", function() {
+        const schemas = [compile(`
+            declare interface A1 {}
+            export declare interface A2 {}
+            /** comment1 */
+            declare interface B1 {}
+            /** comment2 */
+            export declare interface B2 {}
+        `)];
+
+        for (const schema of schemas) {
+            {
+                expect(generateTypeScriptCode(schema).trim()).toEqual(
+                    `declare interface A1 {}\n\n` +
+                    `export declare interface A2 {}\n\n` +
+                    `/** comment1 */\ndeclare interface B1 {}\n\n` +
+                    `/** comment2 */\nexport declare interface B2 {}`
+                );
+            }
+        }
+    });
+    it("declare-type-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            type Foo = string;
+        `), compile(`
+            /** comment */
+            declare type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            declare type Foo = string;
+        `), compile(`
+            /** comment */
+            export type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            export type Foo = string;
+        `), compile(`
+            /** comment */
+            export declare type Foo = @minLength(3) string;
+        `), compile(`
+            /** comment */
+            @minLength(3)
+            export declare type Foo = string;
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'primitive',
+                    primitiveName: 'string',
+                    minLength: 3,
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                } as any);
+            }
+        }
+    });
+    it("declare-interface-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            @msgId('a')
+            interface Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            declare interface Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export interface Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export declare interface Foo {}
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'object',
+                    members: [],
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                    messageId: 'a',
+                } as any);
+            }
+        }
+    });
+    it("declare-enum-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            @msgId('a')
+            enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            declare enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export declare enum Foo {}
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'enum',
+                    values: [],
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                    messageId: 'a',
+                } as any);
+            }
+        }
+    });
+    it("declare-const-enum-1", function() {
+        const schemas = [compile(`
+            /** comment */
+            @msgId('a')
+            const enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            declare const enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export const enum Foo {}
+        `), compile(`
+            /** comment */
+            @msgId('a')
+            export declare const enum Foo {}
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            {
+                expect(ty).toEqual({
+                    kind: 'enum',
+                    values: [],
+                    typeName: 'Foo',
+                    name: 'Foo',
+                    docComment: 'comment',
+                    messageId: 'a',
+                    isConst: true,
+                } as any);
+            }
+        }
+    });
 });
