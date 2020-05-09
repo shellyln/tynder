@@ -1043,6 +1043,20 @@ import {a, b as bb} from 'foo';
 ```
 
 
+### Declare types
+```ts
+declare type A = string;
+declare interface B {}
+declare enum C {}
+declare const enum D {}
+
+export declare type E = string;
+export declare interface F {}
+export declare enum G {}
+export declare const enum H {}
+```
+
+
 ### Declared variables
 
 This statement is passed through to the generated codes.
@@ -1103,6 +1117,8 @@ or
 This comment body is passed through to the generated codes.
 
 ```ts
+// Nominal type
+
 declare const phoneNumberString: unique symbol;
 /* @tynder-pass-through
 export type PhoneNumberString = string & { [phoneNumberString]: never };

@@ -1016,10 +1016,7 @@ const declareTypeAndEnumStatement =
 
 const declareVarStatement =
     trans(tokens => [[{symbol: 'passthru'}, tokens[0], tokens[1]]])(
-        cat(seq('declare'),         // TODO: [export] declare (var|let|const) varName = ... // <- pass-thru
-                                    //       [export] [declare] type typeName = ...         // <- NOT pass-thru
-                                    //       [export] [declare] interface ...               // <- NOT pass-thru
-                                    //       [export] [declare] [const] enum = ...          // <- NOT pass-thru
+        cat(seq('declare'),
             qty(1)(commentOrSpace),
             first(seq('var'),
                   seq('let'),

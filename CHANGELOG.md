@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.2
+
+* Add `declare type|interface|enum|const enum` statement.
+
+
 ## v0.6.1
 
 * Fix typo.
@@ -11,6 +16,7 @@
 * Add `const enum` definition.
 * Add `/* @tynder-pass-through ... */` directive.
 * Typed `external` statement and `/* @tynder-external ... */` directive.
+
 
 ----
 
