@@ -890,7 +890,7 @@ enum Baz {
     C = 'CCC',
 }
 
-const enum FooBar {
+const enum Qux {
     A,
 }
 ```
@@ -1026,7 +1026,7 @@ export enum Baz {
     A,
 }
 
-export const enum FooBar {
+export const enum Qux {
     A,
 }
 ```
