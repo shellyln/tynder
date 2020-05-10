@@ -944,7 +944,7 @@ type D = Array<boolean, 10>;     // data.length === 10
 ```
 
 
-### Sequence type component
+### Sequence type component (Tuple type component)
 
 #### Fixed length
 ```ts
@@ -1133,7 +1133,10 @@ external PhoneNumberString: @match(/^[0-9]{2,4}-[0-9]{1,4}-[0-9]{4}$/) string;
 //  ↓↓↓ directive line comment ↓↓↓
 // @tynder-external P, Q, R
 /// @tynder-external S, T
+
+//  ↓↓↓ directive block comment ↓↓↓
 /* @tynder-external U, V */
+
 
 /** doc comment */
 type Foo = string | number;
@@ -1151,6 +1154,8 @@ enum Baz {
 }
 
 // line comment
+# line comment
+
 /* block comment */
 /*
    block comment
@@ -1165,6 +1170,7 @@ Doc comments are preserved.
 ```ts
 type A = 'a' | "b" | `c` |
          20 | -10 | -0.12 | -9.3+8e |
+         -10_000_000.999_999 |
          0xff | 0o77 | 0b11 | +Infinity | -Infinity |
          -10n | 0n | 123n |
          true | false | null | undefined |
@@ -1410,4 +1416,4 @@ tynder compile --indir path/to/schema/tynder --outdir path/to/schema/_compiled
 
 ## License
 [ISC](https://github.com/shellyln/tynder/blob/master/LICENSE.md)  
-Copyright (c) 2019 Shellyl_N and Authors.
+Copyright (c) 2019-2020 Shellyl_N and Authors.

@@ -1,6 +1,6 @@
 # ISC License (ISC)
 
-### Copyright (c) 2019 Shellyl_N and Authors
+### Copyright (c) 2019-2020 Shellyl_N and Authors
 #### https://github.com/shellyln
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
