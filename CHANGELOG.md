@@ -3,6 +3,11 @@
 ## v0.6.2
 
 * Add `declare type|interface|enum|const enum` statement.
+* Refactoring:
+  * Move and separate files.
+  * Extract a compiler docComment function.
+* Fix README.
+* Update dev dependencies.
 
 
 ## v0.6.1
