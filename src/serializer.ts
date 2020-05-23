@@ -8,6 +8,7 @@ import { TypeAssertion,
          SerializedSchemaInfo,
          TypeAssertionSetValue,
          TypeAssertionMap } from './types';
+import { escapeString }     from './lib/escape';
 import { resolveSchema }    from './lib/resolver';
 
 
@@ -164,8 +165,16 @@ export function serialize(schema: TypeAssertionMap, asTs?: boolean): string {
     if (asTs) {
         return (
             `\n// tslint:disable: object-literal-key-quotes\n` +
-            `const schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;` +
-            `\n// tslint:enable: object-literal-key-quotes\n`
+            `const schema = ${JSON.stringify(ret, null, 2)};\nexport default schema;\n\n` +
+            `export const enum Schema {\n${Object.keys(ret.ns['.']).filter(x => {
+                return (!
+                    (/^[0-9]/.test(x) ||
+                     /[\u0000-\u001f\u007f]/.test(x) ||
+                     /\s/.test(x) ||
+                     /[@#$%^&+-=:;.,?!'"`/|{}()<>[\]\*\\]/.test(x))
+                );
+            }).map(x => `    ${x} = '${x}',\n`).join('')}` +
+            `}\n// tslint:enable: object-literal-key-quotes\n`
         );
     } else {
         return JSON.stringify(ret, null, 2);

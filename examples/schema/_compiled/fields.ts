@@ -1759,4 +1759,19 @@ const schema = {
   }
 };
 export default schema;
+
+export const enum Schema {
+    NumberType = 'NumberType',
+    A = 'A',
+    B = 'B',
+    C = 'C',
+    D = 'D',
+    E = 'E',
+    ACL = 'ACL',
+    ErrorTypes = 'ErrorTypes',
+    Foo = 'Foo',
+    Bar = 'Bar',
+    Baz = 'Baz',
+    User = 'User',
+}
 // tslint:enable: object-literal-key-quotes

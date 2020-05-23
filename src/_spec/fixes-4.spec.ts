@@ -16,7 +16,7 @@ import { constraints as uniqueConstraints } from '../constraints/unique';
 
 
 
-describe("fix-3", function() {
+describe("fix-4", function() {
     it("unique-1", function() {
         const schemas = [compile(`
             interface A {
