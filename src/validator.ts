@@ -852,6 +852,15 @@ export function isType<T>(
 }
 
 
+export function assertType<T>(
+    data: any, ty: TypeAssertion, ctx?: Partial<ValidationContext>): asserts data is T {
+
+    if (! validate<T>(data, ty, ctx)) {
+        throw new Error(`Assertion failed: Expected data should be of type "${ty.typeName || ty.name || '?'}".`);
+    }
+}
+
+
 export function getType(schema: TypeAssertionMap, name: string): TypeAssertion {
     if (schema.has(name)) {
         return schema.get(name)?.ty as TypeAssertion;

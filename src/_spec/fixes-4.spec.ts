@@ -3,6 +3,7 @@ import { TypeAssertion,
          ValidationContext } from '../types';
 import { validate,
          isType,
+         assertType,
          getType }           from '../validator';
 import { pick,
          patch }             from '../picker';
@@ -1089,6 +1090,30 @@ describe("fix-3", function() {
                     messageId: 'a',
                     isConst: true,
                 } as any);
+            }
+        }
+    });
+    it("assertion-1", function() {
+        const schemas = [compile(`
+            interface Foo { a: string }
+        `)];
+        for (const schema of schemas) {
+            const ty = getType(schema, 'Foo');
+            try {
+                const z: unknown = {b: ''};
+                assertType<{a: string}>(z, ty);
+                // z;
+                expect(1).toEqual(0);
+            } catch (e) {
+                expect(1).toEqual(1);
+            }
+            try {
+                const z: unknown = {a: ''};
+                assertType<{a: string}>(z, ty);
+                // z;
+                expect(1).toEqual(1);
+            } catch (e) {
+                expect(1).toEqual(0);
             }
         }
     });
