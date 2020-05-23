@@ -96,4 +96,22 @@ const schema = {
   }
 };
 export default schema;
+
+export const enum Schema {
+    NumberType = 'NumberType',
+    IntegerType = 'IntegerType',
+    BigIntType = 'BigIntType',
+    StringType = 'StringType',
+    BooleanType = 'BooleanType',
+    NullType = 'NullType',
+    UndefinedType = 'UndefinedType',
+    AnyType = 'AnyType',
+    UnknownType = 'UnknownType',
+    NeverType = 'NeverType',
+    NumberValueType = 'NumberValueType',
+    IntegerValueType = 'IntegerValueType',
+    BigIntValueType = 'BigIntValueType',
+    StringValueType = 'StringValueType',
+    BooleanValueType = 'BooleanValueType',
+}
 // tslint:enable: object-literal-key-quotes

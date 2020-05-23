@@ -3412,4 +3412,43 @@ const schema = {
   }
 };
 export default schema;
+
+export const enum Schema {
+    RegExp = 'RegExp',
+    Map = 'Map',
+    PrimitiveValueTypes = 'PrimitiveValueTypes',
+    PrimitiveValueTypeNames = 'PrimitiveValueTypeNames',
+    OptionalPrimitiveValueTypeNames = 'OptionalPrimitiveValueTypeNames',
+    PlaceholderTypeNames = 'PlaceholderTypeNames',
+    OptionalPlaceholderTypeNames = 'OptionalPlaceholderTypeNames',
+    ErrorTypes = 'ErrorTypes',
+    ErrorMessages = 'ErrorMessages',
+    TypeAssertionErrorMessageConstraints = 'TypeAssertionErrorMessageConstraints',
+    TypeAssertionErrorMessage = 'TypeAssertionErrorMessage',
+    TypeAssertionBase = 'TypeAssertionBase',
+    NeverTypeAssertion = 'NeverTypeAssertion',
+    AnyTypeAssertion = 'AnyTypeAssertion',
+    UnknownTypeAssertion = 'UnknownTypeAssertion',
+    PrimitiveTypeAssertionConstraints = 'PrimitiveTypeAssertionConstraints',
+    PrimitiveTypeAssertion = 'PrimitiveTypeAssertion',
+    PrimitiveValueTypeAssertion = 'PrimitiveValueTypeAssertion',
+    RepeatedAssertionConstraints = 'RepeatedAssertionConstraints',
+    RepeatedAssertion = 'RepeatedAssertion',
+    SpreadAssertion = 'SpreadAssertion',
+    SequenceAssertion = 'SequenceAssertion',
+    OneOfAssertion = 'OneOfAssertion',
+    OptionalAssertion = 'OptionalAssertion',
+    EnumAssertion = 'EnumAssertion',
+    ObjectAssertionMember = 'ObjectAssertionMember',
+    AdditionalPropsKey = 'AdditionalPropsKey',
+    AdditionalPropsMember = 'AdditionalPropsMember',
+    ObjectAssertion = 'ObjectAssertion',
+    AssertionSymlink = 'AssertionSymlink',
+    TypeAssertion = 'TypeAssertion',
+    ValidationContext = 'ValidationContext',
+    TypeAssertionSetValue = 'TypeAssertionSetValue',
+    TypeAssertionMap = 'TypeAssertionMap',
+    SymbolResolverContext = 'SymbolResolverContext',
+    CodegenContext = 'CodegenContext',
+}
 // tslint:enable: object-literal-key-quotes

@@ -302,12 +302,14 @@ try {
 ...
 import { deserializeFromObject } from 'tynder/modules/lib/serializer';
 import { Foo, A }                from './path/to/schema-types/my-schema';    // type definitions (.d.ts)
-import mySchema_                 from './path/to/schema-compiled/my-schema'; // pre-compiled schema (.ts)
+import mySchema_,
+       { Schema as MySchema }    from './path/to/schema-compiled/my-schema'; // pre-compiled schema (.ts)
+                   // `MySchema` is auto generated string const enum.
 
 const mySchema = deserializeFromObject(mySchema_);
 
 const unknownInput: unknown = {a: 'x'};
-const validated = validate<A>(unknownInput, getType(mySchema, 'A'));
+const validated = validate<A>(unknownInput, getType(mySchema, MySchema.A));
 
 if (validated) {
     const validatedInput = validated.value; // validatedInput is type-safe

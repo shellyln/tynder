@@ -3,6 +3,7 @@
 ## v0.6.3
 
 * Add `assertType<T>(data, ty, ctx?)` assertion type guard function.
+* Generate the type name const enum `Schema` when serializing the schema.
 * Edit README.
 
 

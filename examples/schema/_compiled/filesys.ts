@@ -213,4 +213,12 @@ const schema = {
   }
 };
 export default schema;
+
+export const enum Schema {
+    ACL = 'ACL',
+    EntryBase = 'EntryBase',
+    File = 'File',
+    Folder = 'Folder',
+    Entry = 'Entry',
+}
 // tslint:enable: object-literal-key-quotes
