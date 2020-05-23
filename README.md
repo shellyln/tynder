@@ -419,9 +419,26 @@ import { isType,
 ...
 
 const unknownInput: unknown = {a: 'x'};
+
 if (isType<A>(unknownInput, getType(mySchema, 'A'), ctx) && unknownInput.a.length > 0) {
     console.log(`ok: ${unknownInput.a.length}`);
 } else {
+    console.log('ng');
+}
+```
+
+```ts
+import { assertType,
+         getType } from 'tynder/modules/validator';
+
+...
+
+const unknownInput: unknown = {a: 'x'};
+
+try {
+    assertType<A>(unknownInput, getType(mySchema, 'A'), ctx);
+    console.log(`ok: ${unknownInput.a.length}`);
+} catch (e) {
     console.log('ng');
 }
 ```

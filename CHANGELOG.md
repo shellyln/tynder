@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.3
+
+* Add `assertType<T>(data, ty, ctx?)` assertion type guard function.
+* Edit README.
+
+
 ## v0.6.2
 
 * Add `declare type|interface|enum|const enum` statement.
