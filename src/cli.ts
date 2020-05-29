@@ -3,7 +3,7 @@
 // https://github.com/shellyln
 
 
-import {run} from './lib/cli';
+import { run } from './lib/cli';
 
 
 

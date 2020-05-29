@@ -1,0 +1,28 @@
+// Copyright (c) 2020 Shellyl_N and Authors
+// license: ISC
+// https://github.com/shellyln
+
+
+// External dependencies
+
+export { existsSync,
+         mkdirSync,
+         lstatSync,
+         readdirSync,
+         readFileSync }           from 'fs';
+export { join }                   from 'path';
+
+export { parserInput,
+         ParserInputWithCtx,
+         ParserFnWithCtx }        from 'fruitsconfits/modules/lib/types';
+export { formatErrorMessage }     from 'fruitsconfits/modules/lib/parser';
+export { getStringParsers }       from 'fruitsconfits/modules/lib/string-parser';
+export { getObjectParsers }       from 'fruitsconfits/modules/lib/object-parser';
+
+export { SxTokenChild,
+         SxToken,
+         SxSymbol,
+         SxParserConfig }         from 'liyad/modules/s-exp/types';
+export { default as installCore } from 'liyad/modules/s-exp/operators/core';
+export { SExpression }            from 'liyad/modules/s-exp/interpreters';
+export { defaultConfig }          from 'liyad/modules/s-exp/defaults';
