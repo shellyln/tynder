@@ -11,6 +11,7 @@ test:lint:
   script:
     - npm run lint
 
+# LTS
 test:node:14:
   image: node:14
   script:
