@@ -204,7 +204,7 @@ const stringEscapeSeq = first(
                 qty(3, 3)(classes.oct), )));
 
 const signleQuotStringValue =
-    trans(tokens => [tokens[0]])(
+    trans(tokens => [tokens[0] ?? ''])(
         erase(seq("'")),
             cat(repeat(first(
                 stringEscapeSeq,
@@ -214,7 +214,7 @@ const signleQuotStringValue =
         erase(seq("'")), );
 
 const doubleQuotStringValue =
-    trans(tokens => [tokens[0]])(
+    trans(tokens => [tokens[0] ?? ''])(
         erase(seq('"')),
             cat(repeat(first(
                 stringEscapeSeq,
@@ -224,7 +224,7 @@ const doubleQuotStringValue =
         erase(seq('"')), );
 
 const backQuotStringValue =
-    trans(tokens => [tokens[0]])(
+    trans(tokens => [tokens[0] ?? ''])(
         erase(seq('`')),
             cat(repeat(first(
                 stringEscapeSeq,
@@ -238,8 +238,8 @@ const stringValue =
 const regexpStringValue =
     // TODO: '/' ']' '\\' in character class '[]' is not parsed correctly.
     trans(tokens => [{value: tokens[1] ?
-            new RegExp(tokens[0] as string, tokens[1] as string) :
-            new RegExp(tokens[0] as string)}])(
+            new RegExp((tokens[0] ?? '') as string, tokens[1] as string) :
+            new RegExp((tokens[0] ?? '') as string)}])(
         erase(seq('/')),
             cat(repeat(first(
                 stringEscapeSeq,
