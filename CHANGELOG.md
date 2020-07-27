@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.6.4
+
+* Fix empty string literal parsing.
+* Update dependencies.
+* Update CI configurations.
+
+
 ## v0.6.3
 
 * Add `assertType<T>(data, ty, ctx?)` assertion type guard function.
