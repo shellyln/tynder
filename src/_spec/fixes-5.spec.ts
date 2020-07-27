@@ -29,4 +29,76 @@ describe("fix-5", function() {
             name: 'NumberType',
         });
     });
+
+    it("empty-string-literal-1", function() {
+        const schemas = [compile(`
+            type A = '';
+            type B = 'a';
+        `), compile(`
+            type A = "";
+            type B = "a";
+        `), compile(`
+            type A = \`\`;
+            type B = \`a\`;
+        `)];
+        for (const schema of schemas) {
+            {
+                expect(Array.from(schema.keys())).toEqual([
+                    'A', 'B',
+                ]);
+            }
+            for (const ty of [getType(deserialize(serialize(schema)), 'A'), getType(schema, 'A')]) {
+                const rhs: TypeAssertion = {
+                    name: 'A',
+                    typeName: 'A',
+                    kind: 'primitive-value',
+                    value: '',
+                };
+                expect(ty).toEqual(rhs);
+                expect(validate<string>(0, ty)).toEqual(null);
+                expect(validate<string>(1, ty)).toEqual(null);
+                expect(validate<string>(1.1, ty)).toEqual(null);
+                expect(validate<string>(BigInt(0), ty)).toEqual(null);
+                expect(validate<string>(BigInt(1), ty)).toEqual(null);
+                expect(validate<string>('', ty)).toEqual({value: ''});
+                expect(validate<string>('a', ty)).toEqual(null);
+                expect(validate<string>(false, ty)).toEqual(null);
+                expect(validate<string>(true, ty)).toEqual(null);
+                expect(validate<string>(null, ty)).toEqual(null);
+                expect(validate<string>(void 0, ty)).toEqual(null);
+                expect(validate<string>({}, ty)).toEqual(null);
+                expect(validate<string>([], ty)).toEqual(null);
+                expect(validate<string>(3, ty)).toEqual(null);
+                expect(validate<string>(BigInt(7), ty)).toEqual(null);
+                expect(validate<string>('XB', ty)).toEqual(null);
+                expect(validate<string>(true, ty)).toEqual(null);
+            }
+            for (const ty of [getType(deserialize(serialize(schema)), 'B'), getType(schema, 'B')]) {
+                const rhs: TypeAssertion = {
+                    name: 'B',
+                    typeName: 'B',
+                    kind: 'primitive-value',
+                    value: 'a',
+                };
+                expect(ty).toEqual(rhs);
+                expect(validate<string>(0, ty)).toEqual(null);
+                expect(validate<string>(1, ty)).toEqual(null);
+                expect(validate<string>(1.1, ty)).toEqual(null);
+                expect(validate<string>(BigInt(0), ty)).toEqual(null);
+                expect(validate<string>(BigInt(1), ty)).toEqual(null);
+                expect(validate<string>('', ty)).toEqual(null);
+                expect(validate<string>('a', ty)).toEqual({value: 'a'});
+                expect(validate<string>(false, ty)).toEqual(null);
+                expect(validate<string>(true, ty)).toEqual(null);
+                expect(validate<string>(null, ty)).toEqual(null);
+                expect(validate<string>(void 0, ty)).toEqual(null);
+                expect(validate<string>({}, ty)).toEqual(null);
+                expect(validate<string>([], ty)).toEqual(null);
+                expect(validate<string>(3, ty)).toEqual(null);
+                expect(validate<string>(BigInt(7), ty)).toEqual(null);
+                expect(validate<string>('XB', ty)).toEqual(null);
+                expect(validate<string>(true, ty)).toEqual(null);
+            }
+        }
+    });
 });
