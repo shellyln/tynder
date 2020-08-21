@@ -17,10 +17,10 @@ import { NumberPattern }         from '../lib/util';
 
 
 function mergeTypeAndSymlink(ty: TypeAssertion, link: AssertionSymlink): TypeAssertion {
-    const link2: any = {...link}; // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
-    delete link2.kind;
-    delete link2.symlinkTargetName;
-    delete link2.memberTree;
+    const link2 = {...link};
+    delete (link2 as any).kind;              // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
+    delete (link2 as any).symlinkTargetName; // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
+    delete (link2 as any).memberTree;        // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
     return ({...ty, ...link2} as any as TypeAssertion);
 }
 
@@ -248,9 +248,9 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             if (! ctx2.operators[ty.operator]) {
                 throw new Error(`Undefined type operator is found: ${ty.operator}`);
             }
-            const ty2: any = {...ty}; // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
-            delete ty2.operator;
-            delete ty2.operands;
+            const ty2 = {...ty};
+            delete (ty2 as any).operator; // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
+            delete (ty2 as any).operands; // NOTE: (TS>=4.0) TS2790: The operand of a 'delete' operator must be optional.
             return updateSchema(
                 ty, schema,
                 {
