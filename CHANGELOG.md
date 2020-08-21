@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.5
+
+* Update dependencies.
+* Migrate to TypeScript 4.0.
+
+
 ## v0.6.4
 
 * Fix empty string literal parsing.

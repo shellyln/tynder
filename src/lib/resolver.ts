@@ -17,7 +17,7 @@ import { NumberPattern }         from '../lib/util';
 
 
 function mergeTypeAndSymlink(ty: TypeAssertion, link: AssertionSymlink): TypeAssertion {
-    const link2 = {...link};
+    const link2: any = {...link};
     delete link2.kind;
     delete link2.symlinkTargetName;
     delete link2.memberTree;
@@ -248,7 +248,7 @@ export function resolveSymbols(schema: TypeAssertionMap, ty: TypeAssertion, ctx:
             if (! ctx2.operators[ty.operator]) {
                 throw new Error(`Undefined type operator is found: ${ty.operator}`);
             }
-            const ty2 = {...ty};
+            const ty2: any = {...ty};
             delete ty2.operator;
             delete ty2.operands;
             return updateSchema(
