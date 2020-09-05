@@ -3,7 +3,7 @@
         "./.eslintrc.shared.json"
     ],
     "parserOptions": {
-        "project": "./tsconfig.json",
+        "project": "./tsconfig.build.json",
         "tsconfigRootDir": "."
     },
     "rules": {
