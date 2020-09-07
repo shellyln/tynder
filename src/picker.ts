@@ -7,7 +7,7 @@ import { RecursivePartial,
          TypeAssertion,
          ValidationContext } from './types';
 import { ValidationError }   from './lib/errors';
-import { isUnsafeVarNames }  from './lib/util';
+import { isUnsafeVarNames }  from './lib/protection';
 import { validate }          from './validator';
 
 
