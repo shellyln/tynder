@@ -20,7 +20,7 @@ import * as operators            from './operators';
 import { resolveMemberNames,
          resolveSchema }         from './lib/resolver';
 import { dummyTargetObject,
-         isUnsafeVarNames }      from './lib/util';
+         isUnsafeVarNames }      from './lib/protection';
 import { externalTypeDef,
          program }               from './lib/compiler';
 

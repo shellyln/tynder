@@ -22,8 +22,8 @@ import { ErrorTypes,
          Stereotype,
          CustomConstraintInfo } from './types';
 import { ValidationError }      from './lib/errors';
-import { NumberPattern,
-         isUnsafeVarNames }     from './lib/util';
+import { NumberPattern }        from './lib/util';
+import { isUnsafeVarNames }     from './lib/protection';
 import { reportError,
          reportErrorWithPush }  from './lib/reporter';
 import { resolveSymbols }       from './lib/resolver';

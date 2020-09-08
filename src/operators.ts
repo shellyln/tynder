@@ -28,7 +28,7 @@ import { NeverTypeAssertion,
          AssertionOperator,
          TypeAssertion }    from './types';
 import { dummyTargetObject,
-         isUnsafeVarNames } from './lib/util';
+         isUnsafeVarNames } from './lib/protection';
 
 
 

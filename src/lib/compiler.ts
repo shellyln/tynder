@@ -10,7 +10,7 @@ import { getObjectParsers }      from 'fruitsconfits/modules/lib/object-parser';
 import { SxTokenChild,
          SxToken }               from 'liyad/modules/s-exp/types';
 import { dummyTargetObject,
-         isUnsafeVarNames }      from './util';
+         isUnsafeVarNames }      from './protection';
 
 
 

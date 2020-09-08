@@ -5,7 +5,7 @@
 
 import { CustomConstraintInfo } from '../types';
 import { dummyTargetObject,
-         isUnsafeVarNames }     from '../lib/util';
+         isUnsafeVarNames }     from '../lib/protection';
 
 
 
