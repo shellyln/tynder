@@ -11,9 +11,8 @@ test:lint:
   script:
     - npm run lint
 
-# LTS
-test:node:14:
-  image: node:14
+test:node:15:
+  image: node:15
   script:
     - npm run clean
     - npm run build
@@ -21,8 +20,9 @@ test:node:14:
     - npm run build:dist:prod
     - npm test
 
-test:node:13:
-  image: node:13
+# LTS
+test:node:14:
+  image: node:14
   script:
     - npm run clean
     - npm run build
