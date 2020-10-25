@@ -67,6 +67,34 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 npm install --save tynder
 ```
 
+
+> NOTICE:  
+> Use with `webpack >= 5`
+>
+> If you get the error:
+>
+> ```
+> Module not found: Error: Can't resolve '(importing/path/to/filename)'
+> in '(path/to/node_modules/path/to/dirname)'
+> Did you mean '(filename).js'?`
+> ```
+>
+> Add following setting to your `webpack.config.js`.
+>
+> ```js
+> {
+>     test: /\.m?js/,
+>     resolve: {
+>         fullySpecified: false,
+>     },
+> },
+> ```
+>
+> On `webpack >= 5`, the extension in the request is mandatory for it to be fully specified
+> if the origin is a '*.mjs' file or a '*.js' file where the package.json contains '"type": "module"'.
+
+
+
 > NOTICE:  
 > To use without webpack on Node.js, enabling ES Modules.
 > * Add flags:
