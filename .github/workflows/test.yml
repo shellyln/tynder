@@ -4,6 +4,9 @@ jobs:
   test:
     name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       matrix:
         node_version: [10, 12, 14, 15]
