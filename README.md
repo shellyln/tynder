@@ -9,7 +9,7 @@ Validate data in browsers, node.js back-end servers, and various language platfo
 
 [![npm](https://img.shields.io/npm/v/tynder.svg)](https://www.npmjs.com/package/tynder)
 [![GitHub release](https://img.shields.io/github/release/shellyln/tynder.svg)](https://github.com/shellyln/tynder/releases)
-[![Travis](https://img.shields.io/travis/shellyln/tynder/master.svg)](https://travis-ci.org/shellyln/tynder)
+[![.github/workflows/test.yml](https://github.com/shellyln/tynder/workflows/.github/workflows/test.yml/badge.svg)](https://github.com/shellyln/tynder/actions)
 [![GitHub forks](https://img.shields.io/github/forks/shellyln/tynder.svg?style=social&label=Fork)](https://github.com/shellyln/tynder/fork)
 [![GitHub stars](https://img.shields.io/github/stars/shellyln/tynder.svg?style=social&label=Star)](https://github.com/shellyln/tynder)
 
